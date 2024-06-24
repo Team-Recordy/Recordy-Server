@@ -16,11 +16,13 @@ public class UserEntity extends JpaMetaInfoEntity {
     private Long id;
 
     private String platformId;
+    @Enumerated(EnumType.STRING)
     private AuthPlatform.Type platformType;
     @Enumerated(EnumType.STRING)
     private UserStatus status;
 
-    public UserEntity(String platformId, AuthPlatform.Type platformType, UserStatus status) {
+    public UserEntity(Long id, String platformId, AuthPlatform.Type platformType, UserStatus status) {
+        this.id = id;
         this.platformId = platformId;
         this.platformType = platformType;
         this.status = status;
@@ -28,6 +30,7 @@ public class UserEntity extends JpaMetaInfoEntity {
 
     public static UserEntity from(User user) {
         return new UserEntity(
+                user.getId(),
                 user.getAuthPlatform().getId(),
                 user.getAuthPlatform().getType(),
                 user.getStatus()
