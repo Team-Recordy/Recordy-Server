@@ -9,4 +9,5 @@ public class Auth {
 
     private AuthPlatform platform;
     private AuthToken token;
+    private boolean isSignedUp;
 }
