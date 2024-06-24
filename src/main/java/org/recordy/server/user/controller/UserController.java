@@ -11,8 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
-@RequestMapping("/")
-@RestController("${api.base-path}" + "/user")
+@RequestMapping("${api.base-path}" + "/user")
+@RestController
 public class UserController {
 
     private final AuthService authService;
