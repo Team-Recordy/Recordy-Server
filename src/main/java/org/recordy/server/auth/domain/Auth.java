@@ -11,6 +11,5 @@ public class Auth {
     private String id;
     private AuthPlatform platform;
     private AuthToken token;
-    private AuthStatus status;
     private User user;
 }
