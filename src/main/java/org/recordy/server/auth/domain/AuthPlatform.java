@@ -11,6 +11,7 @@ public class AuthPlatform {
     private Type type;
 
     public enum Type {
+
         APPLE,
         KAKAO,
         ;
