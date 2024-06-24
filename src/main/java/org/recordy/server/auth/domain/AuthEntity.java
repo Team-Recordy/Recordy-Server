@@ -1,18 +1,17 @@
 package org.recordy.server.auth.domain;
 
-import jakarta.persistence.Id;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.recordy.server.common.domain.JpaMetaInfoEntity;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @RedisHash("auth")
-public class AuthEntity extends JpaMetaInfoEntity {
+public class AuthEntity {
 
     @Id
     private String platformId;
