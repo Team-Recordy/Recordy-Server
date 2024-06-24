@@ -7,6 +7,7 @@ import org.recordy.server.auth.domain.AuthToken;
 import org.recordy.server.auth.domain.usecase.AuthSignIn;
 import org.recordy.server.auth.repository.AuthRepository;
 import org.recordy.server.auth.service.AuthPlatformService;
+import org.recordy.server.auth.service.AuthPlatformServiceFactory;
 import org.recordy.server.auth.service.AuthService;
 import org.recordy.server.auth.service.AuthTokenService;
 import org.recordy.server.user.domain.User;
@@ -21,17 +22,23 @@ import static org.recordy.server.user.domain.UserStatus.ACTIVE;
 public class AuthServiceImpl implements AuthService {
 
     private final AuthRepository authRepository;
-    private final AuthPlatformService platformService;
+    private final AuthPlatformServiceFactory platformServiceFactory;
     private final AuthTokenService authTokenService;
     private final UserService userService;
 
     @Override
     public Auth signIn(AuthSignIn authSignIn) {
-        AuthPlatform platform = platformService.getPlatform(authSignIn);
+        AuthPlatform platform = getPlatform(authSignIn);
         User user = getOrCreateUser(platform);
         AuthToken token = authTokenService.issueToken(user.getId());
 
         return create(platform, token, user.getStatus());
+    }
+
+    private AuthPlatform getPlatform(AuthSignIn authSignIn) {
+        AuthPlatformService platformService = platformServiceFactory.getPlatformServiceFrom(authSignIn.platformType());
+
+        return platformService.getPlatform(authSignIn);
     }
 
     private User getOrCreateUser(AuthPlatform platform) {
