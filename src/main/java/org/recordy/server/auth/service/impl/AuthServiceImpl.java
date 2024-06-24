@@ -36,7 +36,7 @@ public class AuthServiceImpl implements AuthService {
 
     private User getOrCreateUser(AuthPlatform platform) {
         return userService.getByPlatformId(platform.getId())
-                .orElseGet(() -> userService.create(platform, UserStatus.PENDING));
+                .orElseGet(() -> userService.create(platform));
     }
 
     private Auth create(AuthPlatform platform, AuthToken token, UserStatus userStatus) {
