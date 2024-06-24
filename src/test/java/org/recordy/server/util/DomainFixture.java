@@ -1,14 +1,17 @@
 package org.recordy.server.util;
 
 import org.recordy.server.auth.domain.Auth;
+import org.recordy.server.auth.domain.AuthEntity;
 import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.auth.domain.AuthToken;
+import org.recordy.server.auth.domain.usecase.AuthSignIn;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.UserEntity;
 import org.recordy.server.user.domain.UserStatus;
 
 public final class DomainFixture {
 
+    public static final String PLATFORM_TOKEN = "platform_token";
     public static final String PLATFORM_ID = "abcdefg";
     public static final AuthPlatform.Type PLATFORM_TYPE = AuthPlatform.Type.KAKAO;
     public static final String ACCESS_TOKEN = "access_token";
@@ -27,6 +30,13 @@ public final class DomainFixture {
         );
     }
 
+    public static AuthSignIn createAuthSignIn(AuthPlatform.Type platformType) {
+        return new AuthSignIn(
+                PLATFORM_TOKEN,
+                platformType
+        );
+    }
+
     public static Auth createAuth(boolean isSignedUp) {
         return new Auth(
                 createAuthPlatform(),
@@ -35,12 +45,13 @@ public final class DomainFixture {
         );
     }
 
-    public static UserEntity createUserEntity() {
-        return new UserEntity(
-                USER_ID,
+    public static AuthEntity createAuthEntity(boolean isSignedUp) {
+        return new AuthEntity(
                 PLATFORM_ID,
-                PLATFORM_TYPE,
-                DEFAULT_USER_STATUS
+                PLATFORM_TYPE.name(),
+                ACCESS_TOKEN,
+                REFRESH_TOKEN,
+                isSignedUp
         );
     }
 
@@ -50,5 +61,14 @@ public final class DomainFixture {
                 .authPlatform(createAuthPlatform())
                 .status(DEFAULT_USER_STATUS)
                 .build();
+    }
+
+    public static UserEntity createUserEntity() {
+        return new UserEntity(
+                USER_ID,
+                PLATFORM_ID,
+                PLATFORM_TYPE,
+                DEFAULT_USER_STATUS
+        );
     }
 }
