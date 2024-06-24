@@ -29,7 +29,7 @@ public class AuthServiceImpl implements AuthService {
         User user = getOrCreateUser(platform);
         AuthToken token = authTokenService.issueToken(user.getId());
 
-        return create(platform, token, user);
+        return create(platform, token);
     }
 
     private User getOrCreateUser(AuthPlatform platform) {
@@ -37,11 +37,10 @@ public class AuthServiceImpl implements AuthService {
                 .orElseGet(() -> userService.create(platform, UserStatus.PENDING));
     }
 
-    private Auth create(AuthPlatform platform, AuthToken token, User user) {
+    private Auth create(AuthPlatform platform, AuthToken token) {
         return authRepository.save(Auth.builder()
                 .platform(platform)
                 .token(token)
-                .user(user)
                 .build());
     }
 }
