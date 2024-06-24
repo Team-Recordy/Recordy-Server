@@ -1,7 +1,9 @@
 package org.recordy.server.auth.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+@AllArgsConstructor
 @Getter
 public class AuthPlatform {
 
