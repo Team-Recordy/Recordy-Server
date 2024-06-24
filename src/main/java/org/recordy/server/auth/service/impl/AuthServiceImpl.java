@@ -14,6 +14,8 @@ import org.recordy.server.user.domain.UserStatus;
 import org.recordy.server.user.service.UserService;
 import org.springframework.stereotype.Service;
 
+import static org.recordy.server.user.domain.UserStatus.ACTIVE;
+
 @RequiredArgsConstructor
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -29,7 +31,7 @@ public class AuthServiceImpl implements AuthService {
         User user = getOrCreateUser(platform);
         AuthToken token = authTokenService.issueToken(user.getId());
 
-        return create(platform, token);
+        return create(platform, token, user.getStatus());
     }
 
     private User getOrCreateUser(AuthPlatform platform) {
@@ -37,10 +39,11 @@ public class AuthServiceImpl implements AuthService {
                 .orElseGet(() -> userService.create(platform, UserStatus.PENDING));
     }
 
-    private Auth create(AuthPlatform platform, AuthToken token) {
+    private Auth create(AuthPlatform platform, AuthToken token, UserStatus userStatus) {
         return authRepository.save(Auth.builder()
                 .platform(platform)
                 .token(token)
+                .isSignedUp(userStatus.equals(ACTIVE))
                 .build());
     }
 }

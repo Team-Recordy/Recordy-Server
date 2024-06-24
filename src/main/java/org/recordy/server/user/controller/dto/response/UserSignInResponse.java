@@ -5,14 +5,14 @@ import org.recordy.server.auth.domain.Auth;
 public record UserSignInResponse(
         String accessToken,
         String refreshToken,
-        String userStatus
+        boolean isSignedUp
 ) {
 
     public static UserSignInResponse from(Auth auth) {
         return new UserSignInResponse(
                 auth.getToken().getAccessToken(),
                 auth.getToken().getRefreshToken(),
-                auth.getStatus().name()
+                auth.isSignedUp()
         );
     }
 }

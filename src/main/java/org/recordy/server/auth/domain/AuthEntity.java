@@ -19,20 +19,23 @@ public class AuthEntity extends JpaMetaInfoEntity {
     private String platformType;
     private String accessToken;
     private String refreshToken;
+    private boolean isSignedUp;
 
     public static AuthEntity from(Auth auth) {
         return new AuthEntity(
                 auth.getPlatform().getId(),
                 auth.getPlatform().getType().name(),
                 auth.getToken().getAccessToken(),
-                auth.getToken().getRefreshToken()
+                auth.getToken().getRefreshToken(),
+                auth.isSignedUp()
         );
     }
 
     public Auth toDomain() {
         return new Auth(
                 new AuthPlatform(platformId, AuthPlatform.Type.valueOf(platformType)),
-                new AuthToken(accessToken, refreshToken)
+                new AuthToken(accessToken, refreshToken),
+                isSignedUp
         );
     }
 }
