@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
-@RequestMapping("${api.base-path}" + "/user")
+@RequestMapping("/api/v1/users")
 @RestController
 public class UserController {
 
