@@ -56,8 +56,7 @@ class AuthServiceIntegrationTest {
                 .thenReturn(DomainFixture.createAuthToken());
     }
 
-    //TODO: 클라이언트 측에서 애플 로그인 구현한 이후에 테스트 가능
-//    @Test
+    @Test
     void signIn을_요청한_가입되지_않은_사용자에_대해_새로운_User_객체가_저장된다() {
         // given
         AuthPlatform.Type platformType = DomainFixture.PLATFORM_TYPE;
@@ -76,7 +75,7 @@ class AuthServiceIntegrationTest {
         );
     }
 
-//    @Test
+    @Test
     void signIn을_요청한_가입되지_않은_사용자는_isSignedUp이_false인_Auth_객체를_반환한다() {
         // given
         AuthPlatform.Type platformType = DomainFixture.PLATFORM_TYPE;
@@ -91,7 +90,7 @@ class AuthServiceIntegrationTest {
         );
     }
 
-//    @Test
+    @Test
     void signIn을_요청한_가입되지_않은_사용자는_PENDING_상태로_가입_처리된다() {
         // given
         AuthPlatform.Type platformType = DomainFixture.PLATFORM_TYPE;
@@ -110,7 +109,7 @@ class AuthServiceIntegrationTest {
         );
     }
 
-//    @Test
+    @Test
     void signIn을_요청한_이미_가입된_사용자는_isSignedUp이_true인_Auth_객체를_반환한다() {
         // given
         AuthPlatform.Type platformType = DomainFixture.PLATFORM_TYPE;
@@ -127,7 +126,7 @@ class AuthServiceIntegrationTest {
         );
     }
 
-//    @Test
+    @Test
     void signIn을_요청한_이미_가입된_사용자는_ACTIVE_상태다() {
         // given
         AuthPlatform.Type platformType = DomainFixture.PLATFORM_TYPE;
