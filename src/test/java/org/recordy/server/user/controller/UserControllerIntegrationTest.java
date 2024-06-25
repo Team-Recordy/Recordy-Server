@@ -49,7 +49,7 @@ class UserControllerIntegrationTest {
     @Test
     void signIn을_통해_사용자는_애플_플랫폼_토큰을_통해_가입_이후_토큰을_반환받을_수_있다() throws Exception {
         // given
-        String request = objectMapper.writeValueAsString(new UserSignInRequest(AuthPlatform.Type.KAKAO));
+        String request = objectMapper.writeValueAsString(new UserSignInRequest(AuthPlatform.Type.APPLE));
 
         // when
         mockMvc.perform(post("/api/v1/users/signIn")
