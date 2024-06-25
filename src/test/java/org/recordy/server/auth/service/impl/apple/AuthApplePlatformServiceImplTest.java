@@ -19,7 +19,7 @@ public class AuthApplePlatformServiceImplTest {
     @BeforeEach
     void init() {
         fakeContainer = new FakeContainer();
-        applePlatformService = fakeContainer.authKakaoPlatformService;
+        applePlatformService = fakeContainer.authApplePlatformService;
     }
 
     @Test
