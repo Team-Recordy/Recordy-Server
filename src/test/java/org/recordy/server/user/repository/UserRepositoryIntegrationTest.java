@@ -35,7 +35,7 @@ class UserRepositoryIntegrationTest {
         assertAll(
                 () -> assertThat(result.getId()).isNotNull(),
                 () -> assertThat(result.getAuthPlatform().getId()).isEqualTo(DomainFixture.PLATFORM_ID),
-                () -> assertThat(result.getAuthPlatform().getType()).isEqualTo(DomainFixture.PLATFORM_TYPE),
+                () -> assertThat(result.getAuthPlatform().getType()).isEqualTo(DomainFixture.KAKAO_PLATFORM_TYPE),
                 () -> assertThat(result.getStatus()).isEqualTo(DomainFixture.DEFAULT_USER_STATUS)
         );
     }
@@ -49,7 +49,7 @@ class UserRepositoryIntegrationTest {
         assertAll(
                 () -> assertThat(result.getId()).isNotNull(),
                 () -> assertThat(result.getAuthPlatform().getId()).isEqualTo(DomainFixture.PLATFORM_ID),
-                () -> assertThat(result.getAuthPlatform().getType()).isEqualTo(DomainFixture.PLATFORM_TYPE),
+                () -> assertThat(result.getAuthPlatform().getType()).isEqualTo(DomainFixture.KAKAO_PLATFORM_TYPE),
                 () -> assertThat(result.getStatus()).isEqualTo(DomainFixture.DEFAULT_USER_STATUS)
         );
     }
