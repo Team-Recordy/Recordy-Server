@@ -9,14 +9,18 @@ import java.util.Optional;
 
 public class FakeUserRepository implements UserRepository {
 
-    private long autoIncrementId = 1L;
-    private final Map<Long, User> users = new HashMap<>();
+    public long autoIncrementId = 1L;
+    public final Map<Long, User> users = new HashMap<>();
 
     @Override
     public User save(User user) {
-        users.put(user.getId(), user);
+        users.put(autoIncrementId, user);
 
-        return user;
+        return User.builder()
+                .id(autoIncrementId++)
+                .authPlatform(user.getAuthPlatform())
+                .status(user.getStatus())
+                .build();
     }
 
     @Override
