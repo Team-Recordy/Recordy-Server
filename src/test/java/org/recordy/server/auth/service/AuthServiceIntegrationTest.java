@@ -2,22 +2,27 @@ package org.recordy.server.auth.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.recordy.server.auth.domain.Auth;
 import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.auth.domain.usecase.AuthSignIn;
 import org.recordy.server.auth.repository.AuthRepository;
+import org.recordy.server.mock.FakeContainer;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.UserStatus;
 import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.util.DomainFixture;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+@Transactional
 @SpringBootTest
 class AuthServiceIntegrationTest {
 
@@ -27,12 +32,28 @@ class AuthServiceIntegrationTest {
     @Autowired
     private AuthRepository authRepository;
 
+    @MockBean
+    private AuthPlatformServiceFactory authPlatformServiceFactory;
+
+    @MockBean
+    private AuthTokenService authTokenService;
+
     @Autowired
     private UserRepository userRepository;
 
     @BeforeEach
     void init() {
         authRepository.save(DomainFixture.createAuth(true));
+
+        // AuthServiceImpl이 AuthPlatformService의 getPlatform()을 호출하면, FakeAuthKakaoPlatformServiceImpl의 getPlatform()이 호출된다.
+        // 즉, DomainFixture.PLATFORM_ID와 AuthPlatform.Type.KAKAO가 반환된다.
+        Mockito.when(authPlatformServiceFactory.getPlatformServiceFrom(Mockito.any(AuthPlatform.Type.class)))
+                .thenReturn(new FakeContainer().authKakaoPlatformService);
+
+        // AuthServiceImpl이 AuthTokenService의 issueToken()을 호출하면, FakeAuthTokenServiceImpl의 issueToken()이 호출된다.
+        // 즉, DomainFixture.createAuthToken()이 반환된다.
+        Mockito.when(authTokenService.issueToken(Mockito.anyLong()))
+                .thenReturn(DomainFixture.createAuthToken());
     }
 
     @Test
@@ -40,6 +61,7 @@ class AuthServiceIntegrationTest {
         // given
         AuthPlatform.Type platformType = DomainFixture.PLATFORM_TYPE;
         AuthSignIn authSignIn = DomainFixture.createAuthSignIn(platformType);
+
 
         // when
         Auth auth = authService.signIn(authSignIn);
