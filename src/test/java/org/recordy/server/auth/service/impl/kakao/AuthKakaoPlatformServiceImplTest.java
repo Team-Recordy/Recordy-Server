@@ -42,7 +42,10 @@ public class AuthKakaoPlatformServiceImplTest {
     @Test
     void getPlatform을_통해_카카오_플랫폼에_존재하지_않는_사용자_정보를_조회한_경우_예외를_던진다() {
         // given
-        AuthSignIn authSignIn = DomainFixture.createAuthSignIn(DomainFixture.KAKAO_PLATFORM_TYPE);
+        AuthSignIn authSignIn = new AuthSignIn(
+                "invalid_token",
+                AuthPlatform.Type.KAKAO
+        );
 
         // when, then
         assertThatThrownBy(() -> kakaoPlatformService.getPlatform(authSignIn))
