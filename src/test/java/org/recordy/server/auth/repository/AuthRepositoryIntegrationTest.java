@@ -17,11 +17,6 @@ public class AuthRepositoryIntegrationTest {
     @Autowired
     private AuthRepository authRepository;
 
-    @BeforeEach
-    void setUp() {
-        authRepository.save(DomainFixture.createAuth(true));
-    }
-
     @Test
     void save를_통해_인증_데이터를_저장할_수_있다() {
         // given
