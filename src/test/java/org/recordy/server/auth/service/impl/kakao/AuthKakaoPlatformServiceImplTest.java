@@ -27,7 +27,7 @@ public class AuthKakaoPlatformServiceImplTest {
     @Test
     void getPlatform을_통해_카카오_플랫폼을_통한_사용자_정보를_조회한다() {
         // given
-        AuthSignIn authSignIn = DomainFixture.createAuthSignIn(DomainFixture.PLATFORM_TYPE);
+        AuthSignIn authSignIn = DomainFixture.createAuthSignIn(DomainFixture.KAKAO_PLATFORM_TYPE);
 
         // when
         AuthPlatform platform = kakaoPlatformService.getPlatform(authSignIn);
@@ -35,14 +35,14 @@ public class AuthKakaoPlatformServiceImplTest {
         // then
         assertAll(
                 () -> assertThat(platform.getId()).isEqualTo(DomainFixture.PLATFORM_ID),
-                () -> assertThat(platform.getType()).isEqualTo(DomainFixture.PLATFORM_TYPE)
+                () -> assertThat(platform.getType()).isEqualTo(DomainFixture.KAKAO_PLATFORM_TYPE)
         );
     }
 
     @Test
     void getPlatform을_통해_카카오_플랫폼에_존재하지_않는_사용자_정보를_조회한_경우_예외를_던진다() {
         // given
-        AuthSignIn authSignIn = DomainFixture.createAuthSignIn(DomainFixture.PLATFORM_TYPE);
+        AuthSignIn authSignIn = DomainFixture.createAuthSignIn(DomainFixture.KAKAO_PLATFORM_TYPE);
 
         // when, then
         assertThatThrownBy(() -> kakaoPlatformService.getPlatform(authSignIn))

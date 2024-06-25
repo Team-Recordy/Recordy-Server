@@ -13,14 +13,15 @@ public final class DomainFixture {
 
     public static final String PLATFORM_TOKEN = "platform_token";
     public static final String PLATFORM_ID = "abcdefg";
-    public static final AuthPlatform.Type PLATFORM_TYPE = AuthPlatform.Type.KAKAO;
+    public static final AuthPlatform.Type KAKAO_PLATFORM_TYPE = AuthPlatform.Type.KAKAO;
+    public static final AuthPlatform.Type APPLE_PLATFORM_TYPE = AuthPlatform.Type.APPLE;
     public static final String ACCESS_TOKEN = "access_token";
     public static final String REFRESH_TOKEN = "refresh_token";
     public static final Long USER_ID = 1L;
     public static final UserStatus DEFAULT_USER_STATUS = UserStatus.ACTIVE;
 
     public static AuthPlatform createAuthPlatform() {
-        return new AuthPlatform(PLATFORM_ID, PLATFORM_TYPE);
+        return new AuthPlatform(PLATFORM_ID, KAKAO_PLATFORM_TYPE);
     }
 
     public static AuthToken createAuthToken() {
@@ -48,7 +49,7 @@ public final class DomainFixture {
     public static AuthEntity createAuthEntity(boolean isSignedUp) {
         return new AuthEntity(
                 PLATFORM_ID,
-                PLATFORM_TYPE.name(),
+                KAKAO_PLATFORM_TYPE.name(),
                 ACCESS_TOKEN,
                 REFRESH_TOKEN,
                 isSignedUp
@@ -67,7 +68,7 @@ public final class DomainFixture {
         return new UserEntity(
                 USER_ID,
                 PLATFORM_ID,
-                PLATFORM_TYPE,
+                KAKAO_PLATFORM_TYPE,
                 DEFAULT_USER_STATUS
         );
     }
