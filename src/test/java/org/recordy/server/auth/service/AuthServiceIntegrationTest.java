@@ -29,9 +29,6 @@ class AuthServiceIntegrationTest {
     @Autowired
     private AuthService authService;
 
-    @Autowired
-    private AuthRepository authRepository;
-
     @MockBean
     private AuthPlatformServiceFactory authPlatformServiceFactory;
 
@@ -43,8 +40,6 @@ class AuthServiceIntegrationTest {
 
     @BeforeEach
     void init() {
-        authRepository.save(DomainFixture.createAuth(true));
-
         // AuthServiceImpl이 AuthPlatformService의 getPlatform()을 호출하면, FakeAuthKakaoPlatformServiceImpl의 getPlatform()이 호출된다.
         // 즉, DomainFixture.PLATFORM_ID와 AuthPlatform.Type.KAKAO가 반환된다.
         Mockito.when(authPlatformServiceFactory.getPlatformServiceFrom(Mockito.any(AuthPlatform.Type.class)))
