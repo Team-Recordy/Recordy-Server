@@ -36,8 +36,6 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-<<<<<<< HEAD
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
 
     // JWT
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
@@ -47,8 +45,6 @@ dependencies {
     // HTTP CLIENT
     implementation platform("org.springframework.cloud:spring-cloud-dependencies:2023.0.1")
     implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
-=======
->>>>>>> parent of 30b1f3e ([chore] build.gradle 내 feign, JWT 의존성 추가 (#1))
 }
 
 tasks.named('test') {
