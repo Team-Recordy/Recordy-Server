@@ -14,3 +14,10 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  application:
+    name: recordy
+
+springdoc:
+  swagger-ui:
+    default-models-expand-depth: 0
+    default-model-expand-depth: 0
