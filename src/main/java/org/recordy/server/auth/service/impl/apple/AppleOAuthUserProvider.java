@@ -21,6 +21,7 @@ public class AppleOAuthUserProvider {
         ApplePublicKeys applePublicKeys = appleFeignClient.getApplePublicKeys();
         PublicKey publicKey = applePublicKeyGenerator.generatePublicKey(headers,applePublicKeys);
         Claims claims = appleIdentityTokenParser.parsePubliKeyAndGetClaims(identityToken, publicKey);
+        validateClaims(claims);
 
         return claims.getSubject();
     }
