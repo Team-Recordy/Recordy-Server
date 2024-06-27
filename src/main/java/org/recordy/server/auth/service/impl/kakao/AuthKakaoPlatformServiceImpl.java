@@ -17,6 +17,7 @@ public class AuthKakaoPlatformServiceImpl implements AuthPlatformService {
 
     private final KakaoOAuthProvider kakaoOAuthProvider;
 
+    //인증 플랫폼 서비스 식별
     @Override
     public AuthPlatform getPlatform(AuthSignIn authSignIn) {
         try {
