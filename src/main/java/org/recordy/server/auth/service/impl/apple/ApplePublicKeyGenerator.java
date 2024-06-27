@@ -13,6 +13,7 @@ import org.recordy.server.auth.message.ErrorMessage;
 import org.springframework.stereotype.Component;
 @Component
 public class ApplePublicKeyGenerator {
+
     private static final String SIGN_ALGORITHM_HEADER_KEY = "alg";
     private static final String KEY_ID_HEADER_KEY = "kid";
 

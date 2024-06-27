@@ -10,6 +10,7 @@ import org.recordy.server.auth.message.ErrorMessage;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class ApplePublicKeys {
+
     private List<ApplePublicKey> keys;
 
     public ApplePublicKey getMatchingKey(String alg, String kid){

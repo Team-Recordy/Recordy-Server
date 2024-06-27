@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class AuthApplePlatformServiceImpl implements AuthPlatformService {
+
     private final AppleFeignClient appleFeignClient;
     private final AppleIdentityTokenParser appleIdentityTokenParser;
     private final ApplePublicKeyGenerator applePublicKeyGenerator;
