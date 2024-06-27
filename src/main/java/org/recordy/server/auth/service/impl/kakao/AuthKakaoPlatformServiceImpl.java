@@ -16,9 +16,10 @@ import org.springframework.stereotype.Service;
 public class AuthKakaoPlatformServiceImpl implements AuthPlatformService {
 
     private final KakaoFeignClient kakaoFeignClient;
+    private static final String TOKEN_TYPE = "Bearer ";
+
     public String getKakaoPlatformId(String accessToken) {
-        KakaoAccessToken kakaoAccessToken = KakaoAccessToken.createKakaoAccessToken(accessToken);
-        String accessTokenWithTokenType = kakaoAccessToken.getAccessTokenWithTokenType();
+        String accessTokenWithTokenType = getAccessTokenWithTokenType(accessToken);
         KakaoAccessTokenInfo kakaoAccessTokenInfo = getKakaoAccessTokenInfo(accessTokenWithTokenType);
         return String.valueOf(kakaoAccessTokenInfo.id());
     }
@@ -47,5 +48,9 @@ public class AuthKakaoPlatformServiceImpl implements AuthPlatformService {
     @Override
     public AuthPlatform.Type getPlatformType() {
         return AuthPlatform.Type.KAKAO;
+    }
+
+    private String getAccessTokenWithTokenType(String accessToken) {
+        return TOKEN_TYPE + accessToken;
     }
 }
