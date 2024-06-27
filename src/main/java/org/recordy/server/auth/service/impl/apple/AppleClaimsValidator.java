@@ -8,13 +8,13 @@ import org.springframework.stereotype.Component;
 public class AppleClaimsValidator {
     private static final String NONCE_KEY = "nonce";
 
-    @Value("${oauth.apple.iss}")
+    @Value("${auth.oauth.apple.iss}")
     private String iss;
 
-    @Value("${oauth.apple.client-id}")
+    @Value("${auth.oauth.apple.client-id}")
     private String clientId;
 
-    @Value("${oauth.apple.nonce}")
+    @Value("${auth.oauth.apple.nonce}")
     private String nonce;
 
     public boolean isValid(Claims claims) {
