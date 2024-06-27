@@ -12,7 +12,7 @@ import org.recordy.server.auth.message.ErrorMessage;
 public class ApplePublicKeys {
     private List<ApplePublicKey> keys;
 
-    public ApplePublicKey getMatchesKey(String alg, String kid){
+    public ApplePublicKey getMatchingKey(String alg, String kid){
         return keys
                 .stream()
                 .filter(k -> k.alg().equals(alg) && k.kid().equals(kid))

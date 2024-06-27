@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class AppleClaimsValidator {
+    
     private static final String NONCE_KEY = "nonce";
 
     @Value("${auth.oauth.apple.iss}")

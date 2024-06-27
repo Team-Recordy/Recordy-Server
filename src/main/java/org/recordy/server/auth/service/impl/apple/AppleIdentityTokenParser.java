@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class AppleIdentityTokenParser {
+
     private static final String IDENTITY_TOKEN_VALUE_DELIMITER = "\\.";
     private static final int HEADER_INDEX = 0;
 
@@ -45,7 +46,7 @@ public class AppleIdentityTokenParser {
         }
     }
 
-    private  JwtParser getJwtParser(Key key){
+    private JwtParser getJwtParser(Key key) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build();

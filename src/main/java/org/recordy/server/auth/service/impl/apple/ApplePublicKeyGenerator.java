@@ -18,7 +18,7 @@ public class ApplePublicKeyGenerator {
 
     public PublicKey generatePublicKey(Map<String, String> headers, ApplePublicKeys applePublicKeys) {
         ApplePublicKey applePublicKey = applePublicKeys
-                .getMatchesKey(headers.get(SIGN_ALGORITHM_HEADER_KEY), headers.get(KEY_ID_HEADER_KEY));
+                .getMatchingKey(headers.get(SIGN_ALGORITHM_HEADER_KEY), headers.get(KEY_ID_HEADER_KEY));
 
         byte[] nBytes = Base64.getUrlDecoder().decode(applePublicKey.n());
         byte[] eBytes = Base64.getUrlDecoder().decode(applePublicKey.e());
