@@ -18,21 +18,6 @@ public class AuthKakaoPlatformServiceImpl implements AuthPlatformService {
     private final KakaoFeignClient kakaoFeignClient;
     private static final String TOKEN_TYPE = "Bearer ";
 
-    public String getKakaoPlatformId(String accessToken) {
-        String accessTokenWithTokenType = getAccessTokenWithTokenType(accessToken);
-        KakaoAccessTokenInfo kakaoAccessTokenInfo = getKakaoAccessTokenInfo(accessTokenWithTokenType);
-        return String.valueOf(kakaoAccessTokenInfo.id());
-    }
-
-    private KakaoAccessTokenInfo getKakaoAccessTokenInfo(String accessTokenWithTokenType) {
-        try {
-            return kakaoFeignClient.getKakaoAccessTokenInfo(accessTokenWithTokenType);
-        } catch (FeignException e) {
-            log.error("Feign Exception: ", e);
-            throw new AuthException(ErrorMessage.INVALID_KAKAO_ACCESS_TOKEN);
-        }
-    }
-
     //인증 플랫폼 서비스 식별
     @Override
     public AuthPlatform getPlatform(AuthSignIn authSignIn) {
@@ -48,6 +33,21 @@ public class AuthKakaoPlatformServiceImpl implements AuthPlatformService {
     @Override
     public AuthPlatform.Type getPlatformType() {
         return AuthPlatform.Type.KAKAO;
+    }
+
+    private String getKakaoPlatformId(String accessToken) {
+        String accessTokenWithTokenType = getAccessTokenWithTokenType(accessToken);
+        KakaoAccessTokenInfo kakaoAccessTokenInfo = getKakaoAccessTokenInfo(accessTokenWithTokenType);
+        return String.valueOf(kakaoAccessTokenInfo.id());
+    }
+
+    private KakaoAccessTokenInfo getKakaoAccessTokenInfo(String accessTokenWithTokenType) {
+        try {
+            return kakaoFeignClient.getKakaoAccessTokenInfo(accessTokenWithTokenType);
+        } catch (FeignException e) {
+            log.error("Feign Exception: ", e);
+            throw new AuthException(ErrorMessage.INVALID_KAKAO_ACCESS_TOKEN);
+        }
     }
 
     private String getAccessTokenWithTokenType(String accessToken) {
