@@ -45,8 +45,8 @@ jobs:
 
       - name: docker image 빌드 및 푸시
         run: |
-          docker build --platform linux/amd64 -t recordy/recordy .
-          docker push recordy/recordy
+          docker build --platform linux/amd64 -t ${{ secrets.DOCKER_LOGIN_USERNAME }}/recordy .
+          docker push ${{ secrets.DOCKER_LOGIN_USERNAME }}/recordy
         working-directory: ${{ env.working-directory }}
 
   cd:
@@ -83,6 +83,6 @@ jobs:
           key: ${{ secrets.SERVER_KEY }}
           script: |
             sudo docker pull ${{ secrets.DOCKER_LOGIN_USERNAME }}/recordy
-            chmod 777 /home/ubuntu/deploy.sh
+            sudo chmod 777 /home/ubuntu/deploy.sh
             /home/ubuntu/deploy.sh
             docker image prune -f
