@@ -6,7 +6,6 @@ import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.auth.domain.usecase.AuthSignIn;
 import org.recordy.server.auth.message.ErrorMessage;
 import org.recordy.server.auth.exception.UnauthorizedException;
-import org.recordy.server.auth.kakao.KakaoOAuthProvider;
 import org.recordy.server.auth.service.AuthPlatformService;
 import org.springframework.stereotype.Service;
 
