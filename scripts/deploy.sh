@@ -3,7 +3,7 @@
 IS_GREEN_EXIST=$(docker ps | grep green)
 IS_REDIS_EXIST=$(docker ps | grep redis)
 
-if [ -z $IS_REDIS_EXIST ];then
+if [ -z "$IS_REDIS_EXIST" ];then
   echo "### REDIS ###"
   echo ">>> pull redis image"
   docker compose pull redis
@@ -12,7 +12,7 @@ if [ -z $IS_REDIS_EXIST ];then
 fi
 
 # green up
-if [ -z $IS_GREEN_EXIST ];then
+if [ -z "$IS_GREEpN_EXIST" ];then
   echo "### BLUE -> GREEN ####"
   echo ">>> pull green image"
   docker compose pull green
