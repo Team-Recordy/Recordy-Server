@@ -1,6 +1,6 @@
 package org.recordy.server.auth.service.impl.kakao;
 
-public record KakaoAccessTokenInfo (
+public record KakaoAccessPlatformInfo(
         Long id
 ) {
 }
