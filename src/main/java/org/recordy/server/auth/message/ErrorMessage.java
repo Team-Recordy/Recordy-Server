@@ -30,12 +30,7 @@ public enum ErrorMessage {
      * 409 Conflict
      */
     DUPLICATE_NICKNAME(HttpStatus.CONFLICT, "이미 존재하는 닉네임입니다."),
-    DUPLICATE_USER(HttpStatus.CONFLICT, "이미 존재하는 회원입니다."),
-
-    /**
-     * 500 Internal Server Error
-     */
-    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류입니다.");
+    DUPLICATE_USER(HttpStatus.CONFLICT, "이미 존재하는 회원입니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
