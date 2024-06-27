@@ -3,7 +3,7 @@ package org.recordy.server.auth.kakao;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.recordy.server.auth.exception.ErrorMessage;
+import org.recordy.server.auth.message.ErrorMessage;
 import org.recordy.server.auth.exception.UnauthorizedException;
 import org.springframework.stereotype.Component;
 

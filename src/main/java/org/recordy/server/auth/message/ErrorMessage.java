@@ -1,4 +1,4 @@
-package org.recordy.server.auth.exception;
+package org.recordy.server.auth.message;
 
 import lombok.AccessLevel;
 import lombok.Getter;

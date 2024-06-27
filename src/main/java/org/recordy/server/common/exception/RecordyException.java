@@ -1,7 +1,7 @@
 package org.recordy.server.common.exception;
 
 import lombok.Getter;
-import org.recordy.server.auth.exception.ErrorMessage;
+import org.recordy.server.auth.message.ErrorMessage;
 
 @Getter
 public class RecordyException extends RuntimeException {
