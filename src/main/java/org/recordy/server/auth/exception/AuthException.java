@@ -2,7 +2,7 @@ package org.recordy.server.auth.exception;
 
 import org.recordy.server.auth.message.ErrorMessage;
 
-public class AuthException extends RuntimeException{
+public class AuthException extends RuntimeException {
 
     private final ErrorMessage errorMessage;
     public AuthException(ErrorMessage errorMessage){
