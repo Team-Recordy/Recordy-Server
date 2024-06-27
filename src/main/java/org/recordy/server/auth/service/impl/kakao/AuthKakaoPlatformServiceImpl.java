@@ -1,11 +1,12 @@
 package org.recordy.server.auth.service.impl.kakao;
 
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.auth.domain.usecase.AuthSignIn;
+import org.recordy.server.auth.exception.UnauthorizedSocialTokenException;
 import org.recordy.server.auth.message.ErrorMessage;
-import org.recordy.server.auth.exception.UnauthorizedException;
 import org.recordy.server.auth.service.AuthPlatformService;
 import org.springframework.stereotype.Service;
 
@@ -14,17 +15,32 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthKakaoPlatformServiceImpl implements AuthPlatformService {
 
-    private final KakaoOAuthProvider kakaoOAuthProvider;
+    private final KakaoFeignClient kakaoFeignClient;
+    public String getKakaoPlatformId(String accessToken) {
+        KakaoAccessToken kakaoAccessToken = KakaoAccessToken.createKakaoAccessToken(accessToken);
+        String accessTokenWithTokenType = kakaoAccessToken.getAccessTokenWithTokenType();
+        KakaoAccessTokenInfo kakaoAccessTokenInfo = getKakaoAccessTokenInfo(accessTokenWithTokenType);
+        return String.valueOf(kakaoAccessTokenInfo.id());
+    }
+
+    private KakaoAccessTokenInfo getKakaoAccessTokenInfo(String accessTokenWithTokenType) {
+        try {
+            return kakaoFeignClient.getKakaoAccessTokenInfo(accessTokenWithTokenType);
+        } catch (FeignException e) {
+            log.error("Feign Exception: ", e);
+            throw new UnauthorizedSocialTokenException(ErrorMessage.INVALID_KAKAO_ACCESS_TOKEN);
+        }
+    }
 
     //인증 플랫폼 서비스 식별
     @Override
     public AuthPlatform getPlatform(AuthSignIn authSignIn) {
         try {
-            String platformId = kakaoOAuthProvider.getKakaoPlatformId(authSignIn.platformToken());
+            String platformId = getKakaoPlatformId(authSignIn.platformToken());
             return new AuthPlatform(platformId, getPlatformType());
-        } catch (UnauthorizedException e) {
+        } catch (UnauthorizedSocialTokenException e) {
             log.error("Failed to get Kakao platform id", e);
-            throw new UnauthorizedException(ErrorMessage.INVALID_KAKAO_ACCESS_TOKEN);
+            throw new UnauthorizedSocialTokenException(ErrorMessage.INVALID_KAKAO_ACCESS_TOKEN);
         }
     }
 
