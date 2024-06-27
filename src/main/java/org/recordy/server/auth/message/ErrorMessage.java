@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public enum ErrorMessage {
+
     /**
      * 401 Unauthorized
      */

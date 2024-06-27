@@ -6,6 +6,7 @@ import org.recordy.server.common.message.ErrorMessage;
 
 @Getter
 public class CommonException extends RuntimeException {
+
     private final ErrorMessage errorMessage;
 
     public CommonException(ErrorMessage errorMessage) {
