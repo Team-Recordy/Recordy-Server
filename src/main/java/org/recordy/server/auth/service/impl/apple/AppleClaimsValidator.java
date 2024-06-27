@@ -1,6 +1,8 @@
 package org.recordy.server.auth.service.impl.apple;
 
 import io.jsonwebtoken.Claims;
+import org.recordy.server.auth.exception.AuthException;
+import org.recordy.server.auth.message.ErrorMessage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -18,10 +20,12 @@ public class AppleClaimsValidator {
     @Value("${auth.oauth.apple.nonce}")
     private String nonce;
 
-    public boolean isValid(Claims claims) {
+    public void validate(Claims claims) {
         this.nonce = EncryptUtils.encrypt(nonce);
-        return claims.getIssuer().contains(iss) &&
+        if (!(claims.getIssuer().contains(iss) &&
                 claims.getAudience().equals(clientId) &&
-                claims.get(NONCE_KEY, String.class).equals(nonce);
+                claims.get(NONCE_KEY, String.class).equals(nonce))){
+            throw new AuthException(ErrorMessage.APPLE_INVALID_IDENTITY_TOKEN_CLAIMS);
+        }
     }
 }

@@ -27,14 +27,8 @@ public class AuthApplePlatformServiceImpl implements AuthPlatformService {
         ApplePublicKeys applePublicKeys = appleFeignClient.getApplePublicKeys();
         PublicKey publicKey = applePublicKeyGenerator.generatePublicKey(headers,applePublicKeys);
         Claims claims = appleIdentityTokenParser.parsePubliKeyAndGetClaims(identityToken, publicKey);
-        validateClaims(claims);
+        appleClaimsValidator.validate(claims);
         return new AuthPlatform(claims.getSubject(), Type.APPLE);
-    }
-
-    private void validateClaims(Claims claims) {
-        if (!appleClaimsValidator.isValid(claims)) {
-            throw new AuthException(ErrorMessage.APPLE_INVALID_IDENTITY_TOKEN_CLAIMS);
-        }
     }
 
     @Override
