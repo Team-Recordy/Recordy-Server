@@ -19,13 +19,13 @@ public class AuthApplePlatformServiceImplTest {
     @BeforeEach
     void init() {
         fakeContainer = new FakeContainer();
-        applePlatformService = fakeContainer.authKakaoPlatformService;
+        applePlatformService = fakeContainer.authApplePlatformService;
     }
 
     @Test
     void getPlatform을_통해_애플_플랫폼을_통한_사용자_정보를_조회한다() {
         // given
-        AuthSignIn authSignIn = DomainFixture.createAuthSignIn(DomainFixture.PLATFORM_TYPE);
+        AuthSignIn authSignIn = DomainFixture.createAuthSignIn(DomainFixture.APPLE_PLATFORM_TYPE);
 
         // when
         AuthPlatform platform = applePlatformService.getPlatform(authSignIn);
@@ -33,7 +33,7 @@ public class AuthApplePlatformServiceImplTest {
         // then
         assertAll(
                 () -> assertThat(platform.getId()).isEqualTo(DomainFixture.PLATFORM_ID),
-                () -> assertThat(platform.getType()).isEqualTo(DomainFixture.PLATFORM_TYPE)
+                () -> assertThat(platform.getType()).isEqualTo(DomainFixture.APPLE_PLATFORM_TYPE)
         );
     }
 }

@@ -41,7 +41,7 @@ public class UserServiceTest {
         // then
         assertAll(
                 () -> assertThat(user.getAuthPlatform().getId()).isEqualTo(DomainFixture.PLATFORM_ID),
-                () -> assertThat(user.getAuthPlatform().getType()).isEqualTo(DomainFixture.PLATFORM_TYPE),
+                () -> assertThat(user.getAuthPlatform().getType()).isEqualTo(DomainFixture.KAKAO_PLATFORM_TYPE),
                 () -> assertThat(user.getStatus()).isEqualTo(UserStatus.PENDING)
         );
     }
@@ -55,7 +55,7 @@ public class UserServiceTest {
         assertAll(
                 () -> assertThat(result.getId()).isNotNull(),
                 () -> assertThat(result.getAuthPlatform().getId()).isEqualTo(DomainFixture.PLATFORM_ID),
-                () -> assertThat(result.getAuthPlatform().getType()).isEqualTo(DomainFixture.PLATFORM_TYPE),
+                () -> assertThat(result.getAuthPlatform().getType()).isEqualTo(DomainFixture.KAKAO_PLATFORM_TYPE),
                 () -> assertThat(result.getStatus()).isEqualTo(DomainFixture.DEFAULT_USER_STATUS)
         );
     }
