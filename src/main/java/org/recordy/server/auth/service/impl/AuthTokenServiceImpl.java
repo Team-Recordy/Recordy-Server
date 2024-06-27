@@ -13,10 +13,10 @@ public class AuthTokenServiceImpl implements AuthTokenService {
     @Override
     public AuthToken issueToken(long userId) {
         return null;
-    }
+    } // JWT 발급 로직
 
     @Override
     public AuthTokenValidationResult validateToken(String token) {
         return null;
-    }
+    } // 토큰 검증 로직
 }
