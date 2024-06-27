@@ -55,12 +55,29 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      - name: docker 컨테이너 실행
+      - name: 체크아웃
+        uses: actions/checkout@v3
+
+      - name: ec2 서버에 deploy.sh, docker-compose.yml 전송
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_KEY }}
+          source: |
+            ./scripts/deploy.sh
+            ./docker-compose.yml
+          target: /home/ubuntu/
+
+      - name: docker image 풀 및 deploy.sh 통해 블루-그린 배포 진행
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_KEY }}
           script: |
-            cd ~
-            ./deploy.sh
+            sudo docker pull ${{ secrets.DOCKER_LOGIN_USERNAME }}/recordy
+            chmod 777 ./scripts/deploy.sh
+            cp ./scripts/deploy.sh ./deploy.sh
+            ./deploy.shp
+            docker image prune -f
