@@ -2,12 +2,12 @@ package org.recordy.server.auth.exception;
 
 import org.recordy.server.auth.message.ErrorMessage;
 
-public class UnauthorizedSocialTokenException extends RuntimeException {
-    public UnauthorizedSocialTokenException() {
+public class AuthException extends RuntimeException {
+    public AuthException() {
         super(ErrorMessage.UNAUTHORIZED.getMessage());
     }
 
-    public UnauthorizedSocialTokenException(ErrorMessage errorMessage) {
+    public AuthException(ErrorMessage errorMessage) {
         super(errorMessage.getMessage());
     }
 }
