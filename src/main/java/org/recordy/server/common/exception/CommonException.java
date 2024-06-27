@@ -1,13 +1,14 @@
 package org.recordy.server.common.exception;
 
 import lombok.Getter;
-import org.recordy.server.auth.message.ErrorMessage;
+import org.recordy.server.common.message.ErrorMessage;
+
 
 @Getter
-public class RecordyException extends RuntimeException {
+public class CommonException extends RuntimeException {
     private final ErrorMessage errorMessage;
 
-    public RecordyException(ErrorMessage errorMessage) {
+    public CommonException(ErrorMessage errorMessage) {
         super(errorMessage.getMessage());
         this.errorMessage = errorMessage;
     }
