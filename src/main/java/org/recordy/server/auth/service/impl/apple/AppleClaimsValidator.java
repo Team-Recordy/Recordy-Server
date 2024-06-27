@@ -10,15 +10,19 @@ import org.springframework.stereotype.Component;
 public class AppleClaimsValidator {
     
     private static final String NONCE_KEY = "nonce";
-
-    @Value("${auth.oauth.apple.iss}")
     private String iss;
-
-    @Value("${auth.oauth.apple.client-id}")
     private String clientId;
-
-    @Value("${auth.oauth.apple.nonce}")
     private String nonce;
+
+    public AppleClaimsValidator(
+            @Value("${auth.oauth.apple.iss}") String iss,
+            @Value("${auth.oauth.apple.client-id}") String clientId,
+            @Value("${auth.oauth.apple.nonce}") String nonce
+    ) {
+        this.iss = iss;
+        this.clientId = clientId;
+        this.nonce = EncryptUtils.encrypt(nonce);
+    }
 
     public void validate(Claims claims) {
         this.nonce = EncryptUtils.encrypt(nonce);
