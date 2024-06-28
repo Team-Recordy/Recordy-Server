@@ -3,10 +3,16 @@ package org.recordy.server.auth.service.impl;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
+import org.recordy.server.auth.domain.Auth;
 import org.recordy.server.auth.domain.AuthToken;
+import org.recordy.server.auth.exception.AuthException;
+import org.recordy.server.auth.message.ErrorMessage;
+import org.recordy.server.auth.repository.AuthRepository;
 import org.recordy.server.auth.security.UserAuthentication;
 import org.recordy.server.auth.service.AuthTokenService;
 import org.recordy.server.auth.service.dto.AuthTokenValidationResult;
+import org.recordy.server.user.domain.User;
+import org.recordy.server.user.service.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +41,8 @@ public class AuthTokenServiceImpl implements AuthTokenService {
     private static String USER_ID;
     @Value("${auth.token.key.token_type}")
     private static String TOKEN_TYPE;
+    private final AuthRepository authRepository;
+    private final UserService userService;
 
     @Override
     public AuthToken issueToken(long userId) {
@@ -95,5 +103,18 @@ public class AuthTokenServiceImpl implements AuthTokenService {
         String encodedKey = Base64.getEncoder().encodeToString(SECRET.getBytes());
 
         return Keys.hmacShaKeyFor(encodedKey.getBytes());
+    }
+
+    @Override
+    public String reissueToken(String refreshToken) {
+        String platfromId = authRepository.findByRefeshToken(refreshToken)
+                .getPlatform()
+                .getId();
+        Long userId = userService.getByPlatformId(platfromId)
+                .orElseThrow(() -> new AuthException(ErrorMessage.USER_NOT_FOUND))
+                .getId();
+        UserAuthentication authentication = UserAuthentication.of(userId);
+
+        return generateToken(authentication, ACCESS_TOKEN_EXPIRATION, ACCESS_TOKEN_TYPE);
     }
 }
