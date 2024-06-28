@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.recordy.server.user.controller.dto.request.UserSignInRequest;
 import org.recordy.server.user.controller.dto.response.UserSignInResponse;
+import org.recordy.server.user.controller.dto.response.UserReissueTokenResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -35,4 +36,25 @@ public interface UserApi {
             @RequestHeader(HttpHeaders.AUTHORIZATION) String platformToken,
             @RequestBody UserSignInRequest request
     );
+
+    @Operation(
+            summary = "access token 재발급 API",
+            description = "refresh token을 바탕으로 access token을 재발급 받는 API입니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "성공",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = UserReissueTokenResponse.class
+                                    )
+                            )
+                    )
+            }
+    )
+    public ResponseEntity<UserReissueTokenResponse> reissueToken(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String refreshToken
+    );
+
 }

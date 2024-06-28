@@ -3,7 +3,9 @@ package org.recordy.server.user.controller;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.domain.usecase.AuthSignIn;
 import org.recordy.server.auth.service.AuthService;
+import org.recordy.server.auth.service.AuthTokenService;
 import org.recordy.server.user.controller.dto.request.UserSignInRequest;
+import org.recordy.server.user.controller.dto.response.UserReissueTokenResponse;
 import org.recordy.server.user.controller.dto.response.UserSignInResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController implements UserApi{
 
     private final AuthService authService;
+    private final AuthTokenService authTokenService;
 
     @Override
     @PostMapping("/signIn")
@@ -29,4 +32,17 @@ public class UserController implements UserApi{
                         authService.signIn(AuthSignIn.of(platformToken, request.platformType()))
                 ));
     }
+
+    @Override
+    @GetMapping("/token")
+    public ResponseEntity<UserReissueTokenResponse> reissueToken(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String refreshToken
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(UserReissueTokenResponse.of(
+                        authTokenService.reissueToken(refreshToken)
+                ));
+    }
+
 }
