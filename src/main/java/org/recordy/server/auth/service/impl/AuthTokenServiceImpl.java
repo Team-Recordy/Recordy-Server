@@ -8,7 +8,6 @@ import org.recordy.server.auth.security.UserAuthentication;
 import org.recordy.server.auth.service.AuthTokenService;
 import org.recordy.server.auth.service.dto.AuthTokenValidationResult;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -47,7 +46,7 @@ public class AuthTokenServiceImpl implements AuthTokenService {
         );
     }
 
-    private String generateToken(Authentication authentication, long expiration, String tokenType) {
+    private String generateToken(UserAuthentication authentication, long expiration, String tokenType) {
         return Jwts.builder()
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
                 .setClaims(generateClaims(Map.of(
