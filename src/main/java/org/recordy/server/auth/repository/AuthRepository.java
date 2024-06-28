@@ -5,4 +5,6 @@ import org.recordy.server.auth.domain.Auth;
 public interface AuthRepository {
 
     Auth save(Auth auth);
+
+    Auth findByRefeshToken(String refreshToken);
 }
