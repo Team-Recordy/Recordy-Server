@@ -3,7 +3,7 @@ services:
   redis:
     container_name: redis
     image: redis:alpine
-    volume:
+    volumes:
       - redis-data:/data
     ports:
       - "6379:6379"
