@@ -3,8 +3,11 @@ services:
   redis:
     container_name: redis
     image: redis:alpine
+    volume:
+      - redis-data:/data
     ports:
       - "6379:6379"
+    restart: always
   blue:
     container_name: blue
     image: recordy/recordy
@@ -27,3 +30,6 @@ services:
       - TZ=Asia/Seoul
     depends_on:
       - redis
+
+volumes:
+  redis-data:
