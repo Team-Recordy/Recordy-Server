@@ -2,6 +2,7 @@ package org.recordy.server.user.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.domain.AuthPlatform;
+import org.recordy.server.auth.message.ErrorMessage;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.UserStatus;
 import org.recordy.server.user.repository.UserRepository;
@@ -28,4 +29,13 @@ public class UserServiceImpl implements UserService {
     public Optional<User> getByPlatformId(String platformId) {
         return userRepository.findByPlatformId(platformId);
     }
+
+    @Override
+    public void validateDuplicateNickname(String nickname) {
+        if (userRepository.existsUserByNickname(nickname)) {
+            throw new ConflictException(ErrorMessage.DUPLICATE_NICKNAME);
+        }
+    }
+
+
 }

@@ -12,4 +12,8 @@ public interface UserService {
 
     // query
     Optional<User> getByPlatformId(String platformId);
+
+    // validation
+    void validateDuplicateNickname(String nickname);
+
 }
