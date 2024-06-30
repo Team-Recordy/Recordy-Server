@@ -19,6 +19,7 @@ public final class DomainFixture {
     public static final String REFRESH_TOKEN = "refresh_token";
     public static final Long USER_ID = 1L;
     public static final UserStatus DEFAULT_USER_STATUS = UserStatus.ACTIVE;
+    public static final String USER_NICKNAME = "recordy";
 
     public static AuthPlatform createAuthPlatform() {
         return new AuthPlatform(PLATFORM_ID, KAKAO_PLATFORM_TYPE);
@@ -69,7 +70,8 @@ public final class DomainFixture {
                 USER_ID,
                 PLATFORM_ID,
                 KAKAO_PLATFORM_TYPE,
-                DEFAULT_USER_STATUS
+                DEFAULT_USER_STATUS,
+                USER_NICKNAME
         );
     }
 }
