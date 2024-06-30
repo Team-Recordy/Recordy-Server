@@ -20,6 +20,8 @@ public class UserEntity extends JpaMetaInfoEntity {
     private AuthPlatform.Type platformType;
     @Enumerated(EnumType.STRING)
     private UserStatus status;
+    private String nickname;
+
 
     public UserEntity(Long id, String platformId, AuthPlatform.Type platformType, UserStatus status) {
         this.id = id;
