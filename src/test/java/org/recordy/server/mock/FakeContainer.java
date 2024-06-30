@@ -46,6 +46,6 @@ public class FakeContainer {
         this.authTokenService = new AuthTokenServiceImpl();
         this.authService = new AuthServiceImpl(authRepository, authPlatformServiceFactory, authTokenService, userService);
 
-        this.userController = new UserController(authService);
+        this.userController = new UserController(authService, userService);
     }
 }
