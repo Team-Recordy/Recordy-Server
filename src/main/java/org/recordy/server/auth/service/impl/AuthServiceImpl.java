@@ -5,6 +5,8 @@ import org.recordy.server.auth.domain.Auth;
 import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.auth.domain.AuthToken;
 import org.recordy.server.auth.domain.usecase.AuthSignIn;
+import org.recordy.server.auth.exception.AuthException;
+import org.recordy.server.auth.message.ErrorMessage;
 import org.recordy.server.auth.repository.AuthRepository;
 import org.recordy.server.auth.service.AuthPlatformService;
 import org.recordy.server.auth.service.AuthPlatformServiceFactory;
@@ -52,5 +54,22 @@ public class AuthServiceImpl implements AuthService {
                 .token(token)
                 .isSignedUp(userStatus.equals(ACTIVE))
                 .build());
+    }
+
+    @Override
+    public void signOut(long userId) {
+        User user = getUser(userId);
+        String platformId = user.getAuthPlatform().getId();
+        deleteRefreshToken(platformId);
+    }
+
+    private User getUser(Long userId) {
+        return userService.getById(userId)
+                .orElseThrow(() -> new AuthException(ErrorMessage.USER_NOT_FOUND));
+    }
+
+    private void deleteRefreshToken(String platformId) {
+        Auth auth = authRepository.findByPlatformId(platformId);
+        authRepository.delete(auth);
     }
 }
