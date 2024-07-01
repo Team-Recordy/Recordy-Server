@@ -7,4 +7,5 @@ import org.springframework.data.repository.CrudRepository;
 public interface AuthRedisRepository extends CrudRepository<AuthEntity, String> {
 
     Optional<AuthEntity> findByRefreshToken(String refreshToken);
+    Optional<AuthEntity> findByPlatformId(String platformId);
 }
