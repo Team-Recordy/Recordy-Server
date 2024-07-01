@@ -12,4 +12,5 @@ public interface UserService {
 
     // query
     Optional<User> getByPlatformId(String platformId);
+    Optional<User> getById(Long userId);
 }
