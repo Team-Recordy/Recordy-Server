@@ -7,6 +7,7 @@ import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.auth.domain.usecase.AuthSignIn;
 import org.recordy.server.auth.service.AuthPlatformService;
 import org.recordy.server.mock.FakeContainer;
+import org.recordy.server.mock.auth.FakeKakaoFeignClient;
 import org.recordy.server.util.DomainFixture;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -15,13 +16,11 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class AuthKakaoPlatformServiceImplTest {
 
-    private FakeContainer fakeContainer;
     private AuthPlatformService kakaoPlatformService;
 
     @BeforeEach
     void init() {
-        fakeContainer = new FakeContainer();
-        kakaoPlatformService = fakeContainer.authKakaoPlatformService;
+        kakaoPlatformService = new FakeContainer().authKakaoPlatformService;
     }
 
     @Test

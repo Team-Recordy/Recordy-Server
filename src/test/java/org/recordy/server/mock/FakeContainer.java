@@ -15,6 +15,7 @@ import org.recordy.server.auth.service.impl.token.AuthTokenSigningKeyProvider;
 import org.recordy.server.mock.auth.FakeAuthApplePlatformServiceImpl;
 import org.recordy.server.mock.auth.FakeAuthKakaoPlatformServiceImpl;
 import org.recordy.server.mock.auth.FakeAuthRepository;
+import org.recordy.server.mock.auth.FakeKakaoFeignClient;
 import org.recordy.server.mock.user.FakeUserRepository;
 import org.recordy.server.user.controller.UserController;
 import org.recordy.server.user.repository.UserRepository;
@@ -34,6 +35,8 @@ public class FakeContainer {
     public final AuthTokenSigningKeyProvider authTokenSigningKeyProvider;
     public final AuthTokenGenerator authTokenGenerator;
     public final AuthTokenParser authTokenParser;
+
+    public final FakeKakaoFeignClient fakeKakaoFeignClient;
 
     // service
     public final UserService userService;
@@ -58,8 +61,10 @@ public class FakeContainer {
         this.authTokenGenerator = new AuthTokenGenerator(authTokenSigningKeyProvider);
         this.authTokenParser = new AuthTokenParser(authTokenSigningKeyProvider);
 
+        this.fakeKakaoFeignClient = new FakeKakaoFeignClient();
+
         this.userService = new UserServiceImpl(userRepository);
-        this.authKakaoPlatformService = new FakeAuthKakaoPlatformServiceImpl();
+        this.authKakaoPlatformService = new FakeAuthKakaoPlatformServiceImpl(fakeKakaoFeignClient);
         this.authApplePlatformService = new FakeAuthApplePlatformServiceImpl();
         this.authPlatformServiceFactory = new AuthPlatformServiceFactory(List.of(authKakaoPlatformService, authApplePlatformService));
         this.authTokenService = new AuthTokenServiceImpl(
