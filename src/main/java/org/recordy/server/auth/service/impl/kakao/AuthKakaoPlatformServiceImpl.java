@@ -37,7 +37,7 @@ public class AuthKakaoPlatformServiceImpl implements AuthPlatformService {
         String accessToken = getAccessTokenWithTokenType(platformToken);
         KakaoPlatformInfo kakaoPlatformInfo = getKakaoAccessTokenInfo(accessToken);
 
-        return String.valueOf(kakaoPlatformInfo.id());
+        return kakaoPlatformInfo.id();
     }
 
     private KakaoPlatformInfo getKakaoAccessTokenInfo(String accessTokenWithTokenType) {
