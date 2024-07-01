@@ -9,4 +9,5 @@ public interface AuthTokenService {
     AuthToken issueToken(long userId);
     AuthTokenValidationResult validateToken(String token);
     String getTokenFromRequest(HttpServletRequest request);
+    long getUserIdFromToken(String token);
 }
