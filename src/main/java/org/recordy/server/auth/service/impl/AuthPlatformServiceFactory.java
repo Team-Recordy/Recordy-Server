@@ -1,6 +1,7 @@
-package org.recordy.server.auth.service;
+package org.recordy.server.auth.service.impl;
 
 import org.recordy.server.auth.domain.AuthPlatform;
+import org.recordy.server.auth.service.AuthPlatformService;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
