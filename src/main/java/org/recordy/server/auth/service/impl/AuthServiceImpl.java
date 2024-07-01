@@ -6,7 +6,7 @@ import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.auth.domain.AuthToken;
 import org.recordy.server.auth.domain.usecase.AuthSignIn;
 import org.recordy.server.auth.exception.AuthException;
-import org.recordy.server.auth.message.ErrorMessage;
+import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.auth.repository.AuthRepository;
 import org.recordy.server.auth.service.AuthPlatformService;
 import org.recordy.server.auth.service.AuthPlatformServiceFactory;

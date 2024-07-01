@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.domain.Auth;
 import org.recordy.server.auth.domain.AuthToken;
 import org.recordy.server.auth.exception.AuthException;
-import org.recordy.server.auth.message.ErrorMessage;
+import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.auth.repository.AuthRepository;
 import org.recordy.server.auth.security.UserAuthentication;
 import org.recordy.server.auth.service.AuthTokenService;
