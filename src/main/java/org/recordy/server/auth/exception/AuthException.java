@@ -9,3 +9,4 @@ public class AuthException extends RecordyException {
         super(errorMessage);
     }
 }
+

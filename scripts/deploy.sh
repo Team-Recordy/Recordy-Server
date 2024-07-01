@@ -12,7 +12,7 @@ if [ -z "$IS_REDIS_EXIST" ];then
 fi
 
 # green up
-if [ -z "$IS_GREEpN_EXIST" ];then
+if [ -z "$IS_GREEN_EXIST" ];then
   echo "### BLUE -> GREEN ####"
   echo ">>> pull green image"
   docker compose pull green
