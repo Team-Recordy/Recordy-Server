@@ -11,4 +11,5 @@ public interface UserRepository {
 
     // query
     Optional<User> findByPlatformId(String platformId);
+    Optional<User> findById(Long userId);
 }

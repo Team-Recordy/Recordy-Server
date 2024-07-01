@@ -25,4 +25,10 @@ public class UserRepositoryImpl implements UserRepository {
         return userJpaRepository.findByPlatformId(platformId)
                 .map(UserEntity::toDomain);
     }
+
+    @Override
+    public Optional<User> findById(Long userId) {
+        return userJpaRepository.findById(userId)
+                .map(UserEntity::toDomain);
+    }
 }

@@ -28,4 +28,7 @@ public class UserServiceImpl implements UserService {
     public Optional<User> getByPlatformId(String platformId) {
         return userRepository.findByPlatformId(platformId);
     }
+
+    @Override
+    public Optional<User> getById(Long userId) { return userRepository.findById(userId); }
 }
