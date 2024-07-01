@@ -22,6 +22,7 @@ public enum ErrorMessage {
     /**
      * 404 Not Found
      */
+    RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 API 경로입니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 회원입니다."),
 
     /**
