@@ -7,7 +7,6 @@ import org.recordy.server.auth.domain.AuthToken;
 import org.recordy.server.auth.domain.usecase.AuthSignIn;
 import org.recordy.server.auth.repository.AuthRepository;
 import org.recordy.server.auth.service.AuthPlatformService;
-import org.recordy.server.auth.service.AuthPlatformServiceFactory;
 import org.recordy.server.auth.service.AuthService;
 import org.recordy.server.auth.service.AuthTokenService;
 import org.recordy.server.user.domain.User;
