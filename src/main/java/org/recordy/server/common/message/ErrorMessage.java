@@ -24,7 +24,6 @@ public enum ErrorMessage {
     APPLE_INVALID_IDENTITY_TOKEN_VALUE(HttpStatus.UNAUTHORIZED, "Apple OAuth Identity Token의 값이 올바르지 않습니다."),
     APPLE_OAUTH_ENCRYPTION_ERROR(HttpStatus.UNAUTHORIZED,"Apple OAuth 통신 암호화 과정 중 문제가 발생했습니다."),
     APPLE_INVALID_IDENTITY_TOKEN_CLAIMS(HttpStatus.UNAUTHORIZED, "Apple OAuth Identity Token의 클레임 값이 올바르지 않습니다."),
-    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "리소스 접근 권한이 없습니다."),
     NOT_MATCH_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "일치하지 않는 리프레시 토큰입니다."),
 
     /**
