@@ -7,10 +7,10 @@ import org.recordy.server.auth.domain.AuthToken;
 import org.recordy.server.auth.exception.AuthException;
 import org.recordy.server.auth.message.ErrorMessage;
 import org.recordy.server.auth.service.dto.AuthTokenValidationResult;
+import org.recordy.server.auth.service.impl.token.AuthTokenGenerator;
+import org.recordy.server.auth.service.impl.token.AuthTokenSigningKeyProvider;
 import org.recordy.server.mock.FakeContainer;
 import org.recordy.server.util.DomainFixture;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.mock.web.MockHttpServletRequest;
 
@@ -21,11 +21,19 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.recordy.server.auth.service.dto.AuthTokenValidationResult.*;
 
-@SpringBootTest
-public class AuthTokenServiceIntegrationTest {
+public class AuthTokenServiceTest {
 
-    @Autowired
     private AuthTokenService authTokenService;
+    private AuthTokenSigningKeyProvider signingKeyProvider;
+    private AuthTokenGenerator authTokenGenerator;
+
+    @BeforeEach
+    void init() {
+        FakeContainer fakeContainer = new FakeContainer();
+        authTokenService = fakeContainer.authTokenService;
+        signingKeyProvider = fakeContainer.authTokenSigningKeyProvider;
+        authTokenGenerator = fakeContainer.authTokenGenerator;
+    }
 
     @Test
     void userId로부터_valid한_AuthToken_객체를_생성해서_반환한다() {
@@ -104,6 +112,58 @@ public class AuthTokenServiceIntegrationTest {
         // when, then
         assertThatThrownBy(() -> authTokenService.getTokenFromRequest(request))
                 .isInstanceOf(AuthException.class)
-                .hasMessageContaining(ErrorMessage.INVALID_ACCESS_TOKEN.getMessage());
+                .hasMessageContaining(ErrorMessage.INVALID_TOKEN.getMessage());
+    }
+
+    @Test
+    void HTTP_요청에서_토큰을_파싱한다() {
+        // given
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        String token = "Bearer abcde";
+
+        request.addHeader(HttpHeaders.AUTHORIZATION, token);
+
+        // when
+        String result = authTokenService.getTokenFromRequest(request);
+
+        // then
+        assertThat(result).isEqualTo("abcde");
+    }
+
+    @Test
+    void 알맞은_prefix로_시작하지_않는_토큰에_대해_예외를_던진다() {
+        // given
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        String token = "abcde";
+
+        request.addHeader(HttpHeaders.AUTHORIZATION, token);
+
+        // when, then
+        assertThatThrownBy(() -> authTokenService.getTokenFromRequest(request))
+                .isInstanceOf(AuthException.class)
+                .hasMessageContaining(ErrorMessage.INVALID_TOKEN.getMessage());
+    }
+
+    @Test
+    void 토큰에서_사용자_ID를_추출한다() {
+        // given
+        long userId = DomainFixture.USER_ID;
+        AuthToken authToken = authTokenService.issueToken(userId);
+
+        // when
+        long result = authTokenService.getUserIdFromToken(authToken.getAccessToken());
+
+        // then
+        assertThat(result).isEqualTo(userId);
+    }
+
+    @Test
+    void 토큰에_사용자_ID가_없을_경우_null_예외를_던진다() {
+        // given
+        String token = authTokenGenerator.generate(null, 1000L);
+
+        // when, then
+        assertThatThrownBy(() -> authTokenService.getUserIdFromToken(token))
+                .isInstanceOf(NullPointerException.class);
     }
 }
