@@ -1,6 +1,5 @@
 package org.recordy.server.auth.exception;
 
-
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.common.exception.RecordyException;
 

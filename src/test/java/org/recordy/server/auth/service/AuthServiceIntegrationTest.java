@@ -6,6 +6,7 @@ import org.mockito.Mockito;
 import org.recordy.server.auth.domain.Auth;
 import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.auth.domain.usecase.AuthSignIn;
+import org.recordy.server.auth.service.impl.AuthPlatformServiceFactory;
 import org.recordy.server.mock.FakeContainer;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.UserStatus;
