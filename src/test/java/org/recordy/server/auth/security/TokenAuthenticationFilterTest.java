@@ -1,26 +1,30 @@
 package org.recordy.server.auth.security;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.recordy.server.common.message.ErrorMessage;
+import org.recordy.server.mock.FakeContainer;
+import org.springframework.http.HttpHeaders;
+import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-class TokenAuthenticationFilterIntegrationTest {
+class TokenAuthenticationFilterTest {
 
-    @Autowired
     private TokenAuthenticationFilter tokenAuthenticationFilter;
-
     private MockHttpServletRequest request;
+    private MockHttpServletResponse response;
 
     @BeforeEach
     void init() {
+        tokenAuthenticationFilter = new FakeContainer().tokenAuthenticationFilter;
         request = new MockHttpServletRequest();
+        response = new MockHttpServletResponse();
     }
 
     @ValueSource(strings = {"/api/v1/users/signIn", "/actuator/health", "/v3/api-docs", "/swagger-ui", "/docs"})
@@ -46,5 +50,18 @@ class TokenAuthenticationFilterIntegrationTest {
 
         // then
         assertThat(isNotFilter).isFalse();
+    }
+
+    @Test
+    void prefix_형식만_맞는_잘못된_토큰을_필터링하면_예외가_발생하고_UNAUTHORIZED_응답을_반환한다() throws Exception {
+        // given
+        request.addHeader(HttpHeaders.AUTHORIZATION, "Bearer abcdfe");
+
+        // when
+        tokenAuthenticationFilter.doFilterInternal(request, response, new MockFilterChain());
+
+        // then
+        assertThat(response.getStatus()).isEqualTo(HttpServletResponse.SC_UNAUTHORIZED);
+        assertThat(response.getContentAsString()).contains(ErrorMessage.INVALID_TOKEN_VALUE.getMessage());
     }
 }

@@ -1,6 +1,9 @@
 package org.recordy.server.mock;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.recordy.server.auth.repository.AuthRepository;
+import org.recordy.server.auth.security.TokenAuthenticationFilter;
+import org.recordy.server.auth.security.handler.AuthFilterExceptionHandler;
 import org.recordy.server.auth.service.AuthPlatformService;
 import org.recordy.server.auth.service.impl.*;
 import org.recordy.server.auth.service.AuthService;
@@ -40,6 +43,10 @@ public class FakeContainer {
     public final AuthTokenService authTokenService;
     public final AuthService authService;
 
+    // security
+    public final AuthFilterExceptionHandler authFilterExceptionHandler;
+    public final TokenAuthenticationFilter tokenAuthenticationFilter;
+
     // controller
     public final UserController userController;
 
@@ -67,6 +74,14 @@ public class FakeContainer {
                 authTokenParser
         );
         this.authService = new AuthServiceImpl(authRepository, authPlatformServiceFactory, authTokenService, userService);
+
+        this.authFilterExceptionHandler = new AuthFilterExceptionHandler(new ObjectMapper());
+        this.tokenAuthenticationFilter = new TokenAuthenticationFilter(
+                DomainFixture.AUTH_FREE_APIS,
+                DomainFixture.AUTH_DEV_APIS,
+                authTokenService,
+                authFilterExceptionHandler
+        );
 
         this.userController = new UserController(authService);
     }
