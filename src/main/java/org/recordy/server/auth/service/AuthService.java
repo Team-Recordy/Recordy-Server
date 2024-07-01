@@ -6,4 +6,6 @@ import org.recordy.server.auth.domain.usecase.AuthSignIn;
 public interface AuthService {
 
     Auth signIn(AuthSignIn authSignIn);
+
+    void signOut(long userId);
 }
