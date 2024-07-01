@@ -5,7 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.recordy.server.auth.exception.AuthException;
-import org.recordy.server.auth.message.ErrorMessage;
+import org.recordy.server.common.message.ErrorMessage;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter

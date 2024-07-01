@@ -9,7 +9,7 @@ import java.util.Base64;
 import java.util.Map;
 import java.security.PublicKey;
 import org.recordy.server.auth.exception.AuthException;
-import org.recordy.server.auth.message.ErrorMessage;
+import org.recordy.server.common.message.ErrorMessage;
 import org.springframework.stereotype.Component;
 @Component
 public class ApplePublicKeyGenerator {
