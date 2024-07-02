@@ -36,7 +36,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void deleteByPlatformId(String platformId) {
+    public void signOut(String platformId) {
         Auth auth = authRepository.findByPlatformId(platformId)
                 .orElseThrow(() -> new AuthException(ErrorMessage.AUTH_NOT_FOUND));
 

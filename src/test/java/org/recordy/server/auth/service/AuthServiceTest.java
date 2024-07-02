@@ -11,11 +11,7 @@ import org.recordy.server.user.domain.usecase.UserSignIn;
 import org.recordy.server.mock.FakeContainer;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.UserStatus;
-import org.recordy.server.user.repository.UserRepository;
-import org.recordy.server.user.service.UserService;
 import org.recordy.server.util.DomainFixture;
-
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -81,27 +77,27 @@ public class AuthServiceTest {
     }
 
     @Test
-    void deleteByPlatformId를_통해_Auth_객체를_삭제할_수_있다() {
+    void signOut을_통해_Auth_객체를_삭제할_수_있다() {
         // given
         User user = DomainFixture.createUser(UserStatus.ACTIVE);
         AuthPlatform platform = DomainFixture.createAuthPlatform();
         Auth auth = authService.create(user, platform);
 
         // when
-        authService.deleteByPlatformId(auth.getPlatform().getId());
+        authService.signOut(auth.getPlatform().getId());
 
         // then
         assertThat(authRepository.findByPlatformId(auth.getPlatform().getId())).isEmpty();
     }
 
     @Test
-    void deleteByPlatformId를_통해_존재하지_않는_Auth_객체를_삭제하면_예외가_발생한다() {
+    void signOut을_통해_존재하지_않는_Auth_객체를_삭제하면_예외가_발생한다() {
         // given
         String platformId = "non-exist-platform-id";
 
         // when
         // then
-        assertThatThrownBy(() -> authService.deleteByPlatformId(platformId))
+        assertThatThrownBy(() -> authService.signOut(platformId))
                 .isInstanceOf(AuthException.class)
                 .hasMessageContaining(ErrorMessage.AUTH_NOT_FOUND.getMessage());
     }

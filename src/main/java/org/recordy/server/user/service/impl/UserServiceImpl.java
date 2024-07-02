@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
 
-        authService.deleteByPlatformId(user.getAuthPlatform().getId());
+        authService.signOut(user.getAuthPlatform().getId());
         userRepository.deleteById(userId);
     }
 

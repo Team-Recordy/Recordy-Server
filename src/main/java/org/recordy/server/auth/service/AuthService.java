@@ -8,7 +8,7 @@ import org.recordy.server.user.domain.usecase.UserSignIn;
 public interface AuthService {
 
     // command
-    void deleteByPlatformId(String platformId);
+    void signOut(String platformId);
     Auth create(User user, AuthPlatform platform);
 
     // query
