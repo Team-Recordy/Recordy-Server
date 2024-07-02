@@ -2,7 +2,7 @@ package org.recordy.server.user.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.domain.AuthPlatform;
-import org.recordy.server.auth.message.ErrorMessage;
+import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.UserStatus;
 import org.recordy.server.user.exception.ConflictException;
@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void validateDuplicateNickname(String nickname) {
         if (userRepository.existsUserByNickname(nickname)) {
-            throw new ConflictException(org.recordy.server.user.message.ErrorMessage.DUPLICATE_NICKNAME);
+            throw new ConflictException(ErrorMessage.DUPLICATE_NICKNAME);
         }
     }
 
