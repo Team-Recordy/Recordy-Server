@@ -12,5 +12,5 @@ public interface UserRepository {
     // query
     Optional<User> findByPlatformId(String platformId);
 
-    boolean existsUserByNickname(String nickname);
+    boolean existsByNickname(String nickname);
 }
