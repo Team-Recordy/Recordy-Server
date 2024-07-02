@@ -9,7 +9,7 @@ import org.recordy.server.user.service.UserService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -35,10 +35,25 @@ public class UserController implements UserApi {
 
     @Override
     @GetMapping("/check-nickname")
-    public ResponseEntity<Void> checkDuplicateNickname(@RequestParam String nickname) {
+    public ResponseEntity<Void> checkDuplicateNickname(
+            @RequestParam String nickname
+    ) {
         userService.validateDuplicateNickname(nickname);
-        return ResponseEntity.status(HttpStatus.OK).build();
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .build();
     }
 
+    @Override
+    @DeleteMapping
+    public ResponseEntity<Void> delete(
+            @AuthenticationPrincipal Long userId
+    ) {
+        userService.delete(userId);
 
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .build();
+    }
 }

@@ -9,11 +9,9 @@ public interface UserService {
 
     // command
     User create(AuthPlatform platform);
+    void delete(long userId);
 
     // query
     Optional<User> getByPlatformId(String platformId);
-
-    // validation
     void validateDuplicateNickname(String nickname);
-
 }
