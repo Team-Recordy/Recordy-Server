@@ -81,7 +81,6 @@ public class UserServiceTest {
         // then
         assertAll(
                 () -> assertThat(user).isNotEmpty(),
-        //        () -> assertThat(user.get().getId()).isNotNull(),
                 () -> assertThat(user.get().getAuthPlatform().getId()).isEqualTo(DomainFixture.PLATFORM_ID),
                 () -> assertThat(user.get().getAuthPlatform().getType()).isEqualTo(platform.getType())
         );
