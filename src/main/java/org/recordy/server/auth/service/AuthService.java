@@ -5,5 +5,7 @@ import org.recordy.server.auth.domain.usecase.AuthSignIn;
 
 public interface AuthService {
 
+    // command
     Auth signIn(AuthSignIn authSignIn);
+    void deleteByPlatformId(String platformId);
 }
