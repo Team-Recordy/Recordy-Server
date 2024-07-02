@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String reissueToken(String refreshToken) {
-        String platformId = authTokenService.getPlatfromIdFromRefreshToken(refreshToken);
+        String platformId = authTokenService.getPlatformIdFromRefreshToken(refreshToken);
         Long userId = getByPlatformId(platformId)
                 .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND))
                 .getId();

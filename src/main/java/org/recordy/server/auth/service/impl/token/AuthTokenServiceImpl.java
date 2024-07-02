@@ -103,7 +103,7 @@ public class AuthTokenServiceImpl implements AuthTokenService {
         return Long.parseLong(claims.get(userIdKey).toString());
     }
     @Override
-    public String getPlatfromIdFromRefreshToken(String refreshToken) {
+    public String getPlatformIdFromRefreshToken(String refreshToken) {
         String platfromId = authRepository.findByRefreshToken(refreshToken)
                 .orElseThrow(() -> new AuthException(ErrorMessage.AUTH_NOT_FOUND))
                 .getPlatform()

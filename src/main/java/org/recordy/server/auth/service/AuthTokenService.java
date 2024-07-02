@@ -8,7 +8,7 @@ public interface AuthTokenService {
 
     AuthToken issueToken(long userId);
     AuthTokenValidationResult validateToken(String token);
-    String getPlatfromIdFromRefreshToken(String refreshToken);
+    String getPlatformIdFromRefreshToken(String refreshToken);
     String getTokenFromRequest(HttpServletRequest request);
     long getUserIdFromToken(String token);
     String issueAccessToken(long userId);
