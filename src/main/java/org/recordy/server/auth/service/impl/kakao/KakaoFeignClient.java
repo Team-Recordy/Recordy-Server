@@ -8,5 +8,5 @@ import org.springframework.web.bind.annotation.RequestHeader;
 public interface KakaoFeignClient {
 
     @GetMapping("v1/user/access_token_info")
-    KakaoAccessPlatformInfo getKakaoAccessTokenInfo(@RequestHeader("Authorization") String accessToken);
+    KakaoPlatformInfo getKakaoAccessTokenInfo(@RequestHeader("Authorization") String accessToken);
 }

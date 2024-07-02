@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
 @RestController
-public class UserController implements UserApi{
+public class UserController implements UserApi {
 
     private final AuthService authService;
     private final UserService userService;
@@ -22,8 +22,8 @@ public class UserController implements UserApi{
     @Override
     @PostMapping("/signIn")
     public ResponseEntity<UserSignInResponse> signIn(
-        @RequestHeader(HttpHeaders.AUTHORIZATION) String platformToken,
-        @RequestBody UserSignInRequest request
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String platformToken,
+            @RequestBody UserSignInRequest request
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)

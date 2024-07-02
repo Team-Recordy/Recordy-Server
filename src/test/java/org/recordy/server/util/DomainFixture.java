@@ -21,6 +21,18 @@ public final class DomainFixture {
     public static final UserStatus DEFAULT_USER_STATUS = UserStatus.ACTIVE;
     public static final String USER_NICKNAME = "recordy";
 
+    public static final String TOKEN_SECRET = "secretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecret";
+    public static final String TOKEN_PREFIX = "Bearer ";
+    public static final long ACCESS_TOKEN_EXPIRATION = 24 * 60 * 60 * 1000L * 14;
+    public static final long REFRESH_TOKEN_EXPIRATION = 60 * 60 * 24 * 1000L * 14;
+    public static final String ACCESS_TOKEN_TYPE = "access_token";
+    public static final String REFRESH_TOKEN_TYPE = "refresh_token";
+    public static final String USER_ID_KEY = "user_id";
+    public static final String TOKEN_TYPE_KEY = "token_type";
+
+    public static final String[] AUTH_FREE_APIS = new String[]{"/api/v1/users/signIn"};
+    public static final String[] AUTH_DEV_APIS = new String[]{"/actuator/health", "/v3/api-docs/**", "/swagger-ui/**", "/docs/**"};
+
     public static AuthPlatform createAuthPlatform() {
         return new AuthPlatform(PLATFORM_ID, KAKAO_PLATFORM_TYPE);
     }
