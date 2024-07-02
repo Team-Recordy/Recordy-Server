@@ -10,6 +10,8 @@ import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.auth.repository.AuthRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Repository
 public class AuthRepositoryImpl implements AuthRepository {

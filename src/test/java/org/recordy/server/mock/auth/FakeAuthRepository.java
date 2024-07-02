@@ -5,6 +5,7 @@ import org.recordy.server.auth.repository.AuthRepository;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class FakeAuthRepository implements AuthRepository {
 
@@ -15,5 +16,15 @@ public class FakeAuthRepository implements AuthRepository {
         auths.put(auth.getPlatform().getId(), auth);
 
         return auth;
+    }
+
+    @Override
+    public void delete(Auth auth) {
+        auths.remove(auth.getPlatform().getId());
+    }
+
+    @Override
+    public Optional<Auth> findByPlatformId(String platformId) {
+        return Optional.ofNullable(auths.get(platformId));
     }
 }

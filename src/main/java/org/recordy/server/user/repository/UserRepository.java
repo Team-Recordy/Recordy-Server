@@ -8,8 +8,10 @@ public interface UserRepository {
 
     // command
     User save(User user);
+    void deleteById(long userId);
 
     // query
     Optional<User> findByPlatformId(String platformId);
-    Optional<User> findById(Long userId);
+    boolean existsByNickname(String nickname);
+    Optional<User> findById(long userId);
 }

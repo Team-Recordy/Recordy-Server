@@ -27,7 +27,17 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Optional<User> findById(Long userId) {
+    public boolean existsByNickname(String nickname){
+        return userJpaRepository.existsByNickname(nickname);
+    }
+
+    @Override
+    public void deleteById(long userId) {
+        userJpaRepository.deleteById(userId);
+    }
+
+    @Override
+    public Optional<User> findById(long userId) {
         return userJpaRepository.findById(userId)
                 .map(UserEntity::toDomain);
     }

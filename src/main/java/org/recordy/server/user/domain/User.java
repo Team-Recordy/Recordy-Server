@@ -13,4 +13,5 @@ public class User {
     private Long id;
     private AuthPlatform authPlatform;
     private UserStatus status;
+    private String nickname;
 }

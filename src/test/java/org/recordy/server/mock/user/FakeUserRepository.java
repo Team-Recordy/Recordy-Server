@@ -29,4 +29,20 @@ public class FakeUserRepository implements UserRepository {
                 .filter(user -> user.getAuthPlatform().getId().equals(platformId))
                 .findFirst();
     }
+
+    @Override
+    public void deleteById(long userId) {
+        users.remove(userId);
+    }
+
+    @Override
+    public boolean existsByNickname(String nickname) {
+        return users.values().stream()
+                .anyMatch(user -> user.getNickname().equals(nickname));
+    }
+
+    @Override
+    public Optional<User> findById(long userId) {
+        return Optional.ofNullable(users.get(userId));
+    }
 }

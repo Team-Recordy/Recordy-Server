@@ -153,5 +153,4 @@ public class AuthRepositoryIntegrationTest {
         assertThatCode(() -> authRepository.delete(auth))
                 .doesNotThrowAnyException();
     }
-
 }

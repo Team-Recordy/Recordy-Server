@@ -1,6 +1,7 @@
 package org.recordy.server.user.service;
 
-import org.recordy.server.auth.domain.AuthPlatform;
+import org.recordy.server.auth.domain.Auth;
+import org.recordy.server.user.domain.usecase.UserSignIn;
 import org.recordy.server.user.domain.User;
 
 import java.util.Optional;
@@ -8,9 +9,12 @@ import java.util.Optional;
 public interface UserService {
 
     // command
-    User create(AuthPlatform platform);
+    Auth signIn(UserSignIn userSignIn);
+    void signOut(long userId);
+    void delete(long userId);
+    String reissueToken(String refreshToken);
 
     // query
     Optional<User> getByPlatformId(String platformId);
-    Optional<User> getById(Long userId);
+    void validateDuplicateNickname(String nickname);
 }

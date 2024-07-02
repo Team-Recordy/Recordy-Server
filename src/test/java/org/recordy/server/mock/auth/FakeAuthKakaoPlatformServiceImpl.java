@@ -1,17 +1,22 @@
 package org.recordy.server.mock.auth;
 
 import org.recordy.server.auth.domain.AuthPlatform;
-import org.recordy.server.auth.domain.usecase.AuthSignIn;
+import org.recordy.server.user.domain.usecase.UserSignIn;
 import org.recordy.server.auth.service.AuthPlatformService;
-import org.recordy.server.util.DomainFixture;
 
 public class FakeAuthKakaoPlatformServiceImpl implements AuthPlatformService {
 
+    private final FakeKakaoFeignClient kakaoFeignClient;
+
+    public FakeAuthKakaoPlatformServiceImpl(FakeKakaoFeignClient kakaoFeignClient) {
+        this.kakaoFeignClient = kakaoFeignClient;
+    }
+
     @Override
-    public AuthPlatform getPlatform(AuthSignIn authSignIn) {
+    public AuthPlatform getPlatform(UserSignIn userSignIn) {
         return new AuthPlatform(
-                DomainFixture.PLATFORM_ID,
-                AuthPlatform.Type.KAKAO
+                kakaoFeignClient.getKakaoAccessTokenInfo(userSignIn.platformToken()).id(),
+                getPlatformType()
         );
     }
 
