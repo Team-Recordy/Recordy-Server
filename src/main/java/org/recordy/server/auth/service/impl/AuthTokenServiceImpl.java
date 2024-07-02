@@ -108,7 +108,7 @@ public class AuthTokenServiceImpl implements AuthTokenService {
 
     @Override
     public String reissueToken(String refreshToken) {
-        String platfromId = authRepository.findByRefeshToken(refreshToken)
+        String platfromId = authRepository.findByRefreshToken(refreshToken)
                 .orElseThrow(() -> new AuthException(ErrorMessage.AUTH_NOT_FOUND))
                 .getPlatform()
                 .getId();

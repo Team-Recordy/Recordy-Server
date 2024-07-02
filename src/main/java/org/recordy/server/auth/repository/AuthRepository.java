@@ -12,6 +12,6 @@ public interface AuthRepository {
     void delete(Auth auth);
 
     // query
-    Optional<Auth> findByRefeshToken(String refreshToken);
+    Optional<Auth> findByRefreshToken(String refreshToken);
     Optional<Auth> findByPlatformId(String platformId);
 }

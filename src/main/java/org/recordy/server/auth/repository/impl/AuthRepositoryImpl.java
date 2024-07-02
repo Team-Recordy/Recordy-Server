@@ -28,7 +28,7 @@ public class AuthRepositoryImpl implements AuthRepository {
     }
 
     @Override
-    public Optional<Auth> findByRefeshToken(String refreshToken) {
+    public Optional<Auth> findByRefreshToken(String refreshToken) {
         return authRedisRepository.findByRefreshToken(refreshToken)
                 .map(AuthEntity::toDomain);
     }
