@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.index.Indexed;
 
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -17,6 +18,7 @@ public class AuthEntity {
     private String platformId;
     private String platformType;
     private String accessToken;
+    @Indexed
     private String refreshToken;
     private boolean isSignedUp;
 
