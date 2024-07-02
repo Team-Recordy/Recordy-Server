@@ -39,10 +39,10 @@ public class UserController implements UserApi{
     @DeleteMapping("/logout")
     public ResponseEntity signOut(@AuthenticationPrincipal Principal principal) {
         long userId = Long.parseLong(principal.getName());
-       authService.signOut(userId);
-       return  ResponseEntity
-               .noContent()
-               .build();
+        authService.signOut(userId);
+        return  ResponseEntity
+                .noContent()
+                .build();
     }
 
 
