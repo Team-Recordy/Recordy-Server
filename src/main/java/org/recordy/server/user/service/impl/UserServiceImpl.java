@@ -33,9 +33,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void validateDuplicateNickname(String nickname) {
-        if (userRepository.existsByNickname(nickname)) {
+        if (userRepository.existsByNickname(nickname))
             throw new UserException(ErrorMessage.DUPLICATE_NICKNAME);
-        }
     }
 
 
