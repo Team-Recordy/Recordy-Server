@@ -1,10 +1,13 @@
 package org.recordy.server.user.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.recordy.server.auth.domain.Auth;
 import org.recordy.server.auth.domain.AuthPlatform;
+import org.recordy.server.auth.service.AuthService;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.UserStatus;
+import org.recordy.server.user.domain.usecase.UserSignIn;
 import org.recordy.server.user.exception.UserException;
 import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.user.service.UserService;
@@ -17,18 +20,14 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final AuthService authService;
 
     @Override
-    public User create(AuthPlatform platform) {
-        return userRepository.save(User.builder()
-                .authPlatform(platform)
-                .status(UserStatus.PENDING)
-                .build());
-    }
+    public Auth signIn(UserSignIn userSignIn) {
+        AuthPlatform platform = authService.getPlatform(userSignIn);
+        User user = getOrCreateUser(platform);
 
-    @Override
-    public Optional<User> getByPlatformId(String platformId) {
-        return userRepository.findByPlatformId(platformId);
+        return authService.create(user, platform);
     }
 
     @Override
@@ -37,5 +36,29 @@ public class UserServiceImpl implements UserService {
             throw new UserException(ErrorMessage.DUPLICATE_NICKNAME);
     }
 
+    // TODO: 영상 도메인 추가되면 관련된 영상 및 시청기록도 삭제
+    @Override
+    public void delete(long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
 
+        authService.signOut(user.getAuthPlatform().getId());
+        userRepository.deleteById(userId);
+    }
+
+    private User getOrCreateUser(AuthPlatform platform) {
+        return getByPlatformId(platform.getId())
+                .orElseGet(() -> create(platform));
+    }
+
+    private User create(AuthPlatform platform) {
+        return userRepository.save(User.builder()
+                .authPlatform(platform)
+                .status(UserStatus.PENDING)
+                .build());
+    }
+
+    public Optional<User> getByPlatformId(String platformId) {
+        return userRepository.findByPlatformId(platformId);
+    }
 }

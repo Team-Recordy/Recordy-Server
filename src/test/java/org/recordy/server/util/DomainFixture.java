@@ -4,7 +4,7 @@ import org.recordy.server.auth.domain.Auth;
 import org.recordy.server.auth.domain.AuthEntity;
 import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.auth.domain.AuthToken;
-import org.recordy.server.auth.domain.usecase.AuthSignIn;
+import org.recordy.server.user.domain.usecase.UserSignIn;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.UserEntity;
 import org.recordy.server.user.domain.UserStatus;
@@ -44,8 +44,8 @@ public final class DomainFixture {
         );
     }
 
-    public static AuthSignIn createAuthSignIn(AuthPlatform.Type platformType) {
-        return new AuthSignIn(
+    public static UserSignIn createUserSignIn(AuthPlatform.Type platformType) {
+        return new UserSignIn(
                 PLATFORM_TOKEN,
                 platformType
         );
@@ -69,11 +69,11 @@ public final class DomainFixture {
         );
     }
 
-    public static User createUser() {
+    public static User createUser(UserStatus userStatus) {
         return User.builder()
                 .id(USER_ID)
                 .authPlatform(createAuthPlatform())
-                .status(DEFAULT_USER_STATUS)
+                .status(userStatus)
                 .build();
     }
 

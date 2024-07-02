@@ -4,7 +4,7 @@ import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.recordy.server.auth.domain.AuthPlatform;
-import org.recordy.server.auth.domain.usecase.AuthSignIn;
+import org.recordy.server.user.domain.usecase.UserSignIn;
 import org.recordy.server.auth.exception.AuthException;
 import org.recordy.server.auth.service.AuthPlatformService;
 import org.recordy.server.common.message.ErrorMessage;
@@ -22,8 +22,8 @@ public class AuthKakaoPlatformServiceImpl implements AuthPlatformService {
 
     //인증 플랫폼 서비스 식별
     @Override
-    public AuthPlatform getPlatform(AuthSignIn authSignIn) {
-        String platformId = getKakaoPlatformId(authSignIn.platformToken());
+    public AuthPlatform getPlatform(UserSignIn userSignIn) {
+        String platformId = getKakaoPlatformId(userSignIn.platformToken());
 
         return new AuthPlatform(platformId, getPlatformType());
     }

@@ -3,7 +3,7 @@ package org.recordy.server.auth.service.impl.apple;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.auth.domain.AuthPlatform;
-import org.recordy.server.auth.domain.usecase.AuthSignIn;
+import org.recordy.server.user.domain.usecase.UserSignIn;
 import org.recordy.server.auth.service.AuthPlatformService;
 import org.recordy.server.mock.FakeContainer;
 import org.recordy.server.util.DomainFixture;
@@ -25,10 +25,10 @@ public class AuthApplePlatformServiceImplTest {
     @Test
     void getPlatform을_통해_애플_플랫폼을_통한_사용자_정보를_조회한다() {
         // given
-        AuthSignIn authSignIn = DomainFixture.createAuthSignIn(DomainFixture.APPLE_PLATFORM_TYPE);
+        UserSignIn userSignIn = DomainFixture.createUserSignIn(DomainFixture.APPLE_PLATFORM_TYPE);
 
         // when
-        AuthPlatform platform = applePlatformService.getPlatform(authSignIn);
+        AuthPlatform platform = applePlatformService.getPlatform(userSignIn);
 
         // then
         assertAll(

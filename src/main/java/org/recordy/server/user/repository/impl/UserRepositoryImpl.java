@@ -30,4 +30,15 @@ public class UserRepositoryImpl implements UserRepository {
     public boolean existsByNickname(String nickname){
         return userJpaRepository.existsByNickname(nickname);
     }
+
+    @Override
+    public void deleteById(long userId) {
+        userJpaRepository.deleteById(userId);
+    }
+
+    @Override
+    public Optional<User> findById(long userId) {
+        return userJpaRepository.findById(userId)
+                .map(UserEntity::toDomain);
+    }
 }

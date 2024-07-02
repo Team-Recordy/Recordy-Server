@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.recordy.server.auth.security.UserId;
 import org.recordy.server.user.controller.dto.request.UserSignInRequest;
 import org.recordy.server.user.controller.dto.response.UserSignInResponse;
 import org.springframework.http.HttpHeaders;
@@ -53,5 +54,27 @@ public interface UserApi {
                     )
             }
     )
-    public ResponseEntity<Void> checkDuplicateNickname(@RequestParam String nickname);
+    public ResponseEntity<Void> checkDuplicateNickname(
+            @RequestParam String nickname
+    );
+
+    @Operation(
+            summary = "유저 회원 탈퇴 API",
+            description = "유저가 회원 탈퇴하는 API입니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "성공",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = void.class
+                                    )
+                            )
+                    )
+            }
+    )
+    public ResponseEntity<Void> delete(
+            @UserId Long userId
+    );
 }
