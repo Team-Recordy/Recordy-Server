@@ -21,7 +21,7 @@ public class FakeUserRepository implements UserRepository {
                 .nickname(user.getNickname())
                 .build();
 
-        users.put(autoIncrementId, realUser);
+        users.put(autoIncrementId++, realUser);
 
         return realUser;
     }
