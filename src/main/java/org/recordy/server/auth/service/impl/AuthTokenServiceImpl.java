@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.domain.Auth;
 import org.recordy.server.auth.domain.AuthToken;
 import org.recordy.server.auth.exception.AuthException;
+import org.recordy.server.common.exception.RecordyException;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.auth.repository.AuthRepository;
 import org.recordy.server.auth.security.UserAuthentication;
@@ -108,6 +109,7 @@ public class AuthTokenServiceImpl implements AuthTokenService {
     @Override
     public String reissueToken(String refreshToken) {
         String platfromId = authRepository.findByRefeshToken(refreshToken)
+                .orElseThrow(() -> new AuthException(ErrorMessage.AUTH_NOT_FOUND))
                 .getPlatform()
                 .getId();
         Long userId = userService.getByPlatformId(platfromId)

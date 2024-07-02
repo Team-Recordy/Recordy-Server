@@ -1,5 +1,6 @@
 package org.recordy.server.auth.repository.impl;
 
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.domain.Auth;
 import org.recordy.server.auth.domain.AuthEntity;
@@ -27,16 +28,14 @@ public class AuthRepositoryImpl implements AuthRepository {
     }
 
     @Override
-    public Auth findByRefeshToken(String refreshToken) {
+    public Optional<Auth> findByRefeshToken(String refreshToken) {
         return authRedisRepository.findByRefreshToken(refreshToken)
-                .orElseThrow(() -> new AuthException(ErrorMessage.AUTH_NOT_FOUND))
-                .toDomain();
+                .map(AuthEntity::toDomain);
     }
 
     @Override
-    public Auth findByPlatformId(String platformId) {
+    public Optional<Auth> findByPlatformId(String platformId) {
         return  authRedisRepository.findByPlatformId(platformId)
-                .orElseThrow(() -> new AuthException((ErrorMessage.AUTH_NOT_FOUND)))
-                .toDomain();
+                .map(AuthEntity::toDomain);
     }
 }

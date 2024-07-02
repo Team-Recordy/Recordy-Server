@@ -69,7 +69,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private void deleteRefreshToken(String platformId) {
-        Auth auth = authRepository.findByPlatformId(platformId);
+        Auth auth = authRepository.findByPlatformId(platformId)
+                .orElseThrow(() -> new AuthException(ErrorMessage.AUTH_NOT_FOUND));
         authRepository.delete(auth);
     }
 }

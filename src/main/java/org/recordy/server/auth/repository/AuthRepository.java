@@ -1,5 +1,7 @@
 package org.recordy.server.auth.repository;
 
+import java.util.Optional;
+import javax.swing.text.html.Option;
 import org.recordy.server.auth.domain.Auth;
 import org.recordy.server.auth.domain.AuthPlatform;
 
@@ -10,6 +12,6 @@ public interface AuthRepository {
     void delete(Auth auth);
 
     // query
-    Auth findByRefeshToken(String refreshToken);
-    Auth findByPlatformId(String platformId);
+    Optional<Auth> findByRefeshToken(String refreshToken);
+    Optional<Auth> findByPlatformId(String platformId);
 }
