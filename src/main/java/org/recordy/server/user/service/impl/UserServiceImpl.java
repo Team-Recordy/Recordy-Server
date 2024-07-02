@@ -3,7 +3,11 @@ package org.recordy.server.user.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.domain.Auth;
 import org.recordy.server.auth.domain.AuthPlatform;
+import org.recordy.server.auth.exception.AuthException;
+import org.recordy.server.auth.security.UserAuthentication;
 import org.recordy.server.auth.service.AuthService;
+import org.recordy.server.auth.service.AuthTokenService;
+import org.recordy.server.auth.service.impl.token.AuthTokenGenerator;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.UserStatus;
@@ -21,6 +25,8 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final AuthService authService;
+    private final AuthTokenService authTokenService;
+
 
     @Override
     public Auth signIn(UserSignIn userSignIn) {
@@ -34,6 +40,14 @@ public class UserServiceImpl implements UserService {
     public void validateDuplicateNickname(String nickname) {
         if (userRepository.existsByNickname(nickname))
             throw new UserException(ErrorMessage.DUPLICATE_NICKNAME);
+    }
+
+    @Override
+    public void signOut(long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
+
+        authService.signOut(user.getAuthPlatform().getId());
     }
 
     // TODO: 영상 도메인 추가되면 관련된 영상 및 시청기록도 삭제
@@ -63,5 +77,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> getById(Long userId) { return userRepository.findById(userId); }
+    public String reissueToken(String refreshToken) {
+        String platformId = authTokenService.getPlatfromIdFromRefreshToken(refreshToken);
+        Long userId = getByPlatformId(platformId)
+                .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND))
+                .getId();
+
+        return authTokenService.issueAccessToken(userId);
+    }
+
 }
