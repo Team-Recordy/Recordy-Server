@@ -14,13 +14,16 @@ public class FakeUserRepository implements UserRepository {
 
     @Override
     public User save(User user) {
-        users.put(autoIncrementId, user);
-
-        return User.builder()
-                .id(autoIncrementId++)
+        User realUser = User.builder()
+                .id(autoIncrementId)
                 .authPlatform(user.getAuthPlatform())
                 .status(user.getStatus())
+                .nickname(user.getNickname())
                 .build();
+
+        users.put(autoIncrementId, realUser);
+
+        return realUser;
     }
 
     @Override

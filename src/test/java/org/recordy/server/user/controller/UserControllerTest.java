@@ -2,9 +2,13 @@ package org.recordy.server.user.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.recordy.server.auth.domain.Auth;
+import org.recordy.server.auth.domain.AuthEntity;
 import org.recordy.server.auth.domain.AuthPlatform;
+import org.recordy.server.auth.exception.AuthException;
 import org.recordy.server.mock.FakeContainer;
 import org.recordy.server.user.controller.dto.request.UserSignInRequest;
+import org.recordy.server.user.controller.dto.response.UserReissueTokenResponse;
 import org.recordy.server.user.controller.dto.response.UserSignInResponse;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.exception.UserException;
@@ -114,5 +118,52 @@ public class UserControllerTest {
         // when
         assertThatThrownBy(() -> userController.delete(DomainFixture.USER_ID))
                 .isInstanceOf(UserException.class);
+    }
+
+    @Test
+    void signOut을_통해_사용자를_로그아웃하는_데_성공하면_204_No_Content를_받는다() {
+        //given
+        userService.signIn(DomainFixture.createUserSignIn(AuthPlatform.Type.KAKAO));
+
+        //when
+        ResponseEntity result = userController.signOut(DomainFixture.USER_ID);
+
+        //then
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+    }
+
+    @Test
+    void signOut을_통해_존재하지_않는_사용자를_로그아웃하려고_하면_예외가_발생한다() {
+
+        //when
+        assertThatThrownBy(() -> userController.signOut(DomainFixture.USER_ID))
+                .isInstanceOf(UserException.class);
+    }
+
+    @Test
+    void reissueToken을_통해_accessToken을_재발급_받을_수_있다() {
+        //given
+        Auth auth = userService.signIn(DomainFixture.createUserSignIn(AuthPlatform.Type.KAKAO));
+        String refreshToken = auth.getToken().getRefreshToken();
+
+
+        //when
+       ResponseEntity<UserReissueTokenResponse> result = userController.reissueToken(refreshToken);
+
+        //then
+        assertAll(
+                () -> assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK),
+                () -> assertThat(result.getBody().accessToken()).isNotNull()
+        );
+    }
+
+
+
+    @Test
+    void reissueToken에서_refreshToken으로_인증정보를_찾을_수_없다면_에러가_발생한다() {
+
+        //when
+        assertThatThrownBy(() -> userController.reissueToken(DomainFixture.REFRESH_TOKEN))
+                .isInstanceOf(AuthException.class);
     }
 }

@@ -81,6 +81,7 @@ public class UserServiceTest {
         // then
         assertAll(
                 () -> assertThat(user).isNotEmpty(),
+        //        () -> assertThat(user.get().getId()).isNotNull(),
                 () -> assertThat(user.get().getAuthPlatform().getId()).isEqualTo(DomainFixture.PLATFORM_ID),
                 () -> assertThat(user.get().getAuthPlatform().getType()).isEqualTo(platform.getType())
         );
@@ -191,4 +192,45 @@ public class UserServiceTest {
         assertThatThrownBy(() -> userService.delete(userId))
                 .isInstanceOf(UserException.class);
     }
+
+    @Test
+    void signOut을_통해_Auth를_삭제할_수_있다() {
+        // given
+        AuthPlatform platform = DomainFixture.createAuthPlatform();
+        UserSignIn userSignIn = DomainFixture.createUserSignIn(platform.getType());
+        userService.signIn(userSignIn);
+
+        // when
+        userService.signOut(DomainFixture.USER_ID);
+        Optional<Auth> result = authRepository.findByPlatformId(DomainFixture.PLATFORM_ID);
+
+        // then
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    void reissueToken을_통해_accessToken을_재발급_받을_수_있다() {
+        //given
+        AuthPlatform platform = DomainFixture.createAuthPlatform();
+        UserSignIn userSignIn = DomainFixture.createUserSignIn(platform.getType());
+        Auth auth = userService.signIn(userSignIn);
+
+        //when
+        String accessToken = userService.reissueToken(auth.getToken().getRefreshToken());
+
+        //then
+        assertThat(accessToken).isNotEmpty();
+
+//        //given
+//        Auth auth = authRepository.save(DomainFixture.createAuth(true));
+//        userRepository.save(DomainFixture.createUser(UserStatus.ACTIVE));
+//
+//        //when
+//        String accessToken = userService.reissueToken(auth.getToken().getRefreshToken());
+//
+//        //then
+//        assertThat(accessToken).isNotEmpty();
+
+    }
+
 }
