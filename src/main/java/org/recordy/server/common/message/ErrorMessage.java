@@ -10,6 +10,14 @@ import org.springframework.http.HttpStatus;
 public enum ErrorMessage {
 
     /**
+     * 400 Bad Request
+     */
+    ENUM_VALUE_BAD_REQUEST(HttpStatus.BAD_REQUEST, "요청한 값이 유효하지 않습니다."),
+    INVALID_REQUEST_BODY_TYPE(HttpStatus.BAD_REQUEST, "요청 값 파라미터의 타입이 올바르지 않습니다."),
+    METHOD_NOT_SUPPORTED(HttpStatus.METHOD_NOT_ALLOWED, "지원하지 않는 HTTP 메소드입니다."),
+    VALIDATION_REQUEST_MISSING_EXCEPTION(HttpStatus.BAD_REQUEST, "요청 값이 유효하지 않습니다."),
+
+    /**
      * 401 Unauthorized
      */
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "리소스 접근 권한이 없습니다."),
