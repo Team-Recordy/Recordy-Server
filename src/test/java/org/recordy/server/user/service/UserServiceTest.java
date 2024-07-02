@@ -221,16 +221,6 @@ public class UserServiceTest {
         //then
         assertThat(accessToken).isNotEmpty();
 
-//        //given
-//        Auth auth = authRepository.save(DomainFixture.createAuth(true));
-//        userRepository.save(DomainFixture.createUser(UserStatus.ACTIVE));
-//
-//        //when
-//        String accessToken = userService.reissueToken(auth.getToken().getRefreshToken());
-//
-//        //then
-//        assertThat(accessToken).isNotEmpty();
-
     }
 
 }
