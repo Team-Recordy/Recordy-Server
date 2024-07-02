@@ -75,10 +75,11 @@ public class FakeContainer {
                 DomainFixture.USER_ID_KEY,
                 DomainFixture.TOKEN_TYPE_KEY,
                 authTokenGenerator,
-                authTokenParser
+                authTokenParser,
+                authRepository
         );
         this.authService = new AuthServiceImpl(authRepository, authPlatformServiceFactory, authTokenService);
-        this.userService = new UserServiceImpl(userRepository, authService);
+        this.userService = new UserServiceImpl(userRepository, authService, authTokenService);
 
         this.authFilterExceptionHandler = new AuthFilterExceptionHandler(new ObjectMapper());
         this.tokenAuthenticationFilter = new TokenAuthenticationFilter(

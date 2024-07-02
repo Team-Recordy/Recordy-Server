@@ -3,8 +3,11 @@ package org.recordy.server.auth.service;
 import io.jsonwebtoken.Jwts;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.recordy.server.auth.domain.Auth;
+import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.auth.domain.AuthToken;
 import org.recordy.server.auth.exception.AuthException;
+import org.recordy.server.auth.repository.AuthRepository;
 import org.recordy.server.auth.service.dto.AuthTokenValidationResult;
 import org.recordy.server.auth.service.impl.token.AuthTokenGenerator;
 import org.recordy.server.auth.service.impl.token.AuthTokenSigningKeyProvider;
@@ -26,6 +29,7 @@ public class AuthTokenServiceTest {
     private AuthTokenService authTokenService;
     private AuthTokenSigningKeyProvider signingKeyProvider;
     private AuthTokenGenerator authTokenGenerator;
+    private AuthRepository authRepository;
 
     @BeforeEach
     void init() {
@@ -33,6 +37,7 @@ public class AuthTokenServiceTest {
         authTokenService = fakeContainer.authTokenService;
         signingKeyProvider = fakeContainer.authTokenSigningKeyProvider;
         authTokenGenerator = fakeContainer.authTokenGenerator;
+        authRepository = fakeContainer.authRepository;
     }
 
     @Test
@@ -166,4 +171,43 @@ public class AuthTokenServiceTest {
         assertThatThrownBy(() -> authTokenService.getUserIdFromToken(token))
                 .isInstanceOf(NullPointerException.class);
     }
+
+    @Test
+    void refreshToken으로부터_platformId를_반환한다() {
+        //given
+        AuthPlatform authPlatform = DomainFixture.createAuthPlatform();
+        AuthToken authToken = authTokenService.issueToken(DomainFixture.USER_ID);
+        authRepository.save(new Auth(authPlatform, authToken, true));
+
+        //when
+        String platfromId = authTokenService.getPlatformIdFromRefreshToken(authToken.getRefreshToken());
+
+        //then
+        assertThat(platfromId).isEqualTo(authPlatform.getId());
+
+    }
+
+    @Test
+    void 주어진_refreshToken으로부터_platformId를_반환하지_못하면_에러를_던진다() {
+        //given
+        AuthToken authToken = authTokenService.issueToken(DomainFixture.USER_ID);
+
+        // when, then
+        assertThatThrownBy(() -> authTokenService.getPlatformIdFromRefreshToken(authToken.getRefreshToken()))
+                .isInstanceOf(AuthException.class)
+                .hasMessageContaining(ErrorMessage.AUTH_NOT_FOUND.getMessage());
+    }
+
+    @Test
+    void issueAccessToken으로_새로운_accessToken을_발급한다() {
+        //given
+        long userId = DomainFixture.USER_ID;
+
+        //when
+        String accessToken = authTokenService.issueAccessToken(userId);
+
+        //then
+        assertThat(userId).isEqualTo(authTokenService.getUserIdFromToken(accessToken));
+    }
+
 }

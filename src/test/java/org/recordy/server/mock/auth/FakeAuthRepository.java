@@ -27,4 +27,12 @@ public class FakeAuthRepository implements AuthRepository {
     public Optional<Auth> findByPlatformId(String platformId) {
         return Optional.ofNullable(auths.get(platformId));
     }
+
+    @Override
+    public Optional<Auth> findByRefreshToken(String refreshToken) {
+        return auths.values()
+                .stream()
+                .filter(auth -> auth.getToken().getRefreshToken().equals(refreshToken))
+                .findFirst();
+    }
 }
