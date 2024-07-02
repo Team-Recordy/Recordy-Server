@@ -1,7 +1,7 @@
 package org.recordy.server.user.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.recordy.server.auth.domain.usecase.AuthSignIn;
+import org.recordy.server.user.domain.usecase.UserSignIn;
 import org.recordy.server.auth.service.AuthService;
 import org.recordy.server.user.controller.dto.request.UserSignInRequest;
 import org.recordy.server.user.controller.dto.response.UserSignInResponse;
@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class UserController implements UserApi {
 
-    private final AuthService authService;
     private final UserService userService;
 
     @Override
@@ -29,7 +28,7 @@ public class UserController implements UserApi {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(UserSignInResponse.from(
-                        authService.signIn(AuthSignIn.of(platformToken, request.platformType()))
+                        userService.signIn(UserSignIn.of(platformToken, request.platformType()))
                 ));
     }
 
