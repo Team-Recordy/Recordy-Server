@@ -33,8 +33,8 @@ public class UserController implements UserApi {
                 ));
     }
 
+    @Override
     @GetMapping("/check-nickname")
-    @PreAuthorize("permitAll()")
     public ResponseEntity<Void> checkDuplicateNickname(@RequestParam String nickname) {
         userService.validateDuplicateNickname(nickname);
         return ResponseEntity.status(HttpStatus.OK).build();

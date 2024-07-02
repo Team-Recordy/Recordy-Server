@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "유저 관련 API")
 public interface UserApi {
@@ -35,4 +36,22 @@ public interface UserApi {
             @RequestHeader(HttpHeaders.AUTHORIZATION) String platformToken,
             @RequestBody UserSignInRequest request
     );
+
+    @Operation(
+            summary = "유저 닉네임 중복체크 API",
+            description = "유저가 회원 가입할 때 닉네임을 중복체크해주는 API입니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "성공",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = void.class
+                                    )
+                            )
+                    )
+            }
+    )
+    public ResponseEntity<Void> checkDuplicateNickname(@RequestParam String nickname);
 }
