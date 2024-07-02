@@ -88,6 +88,6 @@ public class FakeContainer {
                 authFilterExceptionHandler
         );
 
-        this.userController = new UserController(authService);
+        this.userController = new UserController(authService, userService);
     }
 }

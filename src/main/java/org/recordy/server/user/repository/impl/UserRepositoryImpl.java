@@ -25,4 +25,9 @@ public class UserRepositoryImpl implements UserRepository {
         return userJpaRepository.findByPlatformId(platformId)
                 .map(UserEntity::toDomain);
     }
+
+    @Override
+    public boolean existsByNickname(String nickname){
+        return userJpaRepository.existsByNickname(nickname);
+    }
 }
