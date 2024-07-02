@@ -6,7 +6,7 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.auth.domain.AuthPlatform.Type;
-import org.recordy.server.auth.domain.usecase.AuthSignIn;
+import org.recordy.server.user.domain.usecase.UserSignIn;
 import org.recordy.server.auth.service.AuthPlatformService;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +20,8 @@ public class AuthApplePlatformServiceImpl implements AuthPlatformService {
     private final AppleClaimsValidator appleClaimsValidator;
 
     @Override
-    public AuthPlatform getPlatform(AuthSignIn authSignIn) {
-        String identityToken = authSignIn.platformToken();
+    public AuthPlatform getPlatform(UserSignIn userSignIn) {
+        String identityToken = userSignIn.platformToken();
         Map<String, String> headers = appleIdentityTokenParser.parseHeaders(identityToken);
         ApplePublicKeys applePublicKeys = appleFeignClient.getApplePublicKeys();
         PublicKey publicKey = applePublicKeyGenerator.generatePublicKey(headers,applePublicKeys);

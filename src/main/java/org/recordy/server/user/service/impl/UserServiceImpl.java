@@ -1,11 +1,13 @@
 package org.recordy.server.user.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.recordy.server.auth.domain.Auth;
 import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.auth.service.AuthService;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.UserStatus;
+import org.recordy.server.user.domain.usecase.UserSignIn;
 import org.recordy.server.user.exception.UserException;
 import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.user.service.UserService;
@@ -21,16 +23,11 @@ public class UserServiceImpl implements UserService {
     private final AuthService authService;
 
     @Override
-    public User create(AuthPlatform platform) {
-        return userRepository.save(User.builder()
-                .authPlatform(platform)
-                .status(UserStatus.PENDING)
-                .build());
-    }
+    public Auth signIn(UserSignIn userSignIn) {
+        AuthPlatform platform = authService.getPlatform(userSignIn);
+        User user = getOrCreateUser(platform);
 
-    @Override
-    public Optional<User> getByPlatformId(String platformId) {
-        return userRepository.findByPlatformId(platformId);
+        return authService.create(user, platform);
     }
 
     @Override
@@ -47,5 +44,21 @@ public class UserServiceImpl implements UserService {
 
         authService.deleteByPlatformId(user.getAuthPlatform().getId());
         userRepository.deleteById(userId);
+    }
+
+    private User getOrCreateUser(AuthPlatform platform) {
+        return getByPlatformId(platform.getId())
+                .orElseGet(() -> create(platform));
+    }
+
+    private User create(AuthPlatform platform) {
+        return userRepository.save(User.builder()
+                .authPlatform(platform)
+                .status(UserStatus.PENDING)
+                .build());
+    }
+
+    public Optional<User> getByPlatformId(String platformId) {
+        return userRepository.findByPlatformId(platformId);
     }
 }

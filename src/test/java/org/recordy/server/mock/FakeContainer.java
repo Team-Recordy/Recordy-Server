@@ -39,12 +39,12 @@ public class FakeContainer {
     public final FakeKakaoFeignClient fakeKakaoFeignClient;
 
     // service
-    public final UserService userService;
     public final AuthPlatformService authKakaoPlatformService;
     public final AuthPlatformService authApplePlatformService;
     public final AuthPlatformServiceFactory authPlatformServiceFactory;
     public final AuthTokenService authTokenService;
     public final AuthService authService;
+    public final UserService userService;
 
     // security
     public final AuthFilterExceptionHandler authFilterExceptionHandler;
@@ -63,7 +63,6 @@ public class FakeContainer {
 
         this.fakeKakaoFeignClient = new FakeKakaoFeignClient();
 
-        this.userService = new UserServiceImpl(userRepository);
         this.authKakaoPlatformService = new FakeAuthKakaoPlatformServiceImpl(fakeKakaoFeignClient);
         this.authApplePlatformService = new FakeAuthApplePlatformServiceImpl();
         this.authPlatformServiceFactory = new AuthPlatformServiceFactory(List.of(authKakaoPlatformService, authApplePlatformService));
@@ -78,7 +77,8 @@ public class FakeContainer {
                 authTokenGenerator,
                 authTokenParser
         );
-        this.authService = new AuthServiceImpl(authRepository, authPlatformServiceFactory, authTokenService, userService);
+        this.authService = new AuthServiceImpl(authRepository, authPlatformServiceFactory, authTokenService);
+        this.userService = new UserServiceImpl(userRepository, authService);
 
         this.authFilterExceptionHandler = new AuthFilterExceptionHandler(new ObjectMapper());
         this.tokenAuthenticationFilter = new TokenAuthenticationFilter(
@@ -88,6 +88,6 @@ public class FakeContainer {
                 authFilterExceptionHandler
         );
 
-        this.userController = new UserController(authService, userService);
+        this.userController = new UserController(userService);
     }
 }
