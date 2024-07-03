@@ -1,6 +1,7 @@
 package org.recordy.server.mock;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.bouncycastle.jcajce.provider.asymmetric.RSA;
 import org.recordy.server.auth.repository.AuthRepository;
 import org.recordy.server.auth.security.TokenAuthenticationFilter;
 import org.recordy.server.auth.security.handler.AuthFilterExceptionHandler;
@@ -16,7 +17,13 @@ import org.recordy.server.mock.auth.FakeAuthApplePlatformServiceImpl;
 import org.recordy.server.mock.auth.FakeAuthKakaoPlatformServiceImpl;
 import org.recordy.server.mock.auth.FakeAuthRepository;
 import org.recordy.server.mock.auth.FakeKakaoFeignClient;
+import org.recordy.server.mock.record.FakeFileService;
+import org.recordy.server.mock.record.FakeRecordRepository;
 import org.recordy.server.mock.user.FakeUserRepository;
+import org.recordy.server.record.repository.RecordRepository;
+import org.recordy.server.record.service.FileService;
+import org.recordy.server.record.service.RecordService;
+import org.recordy.server.record.service.impl.RecordServiceImpl;
 import org.recordy.server.user.controller.UserController;
 import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.user.service.UserService;
@@ -30,12 +37,12 @@ public class FakeContainer {
     // repository
     public final UserRepository userRepository;
     public final AuthRepository authRepository;
+    public final RecordRepository recordRepository;
 
     // infrastructure
     public final AuthTokenSigningKeyProvider authTokenSigningKeyProvider;
     public final AuthTokenGenerator authTokenGenerator;
     public final AuthTokenParser authTokenParser;
-
     public final FakeKakaoFeignClient fakeKakaoFeignClient;
 
     // service
@@ -45,6 +52,8 @@ public class FakeContainer {
     public final AuthTokenService authTokenService;
     public final AuthService authService;
     public final UserService userService;
+    public final FileService fileService;
+    public final RecordService recordService;
 
     // security
     public final AuthFilterExceptionHandler authFilterExceptionHandler;
@@ -56,6 +65,7 @@ public class FakeContainer {
     public FakeContainer() {
         this.userRepository = new FakeUserRepository();
         this.authRepository = new FakeAuthRepository();
+        this.recordRepository = new FakeRecordRepository();
 
         this.authTokenSigningKeyProvider = new AuthTokenSigningKeyProvider(DomainFixture.TOKEN_SECRET);
         this.authTokenGenerator = new AuthTokenGenerator(authTokenSigningKeyProvider);
@@ -80,6 +90,8 @@ public class FakeContainer {
         );
         this.authService = new AuthServiceImpl(authRepository, authPlatformServiceFactory, authTokenService);
         this.userService = new UserServiceImpl(userRepository, authService, authTokenService);
+        this.fileService = new FakeFileService();
+        this.recordService = new RecordServiceImpl(recordRepository, fileService, userService);
 
         this.authFilterExceptionHandler = new AuthFilterExceptionHandler(new ObjectMapper());
         this.tokenAuthenticationFilter = new TokenAuthenticationFilter(
