@@ -1,4 +1,4 @@
-package org.recordy.server.record.service.dto;
+package org.recordy.server.record.domain;
 
 import org.springframework.web.multipart.MultipartFile;
 
