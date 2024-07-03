@@ -82,7 +82,7 @@ public class AuthRepositoryIntegrationTest {
     }
 
     @Test
-    void findByRefeshToken를_통해_refresh_token으로_인증_데이터를_조회할_수_있다() {
+    void ffindByRefreshToken를_통해_refresh_token으로_인증_데이터를_조회할_수_있다() {
         // given
         String id = "abc";
         boolean isSignedUp = true;
@@ -108,7 +108,7 @@ public class AuthRepositoryIntegrationTest {
     }
 
     @Test
-    void findByRefeshToken을_통해_존재하지_않는_refresh_token으로_인증_데이터를_조회하면_빈_값을_반환한다() {
+    void findByRefreshToken을_통해_존재하지_않는_refresh_token으로_인증_데이터를_조회하면_빈_값을_반환한다() {
         //when
         Optional<Auth> result = authRepository.findByRefreshToken("non-exist-refresh-token");
 

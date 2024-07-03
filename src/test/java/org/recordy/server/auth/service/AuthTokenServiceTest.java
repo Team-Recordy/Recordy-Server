@@ -180,10 +180,10 @@ public class AuthTokenServiceTest {
         authRepository.save(new Auth(authPlatform, authToken, true));
 
         //when
-        String platfromId = authTokenService.getPlatformIdFromRefreshToken(authToken.getRefreshToken());
+        String platformId = authTokenService.getPlatformIdFromRefreshToken(authToken.getRefreshToken());
 
         //then
-        assertThat(platfromId).isEqualTo(authPlatform.getId());
+        assertThat(platformId).isEqualTo(authPlatform.getId());
 
     }
 
