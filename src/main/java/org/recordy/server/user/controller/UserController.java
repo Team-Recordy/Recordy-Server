@@ -1,10 +1,13 @@
 package org.recordy.server.user.controller;
 
+import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.security.UserId;
 import org.recordy.server.user.domain.usecase.UserSignIn;
 import org.recordy.server.auth.service.AuthService;
+import org.recordy.server.auth.service.AuthTokenService;
 import org.recordy.server.user.controller.dto.request.UserSignInRequest;
+import org.recordy.server.user.controller.dto.response.UserReissueTokenResponse;
 import org.recordy.server.user.controller.dto.response.UserSignInResponse;
 import org.recordy.server.user.service.UserService;
 import org.springframework.http.HttpHeaders;
@@ -36,6 +39,29 @@ public class UserController implements UserApi {
     }
 
     @Override
+    @DeleteMapping("/logout")
+    public ResponseEntity signOut(
+            @UserId Long userId
+    ) {
+        userService.signOut(userId);
+        return  ResponseEntity
+                .noContent()
+                .build();
+    }
+
+
+    @Override
+    @GetMapping("/token")
+    public ResponseEntity<UserReissueTokenResponse> reissueToken(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String refreshToken
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(UserReissueTokenResponse.of(
+                        userService.reissueToken(refreshToken)
+                ));
+    }
+
     @GetMapping("/check-nickname")
     public ResponseEntity<Void> checkDuplicateNickname(
             @RequestParam String nickname

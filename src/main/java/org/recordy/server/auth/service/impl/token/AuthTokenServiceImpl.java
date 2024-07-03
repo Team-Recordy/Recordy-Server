@@ -4,6 +4,8 @@ import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.recordy.server.auth.domain.AuthToken;
 import org.recordy.server.auth.exception.AuthException;
+import org.recordy.server.auth.repository.AuthRepository;
+import org.recordy.server.auth.security.UserAuthentication;
 import org.recordy.server.auth.service.AuthTokenService;
 import org.recordy.server.auth.service.dto.AuthTokenValidationResult;
 import org.recordy.server.common.message.ErrorMessage;
@@ -28,7 +30,8 @@ public class AuthTokenServiceImpl implements AuthTokenService {
             @Value("${auth.token.key.user_id}") String userIdKey,
             @Value("${auth.token.key.token_type}") String tokenTypeKey,
             AuthTokenGenerator tokenGenerator,
-            AuthTokenParser tokenParser
+            AuthTokenParser tokenParser,
+            AuthRepository authRepository
     ) {
         this.tokenPrefix = tokenPrefix;
         this.accessTokenExpiration = accessTokenExpiration;
@@ -39,6 +42,7 @@ public class AuthTokenServiceImpl implements AuthTokenService {
         this.tokenTypeKey = tokenTypeKey;
         this.tokenGenerator = tokenGenerator;
         this.tokenParser = tokenParser;
+        this.authRepository = authRepository;
     }
 
     private final long accessTokenExpiration;
@@ -51,6 +55,7 @@ public class AuthTokenServiceImpl implements AuthTokenService {
 
     private final AuthTokenGenerator tokenGenerator;
     private final AuthTokenParser tokenParser;
+    private final AuthRepository authRepository;
 
     @Override
     public AuthToken issueToken(long userId) {
@@ -96,5 +101,22 @@ public class AuthTokenServiceImpl implements AuthTokenService {
         Claims claims = tokenParser.getBody(token);
 
         return Long.parseLong(claims.get(userIdKey).toString());
+    }
+    @Override
+    public String getPlatformIdFromRefreshToken(String refreshToken) {
+        String platfromId = authRepository.findByRefreshToken(refreshToken)
+                .orElseThrow(() -> new AuthException(ErrorMessage.AUTH_NOT_FOUND))
+                .getPlatform()
+                .getId();
+
+        return platfromId;
+    }
+
+    @Override
+    public String issueAccessToken(long userId) {
+        return tokenGenerator.generate(
+                        Map.of(userIdKey, userId, tokenTypeKey, accessTokenType),
+                        accessTokenExpiration
+        );
     }
 }

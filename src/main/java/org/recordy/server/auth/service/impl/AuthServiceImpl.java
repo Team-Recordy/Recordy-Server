@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.domain.Auth;
 import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.auth.domain.AuthToken;
+import org.recordy.server.auth.security.UserAuthentication;
+import org.recordy.server.auth.service.impl.token.AuthTokenGenerator;
 import org.recordy.server.user.domain.usecase.UserSignIn;
 import org.recordy.server.auth.exception.AuthException;
 import org.recordy.server.auth.repository.AuthRepository;
@@ -23,7 +25,6 @@ public class AuthServiceImpl implements AuthService {
     private final AuthRepository authRepository;
     private final AuthPlatformServiceFactory platformServiceFactory;
     private final AuthTokenService authTokenService;
-
     @Override
     public Auth create(User user, AuthPlatform platform) {
         AuthToken token = authTokenService.issueToken(user.getId());

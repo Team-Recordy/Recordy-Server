@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.user.domain.usecase.UserSignIn;
 import org.recordy.server.auth.exception.AuthException;
+import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.auth.service.AuthPlatformService;
 import org.recordy.server.common.message.ErrorMessage;
 import org.springframework.beans.factory.annotation.Value;
