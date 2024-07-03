@@ -3,11 +3,8 @@ package org.recordy.server.user.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.domain.Auth;
 import org.recordy.server.auth.domain.AuthPlatform;
-import org.recordy.server.auth.exception.AuthException;
-import org.recordy.server.auth.security.UserAuthentication;
 import org.recordy.server.auth.service.AuthService;
 import org.recordy.server.auth.service.AuthTokenService;
-import org.recordy.server.auth.service.impl.token.AuthTokenGenerator;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.UserStatus;
@@ -37,12 +34,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void validateDuplicateNickname(String nickname) {
-        if (userRepository.existsByNickname(nickname))
-            throw new UserException(ErrorMessage.DUPLICATE_NICKNAME);
-    }
-
-    @Override
     public void signOut(long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
@@ -60,6 +51,32 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(userId);
     }
 
+    @Override
+    public String reissueToken(String refreshToken) {
+        String platformId = authTokenService.getPlatformIdFromRefreshToken(refreshToken);
+        Long userId = getByPlatformId(platformId)
+                .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND))
+                .getId();
+
+        return authTokenService.issueAccessToken(userId);
+    }
+
+    @Override
+    public Optional<User> getByPlatformId(String platformId) {
+        return userRepository.findByPlatformId(platformId);
+    }
+
+    @Override
+    public Optional<User> getById(long userId) {
+        return userRepository.findById(userId);
+    }
+
+    @Override
+    public void validateDuplicateNickname(String nickname) {
+        if (userRepository.existsByNickname(nickname))
+            throw new UserException(ErrorMessage.DUPLICATE_NICKNAME);
+    }
+
     private User getOrCreateUser(AuthPlatform platform) {
         return getByPlatformId(platform.getId())
                 .orElseGet(() -> create(platform));
@@ -71,19 +88,4 @@ public class UserServiceImpl implements UserService {
                 .status(UserStatus.PENDING)
                 .build());
     }
-
-    public Optional<User> getByPlatformId(String platformId) {
-        return userRepository.findByPlatformId(platformId);
-    }
-
-    @Override
-    public String reissueToken(String refreshToken) {
-        String platformId = authTokenService.getPlatformIdFromRefreshToken(refreshToken);
-        Long userId = getByPlatformId(platformId)
-                .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND))
-                .getId();
-
-        return authTokenService.issueAccessToken(userId);
-    }
-
 }

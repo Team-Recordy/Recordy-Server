@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.recordy.server.record.service.dto.FileUrl;
 import org.recordy.server.user.domain.UserEntity;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -35,8 +36,8 @@ public class RecordEntity {
 
     public static RecordEntity from(Record record) {
         return new RecordEntity(
-                record.getVideoUrl(),
-                record.getThumbnailUrl(),
+                record.getFileUrl().videoUrl(),
+                record.getFileUrl().thumbnailUrl(),
                 record.getLocation(),
                 record.getContent(),
                 UserEntity.from(record.getUploader())
@@ -45,8 +46,8 @@ public class RecordEntity {
 
     public Record toDomain() {
         return new Record(
-                videoUrl,
-                thumbnailUrl,
+                id,
+                new FileUrl(videoUrl, thumbnailUrl),
                 location,
                 content,
                 user.toDomain()

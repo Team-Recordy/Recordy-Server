@@ -1,6 +1,7 @@
 package org.recordy.server.record.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.record.domain.File;
 import org.recordy.server.record.domain.Record;
@@ -9,6 +10,8 @@ import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.record.service.FileService;
 import org.recordy.server.record.service.RecordService;
 import org.recordy.server.record.service.dto.FileUrl;
+import org.recordy.server.user.domain.User;
+import org.recordy.server.user.exception.UserException;
 import org.recordy.server.user.service.UserService;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -26,9 +29,15 @@ public class RecordServiceImpl implements RecordService {
     @Override
     public Record create(RecordCreate recordCreate, File file) {
         FileUrl fileUrl = fileService.save(file);
+        User user = userService.getById(recordCreate.uploaderId())
+                .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
 
-
-        return null;
+        return recordRepository.save(Record.builder()
+                .fileUrl(fileUrl)
+                .location(recordCreate.location())
+                .content(recordCreate.content())
+                .uploader(user)
+                .build());
     }
 
     @Override
