@@ -18,6 +18,6 @@ public class ApplePublicKeys {
                 .stream()
                 .filter(k -> k.alg().equals(alg) && k.kid().equals(kid))
                 .findFirst()
-                .orElseThrow( () -> new AuthException(ErrorMessage.APPLE_INVAILD_JWT));
+                .orElseThrow( () -> new AuthException(ErrorMessage.APPLE_INVALID_JWT));
     }
 }
