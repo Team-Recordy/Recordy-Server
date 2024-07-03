@@ -4,6 +4,7 @@ import org.recordy.server.auth.domain.Auth;
 import org.recordy.server.auth.domain.AuthEntity;
 import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.auth.domain.AuthToken;
+import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.record.domain.File;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.RecordEntity;
@@ -54,6 +55,14 @@ public final class DomainFixture {
     public static final String THUMBNAIL_URL = "thumbnail_url";
     public static final String LOCATION = "location";
     public static final String CONTENT = "content";
+
+    /**
+     * KEYWORD
+     */
+    public static final Long KEYWORD_ID = 1L;
+    public static final String KEYWORD_1 = Keyword.EXOTIC.name();
+    public static final String KEYWORD_2 = Keyword.QUITE.name();
+    public static final String KEYWORD_3 = Keyword.TRENDY.name();
 
     public static AuthPlatform createAuthPlatform() {
         return new AuthPlatform(PLATFORM_ID, KAKAO_PLATFORM_TYPE);
