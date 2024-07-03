@@ -50,6 +50,16 @@ public interface UserApi {
                     @ApiResponse(
                             responseCode = "200",
                             description = "요청이 성공했습니다."
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "존재하지 않는 회원입니다.",
+                            content = @Content
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "인증 정보를 찾을 수 없습니다.",
+                            content = @Content
                     )
             }
     )
@@ -112,6 +122,16 @@ public interface UserApi {
                                         implementation = UserReissueTokenResponse.class
                                     )
                             )
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "존재하지 않는 회원입니다.",
+                            content = @Content
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "인증 정보를 찾을 수 없습니다.",
+                            content = @Content
                     )
             }
     )
