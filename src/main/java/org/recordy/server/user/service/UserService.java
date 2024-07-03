@@ -14,4 +14,5 @@ public interface UserService {
 
     // query
     void validateDuplicateNickname(String nickname);
+    void validateNicknameFormat(String nickname);
 }

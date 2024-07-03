@@ -14,6 +14,7 @@ import org.recordy.server.user.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @RequiredArgsConstructor
 @Service
@@ -21,6 +22,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final AuthService authService;
+    private static final Pattern NICKNAME_PATTERN = Pattern.compile("^[가-힣0-9_.]+$");
 
     @Override
     public Auth signIn(UserSignIn userSignIn) {
@@ -61,4 +63,12 @@ public class UserServiceImpl implements UserService {
     public Optional<User> getByPlatformId(String platformId) {
         return userRepository.findByPlatformId(platformId);
     }
+
+    @Override
+    public void validateNicknameFormat(String nickname) {
+        if (!NICKNAME_PATTERN.matcher(nickname).matches()) {
+            throw new UserException(ErrorMessage.INVALID_NICKNAME_FORMAT);
+        }
+    }
+
 }
