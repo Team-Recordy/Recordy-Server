@@ -13,6 +13,7 @@ import org.recordy.server.record.service.dto.FileUrl;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.exception.UserException;
 import org.recordy.server.user.service.UserService;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
@@ -46,8 +47,8 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public Slice<Record> getRecentRecords(long cursorId, int size) {
-        return null;
+    public Slice<Record> getRecentRecordsLaterThanCursor(long cursorId, int size) {
+        return recordRepository.findAllByIdAfterOrderByIdDesc(cursorId, PageRequest.ofSize(size));
     }
 
     @Override

@@ -8,8 +8,8 @@ import java.util.List;
 
 public class QueryDslUtils {
 
-    public static BooleanExpression goeCursorId(Long cursor, NumberPath<Long> id) {
-        return cursor == null ? null : id.goe(cursor);
+    public static BooleanExpression ltCursorId(Long cursor, NumberPath<Long> id) {
+        return cursor == null ? null : id.lt(cursor);
     }
 
     public static <T> boolean hasNext(Pageable pageable, List<T> content) {

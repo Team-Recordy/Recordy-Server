@@ -15,7 +15,7 @@ public interface RecordService {
 
     // query
     Slice<Record> getFamousRecords(long cursorId, int size);
-    Slice<Record> getRecentRecords(long cursorId, int size);
+    Slice<Record> getRecentRecordsLaterThanCursor(long cursorId, int size);
     Slice<Record> getRecentRecordsByKeyword(List<Keyword> keywords, long cursorId, int size);
     Slice<Record> getRecentRecordsByUser(long userId, long cursorId, int size);
 }

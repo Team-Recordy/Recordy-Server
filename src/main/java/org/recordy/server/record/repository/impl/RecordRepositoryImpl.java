@@ -15,6 +15,7 @@ import java.util.List;
 public class RecordRepositoryImpl implements RecordRepository {
 
     private final RecordJpaRepository recordJpaRepository;
+    private final RecordQueryDslRepository recordQueryDslRepository;
 
     @Override
     public Record save(Record record) {
@@ -28,8 +29,9 @@ public class RecordRepositoryImpl implements RecordRepository {
     }
 
     @Override
-    public Slice<Record> findAllOrderByCreatedAtDesc(long cursor, Pageable pageable) {
-        return null;
+    public Slice<Record> findAllByIdAfterOrderByIdDesc(long cursor, Pageable pageable) {
+        return recordQueryDslRepository.findAllByIdAfterOrderByIdDesc(cursor, pageable)
+                .map(RecordEntity::toDomain);
     }
 
     @Override
