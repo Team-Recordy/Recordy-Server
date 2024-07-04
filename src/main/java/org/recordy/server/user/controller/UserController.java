@@ -35,6 +35,8 @@ public class UserController implements UserApi {
                 ));
     }
 
+
+
     @Override
     @GetMapping("/check-nickname")
     public ResponseEntity<Void> checkDuplicateNickname(
@@ -58,4 +60,5 @@ public class UserController implements UserApi {
                 .status(HttpStatus.OK)
                 .build();
     }
+
 }

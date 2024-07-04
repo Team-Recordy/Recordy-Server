@@ -5,7 +5,9 @@ import org.recordy.server.auth.domain.Auth;
 import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.auth.service.AuthService;
 import org.recordy.server.common.message.ErrorMessage;
+import org.recordy.server.user.controller.dto.request.UserSignUpRequest;
 import org.recordy.server.user.domain.User;
+import org.recordy.server.user.domain.UserEntity;
 import org.recordy.server.user.domain.UserStatus;
 import org.recordy.server.user.domain.usecase.UserSignIn;
 import org.recordy.server.user.exception.UserException;
@@ -33,6 +35,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User signUp(UserSignUpRequest userSignUpRequest) {
+        validateDuplicateNickname(userSignUpRequest.nickname()); //닉네임 중복 다시 검사
+        validateNicknameFormat(userSignUpRequest.nickname()); //
+        UserStatus status = (userSignUpRequest.useTerm() && userSignUpRequest.personalInfoTerm()) ? UserStatus.ACTIVE : UserStatus.PENDING;
+
+        User user = User.builder()
+                .nickname(userSignUpRequest.nickname())
+                .status(status)
+                .useTerm(userSignUpRequest.useTerm())
+                .personalInfoTerm(userSignUpRequest.personalInfoTerm())
+                .build();
+
+        return userRepository.save(user);
+    }
+
+    @Override
     public void validateDuplicateNickname(String nickname) {
         if (userRepository.existsByNickname(nickname))
             throw new UserException(ErrorMessage.DUPLICATE_NICKNAME);
@@ -46,6 +64,13 @@ public class UserServiceImpl implements UserService {
 
         authService.signOut(user.getAuthPlatform().getId());
         userRepository.deleteById(userId);
+    }
+
+    @Override
+    public void validateNicknameFormat(String nickname) {
+        if (!NICKNAME_PATTERN.matcher(nickname).matches()) {
+            throw new UserException(ErrorMessage.INVALID_NICKNAME_FORMAT);
+        }
     }
 
     private User getOrCreateUser(AuthPlatform platform) {
@@ -64,11 +89,5 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByPlatformId(platformId);
     }
 
-    @Override
-    public void validateNicknameFormat(String nickname) {
-        if (!NICKNAME_PATTERN.matcher(nickname).matches()) {
-            throw new UserException(ErrorMessage.INVALID_NICKNAME_FORMAT);
-        }
-    }
 
 }
