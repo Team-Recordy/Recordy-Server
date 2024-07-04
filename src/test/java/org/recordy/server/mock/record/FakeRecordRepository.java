@@ -4,7 +4,9 @@ import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.repository.RecordRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,8 +37,17 @@ public class FakeRecordRepository implements RecordRepository {
     }
 
     @Override
-    public Slice<Record> findAllOrderByCreatedAtDesc(long cursor, Pageable pageable) {
-        return null;
+    public Slice<Record> findAllByIdAfterOrderByIdDesc(long cursor, Pageable pageable) {
+        List<Record> content = records.keySet().stream()
+                .filter(key -> key < cursor)
+                .map(records::get)
+                .sorted(Comparator.comparing(Record::getId).reversed())
+                .toList();
+
+        if (content.size() < pageable.getPageSize())
+            return new SliceImpl<>(content, pageable, false);
+
+        return new SliceImpl<>(content.subList(0, pageable.getPageSize()), pageable, true);
     }
 
     @Override

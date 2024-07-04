@@ -3,3 +3,15 @@ values (1, 'abcdefg', 'KAKAO', 'ACTIVE');
 
 insert into `records` (`id`, `user_id`, `content`, `location`,`thumbnail_url`, `video_url`)
 values (1, 1, 'content', 'location', 'thumbnail_url', 'video_url');
+
+insert into `records` (`id`, `user_id`, `content`, `location`,`thumbnail_url`, `video_url`)
+values (2, 1, 'content', 'location', 'thumbnail_url', 'video_url');
+
+insert into `records` (`id`, `user_id`, `content`, `location`,`thumbnail_url`, `video_url`)
+values (3, 1, 'content', 'location', 'thumbnail_url', 'video_url');
+
+insert into `records` (`id`, `user_id`, `content`, `location`,`thumbnail_url`, `video_url`)
+values (4, 1, 'content', 'location', 'thumbnail_url', 'video_url');
+
+insert into `records` (`id`, `user_id`, `content`, `location`,`thumbnail_url`, `video_url`)
+values (5, 1, 'content', 'location', 'thumbnail_url', 'video_url');

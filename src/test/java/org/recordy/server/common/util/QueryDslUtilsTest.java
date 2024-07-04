@@ -13,28 +13,28 @@ import static org.assertj.core.api.Assertions.assertThat;
 class QueryDslUtilsTest {
 
     @Test
-    void goeCursorId를_통해_cursor가_null일_경우_null을_반환한다() {
+    void ltCursorId를_통해_cursor가_null일_경우_null을_반환한다() {
         // given
         Long cursor = null;
 
         // when
-        BooleanExpression result = QueryDslUtils.goeCursorId(cursor, null);
+        BooleanExpression result = QueryDslUtils.ltCursorId(cursor, null);
 
         // then
         assertThat(result).isNull();
     }
 
     @Test
-    void goeCursorId를_통해_id가_cursor보다_큰지_아닌지를_검증하는_쿼리를_반환한다() {
+    void ltCursorId를_통해_id가_cursor보다_작은지_아닌지를_검증하는_쿼리를_반환한다() {
         // given
         Long cursor = 1L;
         NumberPath<Long> id = Expressions.numberPath(Long.class, "id");
 
         // when
-        BooleanExpression result = QueryDslUtils.goeCursorId(cursor, id);
+        BooleanExpression result = QueryDslUtils.ltCursorId(cursor, id);
 
         // then
-        assertThat(result.toString()).isEqualTo("id >= " + cursor);
+        assertThat(result.toString()).isEqualTo("id < " + cursor);
     }
 
     @Test
