@@ -2,12 +2,14 @@ package org.recordy.server.record.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.recordy.server.keyword.domain.KeywordEntity;
 import org.recordy.server.record.service.dto.FileUrl;
 import org.recordy.server.user.domain.UserEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -29,10 +31,12 @@ public class RecordEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    @OneToMany(mappedBy = "record", cascade = CascadeType.ALL)
-    private List<UploadEntity> uploads;
+    @OneToMany(mappedBy = "record", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UploadEntity> uploads = new ArrayList<>();
 
-    public RecordEntity(String videoUrl, String thumbnailUrl, String location, String content, UserEntity user) {
+    @Builder
+    public RecordEntity(Long id, String videoUrl, String thumbnailUrl, String location, String content, UserEntity user) {
+        this.id = id;
         this.videoUrl = videoUrl;
         this.thumbnailUrl = thumbnailUrl;
         this.location = location;
@@ -41,26 +45,42 @@ public class RecordEntity {
     }
 
     public static RecordEntity from(Record record) {
-        return new RecordEntity(
+        RecordEntity recordEntity = new RecordEntity(
+                record.getId(),
                 record.getFileUrl().videoUrl(),
                 record.getFileUrl().thumbnailUrl(),
                 record.getLocation(),
                 record.getContent(),
                 UserEntity.from(record.getUploader())
         );
+
+        record.keywords.stream()
+                .map(KeywordEntity::from)
+                .map(keywordEntity -> UploadEntity.of(recordEntity, keywordEntity))
+                .forEach(recordEntity::addUpload);
+
+        return recordEntity;
+    }
+
+    private void addUpload(UploadEntity upload) {
+        uploads.add(upload);
+        upload.setRecord(this);
     }
 
     public Record toDomain() {
-        return new Record(
-                id,
-                new FileUrl(videoUrl, thumbnailUrl),
-                location,
-                content,
-                uploads.stream()
+        return Record.builder()
+                .id(id)
+                .fileUrl(new FileUrl(
+                        videoUrl,
+                        thumbnailUrl
+                ))
+                .location(location)
+                .content(content)
+                .keywords(uploads.stream()
                         .map(UploadEntity::getKeyword)
                         .map(KeywordEntity::toDomain)
-                        .toList(),
-                user.toDomain()
-        );
+                        .toList())
+                .uploader(user.toDomain())
+                .build();
     }
 }
