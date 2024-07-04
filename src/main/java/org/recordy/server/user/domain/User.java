@@ -14,4 +14,6 @@ public class User {
     private AuthPlatform authPlatform;
     private UserStatus status;
     private String nickname;
+    private boolean useTerm;
+    private boolean personalInfoTerm;
 }
