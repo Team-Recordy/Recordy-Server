@@ -24,8 +24,6 @@ public class UserEntity extends JpaMetaInfoEntity {
     private UserStatus status;
     private String nickname;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TermEntity> terms;
 
     public UserEntity(Long id, String platformId, AuthPlatform.Type platformType, UserStatus status, String nickname) {
         this.id = id;
