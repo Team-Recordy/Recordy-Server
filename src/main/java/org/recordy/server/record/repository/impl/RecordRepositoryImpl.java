@@ -1,6 +1,7 @@
 package org.recordy.server.record.repository.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.RecordEntity;
 import org.recordy.server.record.repository.RecordRepository;
@@ -35,7 +36,7 @@ public class RecordRepositoryImpl implements RecordRepository {
     }
 
     @Override
-    public Slice<Record> findAllByIdAfterAndKeywordIdsOrderByIdDesc(List<Long> keywordIds, long cursor, Pageable pageable) {
+    public Slice<Record> findAllByIdAfterAndKeywordsOrderByIdDesc(List<Keyword> keywords, long cursor, Pageable pageable) {
         return null;
     }
 

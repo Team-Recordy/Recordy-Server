@@ -1,5 +1,6 @@
 package org.recordy.server.mock.record;
 
+import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.repository.RecordRepository;
 import org.springframework.data.domain.Pageable;
@@ -51,7 +52,7 @@ public class FakeRecordRepository implements RecordRepository {
     }
 
     @Override
-    public Slice<Record> findAllByIdAfterAndKeywordIdsOrderByIdDesc(List<Long> keywordIds, long cursor, Pageable pageable) {
+    public Slice<Record> findAllByIdAfterAndKeywordsOrderByIdDesc(List<Keyword> keywords, long cursor, Pageable pageable) {
         return null;
     }
 
