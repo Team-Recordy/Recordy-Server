@@ -35,7 +35,7 @@ public class RecordRepositoryImpl implements RecordRepository {
     }
 
     @Override
-    public Slice<Record> findAllByKeywordIdsOrderByCreatedAtDesc(List<Long> keywordIds, long cursor, Pageable pageable) {
+    public Slice<Record> findAllByIdAfterAndKeywordIdsOrderByIdDesc(List<Long> keywordIds, long cursor, Pageable pageable) {
         return null;
     }
 

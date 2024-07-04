@@ -2,7 +2,6 @@ package org.recordy.server.record.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.message.ErrorMessage;
-import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.record.domain.File;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.usecase.RecordCreate;
@@ -52,8 +51,8 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public Slice<Record> getRecentRecordsByKeyword(List<Keyword> keywords, long cursorId, int size) {
-        return null;
+    public Slice<Record> getRecentRecordsByKeywordIds(List<Long> keywordIds, long cursorId, int size) {
+        return recordRepository.findAllByIdAfterAndKeywordIdsOrderByIdDesc(keywordIds, cursorId, PageRequest.ofSize(size));
     }
 
     @Override
