@@ -2,6 +2,8 @@ package org.recordy.server.user.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.security.UserId;
+import org.recordy.server.user.controller.dto.request.UserSignUpRequest;
+import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.usecase.UserSignIn;
 import org.recordy.server.auth.service.AuthService;
 import org.recordy.server.user.controller.dto.request.UserSignInRequest;
@@ -35,7 +37,12 @@ public class UserController implements UserApi {
                 ));
     }
 
-
+    @Override
+    @PostMapping("/signUp")
+    public ResponseEntity<Void> signUp(@RequestBody UserSignUpRequest request) {
+        userService.signUp(request);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
 
     @Override
     @GetMapping("/check-nickname")

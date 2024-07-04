@@ -7,7 +7,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.recordy.server.auth.security.UserId;
 import org.recordy.server.user.controller.dto.request.UserSignInRequest;
+import org.recordy.server.user.controller.dto.request.UserSignUpRequest;
 import org.recordy.server.user.controller.dto.response.UserSignInResponse;
+import org.recordy.server.user.domain.User;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -77,4 +79,22 @@ public interface UserApi {
     public ResponseEntity<Void> delete(
             @UserId Long userId
     );
+
+    @Operation(
+            summary = "유저 회원 등록 API",
+            description = "유저 회원 등록하는 API입니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "성공",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = void.class
+                                    )
+                            )
+                    )
+            }
+    )
+    public ResponseEntity<Void> signUp(@RequestBody UserSignUpRequest request);
 }
