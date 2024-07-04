@@ -4,8 +4,11 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.recordy.server.keyword.domain.KeywordEntity;
 import org.recordy.server.record.service.dto.FileUrl;
 import org.recordy.server.user.domain.UserEntity;
+
+import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -25,6 +28,9 @@ public class RecordEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserEntity user;
+
+    @OneToMany(mappedBy = "record", cascade = CascadeType.ALL)
+    private List<UploadEntity> uploads;
 
     public RecordEntity(String videoUrl, String thumbnailUrl, String location, String content, UserEntity user) {
         this.videoUrl = videoUrl;
@@ -50,6 +56,10 @@ public class RecordEntity {
                 new FileUrl(videoUrl, thumbnailUrl),
                 location,
                 content,
+                uploads.stream()
+                        .map(UploadEntity::getKeyword)
+                        .map(KeywordEntity::toDomain)
+                        .toList(),
                 user.toDomain()
         );
     }
