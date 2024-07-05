@@ -118,7 +118,7 @@ public interface UserApi {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(
-                                        implementation = UserReissueTokenResponse.class
+                                            implementation = UserReissueTokenResponse.class
                                     )
                             )
                     ),
@@ -134,9 +134,9 @@ public interface UserApi {
                     )
             }
     )
-     public ResponseEntity<UserReissueTokenResponse> reissueToken(
+    public ResponseEntity<UserReissueTokenResponse> reissueToken(
             @RequestHeader(HttpHeaders.AUTHORIZATION) String refreshToken
-     );
+    );
 
     @Operation(
             summary = "유저 회원 등록 API",

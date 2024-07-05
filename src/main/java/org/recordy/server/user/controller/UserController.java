@@ -49,7 +49,7 @@ public class UserController implements UserApi {
             @UserId Long userId
     ) {
         userService.signOut(userId);
-        return  ResponseEntity
+        return ResponseEntity
                 .noContent()
                 .build();
     }

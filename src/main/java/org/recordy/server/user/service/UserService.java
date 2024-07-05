@@ -11,13 +11,19 @@ public interface UserService {
 
     // command
     Auth signIn(UserSignIn userSignIn);
+
     void signOut(long userId);
+
     User signUp(UserSignUpRequest userSignUpRequest);
+
     void delete(long userId);
+
     String reissueToken(String refreshToken);
 
     // query
     Optional<User> getByPlatformId(String platformId);
+
     void validateDuplicateNickname(String nickname);
+
     void validateNicknameFormat(String nickname);
 }
