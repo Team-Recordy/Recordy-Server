@@ -15,6 +15,7 @@ public class KeywordEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true, nullable = false)
     @Enumerated(EnumType.STRING)
     private Keyword keyword;
 
