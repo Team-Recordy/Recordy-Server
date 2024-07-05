@@ -85,7 +85,8 @@ public final class DomainFixture {
                 DEFAULT_USER_STATUS,
                 USER_NICKNAME,
                 createUserEntity().isUseTerm(),
-                createUserEntity().isPersonalInfoTerm()
+                createUserEntity().isPersonalInfoTerm(),
+                createUserEntity().isAgeTerm()
         );
     }
 }
