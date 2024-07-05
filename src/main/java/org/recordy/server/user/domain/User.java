@@ -28,15 +28,15 @@ public class User {
     private TermsAgreement termsAgreement;
 
     public User activate(UserSignUp userSignUp) {
-        validateNicknameFormat(nickname);
+        validateNicknameFormat(userSignUp.nickname());
         validateTermsAgreed(userSignUp.termsAgreement());
 
         return User.builder()
                 .id(this.id)
                 .authPlatform(this.authPlatform)
-                .nickname(nickname)
+                .nickname(userSignUp.nickname())
                 .status(ACTIVE)
-                .termsAgreement(termsAgreement)
+                .termsAgreement(userSignUp.termsAgreement())
                 .build();
     }
 
@@ -47,7 +47,7 @@ public class User {
     }
 
     private void validateTermsAgreed(TermsAgreement termsAgreement) {
-        if (!termsAgreement.ageTerm() && !termsAgreement.useTerm() && !termsAgreement.personalInfoTerm()) {
+        if (!termsAgreement.ageTerm() || !termsAgreement.useTerm() || !termsAgreement.personalInfoTerm()) {
             throw new UserException(ErrorMessage.INVALID_REQUEST_TERM);
         }
     }
