@@ -36,16 +36,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User signUp(UserSignUpRequest userSignUpRequest) {
-        User existingUser = userRepository.findByPlatformId(userSignUpRequest.platformId())
+        User existingUser = userRepository.findById(userSignUpRequest.userId())
                 .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
         validateDuplicateNickname(userSignUpRequest.nickname()); //닉네임 중복 다시 검사
         validateNicknameFormat(userSignUpRequest.nickname()); //닉네임 형식 검사
         UserStatus status = checkTermAllTrue(userSignUpRequest.useTerm(), userSignUpRequest.personalInfoTerm());
-        existingUser.setNickname(userSignUpRequest.nickname());
-        existingUser.setStatus(status);
-        existingUser.setUseTerm(userSignUpRequest.useTerm());
-        existingUser.setPersonalInfoTerm(userSignUpRequest.personalInfoTerm());
-        return userRepository.save(existingUser);
+        User updatedUser = existingUser.activate(
+                userSignUpRequest.nickname(),
+                status,
+                userSignUpRequest.useTerm(),
+                userSignUpRequest.personalInfoTerm()
+        );
+        return userRepository.save(updatedUser);
     }
 
     @Override
@@ -74,9 +76,8 @@ public class UserServiceImpl implements UserService {
         if (useTerm && personalInfoTerm) {
             return UserStatus.ACTIVE;
         }
-        else {
-            throw new UserException(ErrorMessage.INVALID_REQUEST_TERM);
-        }
+        throw new UserException(ErrorMessage.INVALID_REQUEST_TERM);
+
     }
 
     private User getOrCreateUser(AuthPlatform platform) {

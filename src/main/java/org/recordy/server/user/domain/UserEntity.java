@@ -11,7 +11,6 @@ import java.util.List;
 @Getter
 @Table(name = "users")
 @Entity
-@Setter
 public class UserEntity extends JpaMetaInfoEntity {
 
     @Id

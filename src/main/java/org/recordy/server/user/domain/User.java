@@ -9,7 +9,6 @@ import org.recordy.server.auth.domain.AuthPlatform;
 @AllArgsConstructor
 @Builder
 @Getter
-@Setter
 public class User {
 
     private Long id;
@@ -18,4 +17,15 @@ public class User {
     private String nickname;
     private boolean useTerm;
     private boolean personalInfoTerm;
+
+    public User activate(String nickname, UserStatus status, boolean useTerm, boolean personalInfoTerm) {
+        return User.builder()
+                .id(this.id)
+                .authPlatform(this.authPlatform)
+                .nickname(nickname)
+                .status(status)
+                .useTerm(useTerm)
+                .personalInfoTerm(personalInfoTerm)
+                .build();
+    }
 }
