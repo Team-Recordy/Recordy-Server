@@ -6,11 +6,10 @@ import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.auth.service.AuthService;
 import org.recordy.server.auth.service.AuthTokenService;
 import org.recordy.server.common.message.ErrorMessage;
-import org.recordy.server.user.controller.dto.request.TermsAgreement;
-import org.recordy.server.user.controller.dto.request.UserSignUpRequest;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.UserStatus;
 import org.recordy.server.user.domain.usecase.UserSignIn;
+import org.recordy.server.user.domain.usecase.UserSignUp;
 import org.recordy.server.user.exception.UserException;
 import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.user.service.UserService;
@@ -27,7 +26,6 @@ public class UserServiceImpl implements UserService {
     private final AuthService authService;
     private static final Pattern NICKNAME_PATTERN = Pattern.compile("^[가-힣0-9_.]+$");
     private final AuthTokenService authTokenService;
-
 
     @Override
     public Auth signIn(UserSignIn userSignIn) {
@@ -50,33 +48,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User signUp(UserSignUpRequest userSignUpRequest) {
-        User pendingUser = userRepository.findById(userSignUpRequest.userId())
+    public User signUp(UserSignUp userSignUp) {
+        validateDuplicateNickname(userSignUp.nickname());
+
+        User pendingUser = userRepository.findById(userSignUp.userId())
                 .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
+        User updatedUser = pendingUser.activate(userSignUp);
 
-        validateDuplicateNickname(userSignUpRequest.nickname()); //닉네임 중복 다시 검사
-        validateNicknameFormat(userSignUpRequest.nickname()); //닉네임 형식 검사
-        UserStatus status = checkTermAllTrue(userSignUpRequest.termsAgreement());
-        User updatedUser = pendingUser.activate(
-                userSignUpRequest.nickname(),
-                status,
-                userSignUpRequest.termsAgreement()
-        );
         return userRepository.save(updatedUser);
-    }
-
-    private void validateNicknameFormat(String nickname) {
-        if (!NICKNAME_PATTERN.matcher(nickname).matches()) {
-            throw new UserException(ErrorMessage.INVALID_NICKNAME_FORMAT);
-        }
-    }
-
-    private UserStatus checkTermAllTrue(TermsAgreement termsAgreement) {
-        if (termsAgreement.ageTerm() && termsAgreement.useTerm() && termsAgreement.personalInfoTerm()) {
-            return UserStatus.ACTIVE;
-        }
-
-        throw new UserException(ErrorMessage.INVALID_REQUEST_TERM);
     }
 
     @Override
@@ -110,6 +89,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> getByPlatformId(String platformId) {
         return userRepository.findByPlatformId(platformId);
+    }
+
+    @Override
+    public Optional<User> getById(long id) {
+        return userRepository.findById(id);
     }
 
     @Override

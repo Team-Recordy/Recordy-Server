@@ -154,6 +154,8 @@ public interface UserApi {
                     )
             }
     )
-    public ResponseEntity<Void> signUp(@RequestBody UserSignUpRequest request);
-
+    public ResponseEntity<Void> signUp(
+            @UserId Long userId,
+            @RequestBody UserSignUpRequest request
+    );
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.common.domain.JpaMetaInfoEntity;
+import org.recordy.server.user.controller.dto.request.TermsAgreement;
 
 import java.util.List;
 
@@ -26,15 +27,15 @@ public class UserEntity extends JpaMetaInfoEntity {
     private boolean personalInfoTerm;
     private boolean ageTerm;
 
-    public UserEntity(Long id, String platformId, AuthPlatform.Type platformType, UserStatus status, String nickname, boolean useTerm, boolean personalInfoTerm, boolean ageTerm) {
+    public UserEntity(Long id, String platformId, AuthPlatform.Type platformType, UserStatus status, String nickname, TermsAgreement termsAgreement) {
         this.id = id;
         this.platformId = platformId;
         this.platformType = platformType;
         this.status = status;
         this.nickname = nickname;
-        this.useTerm = useTerm;
-        this.personalInfoTerm = personalInfoTerm;
-        this.ageTerm = ageTerm;
+        this.useTerm = termsAgreement.useTerm();
+        this.personalInfoTerm = termsAgreement.personalInfoTerm();
+        this.ageTerm = termsAgreement.ageTerm();
     }
 
     public static UserEntity from(User user) {
@@ -44,9 +45,7 @@ public class UserEntity extends JpaMetaInfoEntity {
                 user.getAuthPlatform().getType(),
                 user.getStatus(),
                 user.getNickname(),
-                user.isUseTerm(),
-                user.isPersonalInfoTerm(),
-                user.isAgeTerm()
+                user.getTermsAgreement()
         );
     }
 
@@ -56,9 +55,7 @@ public class UserEntity extends JpaMetaInfoEntity {
                 new AuthPlatform(platformId, platformType),
                 status,
                 nickname,
-                useTerm,
-                personalInfoTerm,
-                ageTerm
+                TermsAgreement.of(useTerm, personalInfoTerm, ageTerm)
         );
     }
 }
