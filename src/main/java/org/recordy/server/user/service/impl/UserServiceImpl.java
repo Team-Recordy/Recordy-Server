@@ -16,7 +16,6 @@ import org.recordy.server.user.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 @RequiredArgsConstructor
 @Service
@@ -24,7 +23,6 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final AuthService authService;
-    private static final Pattern NICKNAME_PATTERN = Pattern.compile("^[가-힣0-9_.]+$");
     private final AuthTokenService authTokenService;
 
     @Override
