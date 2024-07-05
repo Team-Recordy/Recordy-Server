@@ -1,10 +1,7 @@
 package org.recordy.server.record.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.recordy.server.keyword.domain.KeywordEntity;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -17,7 +14,6 @@ public class UploadEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Setter
     @ManyToOne
     @JoinColumn(name = "record_id")
     private RecordEntity record;
@@ -26,12 +22,16 @@ public class UploadEntity {
     @JoinColumn(name = "keyword_id")
     private KeywordEntity keyword;
 
-    public UploadEntity(RecordEntity record, KeywordEntity keyword) {
+    @Builder
+    public UploadEntity(Long id, RecordEntity record, KeywordEntity keyword) {
         this.record = record;
         this.keyword = keyword;
     }
 
     public static UploadEntity of(RecordEntity record, KeywordEntity keyword) {
-        return new UploadEntity(record, keyword);
+        return UploadEntity.builder()
+                .record(record)
+                .keyword(keyword)
+                .build();
     }
 }

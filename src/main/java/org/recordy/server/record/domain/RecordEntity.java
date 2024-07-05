@@ -31,7 +31,7 @@ public class RecordEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    @OneToMany(mappedBy = "record", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "record")
     private List<UploadEntity> uploads = new ArrayList<>();
 
     @Builder
@@ -45,7 +45,7 @@ public class RecordEntity {
     }
 
     public static RecordEntity from(Record record) {
-        RecordEntity recordEntity = new RecordEntity(
+        return new RecordEntity(
                 record.getId(),
                 record.getFileUrl().videoUrl(),
                 record.getFileUrl().thumbnailUrl(),
@@ -53,18 +53,10 @@ public class RecordEntity {
                 record.getContent(),
                 UserEntity.from(record.getUploader())
         );
-
-        record.keywords.stream()
-                .map(KeywordEntity::from)
-                .map(keywordEntity -> UploadEntity.of(recordEntity, keywordEntity))
-                .forEach(recordEntity::addUpload);
-
-        return recordEntity;
     }
 
     private void addUpload(UploadEntity upload) {
         uploads.add(upload);
-        upload.setRecord(this);
     }
 
     public Record toDomain() {
