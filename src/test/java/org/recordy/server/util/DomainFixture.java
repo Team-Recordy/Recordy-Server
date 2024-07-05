@@ -10,10 +10,12 @@ import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.RecordEntity;
 import org.recordy.server.record.domain.usecase.RecordCreate;
 import org.recordy.server.record.service.dto.FileUrl;
+import org.recordy.server.user.controller.dto.request.TermsAgreement;
 import org.recordy.server.user.domain.usecase.UserSignIn;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.UserEntity;
 import org.recordy.server.user.domain.UserStatus;
+import org.recordy.server.user.domain.usecase.UserSignUp;
 import org.springframework.mock.web.MockMultipartFile;
 
 import java.util.List;
@@ -25,7 +27,10 @@ public final class DomainFixture {
      */
     public static final Long USER_ID = 1L;
     public static final UserStatus DEFAULT_USER_STATUS = UserStatus.ACTIVE;
-    public static final String USER_NICKNAME = "recordy";
+    public static final String USER_NICKNAME = "레코디";
+    public static final boolean USE_TERM_AGREEMENT = true;
+    public static final boolean PERSONAL_INFO_TERM_AGREEMENT = true;
+    public static final boolean AGE_TERM_AGREEMENT = true;
 
     /**
      * AUTH
@@ -78,13 +83,6 @@ public final class DomainFixture {
         );
     }
 
-    public static UserSignIn createUserSignIn(AuthPlatform.Type platformType) {
-        return new UserSignIn(
-                PLATFORM_TOKEN,
-                platformType
-        );
-    }
-
     public static Auth createAuth(boolean isSignedUp) {
         return new Auth(
                 createAuthPlatform(),
@@ -103,11 +101,32 @@ public final class DomainFixture {
         );
     }
 
+    public static UserSignIn createUserSignIn(AuthPlatform.Type platformType) {
+        return new UserSignIn(
+                PLATFORM_TOKEN,
+                platformType
+        );
+    }
+
+    public static UserSignUp createUserSignUp() {
+        return new UserSignUp(
+                USER_ID,
+                USER_NICKNAME,
+                TermsAgreement.of(
+                        USE_TERM_AGREEMENT,
+                        PERSONAL_INFO_TERM_AGREEMENT,
+                        AGE_TERM_AGREEMENT
+                )
+        );
+    }
+
     public static User createUser(UserStatus userStatus) {
         return User.builder()
                 .id(USER_ID)
                 .authPlatform(createAuthPlatform())
                 .status(userStatus)
+                .nickname(USER_NICKNAME)
+                .termsAgreement(TermsAgreement.of(USE_TERM_AGREEMENT, PERSONAL_INFO_TERM_AGREEMENT, AGE_TERM_AGREEMENT))
                 .build();
     }
 
@@ -118,9 +137,7 @@ public final class DomainFixture {
                 KAKAO_PLATFORM_TYPE,
                 DEFAULT_USER_STATUS,
                 USER_NICKNAME,
-                createUserEntity().isUseTerm(),
-                createUserEntity().isPersonalInfoTerm(),
-                createUserEntity().isAgeTerm()
+                TermsAgreement.of(USE_TERM_AGREEMENT, PERSONAL_INFO_TERM_AGREEMENT, AGE_TERM_AGREEMENT)
         );
     }
 
