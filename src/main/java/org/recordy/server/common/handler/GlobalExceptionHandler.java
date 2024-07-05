@@ -53,19 +53,19 @@ public class GlobalExceptionHandler {
                 .body(ErrorResponse.of(ErrorMessage.METHOD_NOT_SUPPORTED));
     }
 
-//    @ExceptionHandler(MethodArgumentNotValidException.class)
-//    protected ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
-//        FieldError fieldError = e.getBindingResult().getFieldError();
-//
-//        if (Objects.isNull(fieldError))
-//            return ResponseEntity
-//                    .status(HttpStatus.BAD_REQUEST)
-//                    .body(ErrorResponse.of(ErrorMessage.VALIDATION_REQUEST_MISSING_EXCEPTION));
-//
-//        return ResponseEntity
-//                .status(HttpStatus.BAD_REQUEST)
-//                .body(ErrorResponse.of(HttpStatus.BAD_REQUEST.value(), fieldError.getDefaultMessage()));
-//    }
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    protected ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
+        FieldError fieldError = e.getBindingResult().getFieldError();
+
+        if (Objects.isNull(fieldError))
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(ErrorResponse.of(ErrorMessage.VALIDATION_REQUEST_MISSING_EXCEPTION));
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.of(HttpStatus.BAD_REQUEST.value(), fieldError.getDefaultMessage()));
+    }
 
     // COMMON - SERVER ERROR
     @ExceptionHandler(Exception.class)
