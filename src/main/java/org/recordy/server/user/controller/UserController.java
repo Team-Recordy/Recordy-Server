@@ -41,7 +41,9 @@ public class UserController implements UserApi {
     @PostMapping("/signUp")
     public ResponseEntity<Void> signUp(@RequestBody UserSignUpRequest request) {
         userService.signUp(request);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.
+                status(HttpStatus.CREATED).
+                build();
     }
 
     @Override
