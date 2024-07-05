@@ -11,6 +11,7 @@ import java.util.List;
 @Getter
 @Table(name = "users")
 @Entity
+@Setter
 public class UserEntity extends JpaMetaInfoEntity {
 
     @Id
@@ -25,8 +26,6 @@ public class UserEntity extends JpaMetaInfoEntity {
     private String nickname;
     private boolean useTerm;
     private boolean personalInfoTerm;
-
-
 
     public UserEntity(Long id, String platformId, AuthPlatform.Type platformType, UserStatus status, String nickname, boolean useTerm, boolean personalInfoTerm) {
         this.id = id;

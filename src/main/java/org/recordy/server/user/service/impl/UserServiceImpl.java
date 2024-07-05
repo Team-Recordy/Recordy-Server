@@ -36,18 +36,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User signUp(UserSignUpRequest userSignUpRequest) {
+        User existingUser = userRepository.findByPlatformId(userSignUpRequest.platformId())
+                .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
         validateDuplicateNickname(userSignUpRequest.nickname()); //닉네임 중복 다시 검사
-        validateNicknameFormat(userSignUpRequest.nickname()); //
-        UserStatus status = (userSignUpRequest.useTerm() && userSignUpRequest.personalInfoTerm()) ? UserStatus.ACTIVE : UserStatus.PENDING;
-
-        User user = User.builder()
-                .nickname(userSignUpRequest.nickname())
-                .status(status)
-                .useTerm(userSignUpRequest.useTerm())
-                .personalInfoTerm(userSignUpRequest.personalInfoTerm())
-                .build();
-
-        return userRepository.save(user);
+        validateNicknameFormat(userSignUpRequest.nickname()); //닉네임 형식 검사
+        UserStatus status = checkTermAllTrue(userSignUpRequest.useTerm(), userSignUpRequest.personalInfoTerm());
+        existingUser.setNickname(userSignUpRequest.nickname());
+        existingUser.setStatus(status);
+        existingUser.setUseTerm(userSignUpRequest.useTerm());
+        existingUser.setPersonalInfoTerm(userSignUpRequest.personalInfoTerm());
+        return userRepository.save(existingUser);
     }
 
     @Override
@@ -66,10 +64,18 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(userId);
     }
 
-    @Override
     public void validateNicknameFormat(String nickname) {
         if (!NICKNAME_PATTERN.matcher(nickname).matches()) {
             throw new UserException(ErrorMessage.INVALID_NICKNAME_FORMAT);
+        }
+    }
+
+    public UserStatus checkTermAllTrue(boolean useTerm, boolean personalInfoTerm){
+        if (useTerm && personalInfoTerm) {
+            return UserStatus.ACTIVE;
+        }
+        else {
+            throw new UserException(ErrorMessage.INVALID_REQUEST_TERM);
         }
     }
 

@@ -17,6 +17,8 @@ public enum ErrorMessage {
     METHOD_NOT_SUPPORTED(HttpStatus.METHOD_NOT_ALLOWED, "지원하지 않는 HTTP 메소드입니다."),
     INVALID_NICKNAME_FORMAT(HttpStatus.BAD_REQUEST, "유효하지 않은 닉네임 형식입니다."),
     VALIDATION_REQUEST_MISSING_EXCEPTION(HttpStatus.BAD_REQUEST, "요청 값이 유효하지 않습니다."),
+    INVALID_REQUEST_TERM(HttpStatus.BAD_REQUEST, "필수 동의항목에 모두 동의해주세요"),
+
     /**
      * 401 Unauthorized
      */
