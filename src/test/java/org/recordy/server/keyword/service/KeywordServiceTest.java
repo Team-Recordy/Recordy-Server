@@ -28,9 +28,9 @@ class KeywordServiceTest {
         // then
         assertAll(
                 () -> assertThat(result.size()).isEqualTo(Keyword.values().length),
-                () -> assertThat(result.get(0).name()).isEqualTo(DomainFixture.KEYWORD_1),
-                () -> assertThat(result.get(1).name()).isEqualTo(DomainFixture.KEYWORD_2),
-                () -> assertThat(result.get(2).name()).isEqualTo(DomainFixture.KEYWORD_3)
+                () -> assertThat(result.get(0)).isEqualTo(DomainFixture.KEYWORD_1),
+                () -> assertThat(result.get(1)).isEqualTo(DomainFixture.KEYWORD_2),
+                () -> assertThat(result.get(2)).isEqualTo(DomainFixture.KEYWORD_3)
         );
     }
 }

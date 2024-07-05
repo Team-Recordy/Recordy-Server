@@ -1,7 +1,6 @@
 package org.recordy.server.mock;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.bouncycastle.jcajce.provider.asymmetric.RSA;
 import org.recordy.server.auth.repository.AuthRepository;
 import org.recordy.server.auth.security.TokenAuthenticationFilter;
 import org.recordy.server.auth.security.handler.AuthFilterExceptionHandler;

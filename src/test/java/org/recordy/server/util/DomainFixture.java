@@ -16,6 +16,8 @@ import org.recordy.server.user.domain.UserEntity;
 import org.recordy.server.user.domain.UserStatus;
 import org.springframework.mock.web.MockMultipartFile;
 
+import java.util.List;
+
 public final class DomainFixture {
 
     /**
@@ -60,9 +62,10 @@ public final class DomainFixture {
      * KEYWORD
      */
     public static final Long KEYWORD_ID = 1L;
-    public static final String KEYWORD_1 = Keyword.EXOTIC.name();
-    public static final String KEYWORD_2 = Keyword.QUITE.name();
-    public static final String KEYWORD_3 = Keyword.TRENDY.name();
+    public static final Keyword KEYWORD_1 = Keyword.EXOTIC;
+    public static final Keyword KEYWORD_2 = Keyword.QUITE;
+    public static final Keyword KEYWORD_3 = Keyword.TRENDY;
+    public static final List<Keyword> KEYWORDS = List.of(Keyword.EXOTIC, Keyword.QUITE, Keyword.TRENDY);
 
     public static AuthPlatform createAuthPlatform() {
         return new AuthPlatform(PLATFORM_ID, KAKAO_PLATFORM_TYPE);
@@ -122,7 +125,8 @@ public final class DomainFixture {
         return new RecordCreate(
                 USER_ID,
                 LOCATION,
-                CONTENT
+                CONTENT,
+                KEYWORDS
         );
     }
 
@@ -139,12 +143,14 @@ public final class DomainFixture {
                 new FileUrl(VIDEO_URL, THUMBNAIL_URL),
                 LOCATION,
                 CONTENT,
+                KEYWORDS,
                 createUser(UserStatus.ACTIVE)
         );
     }
 
     public static RecordEntity createRecordEntity() {
         return new RecordEntity(
+                RECORD_ID,
                 VIDEO_URL,
                 THUMBNAIL_URL,
                 LOCATION,

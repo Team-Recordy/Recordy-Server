@@ -1,7 +1,12 @@
 package org.recordy.server.record.repository;
 
 import org.junit.jupiter.api.Test;
+import org.recordy.server.keyword.domain.KeywordEntity;
+import org.recordy.server.keyword.repository.impl.KeywordJpaRepository;
 import org.recordy.server.record.domain.Record;
+import org.recordy.server.record.domain.RecordEntity;
+import org.recordy.server.record.domain.UploadEntity;
+import org.recordy.server.record.repository.impl.UploadJpaRepository;
 import org.recordy.server.util.DomainFixture;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,6 +15,8 @@ import org.springframework.data.domain.Slice;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -24,6 +31,9 @@ class RecordRepositoryIntegrationTest {
 
     @Autowired
     private RecordRepository recordRepository;
+
+    @Autowired
+    private UploadJpaRepository uploadRepository;
 
     @Test
     void save를_통해_레코드_데이터를_저장할_수_있다() {
@@ -40,6 +50,47 @@ class RecordRepositoryIntegrationTest {
                 () -> assertThat(result.getFileUrl().thumbnailUrl()).isEqualTo(DomainFixture.THUMBNAIL_URL),
                 () -> assertThat(result.getLocation()).isEqualTo(DomainFixture.LOCATION),
                 () -> assertThat(result.getContent()).isEqualTo(DomainFixture.CONTENT)
+        );
+    }
+
+    @Test
+    void save를_통해_레코드와_관련한_키워드로부터_업로드_데이터를_저장할_수_있다() {
+        // given
+        Record record = DomainFixture.createRecord();
+
+        // when
+        Record savedRecord = recordRepository.save(record);
+        List<UploadEntity> uploads = uploadRepository.findAllByRecord(RecordEntity.from(savedRecord));
+
+        // then
+        assertAll(
+                () -> assertThat(uploads).hasSize(3),
+                () -> assertThat(uploads.get(0).getKeyword().toDomain()).isEqualTo(DomainFixture.KEYWORD_1),
+                () -> assertThat(uploads.get(1).getKeyword().toDomain()).isEqualTo(DomainFixture.KEYWORD_2),
+                () -> assertThat(uploads.get(2).getKeyword().toDomain()).isEqualTo(DomainFixture.KEYWORD_3)
+        );
+        assertAll(
+                () -> assertThat(uploads.get(0).getRecord().getId()).isEqualTo(savedRecord.getId()),
+                () -> assertThat(uploads.get(1).getRecord().getId()).isEqualTo(savedRecord.getId()),
+                () -> assertThat(uploads.get(2).getRecord().getId()).isEqualTo(savedRecord.getId())
+        );
+    }
+
+    @Test
+    void save를_통해_저장한_업로드는_관련된_레코드를_참조할_수_있다() {
+        // given
+        Record record = DomainFixture.createRecord();
+        Record savedRecord = recordRepository.save(record);
+
+        // when
+        List<UploadEntity> uploads = uploadRepository.findAllByRecord(RecordEntity.from(savedRecord));
+
+        // then
+        assertAll(
+                () -> assertThat(uploads).hasSize(3),
+                () -> assertThat(uploads.get(0).getRecord().getId()).isEqualTo(savedRecord.getId()),
+                () -> assertThat(uploads.get(1).getRecord().getId()).isEqualTo(savedRecord.getId()),
+                () -> assertThat(uploads.get(2).getRecord().getId()).isEqualTo(savedRecord.getId())
         );
     }
 
