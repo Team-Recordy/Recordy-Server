@@ -24,8 +24,9 @@ public class UserEntity extends JpaMetaInfoEntity {
     private String nickname;
     private boolean useTerm;
     private boolean personalInfoTerm;
+    private boolean ageTerm;
 
-    public UserEntity(Long id, String platformId, AuthPlatform.Type platformType, UserStatus status, String nickname, boolean useTerm, boolean personalInfoTerm) {
+    public UserEntity(Long id, String platformId, AuthPlatform.Type platformType, UserStatus status, String nickname, boolean useTerm, boolean personalInfoTerm, boolean ageTerm) {
         this.id = id;
         this.platformId = platformId;
         this.platformType = platformType;
@@ -33,6 +34,7 @@ public class UserEntity extends JpaMetaInfoEntity {
         this.nickname = nickname;
         this.useTerm = useTerm;
         this.personalInfoTerm = personalInfoTerm;
+        this.ageTerm = ageTerm;
     }
 
     public static UserEntity from(User user) {
@@ -43,7 +45,8 @@ public class UserEntity extends JpaMetaInfoEntity {
                 user.getStatus(),
                 user.getNickname(),
                 user.isUseTerm(),
-                user.isPersonalInfoTerm()
+                user.isPersonalInfoTerm(),
+                user.isAgeTerm()
         );
     }
 
@@ -54,7 +57,8 @@ public class UserEntity extends JpaMetaInfoEntity {
                 status,
                 nickname,
                 useTerm,
-                personalInfoTerm
+                personalInfoTerm,
+                ageTerm
         );
     }
 }
