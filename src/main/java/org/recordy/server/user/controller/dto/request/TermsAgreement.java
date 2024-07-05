@@ -1,6 +1,6 @@
 package org.recordy.server.user.controller.dto.request;
 
-public record TermAgreementRequest(
+public record TermsAgreement(
         boolean useTerm,
         boolean personalInfoTerm,
         boolean ageTerm
