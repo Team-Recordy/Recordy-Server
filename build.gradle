@@ -48,6 +48,9 @@ dependencies {
     // HTTP CLIENT
     implementation platform("org.springframework.cloud:spring-cloud-dependencies:2023.0.1")
     implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
+
+    //FFmpeg
+    implementation group: 'net.bramp.ffmpeg', name: 'ffmpeg', version: '0.7.0'
 }
 
 tasks.named('test') {
