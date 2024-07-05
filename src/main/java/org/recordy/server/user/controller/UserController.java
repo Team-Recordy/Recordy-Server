@@ -1,11 +1,10 @@
 package org.recordy.server.user.controller;
 
-import java.security.Principal;
+
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.security.UserId;
+import org.recordy.server.user.controller.dto.request.UserSignUpRequest;
 import org.recordy.server.user.domain.usecase.UserSignIn;
-import org.recordy.server.auth.service.AuthService;
-import org.recordy.server.auth.service.AuthTokenService;
 import org.recordy.server.user.controller.dto.request.UserSignInRequest;
 import org.recordy.server.user.controller.dto.response.UserReissueTokenResponse;
 import org.recordy.server.user.controller.dto.response.UserSignInResponse;
@@ -13,10 +12,7 @@ import org.recordy.server.user.service.UserService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
@@ -39,12 +35,21 @@ public class UserController implements UserApi {
     }
 
     @Override
+    @PostMapping("/signUp")
+    public ResponseEntity<Void> signUp(@RequestBody UserSignUpRequest request) {
+        userService.signUp(request);
+        return ResponseEntity.
+                status(HttpStatus.CREATED).
+                build();
+    }
+
+    @Override
     @DeleteMapping("/logout")
     public ResponseEntity signOut(
             @UserId Long userId
     ) {
         userService.signOut(userId);
-        return  ResponseEntity
+        return ResponseEntity
                 .noContent()
                 .build();
     }
