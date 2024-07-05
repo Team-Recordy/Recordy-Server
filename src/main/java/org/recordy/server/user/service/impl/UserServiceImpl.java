@@ -5,6 +5,7 @@ import org.recordy.server.auth.domain.Auth;
 import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.auth.service.AuthService;
 import org.recordy.server.common.message.ErrorMessage;
+import org.recordy.server.user.controller.dto.request.TermAgreementRequest;
 import org.recordy.server.user.controller.dto.request.UserSignUpRequest;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.UserEntity;
@@ -40,12 +41,13 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
         validateDuplicateNickname(userSignUpRequest.nickname()); //닉네임 중복 다시 검사
         validateNicknameFormat(userSignUpRequest.nickname()); //닉네임 형식 검사
-        UserStatus status = checkTermAllTrue(userSignUpRequest.useTerm(), userSignUpRequest.personalInfoTerm());
+        UserStatus status = checkTermAllTrue(userSignUpRequest.termAgreementRequest());
         User updatedUser = existingUser.activate(
                 userSignUpRequest.nickname(),
                 status,
                 userSignUpRequest.useTerm(),
-                userSignUpRequest.personalInfoTerm()
+                userSignUpRequest.personalInfoTerm(),
+                userSignUpRequest.ageTerm()
         );
         return userRepository.save(updatedUser);
     }
@@ -72,8 +74,8 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    public UserStatus checkTermAllTrue(boolean useTerm, boolean personalInfoTerm) {
-        if (useTerm && personalInfoTerm) {
+    public UserStatus checkTermAllTrue(TermAgreementRequest termAgreementRequest) {
+        if (termAgreementRequest.ageTerm() && termAgreementRequest.useTerm() && termAgreementRequest.personalInfoTerm()) {
             return UserStatus.ACTIVE;
         }
         throw new UserException(ErrorMessage.INVALID_REQUEST_TERM);
