@@ -56,7 +56,7 @@ public class UserController implements UserApi {
 
 
     @Override
-    @GetMapping("/token")
+    @PostMapping("/token")
     public ResponseEntity<UserReissueTokenResponse> reissueToken(
             @RequestHeader(HttpHeaders.AUTHORIZATION) String refreshToken
     ) {
