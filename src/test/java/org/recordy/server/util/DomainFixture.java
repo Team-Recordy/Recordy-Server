@@ -83,7 +83,10 @@ public final class DomainFixture {
                 PLATFORM_ID,
                 KAKAO_PLATFORM_TYPE,
                 DEFAULT_USER_STATUS,
-                USER_NICKNAME
+                USER_NICKNAME,
+                createUserEntity().isUseTerm(),
+                createUserEntity().isPersonalInfoTerm(),
+                createUserEntity().isAgeTerm()
         );
     }
 }
