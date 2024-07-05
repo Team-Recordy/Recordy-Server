@@ -38,22 +38,23 @@ public class UserController implements UserApi {
     @PostMapping("/signUp")
     public ResponseEntity<Void> signUp(@RequestBody UserSignUpRequest request) {
         userService.signUp(request);
+
         return ResponseEntity.
                 status(HttpStatus.CREATED).
                 build();
     }
 
     @Override
-    @DeleteMapping("/logout")
-    public ResponseEntity signOut(
-            @UserId Long userId
+    @GetMapping("/check-nickname")
+    public ResponseEntity<Void> checkDuplicateNickname(
+            @RequestParam String nickname
     ) {
-        userService.signOut(userId);
+        userService.validateDuplicateNickname(nickname);
+
         return ResponseEntity
-                .noContent()
+                .status(HttpStatus.OK)
                 .build();
     }
-
 
     @Override
     @GetMapping("/token")
@@ -67,14 +68,15 @@ public class UserController implements UserApi {
                 ));
     }
 
-    @GetMapping("/check-nickname")
-    public ResponseEntity<Void> checkDuplicateNickname(
-            @RequestParam String nickname
+    @Override
+    @DeleteMapping("/logout")
+    public ResponseEntity<Void> signOut(
+            @UserId Long userId
     ) {
-        userService.validateDuplicateNickname(nickname);
+        userService.signOut(userId);
 
         return ResponseEntity
-                .status(HttpStatus.OK)
+                .noContent()
                 .build();
     }
 
