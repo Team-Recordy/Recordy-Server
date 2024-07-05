@@ -1,21 +1,18 @@
 package org.recordy.server.user.controller;
 
+
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.security.UserId;
 import org.recordy.server.user.controller.dto.request.UserSignUpRequest;
-import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.usecase.UserSignIn;
-import org.recordy.server.auth.service.AuthService;
 import org.recordy.server.user.controller.dto.request.UserSignInRequest;
+import org.recordy.server.user.controller.dto.response.UserReissueTokenResponse;
 import org.recordy.server.user.controller.dto.response.UserSignInResponse;
 import org.recordy.server.user.service.UserService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
@@ -47,6 +44,29 @@ public class UserController implements UserApi {
     }
 
     @Override
+    @DeleteMapping("/logout")
+    public ResponseEntity signOut(
+            @UserId Long userId
+    ) {
+        userService.signOut(userId);
+        return  ResponseEntity
+                .noContent()
+                .build();
+    }
+
+
+    @Override
+    @GetMapping("/token")
+    public ResponseEntity<UserReissueTokenResponse> reissueToken(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String refreshToken
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(UserReissueTokenResponse.of(
+                        userService.reissueToken(refreshToken)
+                ));
+    }
+
     @GetMapping("/check-nickname")
     public ResponseEntity<Void> checkDuplicateNickname(
             @RequestParam String nickname
@@ -69,5 +89,4 @@ public class UserController implements UserApi {
                 .status(HttpStatus.OK)
                 .build();
     }
-
 }

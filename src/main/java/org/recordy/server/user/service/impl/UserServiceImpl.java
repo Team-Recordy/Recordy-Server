@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.domain.Auth;
 import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.auth.service.AuthService;
+import org.recordy.server.auth.service.AuthTokenService;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.user.controller.dto.request.TermsAgreement;
 import org.recordy.server.user.controller.dto.request.UserSignUpRequest;
@@ -25,6 +26,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final AuthService authService;
     private static final Pattern NICKNAME_PATTERN = Pattern.compile("^[가-힣0-9_.]+$");
+    private final AuthTokenService authTokenService;
 
     @Override
     public Auth signIn(UserSignIn userSignIn) {
@@ -55,6 +57,14 @@ public class UserServiceImpl implements UserService {
             throw new UserException(ErrorMessage.DUPLICATE_NICKNAME);
     }
 
+    @Override
+    public void signOut(long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
+
+        authService.signOut(user.getAuthPlatform().getId());
+    }
+
     // TODO: 영상 도메인 추가되면 관련된 영상 및 시청기록도 삭제
     @Override
     public void delete(long userId) {
@@ -63,6 +73,16 @@ public class UserServiceImpl implements UserService {
 
         authService.signOut(user.getAuthPlatform().getId());
         userRepository.deleteById(userId);
+    }
+
+    @Override
+    public String reissueToken(String refreshToken) {
+        String platformId = authTokenService.getPlatformIdFromRefreshToken(refreshToken);
+        Long userId = getByPlatformId(platformId)
+                .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND))
+                .getId();
+
+        return authTokenService.issueAccessToken(userId);
     }
 
     public void validateNicknameFormat(String nickname) {
@@ -94,6 +114,7 @@ public class UserServiceImpl implements UserService {
     public Optional<User> getByPlatformId(String platformId) {
         return userRepository.findByPlatformId(platformId);
     }
+
 
 
 }
