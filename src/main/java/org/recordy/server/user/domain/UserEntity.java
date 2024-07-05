@@ -16,7 +16,6 @@ public class UserEntity extends JpaMetaInfoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String platformId;
     @Enumerated(EnumType.STRING)
     private AuthPlatform.Type platformType;

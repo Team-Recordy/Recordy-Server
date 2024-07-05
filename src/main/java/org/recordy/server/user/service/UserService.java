@@ -11,10 +11,13 @@ public interface UserService {
 
     // command
     Auth signIn(UserSignIn userSignIn);
+
     void delete(long userId);
+
     User signUp(UserSignUpRequest userSignUpRequest);
 
     // query
     void validateDuplicateNickname(String nickname);
+
     void validateNicknameFormat(String nickname);
 }

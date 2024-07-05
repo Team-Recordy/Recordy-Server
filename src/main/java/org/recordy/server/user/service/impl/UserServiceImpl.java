@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    public UserStatus checkTermAllTrue(boolean useTerm, boolean personalInfoTerm){
+    public UserStatus checkTermAllTrue(boolean useTerm, boolean personalInfoTerm) {
         if (useTerm && personalInfoTerm) {
             return UserStatus.ACTIVE;
         }
