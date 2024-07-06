@@ -6,6 +6,7 @@ import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.auth.service.AuthService;
 import org.recordy.server.auth.service.AuthTokenService;
 import org.recordy.server.common.message.ErrorMessage;
+import org.recordy.server.user.controller.dto.request.TermsAgreement;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.UserStatus;
 import org.recordy.server.user.domain.usecase.UserSignIn;
@@ -42,6 +43,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(User.builder()
                 .authPlatform(platform)
                 .status(UserStatus.PENDING)
+                .termsAgreement(TermsAgreement.defaultAgreement())
                 .build());
     }
 
