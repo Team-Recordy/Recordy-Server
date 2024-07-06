@@ -90,10 +90,9 @@ public class AuthTokenServiceImpl implements AuthTokenService {
 
     @Override
     public String getTokenFromRequest(HttpServletRequest request) {
-        return Optional.ofNullable(request.getHeader(HttpHeaders.AUTHORIZATION))
-                .filter(t -> t.startsWith(tokenPrefix))
-                .map(t -> t.substring(tokenPrefix.length()))
-                .orElseThrow(() -> new AuthException(ErrorMessage.INVALID_TOKEN));
+        String value = request.getHeader(HttpHeaders.AUTHORIZATION);
+
+        return removePrefix(value);
     }
 
     @Override
@@ -102,21 +101,26 @@ public class AuthTokenServiceImpl implements AuthTokenService {
 
         return Long.parseLong(claims.get(userIdKey).toString());
     }
+
     @Override
     public String getPlatformIdFromRefreshToken(String refreshToken) {
-        String platfromId = authRepository.findByRefreshToken(refreshToken)
+        return authRepository.findByRefreshToken(removePrefix(refreshToken))
                 .orElseThrow(() -> new AuthException(ErrorMessage.AUTH_NOT_FOUND))
                 .getPlatform()
                 .getId();
-
-        return platfromId;
     }
-
     @Override
     public String issueAccessToken(long userId) {
         return tokenGenerator.generate(
                         Map.of(userIdKey, userId, tokenTypeKey, accessTokenType),
                         accessTokenExpiration
         );
+    }
+
+    private String removePrefix(String value) {
+        return Optional.ofNullable(value)
+                .filter(t -> t.startsWith(tokenPrefix))
+                .map(t -> t.substring(tokenPrefix.length()))
+                .orElseThrow(() -> new AuthException(ErrorMessage.INVALID_TOKEN));
     }
 }
