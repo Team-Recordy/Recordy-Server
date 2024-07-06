@@ -47,7 +47,7 @@ public class User {
     }
 
     private void validateTermsAgreed(TermsAgreement termsAgreement) {
-        if (!termsAgreement.ageTerm() || !termsAgreement.useTerm() || !termsAgreement.personalInfoTerm()) {
+        if (termsAgreement.ageTerm() && termsAgreement.useTerm() && termsAgreement.personalInfoTerm()) {
             throw new UserException(ErrorMessage.INVALID_REQUEST_TERM);
         }
     }
