@@ -120,7 +120,7 @@ public class AuthTokenServiceImpl implements AuthTokenService {
     private String removePrefix(String value) {
         return Optional.ofNullable(value)
                 .filter(t -> t.startsWith(tokenPrefix))
-                .map(t -> t.substring(tokenPrefix.length()))
+                .map(t -> t.substring(tokenPrefix.length() + 1))
                 .orElseThrow(() -> new AuthException(ErrorMessage.INVALID_TOKEN));
     }
 }
