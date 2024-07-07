@@ -48,6 +48,10 @@ dependencies {
     // HTTP CLIENT
     implementation platform("org.springframework.cloud:spring-cloud-dependencies:2023.0.1")
     implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
+
+    //Multipart file
+    implementation("software.amazon.awssdk:bom:2.21.0")
+    implementation("software.amazon.awssdk:s3:2.21.0")
 }
 
 tasks.named('test') {
