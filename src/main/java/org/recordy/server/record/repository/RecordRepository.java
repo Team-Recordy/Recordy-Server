@@ -11,6 +11,7 @@ public interface RecordRepository {
 
     // command
     Record save(Record record);
+    void deleteById(long recordId);
 
     // query
     Slice<Record> findAllOrderByPopularity(long cursor, Pageable pageable);

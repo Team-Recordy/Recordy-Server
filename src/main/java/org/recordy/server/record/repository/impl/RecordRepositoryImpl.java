@@ -43,6 +43,11 @@ public class RecordRepositoryImpl implements RecordRepository {
     }
 
     @Override
+    public void deleteById(long recordId) {
+        recordJpaRepository.deleteById(recordId);
+    }
+
+    @Override
     public Slice<Record> findAllOrderByPopularity(long cursor, Pageable pageable) {
         return null;
     }

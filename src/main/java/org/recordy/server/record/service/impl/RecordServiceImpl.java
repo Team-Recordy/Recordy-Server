@@ -42,6 +42,11 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
+    public void delete(long recordId) {
+        recordRepository.deleteById(recordId);
+    }
+
+    @Override
     public Slice<Record> getFamousRecords(long cursorId, int size) {
         return null;
     }

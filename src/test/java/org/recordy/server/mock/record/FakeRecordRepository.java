@@ -47,6 +47,11 @@ public class FakeRecordRepository implements RecordRepository {
     }
 
     @Override
+    public void deleteById(long recordId) {
+        records.remove(recordId);
+    }
+
+    @Override
     public Slice<Record> findAllOrderByPopularity(long cursor, Pageable pageable) {
         return null;
     }
