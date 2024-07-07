@@ -3,15 +3,13 @@ package org.recordy.server.external.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import software.amazon.awssdk.auth.credentials.SystemPropertyCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 
 @Configuration
 public class AwsConfig {
-
-    private static final String AWS_ACCESS_KEY_ID = "aws.accessKeyId";
-    private static final String AWS_SECRET_ACCESS_KEY = "aws.secretAccessKey";
 
     private final String accessKey;
     private final String secretKey;
@@ -26,22 +24,11 @@ public class AwsConfig {
     }
 
     @Bean
-    public SystemPropertyCredentialsProvider systemPropertyCredentialsProvider() {
-        System.setProperty(AWS_ACCESS_KEY_ID, accessKey);
-        System.setProperty(AWS_SECRET_ACCESS_KEY, secretKey);
-        return SystemPropertyCredentialsProvider.create();
-    }
-
-    @Bean
-    public Region getRegion() {
-        return Region.of(regionString);
-    }
-
-    @Bean
     public S3Client getS3Client() {
+        AwsBasicCredentials awsCreds = AwsBasicCredentials.create(accessKey, secretKey);
         return S3Client.builder()
-                .region(getRegion())
-                .credentialsProvider(systemPropertyCredentialsProvider())
+                .region(Region.of(regionString))
+                .credentialsProvider(StaticCredentialsProvider.create(awsCreds))
                 .build();
     }
 }
