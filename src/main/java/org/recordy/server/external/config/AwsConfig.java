@@ -25,7 +25,6 @@ public class AwsConfig {
         this.regionString = regionString;
     }
 
-
     @Bean
     public SystemPropertyCredentialsProvider systemPropertyCredentialsProvider() {
         System.setProperty(AWS_ACCESS_KEY_ID, accessKey);
