@@ -1,7 +1,7 @@
 package org.recordy.server.external.service;
 
 import org.recordy.server.common.message.ErrorMessage;
-import org.recordy.server.external.config.AwsConfig;
+import org.recordy.server.external.config.S3Config;
 import org.recordy.server.external.exception.ExternalException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -10,6 +10,7 @@ import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -19,18 +20,18 @@ import java.util.UUID;
 public class S3Service {
 
     private final String bucketName;
-    private final AwsConfig awsConfig;
+    private final S3Config s3Config;
     private static final List<String> IMAGE_EXTENSIONS = Arrays.asList("image/jpeg", "image/png", "image/jpg", "image/webp");
     private static final List<String> VIDEO_EXTENSIONS = Arrays.asList("video/mp4");
 
-    public S3Service(@Value("${aws-property.s3-bucket-name}") final String bucketName, AwsConfig awsConfig) {
+    public S3Service(@Value("${aws-property.s3-bucket-name}") final String bucketName, S3Config s3Config) {
         this.bucketName = bucketName;
-        this.awsConfig = awsConfig;
+        this.s3Config = s3Config;
     }
 
     public String uploadImage(String directoryPath, MultipartFile image) throws IOException {
-        final String key = directoryPath + generateImageFileName();
-        final S3Client s3Client = awsConfig.getS3Client();
+        final String key = directoryPath + "/" + generateImageFileName();
+        final S3Client s3Client = s3Config.getS3Client();
 
         validateImageExtension(image);
         validateImageSize(image);
@@ -48,8 +49,8 @@ public class S3Service {
     }
 
     public String uploadVideo(String directoryPath, MultipartFile video) throws IOException {
-        final String key = directoryPath + generateVideoFileName();
-        final S3Client s3Client = awsConfig.getS3Client();
+        final String key = directoryPath + "/" + generateVideoFileName();
+        final S3Client s3Client = s3Config.getS3Client();
 
         validateVideoExtension(video);
         validateVideoSize(video);
@@ -65,14 +66,14 @@ public class S3Service {
         s3Client.putObject(request, requestBody);
         return key;
     }
-    public void deleteFile(String key) throws IOException {
-        final S3Client s3Client = awsConfig.getS3Client();
 
-        s3Client.deleteObject((DeleteObjectRequest.Builder builder) ->
-                builder.bucket(bucketName)
-                        .key(key)
-                        .build()
-        );
+    public void deleteFile(String key) throws IOException {
+        final S3Client s3Client = s3Config.getS3Client();
+
+        s3Client.deleteObject(DeleteObjectRequest.builder()
+                .bucket(bucketName)
+                .key(key)
+                .build());
     }
 
     private String generateImageFileName() {
@@ -97,8 +98,8 @@ public class S3Service {
         }
     }
 
-    private static final Long MAX_IMAGE_SIZE = 5 * 1024 * 1024L; //5MB
-    private static final Long MAX_VIDEO_SIZE = 100 * 1024 * 1024L; //100MB
+    private static final Long MAX_IMAGE_SIZE = 5 * 1024 * 1024L; // 5MB
+    private static final Long MAX_VIDEO_SIZE = 100 * 1024 * 1024L; // 100MB
     private void validateImageSize(MultipartFile image) {
         if (image.getSize() > MAX_IMAGE_SIZE) {
             throw new ExternalException(ErrorMessage.INVALID_IMAGE_FORMAT);
