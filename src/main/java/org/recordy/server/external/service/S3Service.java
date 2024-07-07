@@ -18,7 +18,8 @@ public class S3Service {
 
     private final String bucketName;
     private final AwsConfig awsConfig;
-    private static final List<String> IMAGE_EXTENSIONS = Arrays.asList("image/jpeg", "image/png", "image/jpg", "image/webp", "video/mp4");
+    private static final List<String> IMAGE_EXTENSIONS = Arrays.asList("image/jpeg", "image/png", "image/jpg", "image/webp");
+    private static final List<String> VIDEO_EXTENSIONS = Arrays.asList("video/mp4");
 
     public S3Service(@Value("${aws-property.s3-bucket-name}") final String bucketName, AwsConfig awsConfig) {
         this.bucketName = bucketName;
@@ -30,7 +31,7 @@ public class S3Service {
         final String key = directoryPath + generateImageFileName();
         final S3Client s3Client = awsConfig.getS3Client();
 
-        validateExtension(image);
+        validateImageExtension(image);
         validateImageSize(image);
 
         PutObjectRequest request = PutObjectRequest.builder()
@@ -49,7 +50,7 @@ public class S3Service {
         final String key = directoryPath + generateVideoFileName();
         final S3Client s3Client = awsConfig.getS3Client();
 
-        validateExtension(video);
+        validateVideoExtension(video);
         validateVideoSize(video);
 
         PutObjectRequest request = PutObjectRequest.builder()
@@ -81,10 +82,17 @@ public class S3Service {
         return UUID.randomUUID() + ".mp4";
     }
 
-    private void validateExtension(MultipartFile image) {
+    private void validateImageExtension(MultipartFile image) {
         String contentType = image.getContentType();
         if (!IMAGE_EXTENSIONS.contains(contentType)) {
             throw new RuntimeException("이미지 확장자는 jpg, png, webp만 가능합니다.");
+        }
+    }
+
+    private void validateVideoExtension(MultipartFile video) {
+        String contentType = video.getContentType();
+        if (!VIDEO_EXTENSIONS.contains(contentType)) {
+            throw new RuntimeException("비디오 확장자는 mp4만 가능합니다.");
         }
     }
 
