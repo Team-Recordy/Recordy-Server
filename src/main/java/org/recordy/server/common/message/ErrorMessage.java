@@ -23,6 +23,14 @@ public enum ErrorMessage {
     INVALID_REQUEST_TERM(HttpStatus.BAD_REQUEST, "필수 동의항목에 모두 동의해주세요"),
 
     /**
+     * EXTERNAL
+     */
+    INVALID_IMAGE_FORMAT(HttpStatus.BAD_REQUEST,"이미지 사이즈는 5MB를 넘을 수 없습니다."),
+    INVALID_VIDEO_FORMAT(HttpStatus.BAD_REQUEST,"비디오 사이즈는 100MB를 넘을 수 없습니다."),
+    INVALID_IMAGE_TYPE(HttpStatus.BAD_REQUEST,"이미지 확장자는 jpg, png, webp만 가능합니다."),
+    INVALID_VIDEO_TYPE(HttpStatus.BAD_REQUEST,"비디오 확장자는 mp4만 가능합니다."),
+
+    /**
      * AUTH
      */
     AUTH_NOT_FOUND(HttpStatus.NOT_FOUND, "인증 정보를 찾을 수 없습니다."),

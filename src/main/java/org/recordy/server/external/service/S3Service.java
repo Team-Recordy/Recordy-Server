@@ -1,6 +1,8 @@
 package org.recordy.server.external.service;
 
+import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.external.config.AwsConfig;
+import org.recordy.server.external.exception.ExternalException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,7 +27,6 @@ public class S3Service {
         this.bucketName = bucketName;
         this.awsConfig = awsConfig;
     }
-
 
     public String uploadImage(String directoryPath, MultipartFile image) throws IOException {
         final String key = directoryPath + generateImageFileName();
@@ -85,14 +86,14 @@ public class S3Service {
     private void validateImageExtension(MultipartFile image) {
         String contentType = image.getContentType();
         if (!IMAGE_EXTENSIONS.contains(contentType)) {
-            throw new RuntimeException("이미지 확장자는 jpg, png, webp만 가능합니다.");
+            throw new ExternalException(ErrorMessage.INVALID_IMAGE_TYPE);
         }
     }
 
     private void validateVideoExtension(MultipartFile video) {
         String contentType = video.getContentType();
         if (!VIDEO_EXTENSIONS.contains(contentType)) {
-            throw new RuntimeException("비디오 확장자는 mp4만 가능합니다.");
+            throw new ExternalException(ErrorMessage.INVALID_VIDEO_TYPE);
         }
     }
 
@@ -100,13 +101,13 @@ public class S3Service {
     private static final Long MAX_VIDEO_SIZE = 100 * 1024 * 1024L; //100MB
     private void validateImageSize(MultipartFile image) {
         if (image.getSize() > MAX_IMAGE_SIZE) {
-            throw new RuntimeException("이미지 사이즈는 5MB를 넘을 수 없습니다.");
+            throw new ExternalException(ErrorMessage.INVALID_IMAGE_FORMAT);
         }
     }
 
     private void validateVideoSize(MultipartFile video) {
         if (video.getSize() > MAX_VIDEO_SIZE) {
-            throw new RuntimeException("이미지 사이즈는 100MB를 넘을 수 없습니다.");
+            throw new ExternalException(ErrorMessage.INVALID_VIDEO_FORMAT);
         }
     }
 }
