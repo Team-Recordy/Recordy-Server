@@ -58,6 +58,6 @@ public class RecordServiceImpl implements RecordService {
 
     @Override
     public Slice<Record> getRecentRecordsByUser(long userId, long cursorId, int size) {
-        return null;
+        return recordRepository.findAllByUserIdOrderByCreatedAtDesc(userId, cursorId, PageRequest.ofSize(size));
     }
 }

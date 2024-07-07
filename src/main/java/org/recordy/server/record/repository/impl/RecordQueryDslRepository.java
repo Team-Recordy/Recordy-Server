@@ -8,6 +8,9 @@ import org.recordy.server.keyword.domain.QKeywordEntity;
 import org.recordy.server.record.domain.QRecordEntity;
 import org.recordy.server.record.domain.QUploadEntity;
 import org.recordy.server.record.domain.RecordEntity;
+import org.recordy.server.user.domain.QUserEntity;
+import org.recordy.server.user.domain.UserEntity;
+import org.recordy.server.user.repository.UserRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -52,5 +55,20 @@ public class RecordQueryDslRepository {
                 .fetch();
 
         return new SliceImpl<>(recordEntities, pageable, QueryDslUtils.hasNext(pageable, recordEntities));
+    }
+
+    public Slice<RecordEntity> findAllByUserIdOrderByCreatedAtDesc(UserEntity userEntity, long cursor, Pageable pageable) {
+        List<RecordEntity> recordEntities = jpaQueryFactory
+                .selectFrom((QRecordEntity.recordEntity))
+                .join(QRecordEntity.recordEntity.user, QUserEntity.userEntity)
+                .where(
+                        QueryDslUtils.ltCursorId(cursor,QRecordEntity.recordEntity.id),
+                        QUserEntity.userEntity.eq(userEntity)
+                )
+                .orderBy(QRecordEntity.recordEntity.id.desc())
+                .limit(pageable.getPageSize() + 1)
+                .fetch();
+
+        return new SliceImpl<>(recordEntities, pageable, QueryDslUtils.hasNext(pageable,recordEntities));
     }
 }
