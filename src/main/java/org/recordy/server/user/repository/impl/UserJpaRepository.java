@@ -1,5 +1,6 @@
 package org.recordy.server.user.repository.impl;
 
+import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 

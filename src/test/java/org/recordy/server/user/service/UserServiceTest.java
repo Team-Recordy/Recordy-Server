@@ -6,9 +6,11 @@ import org.recordy.server.auth.domain.Auth;
 import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.auth.repository.AuthRepository;
 import org.recordy.server.mock.FakeContainer;
+import org.recordy.server.user.controller.dto.request.TermsAgreement;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.UserStatus;
 import org.recordy.server.user.domain.usecase.UserSignIn;
+import org.recordy.server.user.domain.usecase.UserSignUp;
 import org.recordy.server.user.exception.UserException;
 import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.util.DomainFixture;
@@ -20,15 +22,13 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class UserServiceTest {
 
-    private FakeContainer fakeContainer;
-
     private UserService userService;
     private UserRepository userRepository;
     private AuthRepository authRepository;
 
     @BeforeEach
     void init() {
-        fakeContainer = new FakeContainer();
+        FakeContainer fakeContainer = new FakeContainer();
         userService = fakeContainer.userService;
         userRepository = fakeContainer.userRepository;
         authRepository = fakeContainer.authRepository;
@@ -127,29 +127,64 @@ public class UserServiceTest {
     }
 
     @Test
-    void validateDuplicateNickname을_통해_중복된_닉네임을_확인할_수_있다() {
+    void signUp을_통해_사용자를_발견하지_못하면_예외를_일으킨다() {
         // given
-        String nickname = DomainFixture.USER_NICKNAME;
-        userRepository.save(User.builder()
-                .id(DomainFixture.USER_ID)
-                .authPlatform(DomainFixture.createAuthPlatform())
-                .status(UserStatus.ACTIVE)
-                .nickname(nickname)
-                .build());
+        Long invalidUserId = 99L;
+        UserSignUp userSignUp = UserSignUp.of(
+                invalidUserId,
+                DomainFixture.USER_NICKNAME,
+                TermsAgreement.of(true, true, true)
+        );
 
         // when, then
-        assertThatThrownBy(() -> userService.validateDuplicateNickname(nickname))
+        assertThatThrownBy(() -> userService.signUp(userSignUp))
                 .isInstanceOf(UserException.class);
     }
 
     @Test
-    void validateDuplicateNickname을_통해_중복되지_않은_닉네임에_대해서는_아무것도_일어나지_않는다() {
+    void signUp을_통해_사용자의_상태를_ACTIVE로_변경할_수_있다() {
         // given
-        String nickname = DomainFixture.USER_NICKNAME;
+        AuthPlatform platform = DomainFixture.createAuthPlatform();
+        UserSignIn userSignIn = DomainFixture.createUserSignIn(platform.getType());
+        userService.signIn(userSignIn);
 
-        // when, then
-        assertThatCode(() -> userService.validateDuplicateNickname(nickname))
-                .doesNotThrowAnyException();
+        UserSignUp userSignUp = DomainFixture.createUserSignUp();
+
+        // when
+        User result = userService.signUp(userSignUp);
+
+        // then
+        assertThat(result.getStatus()).isEqualTo(UserStatus.ACTIVE);
+    }
+
+    @Test
+    void reissueToken을_통해_accessToken을_재발급_받을_수_있다() {
+        //given
+        AuthPlatform platform = DomainFixture.createAuthPlatform();
+        UserSignIn userSignIn = DomainFixture.createUserSignIn(platform.getType());
+        Auth auth = userService.signIn(userSignIn);
+
+        //when
+        String accessToken = userService.reissueToken(auth.getToken().getRefreshToken());
+
+        //then
+        assertThat(accessToken).isNotEmpty();
+
+    }
+
+    @Test
+    void signOut을_통해_Auth를_삭제할_수_있다() {
+        // given
+        AuthPlatform platform = DomainFixture.createAuthPlatform();
+        UserSignIn userSignIn = DomainFixture.createUserSignIn(platform.getType());
+        userService.signIn(userSignIn);
+
+        // when
+        userService.signOut(DomainFixture.USER_ID);
+        Optional<Auth> result = authRepository.findByPlatformId(DomainFixture.PLATFORM_ID);
+
+        // then
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -193,33 +228,83 @@ public class UserServiceTest {
     }
 
     @Test
-    void signOut을_통해_Auth를_삭제할_수_있다() {
+    void getByPlatformId를_통해_플랫폼_id로부터_사용자를_조회할_수_있다() {
         // given
-        AuthPlatform platform = DomainFixture.createAuthPlatform();
-        UserSignIn userSignIn = DomainFixture.createUserSignIn(platform.getType());
-        userService.signIn(userSignIn);
+        userRepository.save(DomainFixture.createUser(UserStatus.ACTIVE));
 
         // when
-        userService.signOut(DomainFixture.USER_ID);
-        Optional<Auth> result = authRepository.findByPlatformId(DomainFixture.PLATFORM_ID);
+        Optional<User> result = userService.getByPlatformId(DomainFixture.PLATFORM_ID);
+
+        // then
+        assertAll(
+                () -> assertThat(result).isNotEmpty(),
+                () -> assertThat(result.get().getAuthPlatform().getId()).isEqualTo(DomainFixture.PLATFORM_ID)
+        );
+    }
+
+    @Test
+    void getByPlatformId를_통해_존재하지_않는_플랫폼_id로_검색할_경우_빈_값을_반환한다() {
+        // given
+        userRepository.save(DomainFixture.createUser(UserStatus.ACTIVE));
+
+        // when
+        Optional<User> result = userService.getByPlatformId("invalid_platform_id");
 
         // then
         assertThat(result).isEmpty();
     }
 
     @Test
-    void reissueToken을_통해_accessToken을_재발급_받을_수_있다() {
-        //given
-        AuthPlatform platform = DomainFixture.createAuthPlatform();
-        UserSignIn userSignIn = DomainFixture.createUserSignIn(platform.getType());
-        Auth auth = userService.signIn(userSignIn);
+    void getById를_통해_플랫폼_id로부터_사용자를_조회할_수_있다() {
+        // given
+        userRepository.save(DomainFixture.createUser(UserStatus.ACTIVE));
 
-        //when
-        String accessToken = userService.reissueToken(auth.getToken().getRefreshToken());
+        // when
+        Optional<User> result = userService.getById(DomainFixture.USER_ID);
 
-        //then
-        assertThat(accessToken).isNotEmpty();
-
+        // then
+        assertAll(
+                () -> assertThat(result).isNotEmpty(),
+                () -> assertThat(result.get().getId()).isEqualTo(DomainFixture.USER_ID)
+        );
     }
 
+    @Test
+    void getById를_통해_존재하지_않는_플랫폼_id로_검색할_경우_빈_값을_반환한다() {
+        // given
+        long invalidUserId = 99L;
+        userRepository.save(DomainFixture.createUser(UserStatus.ACTIVE));
+
+        // when
+        Optional<User> result = userService.getById(invalidUserId);
+
+        // then
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    void validateDuplicateNickname을_통해_중복된_닉네임을_확인할_수_있다() {
+        // given
+        String nickname = DomainFixture.USER_NICKNAME;
+        userRepository.save(User.builder()
+                .id(DomainFixture.USER_ID)
+                .authPlatform(DomainFixture.createAuthPlatform())
+                .status(UserStatus.ACTIVE)
+                .nickname(nickname)
+                .build());
+
+        // when, then
+        assertThatThrownBy(() -> userService.validateDuplicateNickname(nickname))
+                .isInstanceOf(UserException.class);
+    }
+
+    @Test
+    void validateDuplicateNickname을_통해_중복되지_않은_닉네임에_대해서는_아무것도_일어나지_않는다() {
+        // given
+        String nickname = DomainFixture.USER_NICKNAME;
+
+        // when, then
+        assertThatCode(() -> userService.validateDuplicateNickname(nickname))
+                .doesNotThrowAnyException();
+    }
 }

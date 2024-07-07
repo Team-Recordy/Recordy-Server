@@ -1,6 +1,7 @@
 package org.recordy.server.user.domain;
 
 import org.junit.jupiter.api.Test;
+import org.recordy.server.user.controller.dto.request.TermsAgreement;
 import org.recordy.server.util.DomainFixture;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -11,11 +12,7 @@ class UserEntityTest {
     @Test
     void from을_통해_User_객체로부터_UserEntity_객체를_생성할_수_있다() {
         // given
-        User user = User.builder()
-                .id(1L)
-                .authPlatform(DomainFixture.createAuthPlatform())
-                .status(UserStatus.ACTIVE)
-                .build();
+        User user = DomainFixture.createUser(UserStatus.ACTIVE);
 
         // when
         UserEntity userEntity = UserEntity.from(user);
@@ -25,7 +22,11 @@ class UserEntityTest {
                 () -> assertThat(userEntity.getId()).isEqualTo(user.getId()),
                 () -> assertThat(userEntity.getPlatformId()).isEqualTo(user.getAuthPlatform().getId()),
                 () -> assertThat(userEntity.getPlatformType()).isEqualTo(user.getAuthPlatform().getType()),
-                () -> assertThat(userEntity.getStatus()).isEqualTo(user.getStatus())
+                () -> assertThat(userEntity.getStatus()).isEqualTo(user.getStatus()),
+                () -> assertThat(userEntity.getNickname()).isEqualTo(user.getNickname()),
+                () -> assertThat(userEntity.isUseTerm()).isEqualTo(user.getTermsAgreement().useTerm()),
+                () -> assertThat(userEntity.isPersonalInfoTerm()).isEqualTo(user.getTermsAgreement().personalInfoTerm()),
+                () -> assertThat(userEntity.isAgeTerm()).isEqualTo(user.getTermsAgreement().ageTerm())
         );
     }
 
@@ -36,6 +37,12 @@ class UserEntityTest {
                 .id(null)
                 .authPlatform(DomainFixture.createAuthPlatform())
                 .status(UserStatus.ACTIVE)
+                .nickname(DomainFixture.USER_NICKNAME)
+                .termsAgreement(TermsAgreement.of(
+                        DomainFixture.USE_TERM_AGREEMENT,
+                        DomainFixture.PERSONAL_INFO_TERM_AGREEMENT,
+                        DomainFixture.AGE_TERM_AGREEMENT
+                ))
                 .build();
 
         // when
@@ -46,7 +53,11 @@ class UserEntityTest {
                 () -> assertThat(userEntity.getId()).isEqualTo(null),
                 () -> assertThat(userEntity.getPlatformId()).isEqualTo(user.getAuthPlatform().getId()),
                 () -> assertThat(userEntity.getPlatformType()).isEqualTo(user.getAuthPlatform().getType()),
-                () -> assertThat(userEntity.getStatus()).isEqualTo(user.getStatus())
+                () -> assertThat(userEntity.getStatus()).isEqualTo(user.getStatus()),
+                () -> assertThat(userEntity.getNickname()).isEqualTo(user.getNickname()),
+                () -> assertThat(userEntity.isUseTerm()).isEqualTo(user.getTermsAgreement().useTerm()),
+                () -> assertThat(userEntity.isPersonalInfoTerm()).isEqualTo(user.getTermsAgreement().personalInfoTerm()),
+                () -> assertThat(userEntity.isAgeTerm()).isEqualTo(user.getTermsAgreement().ageTerm())
         );
     }
 
@@ -63,7 +74,11 @@ class UserEntityTest {
                 () -> assertThat(user.getId()).isEqualTo(userEntity.getId()),
                 () -> assertThat(user.getAuthPlatform().getId()).isEqualTo(userEntity.getPlatformId()),
                 () -> assertThat(user.getAuthPlatform().getType()).isEqualTo(userEntity.getPlatformType()),
-                () -> assertThat(user.getStatus()).isEqualTo(userEntity.getStatus())
+                () -> assertThat(user.getStatus()).isEqualTo(userEntity.getStatus()),
+                () -> assertThat(user.getNickname()).isEqualTo(userEntity.getNickname()),
+                () -> assertThat(user.getTermsAgreement().useTerm()).isEqualTo(userEntity.isUseTerm()),
+                () -> assertThat(user.getTermsAgreement().personalInfoTerm()).isEqualTo(userEntity.isPersonalInfoTerm()),
+                () -> assertThat(user.getTermsAgreement().ageTerm()).isEqualTo(userEntity.isAgeTerm())
         );
     }
 }

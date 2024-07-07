@@ -1,22 +1,19 @@
 package org.recordy.server.user.controller;
 
-import java.security.Principal;
+
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.security.UserId;
+import org.recordy.server.user.controller.dto.request.UserSignUpRequest;
 import org.recordy.server.user.domain.usecase.UserSignIn;
-import org.recordy.server.auth.service.AuthService;
-import org.recordy.server.auth.service.AuthTokenService;
 import org.recordy.server.user.controller.dto.request.UserSignInRequest;
 import org.recordy.server.user.controller.dto.response.UserReissueTokenResponse;
 import org.recordy.server.user.controller.dto.response.UserSignInResponse;
+import org.recordy.server.user.domain.usecase.UserSignUp;
 import org.recordy.server.user.service.UserService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
@@ -39,19 +36,32 @@ public class UserController implements UserApi {
     }
 
     @Override
-    @DeleteMapping("/logout")
-    public ResponseEntity signOut(
-            @UserId Long userId
+    @PostMapping("/signUp")
+    public ResponseEntity<Void> signUp(
+            @UserId Long userId,
+            @RequestBody UserSignUpRequest request
     ) {
-        userService.signOut(userId);
-        return  ResponseEntity
-                .noContent()
+        userService.signUp(UserSignUp.of(userId, request.nickname(), request.termsAgreement()));
+
+        return ResponseEntity.
+                status(HttpStatus.CREATED).
+                build();
+    }
+
+    @Override
+    @GetMapping("/check-nickname")
+    public ResponseEntity<Void> checkDuplicateNickname(
+            @RequestParam String nickname
+    ) {
+        userService.validateDuplicateNickname(nickname);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
                 .build();
     }
 
-
     @Override
-    @GetMapping("/token")
+    @PostMapping("/token")
     public ResponseEntity<UserReissueTokenResponse> reissueToken(
             @RequestHeader(HttpHeaders.AUTHORIZATION) String refreshToken
     ) {
@@ -62,14 +72,15 @@ public class UserController implements UserApi {
                 ));
     }
 
-    @GetMapping("/check-nickname")
-    public ResponseEntity<Void> checkDuplicateNickname(
-            @RequestParam String nickname
+    @Override
+    @DeleteMapping("/logout")
+    public ResponseEntity<Void> signOut(
+            @UserId Long userId
     ) {
-        userService.validateDuplicateNickname(nickname);
+        userService.signOut(userId);
 
         return ResponseEntity
-                .status(HttpStatus.OK)
+                .noContent()
                 .build();
     }
 
