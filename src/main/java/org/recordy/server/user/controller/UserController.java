@@ -8,6 +8,7 @@ import org.recordy.server.user.domain.usecase.UserSignIn;
 import org.recordy.server.user.controller.dto.request.UserSignInRequest;
 import org.recordy.server.user.controller.dto.response.UserReissueTokenResponse;
 import org.recordy.server.user.controller.dto.response.UserSignInResponse;
+import org.recordy.server.user.domain.usecase.UserSignUp;
 import org.recordy.server.user.service.UserService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -36,24 +37,28 @@ public class UserController implements UserApi {
 
     @Override
     @PostMapping("/signUp")
-    public ResponseEntity<Void> signUp(@RequestBody UserSignUpRequest request) {
-        userService.signUp(request);
+    public ResponseEntity<Void> signUp(
+            @UserId Long userId,
+            @RequestBody UserSignUpRequest request
+    ) {
+        userService.signUp(UserSignUp.of(userId, request.nickname(), request.termsAgreement()));
+
         return ResponseEntity.
                 status(HttpStatus.CREATED).
                 build();
     }
 
     @Override
-    @DeleteMapping("/logout")
-    public ResponseEntity signOut(
-            @UserId Long userId
+    @GetMapping("/check-nickname")
+    public ResponseEntity<Void> checkDuplicateNickname(
+            @RequestParam String nickname
     ) {
-        userService.signOut(userId);
+        userService.validateDuplicateNickname(nickname);
+
         return ResponseEntity
-                .noContent()
+                .status(HttpStatus.OK)
                 .build();
     }
-
 
     @Override
     @PostMapping("/token")
@@ -67,14 +72,15 @@ public class UserController implements UserApi {
                 ));
     }
 
-    @GetMapping("/check-nickname")
-    public ResponseEntity<Void> checkDuplicateNickname(
-            @RequestParam String nickname
+    @Override
+    @DeleteMapping("/logout")
+    public ResponseEntity<Void> signOut(
+            @UserId Long userId
     ) {
-        userService.validateDuplicateNickname(nickname);
+        userService.signOut(userId);
 
         return ResponseEntity
-                .status(HttpStatus.OK)
+                .noContent()
                 .build();
     }
 
