@@ -1,4 +1,4 @@
-package org.recordy.server.external;
+package org.recordy.server.external.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
