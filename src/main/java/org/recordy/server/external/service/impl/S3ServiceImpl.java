@@ -22,7 +22,6 @@ public class S3ServiceImpl implements S3Service {
 
     private final String bucketName;
     private final S3Config s3Config;
-    private S3Client s3Client;
     private static final List<String> IMAGE_EXTENSIONS = Arrays.asList("image/jpeg", "image/png", "image/jpg", "image/webp");
     private static final List<String> VIDEO_EXTENSIONS = Arrays.asList("video/mp4", "video/mov", "video/quicktime");
     private static final Long MAX_IMAGE_SIZE = 5 * 1024 * 1024L; // 5MB
@@ -31,7 +30,6 @@ public class S3ServiceImpl implements S3Service {
     public S3ServiceImpl(@Value("${aws-property.s3-bucket-name}") final String bucketName, S3Config s3Config) {
         this.bucketName = bucketName;
         this.s3Config = s3Config;
-        this.s3Client = s3Config.getS3Client();
     }
 
     @Override
@@ -120,10 +118,5 @@ public class S3ServiceImpl implements S3Service {
         if (video.getSize() > MAX_VIDEO_SIZE) {
             throw new ExternalException(ErrorMessage.INVALID_VIDEO_FORMAT);
         }
-    }
-
-    // 테스트를 위해 S3Client를 설정
-    public void setS3Client(S3Client s3Client) {
-        this.s3Client = s3Client;
     }
 }
