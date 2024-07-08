@@ -20,15 +20,12 @@ import static org.mockito.Mockito.when;
 
 public class S3ServicesTest {
 
-    private S3ServiceImpl s3Service;
-    private S3Client s3ClientMock;
+    private S3Service s3Service;
 
     @BeforeEach
     void init() {
         FakeContainer fakeContainer = new FakeContainer();
-        s3Service = (S3ServiceImpl) fakeContainer.s3Service;
-        s3ClientMock = mock(S3Client.class);
-        s3Service.setS3Client(s3ClientMock);
+        s3Service = fakeContainer.s3Service;
     }
 
     @Test
@@ -38,13 +35,26 @@ public class S3ServicesTest {
         when(imageMock.getContentType()).thenReturn("image/jpeg");
         when(imageMock.getSize()).thenReturn(1024L);
         when(imageMock.getBytes()).thenReturn(new byte[1024]);
-        when(s3ClientMock.putObject(any(PutObjectRequest.class), any(software.amazon.awssdk.core.sync.RequestBody.class)))
-                .thenReturn(PutObjectResponse.builder().build());
 
         // when
         String result = s3Service.uploadImage("test-directory", imageMock);
 
         // then
         assertThatCode(() -> s3Service.uploadImage("test-directory", imageMock)).doesNotThrowAnyException();
+    }
+
+    @Test
+    void 비디오_업로드_성공() throws IOException {
+        // given
+        MultipartFile videoMock = mock(MultipartFile.class);
+        when(videoMock.getContentType()).thenReturn("video/mp4");
+        when(videoMock.getSize()).thenReturn(1024L * 50);
+        when(videoMock.getBytes()).thenReturn(new byte[1024 * 50]);
+
+        // when
+        String result = s3Service.uploadVideo("test-directory", videoMock);
+
+        // then
+        assertThatCode(() -> s3Service.uploadVideo("test-directory", videoMock)).doesNotThrowAnyException();
     }
 }

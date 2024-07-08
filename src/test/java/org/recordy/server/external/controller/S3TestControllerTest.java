@@ -25,26 +25,26 @@ public class S3TestControllerTest {
 
     @Test
     void uploadImageTest_이미지_업로드_성공() throws IOException {
-        // Given
+        // given
         MockMultipartFile image = new MockMultipartFile("image", "test.jpg", "image/jpeg", new byte[1024]);
 
-        // When
+        // when
         String result = s3TestController.uploadImageTest(image);
 
-        // Then
+        // then
         assertThat(result).isNotNull();
         assertThat(result).contains("recordy/file/");
     }
 
     @Test
     void uploadVideoTest_비디오_업로드_성공() throws IOException {
-        // Given
+        // given
         MockMultipartFile video = new MockMultipartFile("video", "test.mp4", "video/mp4", new byte[1024 * 50]);
 
-        // When
+        // when
         String result = s3TestController.uploadVideoTest(video);
 
-        // Then
+        // then
         assertThat(result).isNotNull();
         assertThat(result).contains("recordy/file/");
     }
