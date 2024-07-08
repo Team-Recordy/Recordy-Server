@@ -12,6 +12,9 @@ import org.recordy.server.auth.service.impl.token.AuthTokenGenerator;
 import org.recordy.server.auth.service.impl.token.AuthTokenParser;
 import org.recordy.server.auth.service.impl.token.AuthTokenServiceImpl;
 import org.recordy.server.auth.service.impl.token.AuthTokenSigningKeyProvider;
+import org.recordy.server.external.config.S3Config;
+import org.recordy.server.external.service.S3Service;
+import org.recordy.server.external.service.impl.S3ServiceImpl;
 import org.recordy.server.keyword.repository.KeywordRepository;
 import org.recordy.server.keyword.service.KeywordService;
 import org.recordy.server.keyword.service.impl.KeywordServiceImpl;
@@ -59,7 +62,7 @@ public class FakeContainer {
     public final FileService fileService;
     public final RecordService recordService;
     public final KeywordService keywordService;
-
+    public final S3Service s3Service;
 
     // security
     public final AuthFilterExceptionHandler authFilterExceptionHandler;
@@ -100,6 +103,13 @@ public class FakeContainer {
         this.fileService = new FakeFileService();
         this.recordService = new RecordServiceImpl(recordRepository, fileService, userService);
         this.keywordService = new KeywordServiceImpl(keywordRepository);
+        S3Config s3Config = new S3Config(
+                "access-key",
+                "secret-key",
+                "ap-northeast-2"
+        );
+        this.s3Service = new S3ServiceImpl("recordy-name", s3Config);
+
 
         this.authFilterExceptionHandler = new AuthFilterExceptionHandler(new ObjectMapper());
         this.tokenAuthenticationFilter = new TokenAuthenticationFilter(
