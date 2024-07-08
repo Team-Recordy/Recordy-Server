@@ -1,4 +1,4 @@
-package org.recordy.server.external.service;
+package org.recordy.server.external.service.impl;
 
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.external.config.S3Config;
@@ -17,14 +17,14 @@ import java.util.List;
 import java.util.UUID;
 
 @Component
-public class S3Service {
+public class S3ServiceImpl {
 
     private final String bucketName;
     private final S3Config s3Config;
     private static final List<String> IMAGE_EXTENSIONS = Arrays.asList("image/jpeg", "image/png", "image/jpg", "image/webp");
     private static final List<String> VIDEO_EXTENSIONS = Arrays.asList("video/mp4","video/mov");
 
-    public S3Service(@Value("${aws-property.s3-bucket-name}") final String bucketName, S3Config s3Config) {
+    public S3ServiceImpl(@Value("${aws-property.s3-bucket-name}") final String bucketName, S3Config s3Config) {
         this.bucketName = bucketName;
         this.s3Config = s3Config;
     }
