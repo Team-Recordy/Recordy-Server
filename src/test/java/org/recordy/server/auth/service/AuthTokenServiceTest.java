@@ -180,20 +180,23 @@ public class AuthTokenServiceTest {
         authRepository.save(new Auth(authPlatform, authToken, true));
 
         //when
-        String platformId = authTokenService.getPlatformIdFromRefreshToken(authToken.getRefreshToken());
+        String refreshToken = "Bearer " + authToken.getRefreshToken();
+        String platformId = authTokenService.getPlatformIdFromRefreshToken(refreshToken);
 
         //then
         assertThat(platformId).isEqualTo(authPlatform.getId());
 
     }
 
+    // TODO : fix
     @Test
     void 주어진_refreshToken으로부터_platformId를_반환하지_못하면_에러를_던진다() {
         //given
         AuthToken authToken = authTokenService.issueToken(DomainFixture.USER_ID);
 
         // when, then
-        assertThatThrownBy(() -> authTokenService.getPlatformIdFromRefreshToken(authToken.getRefreshToken()))
+        String refreshToken = "Bearer " + authToken.getRefreshToken();
+        assertThatThrownBy(() -> authTokenService.getPlatformIdFromRefreshToken(refreshToken))
                 .isInstanceOf(AuthException.class)
                 .hasMessageContaining(ErrorMessage.AUTH_NOT_FOUND.getMessage());
     }
