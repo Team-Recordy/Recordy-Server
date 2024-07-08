@@ -14,16 +14,18 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1")
-public class S3TestController {
+public class S3TestController implements S3TestApi{
 
     private final S3Service s3Service;
     private static final String directoryPath = "recordy/file";
 
+    @Override
     @PostMapping(path = "/uploadImageTest",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String uploadImageTest(@RequestPart MultipartFile image) throws IOException {
         return this.s3Service.uploadImage(directoryPath,image);
     }
 
+    @Override
     @PostMapping(path = "/uploadVideoTest",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String uploadVideoTest(@RequestPart MultipartFile video) throws IOException {
         return this.s3Service.uploadVideo(directoryPath,video);
