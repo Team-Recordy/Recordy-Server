@@ -23,10 +23,9 @@ public class S3ServiceImpl implements S3Service {
     private final String bucketName;
     private final S3Config s3Config;
     private static final List<String> IMAGE_EXTENSIONS = Arrays.asList("image/jpeg", "image/png", "image/jpg", "image/webp");
-    private static final List<String> VIDEO_EXTENSIONS = Arrays.asList("video/mp4", "video/mov", "video/MOV");
+    private static final List<String> VIDEO_EXTENSIONS = Arrays.asList("video/mp4", "video/mov", "video/quicktime");
     private static final Long MAX_IMAGE_SIZE = 5 * 1024 * 1024L; // 5MB
     private static final Long MAX_VIDEO_SIZE = 100 * 1024 * 1024L; // 100MB
-
 
     public S3ServiceImpl(@Value("${aws-property.s3-bucket-name}") final String bucketName, S3Config s3Config) {
         this.bucketName = bucketName;
@@ -101,12 +100,11 @@ public class S3ServiceImpl implements S3Service {
 
     @Override
     public void validateVideoExtension(MultipartFile video) {
-        String contentType = video.getContentType();
+        String contentType = video.getContentType().toLowerCase();
         if (!VIDEO_EXTENSIONS.contains(contentType)) {
             throw new ExternalException(ErrorMessage.INVALID_VIDEO_TYPE);
         }
     }
-
 
     @Override
     public void validateImageSize(MultipartFile image) {

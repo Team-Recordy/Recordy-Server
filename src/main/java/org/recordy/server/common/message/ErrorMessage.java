@@ -28,7 +28,7 @@ public enum ErrorMessage {
     INVALID_IMAGE_FORMAT(HttpStatus.BAD_REQUEST,"이미지 사이즈는 5MB를 넘을 수 없습니다."),
     INVALID_VIDEO_FORMAT(HttpStatus.BAD_REQUEST,"비디오 사이즈는 100MB를 넘을 수 없습니다."),
     INVALID_IMAGE_TYPE(HttpStatus.BAD_REQUEST,"이미지 확장자는 jpg, png, webp만 가능합니다."),
-    INVALID_VIDEO_TYPE(HttpStatus.BAD_REQUEST,"비디오 확장자는 mp4, mov만 가능합니다."),
+    INVALID_VIDEO_TYPE(HttpStatus.BAD_REQUEST,"비디오 확장자는 mp4, mov, quicktime만 가능합니다."),
 
     /**
      * AUTH
