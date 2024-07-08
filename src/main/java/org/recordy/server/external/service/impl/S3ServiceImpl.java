@@ -23,7 +23,7 @@ public class S3ServiceImpl implements S3Service {
     private final String bucketName;
     private final S3Config s3Config;
     private static final List<String> IMAGE_EXTENSIONS = Arrays.asList("image/jpeg", "image/png", "image/jpg", "image/webp");
-    private static final List<String> VIDEO_EXTENSIONS = Arrays.asList("video/mp4","video/mov");
+    private static final List<String> VIDEO_EXTENSIONS = Arrays.asList("video/mp4", "video/mov", "video/MOV");
     private static final Long MAX_IMAGE_SIZE = 5 * 1024 * 1024L; // 5MB
     private static final Long MAX_VIDEO_SIZE = 100 * 1024 * 1024L; // 100MB
 
@@ -58,7 +58,7 @@ public class S3ServiceImpl implements S3Service {
         final String key = directoryPath + "/" + generateVideoFileName();
         final S3Client s3Client = s3Config.getS3Client();
 
-        //validateVideoExtension(video);
+        validateVideoExtension(video);
         validateVideoSize(video);
 
         PutObjectRequest request = PutObjectRequest.builder()

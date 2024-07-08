@@ -6,12 +6,12 @@ import java.io.IOException;
 
 public interface S3Service {
 
-    // Command
+    // command
     String uploadImage(String directoryPath, MultipartFile image) throws IOException;
     String uploadVideo(String directoryPath, MultipartFile video) throws IOException;
     void deleteFile(String key) throws IOException;
 
-    // Query
+    // query
     void validateImageExtension(MultipartFile image);
     void validateVideoExtension(MultipartFile video);
     void validateImageSize(MultipartFile image);
