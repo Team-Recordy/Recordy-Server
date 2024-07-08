@@ -14,7 +14,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1")
-public class TestController {
+public class S3TestController {
 
     private final S3Service s3Service;
     private static final String directoryPath = "recordy/file";
