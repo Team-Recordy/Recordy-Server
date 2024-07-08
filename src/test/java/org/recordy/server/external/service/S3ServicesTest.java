@@ -57,4 +57,45 @@ public class S3ServicesTest {
         // then
         assertThatCode(() -> s3Service.uploadVideo("test-directory", videoMock)).doesNotThrowAnyException();
     }
+
+    @Test
+    void 이미지_확장자_유효성_검사_실패() {
+        // given
+        MultipartFile imageMock = mock(MultipartFile.class);
+        when(imageMock.getContentType()).thenReturn("application/pdf");
+
+        // when, then
+        assertThrows(ExternalException.class, () -> s3Service.validateImageExtension(imageMock));
+    }
+
+    @Test
+    void 비디오_확장자_유효성_검사_실패() {
+        // given
+        MultipartFile videoMock = mock(MultipartFile.class);
+        when(videoMock.getContentType()).thenReturn("video/avi");
+
+        // when, then
+        assertThrows(ExternalException.class, () -> s3Service.validateVideoExtension(videoMock));
+    }
+
+    @Test
+    void 이미지_크기_유효성_검사_실패() {
+        // given
+        MultipartFile imageMock = mock(MultipartFile.class);
+        when(imageMock.getSize()).thenReturn(1024L * 1024 * 10);
+
+        // when, then
+        assertThrows(ExternalException.class, () -> s3Service.validateImageSize(imageMock));
+    }
+
+    @Test
+    void 비디오_크기_유효성_검사_실패() {
+        // given
+        MultipartFile videoMock = mock(MultipartFile.class);
+        when(videoMock.getSize()).thenReturn(1024L * 1024 * 200);
+
+        // when, then
+        assertThrows(ExternalException.class, () -> s3Service.validateVideoSize(videoMock));
+    }
+
 }
