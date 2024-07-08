@@ -60,6 +60,7 @@ public class FakeContainer {
     public final RecordService recordService;
     public final KeywordService keywordService;
 
+
     // security
     public final AuthFilterExceptionHandler authFilterExceptionHandler;
     public final TokenAuthenticationFilter tokenAuthenticationFilter;
