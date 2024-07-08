@@ -121,4 +121,9 @@ public class S3ServiceImpl implements S3Service {
             throw new ExternalException(ErrorMessage.INVALID_VIDEO_FORMAT);
         }
     }
+
+    // 테스트를 위해 S3Client를 설정
+    public void setS3Client(S3Client s3Client) {
+        this.s3Client = s3Client;
+    }
 }
