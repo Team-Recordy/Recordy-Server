@@ -108,7 +108,7 @@ public class FakeContainer {
                 "secret-key",
                 "ap-northeast-2"
         );
-        this.s3Service = new S3ServiceImpl("recordy-name", s3Config);
+        this.s3Service = new S3ServiceImpl("recordy-bucket", s3Config);
 
 
         this.authFilterExceptionHandler = new AuthFilterExceptionHandler(new ObjectMapper());
