@@ -10,7 +10,7 @@
 [Git Flow](#Git-Flow) </br>
 [ERD](#ERD) </br>
 [폴더링](#폴더링) </br>
-[레코디 컨벤션 및 API docs](#레코디 컨벤션 및 API docs) </br>
+[레코디 컨벤션 및 API docs](#레코디-컨벤션-및-API-docs) </br>
 [폴더링](#폴더링) </br>
 
 ## 🅿️ 프로젝트 설명 
