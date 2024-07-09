@@ -6,7 +6,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.recordy.server.keyword.domain.KeywordEntity;
-import org.recordy.server.record.controller.dto.FileUrl;
+import org.recordy.server.record.service.dto.FileUrl;
+import org.recordy.server.record_stat.domain.BookmarkEntity;
+import org.recordy.server.record_stat.domain.ViewEntity;
 import org.recordy.server.user.domain.UserEntity;
 
 import java.util.ArrayList;
@@ -33,6 +35,12 @@ public class RecordEntity {
 
     @OneToMany(mappedBy = "record")
     private List<UploadEntity> uploads = new ArrayList<>();
+
+    @OneToMany(mappedBy = "record")
+    private List<ViewEntity> views = new ArrayList<>();
+
+    @OneToMany(mappedBy = "record")
+    private List<BookmarkEntity> bookmarks = new ArrayList<>();
 
     @Builder
     public RecordEntity(Long id, String videoUrl, String thumbnailUrl, String location, String content, UserEntity user) {

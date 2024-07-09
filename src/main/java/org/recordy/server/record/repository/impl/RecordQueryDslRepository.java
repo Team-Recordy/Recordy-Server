@@ -4,9 +4,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.util.QueryDslUtils;
 import org.recordy.server.keyword.domain.KeywordEntity;
-import org.recordy.server.keyword.domain.QKeywordEntity;
-import org.recordy.server.record.domain.QRecordEntity;
-import org.recordy.server.record.domain.QUploadEntity;
 import org.recordy.server.record.domain.RecordEntity;
 import org.recordy.server.user.domain.QUserEntity;
 import org.recordy.server.user.domain.UserEntity;
@@ -18,11 +15,28 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static org.recordy.server.keyword.domain.QKeywordEntity.keywordEntity;
+import static org.recordy.server.record.domain.QRecordEntity.recordEntity;
+import static org.recordy.server.record.domain.QUploadEntity.uploadEntity;
+import static org.recordy.server.record_stat.domain.QBookmarkEntity.bookmarkEntity;
+import static org.recordy.server.record_stat.domain.QViewEntity.viewEntity;
+
 @RequiredArgsConstructor
 @Repository
 public class RecordQueryDslRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
+
+    public List<RecordEntity> findAllOrderByPopularity(int limit) {
+        return jpaQueryFactory
+                .selectFrom(recordEntity)
+                .leftJoin(recordEntity.bookmarks, bookmarkEntity)
+                .leftJoin(recordEntity.views, viewEntity)
+                .groupBy(recordEntity.id)
+                .orderBy(bookmarkEntity.count().multiply(2).add(viewEntity.count()).desc())
+                .limit(limit)
+                .fetch();
+    }
 
     public Slice<RecordEntity> findAllByIdAfterOrderByIdDesc(long cursor, Pageable pageable) {
         // TODO: 0을 여기서 대체하지 말고, 서비스나 컨트롤러에서 처리하도록 수정
@@ -30,11 +44,11 @@ public class RecordQueryDslRepository {
             cursor = Long.MAX_VALUE;
 
         List<RecordEntity> recordEntities = jpaQueryFactory
-                .selectFrom(QRecordEntity.recordEntity)
+                .selectFrom(recordEntity)
                 .where(
-                        QueryDslUtils.ltCursorId(cursor, QRecordEntity.recordEntity.id)
+                        QueryDslUtils.ltCursorId(cursor, recordEntity.id)
                 )
-                .orderBy(QRecordEntity.recordEntity.id.desc())
+                .orderBy(recordEntity.id.desc())
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
 
@@ -43,14 +57,14 @@ public class RecordQueryDslRepository {
 
     public Slice<RecordEntity> findAllByIdAfterAndKeywordsOrderByIdDesc(List<KeywordEntity> keywords, long cursor, Pageable pageable) {
         List<RecordEntity> recordEntities = jpaQueryFactory
-                .selectFrom(QRecordEntity.recordEntity)
-                .join(QRecordEntity.recordEntity.uploads, QUploadEntity.uploadEntity)
-                .join(QUploadEntity.uploadEntity.keyword, QKeywordEntity.keywordEntity)
+                .selectFrom(recordEntity)
+                .join(recordEntity.uploads, uploadEntity)
+                .join(uploadEntity.keyword, keywordEntity)
                 .where(
-                        QueryDslUtils.ltCursorId(cursor, QRecordEntity.recordEntity.id),
-                        QKeywordEntity.keywordEntity.in(keywords)
+                        QueryDslUtils.ltCursorId(cursor, recordEntity.id),
+                        keywordEntity.in(keywords)
                 )
-                .orderBy(QRecordEntity.recordEntity.id.desc())
+                .orderBy(recordEntity.id.desc())
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
 

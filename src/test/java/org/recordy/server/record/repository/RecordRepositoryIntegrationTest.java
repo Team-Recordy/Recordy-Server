@@ -2,12 +2,15 @@ package org.recordy.server.record.repository;
 
 import org.junit.jupiter.api.Test;
 import org.recordy.server.keyword.domain.Keyword;
-import org.recordy.server.keyword.domain.KeywordEntity;
-import org.recordy.server.keyword.repository.impl.KeywordJpaRepository;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.RecordEntity;
 import org.recordy.server.record.domain.UploadEntity;
 import org.recordy.server.record.repository.impl.UploadJpaRepository;
+import org.recordy.server.record.service.dto.FileUrl;
+import org.recordy.server.record_stat.domain.Bookmark;
+import org.recordy.server.record_stat.repository.BookmarkRepository;
+import org.recordy.server.record_stat.repository.ViewRepository;
+import org.recordy.server.user.domain.UserStatus;
 import org.recordy.server.util.DomainFixture;
 import org.recordy.server.util.db.IntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.recordy.server.util.DomainFixture.*;
 
 @SqlGroup({
         @Sql(value = "/sql/record-repository-test-data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
@@ -37,6 +41,12 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
     @Autowired
     private UploadJpaRepository uploadRepository;
 
+    @Autowired
+    private BookmarkRepository bookmarkRepository;
+
+    @Autowired
+    private ViewRepository viewRepository;
+
     @Test
     void save를_통해_레코드_데이터를_저장할_수_있다() {
         // given
@@ -51,7 +61,7 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
                 () -> assertThat(result.getFileUrl().videoUrl()).isEqualTo(DomainFixture.VIDEO_URL),
                 () -> assertThat(result.getFileUrl().thumbnailUrl()).isEqualTo(DomainFixture.THUMBNAIL_URL),
                 () -> assertThat(result.getLocation()).isEqualTo(DomainFixture.LOCATION),
-                () -> assertThat(result.getContent()).isEqualTo(DomainFixture.CONTENT)
+                () -> assertThat(result.getContent()).isEqualTo(CONTENT)
         );
     }
 
@@ -204,6 +214,70 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
                 () -> assertThat(result.getContent().get(0).getId()).isEqualTo(2L),
                 () -> assertThat(result.getContent().get(1).getId()).isEqualTo(1L),
                 () -> assertThat(result.hasNext()).isFalse()
+        );
+    }
+
+    @Test
+    void findAllOrderByPopularity를_통해_인기순으로_레코드_데이터를_조회할_수_있다() {
+        // given
+        bookmarkRepository.save(Bookmark.builder()
+                .user(createUser(UserStatus.ACTIVE))
+                .record(new Record(
+                        2L,
+                        new FileUrl(VIDEO_URL, THUMBNAIL_URL),
+                        LOCATION,
+                        CONTENT,
+                        KEYWORDS,
+                        createUser(UserStatus.ACTIVE)
+                ))
+                .build());
+
+        // when
+        List<Record> result = recordRepository.findAllOrderByPopularity(3);
+
+        // then
+        assertAll(
+                () -> assertThat(result).hasSize(3),
+                () -> assertThat(result.get(0).getId()).isEqualTo(2L)
+        );
+
+        System.out.println("result.get(1).getId() = " + result.get(1).getId());
+        System.out.println("result.get(2).getId() = " + result.get(2).getId());
+    }
+
+    @Test
+    void findAllOrderByPopularity를_통해_조회한_레코드는_조회수보다_저장수에서_더_큰_가중치를_얻는다() {
+        // given
+        viewRepository.save(new Record(
+                2L,
+                new FileUrl(VIDEO_URL, THUMBNAIL_URL),
+                LOCATION,
+                CONTENT,
+                KEYWORDS,
+                createUser(UserStatus.ACTIVE)
+        ), createUser(UserStatus.ACTIVE));
+
+        bookmarkRepository.save(Bookmark.builder()
+                .user(createUser(UserStatus.ACTIVE))
+                .record(new Record(
+                        3L,
+                        new FileUrl(VIDEO_URL, THUMBNAIL_URL),
+                        LOCATION,
+                        CONTENT,
+                        KEYWORDS,
+                        createUser(UserStatus.ACTIVE)
+                ))
+                .build()
+        );
+
+        // when
+        List<Record> result = recordRepository.findAllOrderByPopularity(3);
+
+        // then
+        assertAll(
+                () -> assertThat(result).hasSize(3),
+                () -> assertThat(result.get(0).getId()).isEqualTo(3L),
+                () -> assertThat(result.get(1).getId()).isEqualTo(2L)
         );
     }
 }

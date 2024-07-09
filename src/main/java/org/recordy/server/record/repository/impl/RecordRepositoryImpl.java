@@ -56,8 +56,11 @@ public class RecordRepositoryImpl implements RecordRepository {
     }
 
     @Override
-    public Slice<Record> findAllOrderByPopularity(long cursor, Pageable pageable) {
-        return null;
+    public List<Record> findAllOrderByPopularity(int size) {
+        return recordQueryDslRepository.findAllOrderByPopularity(size)
+                .stream()
+                .map(RecordEntity::toDomain)
+                .toList();
     }
 
     @Override
