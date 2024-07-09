@@ -55,7 +55,7 @@ public enum ErrorMessage {
      * RECORD
      */
     RECORD_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 기록입니다."),
-    UNAUTHORIZED_DELETE(HttpStatus.UNAUTHORIZED, "삭제가 불가능한 기록입니다.")
+    UNAUTHORIZED_DELETE(HttpStatus.FORBIDDEN, "삭제가 불가능한 기록입니다.")
 
     ;
 
