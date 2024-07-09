@@ -20,4 +20,13 @@ public class Record {
     String content;
     List<Keyword> keywords;
     User uploader;
+
+    public boolean isUploader(long userId) {
+        if (uploader.getId() == userId) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 }

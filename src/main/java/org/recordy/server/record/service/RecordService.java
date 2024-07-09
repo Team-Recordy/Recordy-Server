@@ -12,7 +12,7 @@ public interface RecordService {
 
     // command
     Record create(RecordCreate recordCreate, File file);
-    void delete(long recordId);
+    void delete(long userId, long recordId);
 
     // query
     Slice<Record> getFamousRecords(long cursorId, int size);

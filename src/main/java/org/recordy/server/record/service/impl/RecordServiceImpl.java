@@ -1,11 +1,13 @@
 package org.recordy.server.record.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.recordy.server.common.exception.RecordyException;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.record.domain.File;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.usecase.RecordCreate;
+import org.recordy.server.record.exception.RecordException;
 import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.record.service.FileService;
 import org.recordy.server.record.service.RecordService;
@@ -42,9 +44,12 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public void delete(long recordId) {
+    public void delete(long userId, long recordId) {
         Record record = recordRepository.findById(recordId)
-                        .orElseThrow()
+                        .orElseThrow(() -> new RecordException(ErrorMessage.RECORD_NOT_FOUND));
+        if (!record.isUploader(recordId)) {
+            throw new RecordyException(ErrorMessage.UNAUTHORIZED_DELETE);
+        }
         recordRepository.deleteById(recordId);
     }
 
