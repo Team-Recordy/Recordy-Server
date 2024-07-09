@@ -16,6 +16,7 @@ import java.io.IOException;
 public class FileServiceImpl implements FileService {
 
     private final S3Service s3Service;
+
     @Override
     public FileUrl save(File file) {
         try {

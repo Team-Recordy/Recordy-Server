@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "유저 관련 API")
 public interface UserApi {
+
     @Operation(
             summary = "유저 회원 가입 API",
             description = "유저가 회원 가입하는 API입니다. ",

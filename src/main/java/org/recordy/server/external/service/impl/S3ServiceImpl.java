@@ -34,7 +34,7 @@ public class S3ServiceImpl implements S3Service {
     }
 
     @Override
-    public String uploadFile (MultipartFile file) throws IOException {
+    public String uploadFile(MultipartFile file) throws IOException {
         validateFileExtension(file);
         validateFileSize(file);
         final String url = getFileExtension(file);
@@ -49,14 +49,14 @@ public class S3ServiceImpl implements S3Service {
         return url;
     }
 
-    public String getFileExtension (MultipartFile file) {
-        return UUID.randomUUID()+switch (Objects.requireNonNull(file.getContentType())) {
+    public String getFileExtension(MultipartFile file) {
+        return UUID.randomUUID() + switch (Objects.requireNonNull(file.getContentType())) {
             case "image/jpeg", "image/jpg" -> ".jpg";
             case "image/png" -> ".png";
             case "image/webp" -> ".webp";
             case "video/mp4" -> ".mp4";
             case "video/mov", "video/quicktime" -> ".mov";
-            default -> throw new ExternalException (ErrorMessage. INVALID_FILE_TYPE);
+            default -> throw new ExternalException(ErrorMessage.INVALID_FILE_TYPE);
         };
     }
 
