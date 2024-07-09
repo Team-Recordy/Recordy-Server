@@ -6,6 +6,7 @@ import org.recordy.server.external.config.S3Config;
 import org.recordy.server.external.exception.ExternalException;
 import org.recordy.server.external.service.impl.S3ServiceImpl;
 import org.recordy.server.mock.FakeContainer;
+import org.recordy.server.user.exception.UserException;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
@@ -14,6 +15,8 @@ import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -42,10 +45,10 @@ public class S3ServiceTest {
                 .thenReturn(PutObjectResponse.builder().build());
 
         // when
-        String result = s3Service.uploadImage(imageMock);
+        String result = s3Service.uploadFile(imageMock);
 
         // then
-        assertThatCode(() -> s3Service.uploadImage(imageMock)).doesNotThrowAnyException();
+        assertThatCode(() -> s3Service.uploadFile(imageMock)).doesNotThrowAnyException();
     }
 
     @Test
@@ -59,29 +62,70 @@ public class S3ServiceTest {
                 .thenReturn(PutObjectResponse.builder().build());
 
         // when
-        String result = s3Service.uploadVideo(videoMock);
+        String result = s3Service.uploadFile(videoMock);
 
         // then
-        assertThatCode(() -> s3Service.uploadVideo(videoMock)).doesNotThrowAnyException();
+        assertThatCode(() -> s3Service.uploadFile(videoMock)).doesNotThrowAnyException();
     }
 
     @Test
-    void 파일_확장자_유효성_검사_실패() {
+    void 이미지_업로드_실패_파일_확장자_유효성_검사_실패() throws IOException {
         // given
-        MultipartFile fileMock = mock(MultipartFile.class);
-        when(fileMock.getContentType()).thenReturn("application/pdf");
+        MultipartFile imageMock = mock(MultipartFile.class);
+        when(imageMock.getContentType()).thenReturn("image/mov");
+        when(imageMock.getSize()).thenReturn(1024L);
+        when(imageMock.getBytes()).thenReturn(new byte[1024]);
+        when(s3ClientMock.putObject(any(PutObjectRequest.class), any(software.amazon.awssdk.core.sync.RequestBody.class)))
+                .thenReturn(PutObjectResponse.builder().build());
 
-        // when, then
-        assertThrows(ExternalException.class, () -> s3Service.validateFileExtension(fileMock));
+        //when
+        //then
+        assertThatThrownBy(() -> s3Service.uploadFile(imageMock))
+                .isInstanceOf(ExternalException.class);
     }
 
     @Test
-    void 파일_크기_유효성_검사_실패() {
+    void 비디오_업로드_실패_파일_확장자_유효성_검사_실패() throws IOException {
         // given
-        MultipartFile fileMock = mock(MultipartFile.class);
-        when(fileMock.getSize()).thenReturn(1024L * 1024 * 200);
+        MultipartFile videoMock = mock(MultipartFile.class);
+        when(videoMock.getContentType()).thenReturn("video/hwp");
+        when(videoMock.getSize()).thenReturn(1024L * 50);
+        when(videoMock.getBytes()).thenReturn(new byte[1024 * 50]);
+        when(s3ClientMock.putObject(any(PutObjectRequest.class), any(software.amazon.awssdk.core.sync.RequestBody.class)))
+                .thenReturn(PutObjectResponse.builder().build());
 
-        // when, then
-        assertThrows(ExternalException.class, () -> s3Service.validateFileSize(fileMock));
+        //when
+        //then
+        assertThatThrownBy(() -> s3Service.uploadFile(videoMock))
+                .isInstanceOf(ExternalException.class);
+    }
+
+    @Test
+    void 이미지_업로드_실패_파일_크기_유효성_검사_실패() throws IOException {
+        // given
+        long maxFileSize = 50 * 1024L;
+        MultipartFile imageMock = mock(MultipartFile.class);
+        when(imageMock.getContentType()).thenReturn("image/jpg");
+        when(imageMock.getSize()).thenReturn(1024L * 1024 * 200);
+
+        //when
+        //then
+        assertThatThrownBy(() -> s3Service.uploadFile(imageMock))
+                .isInstanceOf(ExternalException.class);
+    }
+
+    @Test
+    void 비디오_업로드_실패_파일_크기_유효성_검사_실패() throws IOException {
+        // given
+        MultipartFile videoMock = mock(MultipartFile.class);
+        when(videoMock.getContentType()).thenReturn("video/mov");
+        when(videoMock.getSize()).thenReturn(1024L * 1024 * 200);
+        when(s3ClientMock.putObject(any(PutObjectRequest.class), any(software.amazon.awssdk.core.sync.RequestBody.class)))
+                .thenReturn(PutObjectResponse.builder().build());
+
+        //when
+        //then
+        assertThatThrownBy(() -> s3Service.uploadFile(videoMock))
+                .isInstanceOf(ExternalException.class);
     }
 }

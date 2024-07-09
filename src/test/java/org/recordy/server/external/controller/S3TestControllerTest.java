@@ -29,7 +29,7 @@ public class S3TestControllerTest {
         MockMultipartFile image = new MockMultipartFile("image", "test.jpg", "image/jpeg", new byte[1024]);
 
         // when
-        String result = s3TestController.uploadImageTest(image);
+        String result = s3TestController.uploadTest(image);
 
         // then
         assertThat(result).isNotNull();
@@ -42,7 +42,7 @@ public class S3TestControllerTest {
         MockMultipartFile video = new MockMultipartFile("video", "test.mp4", "video/mp4", new byte[1024 * 50]);
 
         // when
-        String result = s3TestController.uploadVideoTest(video);
+        String result = s3TestController.uploadTest(video);
 
         // then
         assertThat(result).isNotNull();
