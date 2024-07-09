@@ -1,6 +1,9 @@
 insert into `users` (`id`, `platform_id`, `platform_type`, `status`, `age_term`, `personal_info_term`, `use_term`, `nickname`)
 values (1, 'abcdefg', 'KAKAO', 'ACTIVE', true, true, true, 'konu');
 
+insert into `users` (`id`, `platform_id`, `platform_type`, `status`, `age_term`, `personal_info_term`, `use_term`, `nickname`)
+values (1, 'abcdefgh', 'KAKAO', 'ACTIVE', true, true, true, 'subin');
+
 insert into `keywords` (`id`, `keyword`)
 values (1, 'EXOTIC');
 
@@ -24,3 +27,14 @@ values(3, 2, 1);
 
 insert into `bookmarks` (`id`, `record_id`, `user_id`)
 values(1, 1, 1);
+
+insert into `bookmarks` (`id`, `record_id`, `user_id`)
+values(2, 1, 2);
+
+insert into `bookmarks` (`id`, `record_id`, `user_id`)
+values(3, 2, 1);
+
+insert into `bookmarks` (`id`, `record_id`, `user_id`)
+values(4, 2, 2);
+
+
