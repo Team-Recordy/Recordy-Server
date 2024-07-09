@@ -57,7 +57,7 @@ public class RecordQueryDslRepository {
         return new SliceImpl<>(recordEntities, pageable, QueryDslUtils.hasNext(pageable, recordEntities));
     }
 
-    public Slice<RecordEntity> findAllByUserIdOrderByCreatedAtDesc(UserEntity userEntity, long cursor, Pageable pageable) {
+    public Slice<RecordEntity> findAllByUserIdOrderByIdDesc(UserEntity userEntity, long cursor, Pageable pageable) {
         List<RecordEntity> recordEntities = jpaQueryFactory
                 .selectFrom((QRecordEntity.recordEntity))
                 .join(QRecordEntity.recordEntity.user, QUserEntity.userEntity)

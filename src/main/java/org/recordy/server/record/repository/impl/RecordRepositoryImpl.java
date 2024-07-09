@@ -1,5 +1,6 @@
 package org.recordy.server.record.repository.impl;
 
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.keyword.domain.Keyword;
@@ -48,6 +49,12 @@ public class RecordRepositoryImpl implements RecordRepository {
     }
 
     @Override
+    public Optional<Record> findById(long recordId) {
+        return recordJpaRepository.findById(recordId)
+                .map(RecordEntity::toDomain);
+    }
+
+    @Override
     public Slice<Record> findAllOrderByPopularity(long cursor, Pageable pageable) {
         return null;
     }
@@ -69,10 +76,10 @@ public class RecordRepositoryImpl implements RecordRepository {
     }
 
     @Override
-    public Slice<Record> findAllByUserIdOrderByCreatedAtDesc(long userId, long cursor, Pageable pageable) {
+    public Slice<Record> findAllByUserIdOrderByIdDesc(long userId, long cursor, Pageable pageable) {
         UserEntity userEntity = userJpaRepository.findById(userId)
                 .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
-        return recordQueryDslRepository.findAllByUserIdOrderByCreatedAtDesc(userEntity,cursor, pageable)
+        return recordQueryDslRepository.findAllByUserIdOrderByIdDesc(userEntity,cursor, pageable)
                 .map(RecordEntity::toDomain);
     }
 }

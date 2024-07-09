@@ -43,6 +43,8 @@ public class RecordServiceImpl implements RecordService {
 
     @Override
     public void delete(long recordId) {
+        Record record = recordRepository.findById(recordId)
+                        .orElseThrow()
         recordRepository.deleteById(recordId);
     }
 
@@ -63,6 +65,6 @@ public class RecordServiceImpl implements RecordService {
 
     @Override
     public Slice<Record> getRecentRecordsByUser(long userId, long cursorId, int size) {
-        return recordRepository.findAllByUserIdOrderByCreatedAtDesc(userId, cursorId, PageRequest.ofSize(size));
+        return recordRepository.findAllByUserIdOrderByIdDesc(userId, cursorId, PageRequest.ofSize(size));
     }
 }
