@@ -57,13 +57,13 @@ public class RecordStatServiceTest {
         recordStatService.bookmark(2, 3);
 
         // when
-        Slice<Record> result = recordStatService.getBookmarkedRecords(1, 0, 10);
+        Slice<Record> result = recordStatService.getBookmarkedRecords(1, 7, 10);
 
         // then
         assertAll(
                 () -> assertThat(result.getContent()).hasSize(3),
-                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(5L),
-                () -> assertThat(result.getContent().get(1).getId()).isEqualTo(3L),
+                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(3L),
+                () -> assertThat(result.getContent().get(1).getId()).isEqualTo(2L),
                 () -> assertThat(result.getContent().get(2).getId()).isEqualTo(1L),
                 () -> assertThat(result.hasNext()).isFalse()
         );
@@ -104,7 +104,7 @@ public class RecordStatServiceTest {
 
         // then
         assertAll(
-                () -> assertThat(result).equals(3)
+                () -> assertThat(result).isEqualTo(2)
         );
     }
 
@@ -116,7 +116,7 @@ public class RecordStatServiceTest {
 
         // then
         assertAll(
-                () -> assertThat(result).equals(0)
+                () -> assertThat(result).isEqualTo(0)
         );
     }
 
