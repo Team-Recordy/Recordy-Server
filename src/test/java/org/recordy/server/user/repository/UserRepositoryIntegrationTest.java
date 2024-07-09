@@ -5,6 +5,7 @@ import org.recordy.server.user.controller.dto.request.TermsAgreement;
 import org.recordy.server.user.domain.UserStatus;
 import org.recordy.server.util.DomainFixture;
 import org.recordy.server.user.domain.User;
+import org.recordy.server.util.db.IntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
@@ -21,7 +22,7 @@ import static org.recordy.server.util.DomainFixture.*;
         @Sql(value = "/sql/user-repository-test-clean.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 })
 @SpringBootTest
-class UserRepositoryIntegrationTest {
+class UserRepositoryIntegrationTest extends IntegrationTest {
 
     @Autowired
     private UserRepository userRepository;
