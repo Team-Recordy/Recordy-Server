@@ -10,6 +10,7 @@ import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.RecordEntity;
 import org.recordy.server.record.domain.usecase.RecordCreate;
 import org.recordy.server.record.service.dto.FileUrl;
+import org.recordy.server.record_stat.domain.Bookmark;
 import org.recordy.server.user.controller.dto.request.TermsAgreement;
 import org.recordy.server.user.domain.usecase.UserSignIn;
 import org.recordy.server.user.domain.User;
@@ -179,5 +180,12 @@ public final class DomainFixture {
                 CONTENT,
                 createUserEntity()
         );
+    }
+
+    public static Bookmark createBookmark() {
+        return Bookmark.builder()
+                .record(createRecord())
+                .user(createUser(UserStatus.ACTIVE))
+                .build();
     }
 }
