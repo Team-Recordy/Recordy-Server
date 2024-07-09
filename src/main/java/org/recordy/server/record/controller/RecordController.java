@@ -10,6 +10,7 @@ import org.recordy.server.record.domain.Record;
 
 import org.recordy.server.record.domain.usecase.RecordCreate;
 import org.recordy.server.record.service.RecordService;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -54,4 +55,13 @@ public class RecordController{
                 .noContent()
                 .build();
     }
+
+    @GetMapping("/recent")
+    public ResponseEntity<Slice<Record>> getRecentRecordsLaterThanCursor(
+            @RequestParam long cursorId,
+            @RequestParam int size) {
+        Slice<Record> records = recordService.getRecentRecordsLaterThanCursor(cursorId, size);
+        return new ResponseEntity<>(records, HttpStatus.OK);
+    }
+
 }
