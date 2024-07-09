@@ -89,4 +89,23 @@ class RecordEntityTest {
                 () -> assertThat(record.getUploader().getId()).isEqualTo(recordEntity.getUser().getId())
         );
     }
+
+    @Test
+    void isUploader를_통해_Record_객체의_업로더가_맞는지_확인할_수_있다() {
+        //given
+        RecordEntity recordEntity = RecordEntity.builder()
+                .videoUrl(DomainFixture.VIDEO_URL)
+                .thumbnailUrl(DomainFixture.THUMBNAIL_URL)
+                .location(DomainFixture.LOCATION)
+                .content(DomainFixture.CONTENT)
+                .user(DomainFixture.createUserEntity())
+                .build();
+
+        //when
+        //then
+        assertAll(
+                () -> assertThat(recordEntity.toDomain().isUploader(DomainFixture.createUserEntity().getId())).isTrue(),
+                () -> assertThat(recordEntity.toDomain().isUploader(100)).isFalse()
+        );
+    }
 }

@@ -2,16 +2,20 @@ package org.recordy.server.record.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.recordy.server.auth.exception.AuthException;
+import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.mock.FakeContainer;
 import org.recordy.server.record.domain.File;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.usecase.RecordCreate;
+import org.recordy.server.record.exception.RecordException;
 import org.recordy.server.user.domain.UserStatus;
 import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.util.DomainFixture;
 import org.springframework.data.domain.Slice;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 class RecordServiceTest {
@@ -54,7 +58,7 @@ class RecordServiceTest {
         Record record = recordService.create(recordCreate, file);
 
         // when
-        recordService.delete(record.getId());
+        recordService.delete(1,record.getId());
 
         // then
         Slice<Record> result = recordService.getRecentRecordsLaterThanCursor(0,1);
@@ -62,6 +66,20 @@ class RecordServiceTest {
                 () -> assertThat(result.getContent()).hasSize(0),
                 () -> assertThat(result.hasNext()).isFalse()
         );
+    }
+
+    @Test
+    void 업로더가_아니면_delete을_통해_레코드를_삭제할_때_예외가_발생한다() {
+        // given
+        RecordCreate recordCreate = DomainFixture.createRecordCreate();
+        File file = DomainFixture.createFile();
+        Record record = recordService.create(recordCreate, file);
+
+        // when
+        // then
+        assertThatThrownBy(() -> recordService.delete(100,record.getId()))
+                .isInstanceOf(RecordException.class)
+                .hasMessageContaining(ErrorMessage.UNAUTHORIZED_DELETE.getMessage());
     }
 
     @Test
@@ -76,7 +94,7 @@ class RecordServiceTest {
         //when
         Slice<Record> result = recordService.getRecentRecordsByUser(1,0,10);
 
-        //theb
+        //then
         assertAll(
                 () -> assertThat(result.get()).hasSize(2),
                 () -> assertThat(result.getContent().get(0).getId()).isEqualTo(2L),
