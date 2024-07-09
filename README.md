@@ -37,10 +37,11 @@
 **- 취향 키워드칩 선택** </br>
 **- 타 유저 영상 시청 후 북마크**
 </br>
+![image]()
 
 
 ## 👤 팀원
-|<img src="https://github.com/Team-Recordy/Recordy-Server/assets/94737768/76b261b4-bc99-49ef-b221-abd32126db78" width="128" /> |<img src="https://github.com/Team-Recordy/Recordy-Server/assets/94737768/b38469c6-9239-4972-b821-ca5263f889be" width="128" /> |<img src="https://github.com/Team-Recordy/Recordy-Server/assets/94737768/50606469-9d7b-4ced-aff2-acd3876fc9db" width="128" />|
+|<img src="https://github.com/Team-Recordy/Recordy-Server/assets/94737768/76b261b4-bc99-49ef-b221-abd32126db78" width="200" /> |<img src="https://github.com/Team-Recordy/Recordy-Server/assets/94737768/b38469c6-9239-4972-b821-ca5263f889be" width="200" /> |<img src="https://github.com/Team-Recordy/Recordy-Server/assets/94737768/e334819f-fbd4-4786-a7de-495603d0cfe7" width="200" />|
 |:---------:|:---------:|:---------:|
 |[나세빈](https://github.com/sebbbin)|[박수빈](https://github.com/elive7)|[진건우](https://github.com/jinkonu)|
 | `나세빈` | `박수빈` | `👑 진건우` | 
