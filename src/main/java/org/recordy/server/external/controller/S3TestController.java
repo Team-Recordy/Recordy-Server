@@ -18,17 +18,11 @@ import java.io.IOException;
 public class S3TestController implements S3TestApi {
 
     private final S3ServiceImpl s3ServiceImpl;
-    private static final String directoryPath = "recordy/file";
 
     @Override
-    @PostMapping(path = "/uploadImageTest", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public String uploadImageTest(@RequestPart MultipartFile image) throws IOException {
-        return this.s3ServiceImpl.uploadImage(image);
+    @PostMapping(path = "/uploadTest", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String uploadTest(@RequestPart MultipartFile file) throws IOException {
+        return this.s3ServiceImpl.uploadFile(file);
     }
 
-    @Override
-    @PostMapping(path = "/uploadVideoTest", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public String uploadVideoTest(@RequestPart MultipartFile video) throws IOException {
-        return this.s3ServiceImpl.uploadVideo(video);
-    }
 }

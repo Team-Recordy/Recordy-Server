@@ -19,8 +19,8 @@ public class FileServiceImpl implements FileService {
     @Override
     public FileUrl save(File file) {
         try {
-            String videoUrl = s3Service.uploadVideo(file.video());
-            String thumbnailUrl = s3Service.uploadImage(file.thumbnail());
+            String videoUrl = s3Service.uploadFile(file.video());
+            String thumbnailUrl = s3Service.uploadFile(file.thumbnail());
 
             return new FileUrl(videoUrl, thumbnailUrl);
         } catch (IOException e) {

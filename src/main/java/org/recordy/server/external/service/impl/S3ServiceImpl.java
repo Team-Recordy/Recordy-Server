@@ -15,6 +15,7 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Component
@@ -33,41 +34,30 @@ public class S3ServiceImpl implements S3Service {
     }
 
     @Override
-    public String uploadImage(MultipartFile image) throws IOException {
-        final String key = generateImageFileName();
-
-        validateFileExtension(image);
-        validateFileSize(image);
-
+    public String uploadFile (MultipartFile file) throws IOException {
+        validateFileExtension(file);
+        validateFileSize(file);
+        final String url = getFileExtension(file);
         PutObjectRequest request = PutObjectRequest.builder()
                 .bucket(bucketName)
-                .key(key)
-                .contentType(image.getContentType())
+                .key(url)
+                .contentType(file.getContentType())
                 .contentDisposition("inline")
                 .build();
-
-        RequestBody requestBody = RequestBody.fromBytes(image.getBytes());
+        RequestBody requestBody = RequestBody.fromBytes(file.getBytes());
         s3Client.putObject(request, requestBody);
-        return key;
+        return url;
     }
 
-    @Override
-    public String uploadVideo(MultipartFile video) throws IOException {
-        final String key = generateVideoFileName();
-
-        validateFileExtension(video);
-        validateFileSize(video);
-
-        PutObjectRequest request = PutObjectRequest.builder()
-                .bucket(bucketName)
-                .key(key)
-                .contentType(video.getContentType())
-                .contentDisposition("inline")
-                .build();
-
-        RequestBody requestBody = RequestBody.fromBytes(video.getBytes());
-        s3Client.putObject(request, requestBody);
-        return key;
+    public String getFileExtension (MultipartFile file) {
+        return UUID.randomUUID()+switch (Objects.requireNonNull(file.getContentType())) {
+            case "image/jpeg", "image/jpg" -> ".jpg";
+            case "image/png" -> ".png";
+            case "image/webp" -> ".webp";
+            case "video/mp4" -> ".mp4";
+            case "video/mov", "video/quicktime" -> ".mov";
+            default -> throw new ExternalException (ErrorMessage. INVALID_FILE_TYPE);
+        };
     }
 
     @Override

@@ -28,21 +28,5 @@ public interface S3TestApi {
                     )
             }
     )
-    public String uploadImageTest(@RequestPart MultipartFile image) throws IOException;
-
-    @Operation(
-            summary = "비디오 업로드 테스트 API",
-            description = "S3에 비디오가 업로드 되는지 테스트하는 API입니다. 사진이 업로드 되지 않도록 비디오와 이미지를 구분하였습니다. 비디오 사이즈는 100MB를 넘을 수 없습니다. 비디오 확장자는 mp4, mov만 가능합니다.",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "성공",
-                            content = @Content(
-                                    mediaType = MediaType.MULTIPART_FORM_DATA_VALUE
-                            )
-                    )
-            }
-    )
-    public String uploadVideoTest(@RequestPart MultipartFile video) throws IOException;
-
+    public String uploadTest(@RequestPart MultipartFile file) throws IOException;
 }

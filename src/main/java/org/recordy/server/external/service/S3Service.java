@@ -7,12 +7,10 @@ import java.io.IOException;
 public interface S3Service {
 
     // command
-    String uploadImage(MultipartFile image) throws IOException;
-    String uploadVideo( MultipartFile video) throws IOException;
+    public String uploadFile (MultipartFile file) throws IOException;
     void deleteFile(String key) throws IOException;
 
     // query
-    void validateFileExtension(MultipartFile file);
-    void validateFileSize(MultipartFile file);
+
 
 }
