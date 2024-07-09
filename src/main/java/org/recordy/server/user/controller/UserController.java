@@ -92,7 +92,7 @@ public class UserController implements UserApi {
         userService.delete(userId);
 
         return ResponseEntity
-                .status(HttpStatus.OK)
+                .noContent()
                 .build();
     }
 }
