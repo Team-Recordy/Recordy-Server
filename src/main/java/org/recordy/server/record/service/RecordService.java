@@ -15,6 +15,7 @@ public interface RecordService {
     void delete(long userId, long recordId);
 
     // query
+    Record watch(long userId, long recordId);
     Slice<Record> getFamousRecords(long cursorId, int size);
     Slice<Record> getRecentRecordsLaterThanCursor(long cursorId, int size);
     Slice<Record> getRecentRecordsByKeywords(List<Keyword> keywords, long cursorId, int size);

@@ -8,6 +8,7 @@ import org.recordy.server.mock.FakeContainer;
 import org.recordy.server.record.domain.File;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.usecase.RecordCreate;
+import org.recordy.server.record_stat.repository.ViewRepository;
 import org.recordy.server.record.exception.RecordException;
 import org.recordy.server.user.domain.UserStatus;
 import org.recordy.server.user.repository.UserRepository;
@@ -21,11 +22,13 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class RecordServiceTest {
 
     private RecordService recordService;
+    private ViewRepository viewRepository;
 
     @BeforeEach
     void init() {
         FakeContainer fakeContainer = new FakeContainer();
         recordService = fakeContainer.recordService;
+        viewRepository = fakeContainer.viewRepository;
         UserRepository userRepository = fakeContainer.userRepository;
 
         userRepository.save(DomainFixture.createUser(UserStatus.ACTIVE));

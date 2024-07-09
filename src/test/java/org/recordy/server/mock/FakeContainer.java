@@ -25,11 +25,13 @@ import org.recordy.server.mock.keyword.FakeKeywordRepository;
 import org.recordy.server.mock.record.FakeFileService;
 import org.recordy.server.mock.record.FakeRecordRepository;
 import org.recordy.server.mock.user.FakeUserRepository;
+import org.recordy.server.mock.view.FakeViewRepository;
 import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.record.service.FileService;
 import org.recordy.server.record.service.RecordService;
 import org.recordy.server.record.service.impl.RecordServiceImpl;
 import org.recordy.server.record_stat.repository.BookmarkRepository;
+import org.recordy.server.record_stat.repository.ViewRepository;
 import org.recordy.server.record_stat.service.RecordStatService;
 import org.recordy.server.record_stat.service.impl.RecordStatServiceImpl;
 import org.recordy.server.user.controller.UserController;
@@ -50,6 +52,7 @@ public class FakeContainer {
     public final RecordRepository recordRepository;
     public final KeywordRepository keywordRepository;
     public final BookmarkRepository bookmarkRepository;
+    public final ViewRepository viewRepository;
 
     // infrastructure
     public final AuthTokenSigningKeyProvider authTokenSigningKeyProvider;
@@ -83,6 +86,7 @@ public class FakeContainer {
         this.recordRepository = new FakeRecordRepository();
         this.keywordRepository = new FakeKeywordRepository();
         this.bookmarkRepository = new FakeBookmarkRepository();
+        this.viewRepository = new FakeViewRepository();
 
         this.authTokenSigningKeyProvider = new AuthTokenSigningKeyProvider(DomainFixture.TOKEN_SECRET);
         this.authTokenGenerator = new AuthTokenGenerator(authTokenSigningKeyProvider);
@@ -108,7 +112,7 @@ public class FakeContainer {
         this.authService = new AuthServiceImpl(authRepository, authPlatformServiceFactory, authTokenService);
         this.userService = new UserServiceImpl(userRepository, authService, authTokenService);
         this.fileService = new FakeFileService();
-        this.recordService = new RecordServiceImpl(recordRepository, fileService, userService);
+        this.recordService = new RecordServiceImpl(recordRepository, viewRepository, fileService, userService);
         this.keywordService = new KeywordServiceImpl(keywordRepository);
         this.recordStatService = new RecordStatServiceImpl(userRepository, recordRepository, bookmarkRepository);
 

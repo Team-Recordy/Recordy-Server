@@ -12,6 +12,7 @@ import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.record.service.FileService;
 import org.recordy.server.record.service.RecordService;
 import org.recordy.server.record.controller.dto.FileUrl;
+import org.recordy.server.record_stat.repository.ViewRepository;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.exception.UserException;
 import org.recordy.server.user.service.UserService;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 public class RecordServiceImpl implements RecordService {
 
     private final RecordRepository recordRepository;
+    private final ViewRepository viewRepository;
     private final FileService fileService;
     private final UserService userService;
 
@@ -53,6 +55,17 @@ public class RecordServiceImpl implements RecordService {
             throw new RecordyException(ErrorMessage.FORBIDDEN_DELETE_RECORD);
         }
         recordRepository.deleteById(recordId);
+    }
+
+    @Override
+    public Record watch(long userId, long recordId) {
+        User user = userService.getById(userId)
+                .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
+        Record record = recordRepository.findById(recordId)
+                .orElseThrow(() -> new UserException(ErrorMessage.RECORD_NOT_FOUND));
+
+        viewRepository.save(record, user);
+        return record;
     }
 
     @Override
