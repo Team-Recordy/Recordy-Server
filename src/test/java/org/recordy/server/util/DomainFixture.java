@@ -150,6 +150,15 @@ public final class DomainFixture {
         );
     }
 
+    public static RecordCreate createRecordCreateByOtherUser() {
+        return new RecordCreate(
+                2,
+                LOCATION,
+                CONTENT,
+                KEYWORDS
+        );
+    }
+
     public static File createFile() {
         return new File(
                 new MockMultipartFile("file", "file.mp4", "video/mp4", new byte[0]),

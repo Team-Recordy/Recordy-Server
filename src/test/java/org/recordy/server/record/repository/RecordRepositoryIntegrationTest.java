@@ -95,6 +95,43 @@ class RecordRepositoryIntegrationTest {
     }
 
     @Test
+    void deleteById를_통해_레코드를_삭제할_수_있다() {
+        //given
+        Record record = DomainFixture.createRecord();
+        Record savedRecord = recordRepository.save(record);
+
+        //when
+        recordRepository.deleteById(savedRecord.getId());
+        Slice<Record> result = recordRepository.findAllByIdAfterOrderByIdDesc(0, PageRequest.ofSize(1));
+
+        //then
+        assertAll(
+                () -> assertThat(result.getContent()).hasSize(0),
+                () -> assertThat(result.hasNext()).isFalse()
+        );
+    }
+
+    @Test
+    void findAllByUserIdOrderByCreatedAtDesc를_통해_userId를_기반으로_레코드_데이터를_조회할_수_있다() {
+        //given
+        long userId = 1;
+        long cursor = 4L;
+        int size = 2;
+
+        //when
+        Slice<Record> result = recordRepository.findAllByIdAfterOrderByIdDesc(cursor, PageRequest.ofSize(size));
+
+        //then
+        assertAll(
+            () -> assertThat(result.get()).hasSize(2),
+            () -> assertThat(result.getContent().get(0).getId()).isEqualTo(2L),
+            () -> assertThat(result.getContent().get(1).getId()).isEqualTo(1L),
+            () -> assertThat((result.hasNext())).isFalse()
+        );
+
+    }
+
+    @Test
     void findAllByIdAfterOrderByIdDesc를_통해_cursor_값이_0일_경우_최신순으로_레코드_데이터를_조회할_수_있다() {
         // given
         long cursor = 0L;

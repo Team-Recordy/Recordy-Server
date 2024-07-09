@@ -47,6 +47,45 @@ class RecordServiceTest {
     }
 
     @Test
+    void delete을_통해_레코드를_삭제할_수_있다() {
+        // given
+        RecordCreate recordCreate = DomainFixture.createRecordCreate();
+        File file = DomainFixture.createFile();
+        Record record = recordService.create(recordCreate, file);
+
+        // when
+        recordService.delete(record.getId());
+
+        // then
+        Slice<Record> result = recordService.getRecentRecordsLaterThanCursor(0,1);
+        assertAll(
+                () -> assertThat(result.getContent()).hasSize(0),
+                () -> assertThat(result.hasNext()).isFalse()
+        );
+    }
+
+    @Test
+    void findAllByUserIdOrderByCreatedAtDesc를_통해_userId를_기반으로_레코드_데이터를_조회할_수_있다() {
+        //given
+        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
+        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
+        recordService.create(DomainFixture.createRecordCreateByOtherUser(), DomainFixture.createFile());
+        recordService.create(DomainFixture.createRecordCreateByOtherUser(), DomainFixture.createFile());
+        recordService.create(DomainFixture.createRecordCreateByOtherUser(), DomainFixture.createFile());
+
+        //when
+        Slice<Record> result = recordService.getRecentRecordsByUser(1,0,10);
+
+        //theb
+        assertAll(
+                () -> assertThat(result.get()).hasSize(2),
+                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(2L),
+                () -> assertThat(result.getContent().get(1).getId()).isEqualTo(1L),
+                () -> assertThat(result.hasNext()).isFalse()
+        );
+    }
+
+    @Test
     void getRecentRecordsLaterThanCursor를_통해_커서_이후의_레코드를_최신_순서로_읽을_수_있다() {
         // given
         recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
