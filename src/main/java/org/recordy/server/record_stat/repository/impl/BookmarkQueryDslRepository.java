@@ -1,13 +1,10 @@
-package org.recordy.server.record_stat.repository;
+package org.recordy.server.record_stat.repository.impl;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.util.QueryDslUtils;
-import org.recordy.server.keyword.domain.QKeywordEntity;
 import org.recordy.server.record.domain.QRecordEntity;
-import org.recordy.server.record.domain.QUploadEntity;
-import org.recordy.server.record.domain.RecordEntity;
 import org.recordy.server.record_stat.domain.BookmarkEntity;
 import org.recordy.server.record_stat.domain.QBookmarkEntity;
 import org.recordy.server.user.domain.QUserEntity;

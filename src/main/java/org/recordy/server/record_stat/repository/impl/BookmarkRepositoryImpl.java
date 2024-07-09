@@ -1,10 +1,10 @@
-package org.recordy.server.record_stat.repository;
+package org.recordy.server.record_stat.repository.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.record_stat.domain.Bookmark;
 import org.recordy.server.record_stat.domain.BookmarkEntity;
-import org.recordy.server.user.domain.User;
+import org.recordy.server.record_stat.repository.BookmarkRepository;
 import org.recordy.server.user.domain.UserEntity;
 import org.recordy.server.user.exception.UserException;
 import org.recordy.server.user.repository.impl.UserJpaRepository;
