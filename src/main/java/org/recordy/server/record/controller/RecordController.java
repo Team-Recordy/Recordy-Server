@@ -42,4 +42,16 @@ public class RecordController{
                 .status(HttpStatus.CREATED)
                 .body(createdRecord);
     }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteRecord(
+            @UserId Long userId,
+            @PathVariable Long recordId
+    ){
+        recordService.delete(userId, recordId);
+
+        return ResponseEntity
+                .noContent()
+                .build();
+    }
 }
