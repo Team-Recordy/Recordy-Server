@@ -11,7 +11,7 @@ import org.recordy.server.record.exception.RecordException;
 import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.record.service.FileService;
 import org.recordy.server.record.service.RecordService;
-import org.recordy.server.record.service.dto.FileUrl;
+import org.recordy.server.record.controller.dto.FileUrl;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.exception.UserException;
 import org.recordy.server.user.service.UserService;
@@ -48,7 +48,7 @@ public class RecordServiceImpl implements RecordService {
         Record record = recordRepository.findById(recordId)
                         .orElseThrow(() -> new RecordException(ErrorMessage.RECORD_NOT_FOUND));
         if (!record.isUploader(recordId)) {
-            throw new RecordyException(ErrorMessage.UNAUTHORIZED_DELETE);
+            throw new RecordyException(ErrorMessage.UNAUTHORIZED_DELETE_RECORD);
         }
         recordRepository.deleteById(recordId);
     }

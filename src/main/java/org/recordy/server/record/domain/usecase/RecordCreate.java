@@ -10,4 +10,8 @@ public record RecordCreate(
         String content,
         List<Keyword> keywords
 ) {
+
+    public static RecordCreate of(Long uploaderId, String location, String content, List<Keyword> keywords){
+        return new RecordCreate(uploaderId, location, content, keywords);
+    }
 }

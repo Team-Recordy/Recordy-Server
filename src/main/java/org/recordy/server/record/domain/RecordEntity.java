@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.recordy.server.keyword.domain.KeywordEntity;
-import org.recordy.server.record.service.dto.FileUrl;
+import org.recordy.server.record.controller.dto.FileUrl;
 import org.recordy.server.user.domain.UserEntity;
 
 import java.util.ArrayList;

@@ -50,13 +50,11 @@ public enum ErrorMessage {
     DUPLICATE_USER(HttpStatus.CONFLICT, "이미 존재하는 회원입니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 회원입니다."),
 
-
     /**
      * RECORD
      */
     RECORD_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 기록입니다."),
-    UNAUTHORIZED_DELETE(HttpStatus.UNAUTHORIZED, "삭제가 불가능한 기록입니다.")
-
+    UNAUTHORIZED_DELETE_RECORD(HttpStatus.UNAUTHORIZED, "삭제가 불가능한 기록입니다.")
     ;
 
     private final HttpStatus httpStatus;
