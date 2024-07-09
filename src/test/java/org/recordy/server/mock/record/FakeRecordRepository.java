@@ -30,6 +30,7 @@ public class FakeRecordRepository implements RecordRepository {
                 .fileUrl(record.getFileUrl())
                 .location(record.getLocation())
                 .content(record.getContent())
+                .keywords(record.getKeywords())
                 .uploader(record.getUploader())
                 .build();
 

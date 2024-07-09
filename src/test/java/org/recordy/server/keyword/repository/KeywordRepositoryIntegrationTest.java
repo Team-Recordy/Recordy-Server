@@ -3,6 +3,7 @@ package org.recordy.server.keyword.repository;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.util.DomainFixture;
+import org.recordy.server.util.db.IntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
@@ -18,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
         @Sql(value = "/sql/keyword-repository-test-clean.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 })
 @SpringBootTest
-class KeywordRepositoryIntegrationTest {
+class KeywordRepositoryIntegrationTest extends IntegrationTest {
 
     @Autowired
     private KeywordRepository keywordRepository;

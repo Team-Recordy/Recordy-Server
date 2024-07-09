@@ -8,6 +8,7 @@ import org.recordy.server.record.domain.RecordEntity;
 import org.recordy.server.record.domain.UploadEntity;
 import org.recordy.server.record.repository.impl.UploadJpaRepository;
 import org.recordy.server.util.DomainFixture;
+import org.recordy.server.util.db.IntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
@@ -27,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 })
 @Transactional
 @SpringBootTest
-class RecordRepositoryIntegrationTest {
+class RecordRepositoryIntegrationTest extends IntegrationTest {
 
     @Autowired
     private RecordRepository recordRepository;

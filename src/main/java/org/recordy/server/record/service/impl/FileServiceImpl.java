@@ -27,5 +27,7 @@ public class FileServiceImpl implements FileService {
         } catch (IOException e) {
             throw new RecordException(ErrorMessage.FAILED_TO_UPLOAD_TO_S3);
         }
+
+        return null;
     }
 }
