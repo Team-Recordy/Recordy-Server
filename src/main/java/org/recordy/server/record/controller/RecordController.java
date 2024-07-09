@@ -28,7 +28,7 @@ public class RecordController{
 
     @PostMapping
     public ResponseEntity<Record> createRecord(
-            @UserId Long userId,
+            @UserId Long uploaderId,
             @RequestPart RecordCreateRequest recordCreateRequest,
             @RequestPart File file){
 
@@ -36,7 +36,7 @@ public class RecordController{
                 .map(Keyword::fromString)
                 .collect(Collectors.toList());
 
-        RecordCreate recordCreate = RecordCreate.of(userId, recordCreateRequest.location(), recordCreateRequest.content(), keywords);
+        RecordCreate recordCreate = RecordCreate.of(uploaderId, recordCreateRequest.location(), recordCreateRequest.content(), keywords);
         Record createdRecord = recordService.create(recordCreate, file);
 
         return ResponseEntity
@@ -46,10 +46,10 @@ public class RecordController{
 
     @DeleteMapping
     public ResponseEntity<Void> deleteRecord(
-            @UserId Long userId,
+            @UserId Long uploaderId,
             @PathVariable Long recordId
     ){
-        recordService.delete(userId, recordId);
+        recordService.delete(uploaderId, recordId);
 
         return ResponseEntity
                 .noContent()
