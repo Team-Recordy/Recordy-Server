@@ -49,6 +49,11 @@ public enum ErrorMessage {
     DUPLICATE_NICKNAME(HttpStatus.CONFLICT, "이미 존재하는 닉네임입니다."),
     DUPLICATE_USER(HttpStatus.CONFLICT, "이미 존재하는 회원입니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 회원입니다."),
+
+    /**
+     * RECORD
+     */
+    RECORD_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 레코드입니다."),
     ;
 
     private final HttpStatus httpStatus;
