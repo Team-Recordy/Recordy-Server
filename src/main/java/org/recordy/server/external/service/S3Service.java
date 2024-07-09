@@ -12,8 +12,5 @@ public interface S3Service {
     void deleteFile(String key) throws IOException;
 
     // query
-    void validateImageExtension(MultipartFile image);
-    void validateVideoExtension(MultipartFile video);
-    void validateImageSize(MultipartFile image);
-    void validateVideoSize(MultipartFile video);
+
 }

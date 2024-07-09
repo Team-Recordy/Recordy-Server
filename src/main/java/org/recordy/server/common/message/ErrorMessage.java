@@ -25,7 +25,7 @@ public enum ErrorMessage {
     /**
      * EXTERNAL
      */
-    INVALID_FILE_FORMAT(HttpStatus.BAD_REQUEST,"파일 사이즈는 100MB를 넘을 수 없습니다."),
+    INVALID_FILE_SIZE(HttpStatus.BAD_REQUEST,"파일 사이즈는 100MB를 넘을 수 없습니다."),
     INVALID_FILE_TYPE(HttpStatus.BAD_REQUEST,"이미지 확장자는 jpg, png, webp만, 비디오 확장자는 mp4, mov, quicktime만 가능합니다."),
 
     /**
