@@ -57,11 +57,30 @@ public class RecordController{
     }
 
     @GetMapping("/recent")
-    public ResponseEntity<Slice<Record>> getRecentRecordsLaterThanCursor(
+    public ResponseEntity<Slice<Record>> getRecentRecords(
             @RequestParam long cursorId,
-            @RequestParam int size) {
-        Slice<Record> records = recordService.getRecentRecordsLaterThanCursor(cursorId, size);
+            @RequestParam int size,
+            @RequestParam(required = false) List<String> keywords) {
+
+        Slice<Record> records;
+        if (keywords == null || keywords.isEmpty()) {
+            records = recordService.getRecentRecordsLaterThanCursor(cursorId, size);
+        } else {
+            List<Keyword> keywordEnums = keywords.stream()
+                    .map(Keyword::valueOf)
+                    .collect(Collectors.toList());
+            records = recordService.getRecentRecordsByKeywords(keywordEnums, cursorId, size);
+        }
+
         return new ResponseEntity<>(records, HttpStatus.OK);
     }
 
+    @GetMapping("/user")
+    public ResponseEntity<Slice<Record>> getRecentRecordsByUser(
+            @UserId long userId,
+            @RequestParam long cursorId,
+            @RequestParam int size) {
+        Slice<Record> records = recordService.getRecentRecordsByUser(userId,cursorId, size);
+        return new ResponseEntity<>(records, HttpStatus.OK);
+    }
 }
