@@ -20,20 +20,21 @@ import java.util.UUID;
 @Component
 public class S3ServiceImpl implements S3Service {
 
-    private final String bucketName;
-    private final S3Config s3Config;
-    private static final List<String> FILE_EXTENSIONS = Arrays.asList("image/jpeg", "image/png", "image/jpg", "image/webp","video/mp4", "video/mov", "video/quicktime");
+    private String bucketName;
+    private S3Config s3Config;
+    private S3Client s3Client;
+    private static final List<String> FILE_EXTENSIONS = Arrays.asList("image/jpeg", "image/png", "image/jpg", "image/webp", "video/mp4", "video/mov", "video/quicktime");
     private static final Long MAX_SIZE = 100 * 1024 * 1024L; // 100MB
 
     public S3ServiceImpl(@Value("${aws-property.s3-bucket-name}") final String bucketName, S3Config s3Config) {
         this.bucketName = bucketName;
         this.s3Config = s3Config;
+        this.s3Client = s3Config.getS3Client();
     }
 
     @Override
     public String uploadImage(MultipartFile image) throws IOException {
         final String key = generateImageFileName();
-        final S3Client s3Client = s3Config.getS3Client();
 
         validateFileExtension(image);
         validateFileSize(image);
@@ -53,7 +54,6 @@ public class S3ServiceImpl implements S3Service {
     @Override
     public String uploadVideo(MultipartFile video) throws IOException {
         final String key = generateVideoFileName();
-        final S3Client s3Client = s3Config.getS3Client();
 
         validateFileExtension(video);
         validateFileSize(video);
@@ -72,12 +72,14 @@ public class S3ServiceImpl implements S3Service {
 
     @Override
     public void deleteFile(String key) throws IOException {
-        final S3Client s3Client = s3Config.getS3Client();
-
         s3Client.deleteObject(DeleteObjectRequest.builder()
                 .bucket(bucketName)
                 .key(key)
                 .build());
+    }
+
+    public void setS3Client(S3Client s3Client) {
+        this.s3Client = s3Client;
     }
 
     private String generateImageFileName() {
@@ -87,7 +89,6 @@ public class S3ServiceImpl implements S3Service {
     private String generateVideoFileName() {
         return UUID.randomUUID() + ".mp4";
     }
-
 
     public void validateFileExtension(MultipartFile file) {
         String contentType = file.getContentType();
@@ -101,5 +102,4 @@ public class S3ServiceImpl implements S3Service {
             throw new ExternalException(ErrorMessage.INVALID_FILE_SIZE);
         }
     }
-
 }

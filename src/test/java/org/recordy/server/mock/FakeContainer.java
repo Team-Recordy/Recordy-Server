@@ -12,7 +12,7 @@ import org.recordy.server.auth.service.impl.token.AuthTokenGenerator;
 import org.recordy.server.auth.service.impl.token.AuthTokenParser;
 import org.recordy.server.auth.service.impl.token.AuthTokenServiceImpl;
 import org.recordy.server.auth.service.impl.token.AuthTokenSigningKeyProvider;
-import org.recordy.server.external.config.S3Config;
+import org.recordy.server.external.service.S3Service;
 import org.recordy.server.keyword.repository.KeywordRepository;
 import org.recordy.server.keyword.service.KeywordService;
 import org.recordy.server.keyword.service.impl.KeywordServiceImpl;
@@ -33,12 +33,10 @@ import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.user.service.UserService;
 import org.recordy.server.user.service.impl.UserServiceImpl;
 import org.recordy.server.util.DomainFixture;
-import org.recordy.server.external.service.impl.S3ServiceImpl;
-import org.recordy.server.external.service.S3Service;
-import org.mockito.Mockito;
-import software.amazon.awssdk.services.s3.S3Client;
 
 import java.util.List;
+
+import static org.mockito.Mockito.mock;
 
 public class FakeContainer {
 
@@ -106,11 +104,7 @@ public class FakeContainer {
         this.recordService = new RecordServiceImpl(recordRepository, fileService, userService);
         this.keywordService = new KeywordServiceImpl(keywordRepository);
 
-        // Mock S3
-        S3Client s3ClientMock = Mockito.mock(S3Client.class);
-        S3Config s3ConfigMock = Mockito.mock(S3Config.class);
-        Mockito.when(s3ConfigMock.getS3Client()).thenReturn(s3ClientMock);
-        this.s3Service = new S3ServiceImpl("recordy-bucket", s3ConfigMock);
+        this.s3Service = mock(S3Service.class);  // S3Service mock 사용
 
         this.authFilterExceptionHandler = new AuthFilterExceptionHandler(new ObjectMapper());
         this.tokenAuthenticationFilter = new TokenAuthenticationFilter(
