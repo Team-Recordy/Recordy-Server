@@ -68,8 +68,8 @@ public class RecordRepositoryImpl implements RecordRepository {
 
     @Override
     public Slice<Record> findAllByIdAfterAndKeywordsOrderByIdDesc(List<Keyword> keywords, long cursor, Pageable pageable) {
-        List<KeywordEntity> keywordEntities = keywords.stream()
-                .map(KeywordEntity::from)
+        List<KeywordEntity> keywordEntities = keywordJpaRepository.findAll().stream()
+                .filter(keyword -> keywords.contains(keyword.toDomain()))
                 .toList();
 
         return recordQueryDslRepository.findAllByIdAfterAndKeywordsOrderByIdDesc(keywordEntities, cursor, pageable)

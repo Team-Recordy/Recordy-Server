@@ -1,6 +1,7 @@
 package org.recordy.server.record.repository;
 
 import org.junit.jupiter.api.Test;
+import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.keyword.domain.KeywordEntity;
 import org.recordy.server.keyword.repository.impl.KeywordJpaRepository;
 import org.recordy.server.record.domain.Record;
@@ -183,6 +184,25 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
         // then
         assertAll(
                 () -> assertThat(result.getContent()).isEmpty(),
+                () -> assertThat(result.hasNext()).isFalse()
+        );
+    }
+
+    @Test
+    void findAllByIdAfterAndKeywordsOrderByIdDesc를_통해_키워드로_필터링된_레코드_데이터를_최신순으로_조회할_수_있다() {
+        // given
+        List<Keyword> keywords = List.of(DomainFixture.KEYWORD_1, DomainFixture.KEYWORD_2);
+        long cursor = 3L;
+        int size = 2;
+
+        // when
+        Slice<Record> result = recordRepository.findAllByIdAfterAndKeywordsOrderByIdDesc(keywords, cursor, PageRequest.ofSize(size));
+
+        // then
+        assertAll(
+                () -> assertThat(result.getContent()).hasSize(2),
+                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(2L),
+                () -> assertThat(result.getContent().get(1).getId()).isEqualTo(1L),
                 () -> assertThat(result.hasNext()).isFalse()
         );
     }
