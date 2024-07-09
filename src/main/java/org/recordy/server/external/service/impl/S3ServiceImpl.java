@@ -33,8 +33,8 @@ public class S3ServiceImpl implements S3Service {
     }
 
     @Override
-    public String uploadImage(String directoryPath, MultipartFile image) throws IOException {
-        final String key = directoryPath + "/" + generateImageFileName();
+    public String uploadImage(MultipartFile image) throws IOException {
+        final String key = generateImageFileName();
         final S3Client s3Client = s3Config.getS3Client();
 
         validateImageExtension(image);
@@ -53,8 +53,8 @@ public class S3ServiceImpl implements S3Service {
     }
 
     @Override
-    public String uploadVideo(String directoryPath, MultipartFile video) throws IOException {
-        final String key = directoryPath + "/" + generateVideoFileName();
+    public String uploadVideo(MultipartFile video) throws IOException {
+        final String key = generateVideoFileName();
         final S3Client s3Client = s3Config.getS3Client();
 
         validateVideoExtension(video);

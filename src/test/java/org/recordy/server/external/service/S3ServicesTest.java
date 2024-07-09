@@ -37,10 +37,10 @@ public class S3ServicesTest {
         when(imageMock.getBytes()).thenReturn(new byte[1024]);
 
         // when
-        String result = s3Service.uploadImage("test-directory", imageMock);
+        String result = s3Service.uploadImage(imageMock);
 
         // then
-        assertThatCode(() -> s3Service.uploadImage("test-directory", imageMock)).doesNotThrowAnyException();
+        assertThatCode(() -> s3Service.uploadImage(imageMock)).doesNotThrowAnyException();
     }
 
     @Test
@@ -52,10 +52,10 @@ public class S3ServicesTest {
         when(videoMock.getBytes()).thenReturn(new byte[1024 * 50]);
 
         // when
-        String result = s3Service.uploadVideo("test-directory", videoMock);
+        String result = s3Service.uploadVideo( videoMock);
 
         // then
-        assertThatCode(() -> s3Service.uploadVideo("test-directory", videoMock)).doesNotThrowAnyException();
+        assertThatCode(() -> s3Service.uploadVideo(videoMock)).doesNotThrowAnyException();
     }
 
     @Test
