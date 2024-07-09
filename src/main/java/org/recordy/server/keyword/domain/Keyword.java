@@ -22,4 +22,8 @@ public enum Keyword {
     Keyword(String name) {
         this.name = name;
     }
+
+    public static Keyword fromString(String keyword) {
+        return Keyword.valueOf(keyword.toUpperCase());
+    }
 }
