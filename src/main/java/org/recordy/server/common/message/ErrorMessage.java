@@ -23,6 +23,12 @@ public enum ErrorMessage {
     INVALID_REQUEST_TERM(HttpStatus.BAD_REQUEST, "필수 동의항목에 모두 동의해주세요"),
 
     /**
+     * EXTERNAL
+     */
+    INVALID_FILE_SIZE(HttpStatus.BAD_REQUEST,"파일 사이즈는 100MB를 넘을 수 없습니다."),
+    INVALID_FILE_TYPE(HttpStatus.BAD_REQUEST,"이미지 확장자는 jpg, png, webp만, 비디오 확장자는 mp4, mov, quicktime만 가능합니다."),
+
+    /**
      * AUTH
      */
     AUTH_NOT_FOUND(HttpStatus.NOT_FOUND, "인증 정보를 찾을 수 없습니다."),
@@ -49,6 +55,12 @@ public enum ErrorMessage {
     DUPLICATE_NICKNAME(HttpStatus.CONFLICT, "이미 존재하는 닉네임입니다."),
     DUPLICATE_USER(HttpStatus.CONFLICT, "이미 존재하는 회원입니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 회원입니다."),
+
+    /**
+     * USER
+     */
+    FAILED_TO_UPLOAD_TO_S3(HttpStatus.INTERNAL_SERVER_ERROR, "S3에 업로드를 실패했습니다."),
+
     ;
 
     private final HttpStatus httpStatus;

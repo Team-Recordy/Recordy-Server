@@ -12,6 +12,7 @@ import org.recordy.server.auth.service.impl.token.AuthTokenGenerator;
 import org.recordy.server.auth.service.impl.token.AuthTokenParser;
 import org.recordy.server.auth.service.impl.token.AuthTokenServiceImpl;
 import org.recordy.server.auth.service.impl.token.AuthTokenSigningKeyProvider;
+import org.recordy.server.external.service.S3Service;
 import org.recordy.server.keyword.repository.KeywordRepository;
 import org.recordy.server.keyword.service.KeywordService;
 import org.recordy.server.keyword.service.impl.KeywordServiceImpl;
@@ -34,6 +35,8 @@ import org.recordy.server.user.service.impl.UserServiceImpl;
 import org.recordy.server.util.DomainFixture;
 
 import java.util.List;
+
+import static org.mockito.Mockito.mock;
 
 public class FakeContainer {
 
@@ -59,6 +62,7 @@ public class FakeContainer {
     public final FileService fileService;
     public final RecordService recordService;
     public final KeywordService keywordService;
+    public final S3Service s3Service;
 
     // security
     public final AuthFilterExceptionHandler authFilterExceptionHandler;
@@ -99,6 +103,8 @@ public class FakeContainer {
         this.fileService = new FakeFileService();
         this.recordService = new RecordServiceImpl(recordRepository, fileService, userService);
         this.keywordService = new KeywordServiceImpl(keywordRepository);
+
+        this.s3Service = mock(S3Service.class);  // S3Service mock 사용
 
         this.authFilterExceptionHandler = new AuthFilterExceptionHandler(new ObjectMapper());
         this.tokenAuthenticationFilter = new TokenAuthenticationFilter(
