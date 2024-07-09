@@ -18,6 +18,7 @@ import org.recordy.server.user.domain.UserStatus;
 import org.recordy.server.user.domain.usecase.UserSignUp;
 import org.springframework.mock.web.MockMultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public final class DomainFixture {
@@ -137,7 +138,8 @@ public final class DomainFixture {
                 KAKAO_PLATFORM_TYPE,
                 DEFAULT_USER_STATUS,
                 USER_NICKNAME,
-                TermsAgreement.of(USE_TERM_AGREEMENT, PERSONAL_INFO_TERM_AGREEMENT, AGE_TERM_AGREEMENT)
+                TermsAgreement.of(USE_TERM_AGREEMENT, PERSONAL_INFO_TERM_AGREEMENT, AGE_TERM_AGREEMENT),
+                LocalDateTime.now()
         );
     }
 
