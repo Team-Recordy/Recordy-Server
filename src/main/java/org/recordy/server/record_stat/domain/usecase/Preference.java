@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 
 public record Preference(
         long userId,
-        Map<Keyword, Double> preference
+        Map<Keyword, Long> preference
 ) {
 
     public static Preference of(long userId, Map<Keyword, Long> preference) {
@@ -27,13 +27,13 @@ public record Preference(
         return new Preference(userId, normalize(topPreference));
     }
 
-    private static Map<Keyword, Double> normalize(Map<Keyword, Long> preference) {
+    private static Map<Keyword, Long> normalize(Map<Keyword, Long> preference) {
         long sum = sum(preference);
 
         return preference.entrySet().stream()
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
-                        entry -> (double) entry.getValue() / sum,
+                        entry -> entry.getValue() * 100 / sum,
                         (a, b) -> a,
                         LinkedHashMap::new));
     }
