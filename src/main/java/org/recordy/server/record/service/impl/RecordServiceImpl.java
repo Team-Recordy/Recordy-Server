@@ -62,7 +62,7 @@ public class RecordServiceImpl implements RecordService {
         User user = userService.getById(userId)
                 .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
         Record record = recordRepository.findById(recordId)
-                .orElseThrow(() -> new UserException(ErrorMessage.RECORD_NOT_FOUND));
+                .orElseThrow(() -> new RecordException(ErrorMessage.RECORD_NOT_FOUND));
 
         viewRepository.save(record, user);
         return record;
