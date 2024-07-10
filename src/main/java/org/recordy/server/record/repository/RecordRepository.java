@@ -13,9 +13,9 @@ public interface RecordRepository {
     // command
     Record save(Record record);
     void deleteById(long recordId);
-    Optional<Record> findById(long recordId);
 
     // query
+    Optional<Record> findById(long recordId);
     Slice<Record> findAllOrderByPopularity(long cursor, Pageable pageable);
     Slice<Record> findAllByIdAfterOrderByIdDesc(long cursor, Pageable pageable);
     Slice<Record> findAllByIdAfterAndKeywordsOrderByIdDesc(List<Keyword> keywords, long cursor, Pageable pageable);

@@ -25,8 +25,6 @@ public class Record {
         if (uploader.getId() == userId) {
             return true;
         }
-        else {
-            return false;
-        }
+        return false;
     }
 }
