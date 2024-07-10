@@ -3,6 +3,7 @@ package org.recordy.server.record_stat.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.record.domain.Record;
+import org.recordy.server.record.exception.RecordException;
 import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.record_stat.domain.Bookmark;
 import org.recordy.server.record_stat.domain.usecase.Preference;
@@ -28,7 +29,7 @@ public class RecordStatServiceImpl implements RecordStatService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
         Record record = recordRepository.findById(recordId)
-                .orElseThrow(() -> new UserException(ErrorMessage.RECORD_NOT_FOUND));
+                .orElseThrow(() -> new RecordException(ErrorMessage.RECORD_NOT_FOUND));
 
         return bookmarkRepository.save(Bookmark.builder()
                 .user(user)
