@@ -184,6 +184,7 @@ public final class DomainFixture {
                 THUMBNAIL_URL,
                 LOCATION,
                 CONTENT,
+                KEYWORDS,
                 createUserEntity()
         );
     }

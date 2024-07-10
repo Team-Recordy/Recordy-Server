@@ -78,11 +78,10 @@ public class RecordServiceImpl implements RecordService {
     public Slice<Record> getRecentRecords(List<String> keywords, Long cursorId, int size) {
         if (keywords == null || keywords.isEmpty()) {
             return getRecentRecordsLaterThanCursor(cursorId, size);
-        } else {
-            List<Keyword> keywordEnums = keywords.stream()
-                    .map(Keyword::valueOf)
-                    .collect(Collectors.toList());
-            return getRecentRecordsByKeywords(keywordEnums, cursorId, size);
         }
+        List<Keyword> keywordEnums = keywords.stream()
+                .map(Keyword::valueOf)
+                .collect(Collectors.toList());
+        return getRecentRecordsByKeywords(keywordEnums, cursorId, size);
     }
 }

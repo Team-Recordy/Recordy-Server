@@ -60,7 +60,9 @@ public class RecordController {
     ) {
         Slice<Record> records = recordService.getRecentRecords(keywords, cursorId, size);
 
-        return new ResponseEntity<>(records, HttpStatus.OK);
+        return ResponseEntity
+                .ok()
+                .body(records);
     }
 
     @GetMapping("/user")
@@ -71,6 +73,8 @@ public class RecordController {
     ) {
         Slice<Record> records = recordService.getRecentRecordsByUser(userId, cursorId, size);
 
-        return new ResponseEntity<>(records, HttpStatus.OK);
+        return ResponseEntity
+                .ok()
+                .body(records);
     }
 }
