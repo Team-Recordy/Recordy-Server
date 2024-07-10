@@ -1,6 +1,9 @@
 insert into `users` (`id`, `platform_id`, `platform_type`, `status`, `age_term`, `personal_info_term`, `use_term`, `nickname`)
 values (1, 'abcdefg', 'KAKAO', 'ACTIVE', true, true, true, 'konu');
 
+insert into `users` (`id`, `platform_id`, `platform_type`, `status`, `age_term`, `personal_info_term`, `use_term`, `nickname`)
+values (2, 'abcdefgh', 'KAKAO', 'ACTIVE', true, true, true, 'subin');
+
 insert into `keywords` (`id`, `keyword`)
 values (1, 'EXOTIC');
 
@@ -29,6 +32,9 @@ insert into `uploads` (`id`, `record_id`, `keyword_id`)
 values(1, 1, 1);
 
 insert into `uploads` (`id`, `record_id`, `keyword_id`)
+values(6, 1, 2);
+
+insert into `uploads` (`id`, `record_id`, `keyword_id`)
 values(2, 2, 2);
 
 insert into `uploads` (`id`, `record_id`, `keyword_id`)
@@ -39,3 +45,6 @@ values(4, 4, 2);
 
 insert into `uploads` (`id`, `record_id`, `keyword_id`)
 values(5, 5, 1);
+
+insert into `views` (`id`, `record_id`, `user_id`, `created_at`)
+values (1, 1, 1, '2024-07-11 12:34:56');

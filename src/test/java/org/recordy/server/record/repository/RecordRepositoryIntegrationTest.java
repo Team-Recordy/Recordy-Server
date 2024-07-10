@@ -51,7 +51,7 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
     @Test
     void save를_통해_레코드_데이터를_저장할_수_있다() {
         // given
-        Record record = DomainFixture.createRecord();
+        Record record = DomainFixture.createRecord(6);
 
         // when
         Record result = recordRepository.save(record);
@@ -69,56 +69,42 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
     @Test
     void save를_통해_레코드와_관련한_키워드로부터_업로드_데이터를_저장할_수_있다() {
         // given
-        Record record = DomainFixture.createRecord();
+        Record record = recordRepository.save(createRecord(6));
 
         // when
-        Record savedRecord = recordRepository.save(record);
-        List<UploadEntity> uploads = uploadRepository.findAllByRecord(RecordEntity.from(savedRecord));
+        List<UploadEntity> uploads = uploadRepository.findAllByRecord(RecordEntity.from(record));
 
         // then
         assertAll(
-                () -> assertThat(uploads).hasSize(4),
-                () -> assertThat(uploads.get(0).getKeyword().toDomain()).isEqualTo(DomainFixture.KEYWORD_1),
-                () -> assertThat(uploads.get(1).getKeyword().toDomain()).isEqualTo(DomainFixture.KEYWORD_1),
-                () -> assertThat(uploads.get(2).getKeyword().toDomain()).isEqualTo(DomainFixture.KEYWORD_2),
-                () -> assertThat(uploads.get(3).getKeyword().toDomain()).isEqualTo(DomainFixture.KEYWORD_3)
-        );
-        assertAll(
-                () -> assertThat(uploads.get(0).getRecord().getId()).isEqualTo(savedRecord.getId()),
-                () -> assertThat(uploads.get(1).getRecord().getId()).isEqualTo(savedRecord.getId()),
-                () -> assertThat(uploads.get(2).getRecord().getId()).isEqualTo(savedRecord.getId()),
-                () -> assertThat(uploads.get(3).getRecord().getId()).isEqualTo(savedRecord.getId())
+                () -> assertThat(uploads).hasSize(3),
+                () -> assertThat(uploads.get(0).getKeyword().toDomain()).isEqualTo(KEYWORD_1),
+                () -> assertThat(uploads.get(1).getKeyword().toDomain()).isEqualTo(KEYWORD_2),
+                () -> assertThat(uploads.get(2).getKeyword().toDomain()).isEqualTo(KEYWORD_3)
         );
     }
 
     @Test
     void save를_통해_저장한_업로드는_관련된_레코드를_참조할_수_있다() {
         // given
-        Record record = DomainFixture.createRecord();
-        Record savedRecord = recordRepository.save(record);
+        Record savedRecord = recordRepository.save(DomainFixture.createRecord(6));
 
         // when
         List<UploadEntity> uploads = uploadRepository.findAllByRecord(RecordEntity.from(savedRecord));
 
         // then
         assertAll(
-                () -> assertThat(uploads).hasSize(4),
+                () -> assertThat(uploads).hasSize(3),
                 () -> assertThat(uploads.get(0).getRecord().getId()).isEqualTo(savedRecord.getId()),
                 () -> assertThat(uploads.get(1).getRecord().getId()).isEqualTo(savedRecord.getId()),
-                () -> assertThat(uploads.get(2).getRecord().getId()).isEqualTo(savedRecord.getId()),
-                () -> assertThat(uploads.get(3).getRecord().getId()).isEqualTo(savedRecord.getId())
+                () -> assertThat(uploads.get(2).getRecord().getId()).isEqualTo(savedRecord.getId())
         );
     }
 
     @Test
     void deleteById를_통해_레코드를_삭제할_수_있다() {
-        //given
-        Record record = DomainFixture.createRecord();
-        Record savedRecord = recordRepository.save(record);
-
-        //when
-        recordRepository.deleteById(savedRecord.getId());
-        Slice<Record> result = recordRepository.findAllByIdAfterOrderByIdDesc(0, PageRequest.ofSize(1));
+        // when
+        recordRepository.deleteById(1);
+        Slice<Record> result = recordRepository.findAllByIdAfterOrderByIdDesc(2, PageRequest.ofSize(1));
 
         //then
         assertAll(
@@ -129,13 +115,14 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
 
     @Test
     void findAllByUserIdOrderByCreatedAtDesc를_통해_userId를_기반으로_레코드_데이터를_조회할_수_있다() {
-        //given
+        // given
+        // userId 순서 : {1, 1, 2, 2, 1}
         long userId = 1;
         long cursor = 4L;
         int size = 2;
 
         //when
-        Slice<Record> result = recordRepository.findAllByIdAfterOrderByIdDesc(cursor, PageRequest.ofSize(size));
+        Slice<Record> result = recordRepository.findAllByUserIdOrderByIdDesc(userId, cursor, PageRequest.ofSize(size));
 
         //then
         assertAll(
@@ -224,6 +211,7 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
     @Test
     void findAllOrderByPopularity를_통해_인기순으로_레코드_데이터를_조회할_수_있다() {
         // given
+        // 테스트 시점으로부터 일주일 안에 1번 레코드가 1번 시청됨
         bookmarkRepository.save(Bookmark.builder()
                 .user(createUser(UserStatus.ACTIVE))
                 .record(new Record(
@@ -237,21 +225,27 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
                 .build());
 
         // when
-        List<Record> result = recordRepository.findAllOrderByPopularity(3);
+        List<Record> result = recordRepository.findAllOrderByPopularity(2);
 
         // then
         assertAll(
-                () -> assertThat(result).hasSize(3),
+                () -> assertThat(result).hasSize(2),
                 () -> assertThat(result.get(0).getId()).isEqualTo(2L)
         );
-
-        System.out.println("result.get(1).getId() = " + result.get(1).getId());
-        System.out.println("result.get(2).getId() = " + result.get(2).getId());
     }
 
     @Test
     void findAllOrderByPopularity를_통해_조회한_레코드는_조회수보다_저장수에서_더_큰_가중치를_얻는다() {
         // given
+        // 이미 1번 레코드를 1번 시청함
+        viewRepository.save(new Record(
+                1L,
+                new FileUrl(VIDEO_URL, THUMBNAIL_URL),
+                LOCATION,
+                CONTENT,
+                KEYWORDS,
+                createUser(UserStatus.ACTIVE)
+        ), createUser(UserStatus.ACTIVE));
         viewRepository.save(new Record(
                 1L,
                 new FileUrl(VIDEO_URL, THUMBNAIL_URL),
@@ -268,6 +262,7 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
                 KEYWORDS,
                 createUser(UserStatus.ACTIVE)
         ), createUser(UserStatus.ACTIVE));
+        // 1번 레코드 2번 더 시청, 2번 레코드 1번 시청
 
         bookmarkRepository.save(Bookmark.builder()
                 .user(createUser(UserStatus.ACTIVE))
@@ -293,6 +288,7 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
                 ))
                 .build()
         );
+        // 3번 레코드 1번 저장, 4번 레코드 1번 저장
 
         // when
         List<Record> result = recordRepository.findAllOrderByPopularity(4);
@@ -300,17 +296,17 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
         // then
         assertAll(
                 () -> assertThat(result).hasSize(4),
-                () -> assertThat(result.get(0).getId()).isIn(3L, 4L),
+                () -> assertThat(result.get(0).getId()).isEqualTo(1),
                 () -> assertThat(result.get(1).getId()).isIn(3L, 4L),
-                () -> assertThat(result.get(2).getId()).isIn(1L, 2L),
-                () -> assertThat(result.get(3).getId()).isIn(1L, 2L)
+                () -> assertThat(result.get(2).getId()).isIn(3L, 4L),
+                () -> assertThat(result.get(3).getId()).isEqualTo(2)
         );
     }
 
     @Test
     void countAllByUserIdGroupByKeyword를_통해_사용자가_시청_저장_업로드한_모든_영상과_관련된_키워드별로_카운트할_수_있다() {
         // given
-        // 현재 EXOTIC 키워드 영상 3개 업로드했고, QUITE 키워드 영상 2개 업로드했음.
+        // 현재 EXOTIC 3개 업로드했고, QUITE 3개 업로드했음
         long userId = 1L;
 
         // QUITE 키워드 영상 1번 시청함
@@ -326,15 +322,17 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
                         .record(DomainFixture.createRecord(5))
                         .build()
         );
+        // 따라서 결과적으로 {EXOTIC:4, QUITE:4}
 
         // when
         Map<Keyword, Long> preference = recordRepository.countAllByUserIdGroupByKeyword(userId);
+        System.out.println("preference = " + preference);
 
         // then
         assertAll(
-                () -> assertThat(preference).hasSize(2),
+                () -> assertThat(preference.size()).isEqualTo(2),
                 () -> assertThat(preference.get(Keyword.EXOTIC)).isEqualTo(4),
-                () -> assertThat(preference.get(Keyword.QUITE)).isEqualTo(3)
+                () -> assertThat(preference.get(Keyword.QUITE)).isEqualTo(4)
         );
     }
 }
