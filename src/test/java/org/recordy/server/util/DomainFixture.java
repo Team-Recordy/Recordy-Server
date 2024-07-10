@@ -9,7 +9,7 @@ import org.recordy.server.record.domain.File;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.RecordEntity;
 import org.recordy.server.record.domain.usecase.RecordCreate;
-import org.recordy.server.record.service.dto.FileUrl;
+import org.recordy.server.record.controller.dto.FileUrl;
 import org.recordy.server.record_stat.domain.Bookmark;
 import org.recordy.server.user.controller.dto.request.TermsAgreement;
 import org.recordy.server.user.domain.usecase.UserSignIn;
@@ -153,6 +153,15 @@ public final class DomainFixture {
         );
     }
 
+    public static RecordCreate createRecordCreateByOtherUser() {
+        return new RecordCreate(
+                2,
+                LOCATION,
+                CONTENT,
+                KEYWORDS
+        );
+    }
+
     public static File createFile() {
         return new File(
                 new MockMultipartFile("file", "file.mp4", "video/mp4", new byte[0]),
@@ -178,6 +187,7 @@ public final class DomainFixture {
                 THUMBNAIL_URL,
                 LOCATION,
                 CONTENT,
+                KEYWORDS,
                 createUserEntity()
         );
     }

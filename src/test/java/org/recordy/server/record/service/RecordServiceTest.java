@@ -2,16 +2,20 @@ package org.recordy.server.record.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.recordy.server.auth.exception.AuthException;
+import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.mock.FakeContainer;
 import org.recordy.server.record.domain.File;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.usecase.RecordCreate;
+import org.recordy.server.record.exception.RecordException;
 import org.recordy.server.user.domain.UserStatus;
 import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.util.DomainFixture;
 import org.springframework.data.domain.Slice;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 class RecordServiceTest {
@@ -43,6 +47,59 @@ class RecordServiceTest {
                 () -> assertThat(result.getLocation()).isEqualTo(recordCreate.location()),
                 () -> assertThat(result.getContent()).isEqualTo(recordCreate.content()),
                 () -> assertThat(result.getUploader().getId()).isEqualTo(DomainFixture.USER_ID)
+        );
+    }
+
+    @Test
+    void delete을_통해_레코드를_삭제할_수_있다() {
+        // given
+        RecordCreate recordCreate = DomainFixture.createRecordCreate();
+        File file = DomainFixture.createFile();
+        Record record = recordService.create(recordCreate, file);
+
+        // when
+        recordService.delete(1,record.getId());
+
+        // then
+        Slice<Record> result = recordService.getRecentRecordsLaterThanCursor(0,1);
+        assertAll(
+                () -> assertThat(result.getContent()).hasSize(0),
+                () -> assertThat(result.hasNext()).isFalse()
+        );
+    }
+
+    @Test
+    void 업로더가_아니면_delete을_통해_레코드를_삭제할_때_예외가_발생한다() {
+        // given
+        RecordCreate recordCreate = DomainFixture.createRecordCreate();
+        File file = DomainFixture.createFile();
+        Record record = recordService.create(recordCreate, file);
+
+        // when
+        // then
+        assertThatThrownBy(() -> recordService.delete(100,record.getId()))
+                .isInstanceOf(RecordException.class)
+                .hasMessageContaining(ErrorMessage.FORBIDDEN_DELETE_RECORD.getMessage());
+    }
+
+    @Test
+    void findAllByUserIdOrderByCreatedAtDesc를_통해_userId를_기반으로_레코드_데이터를_조회할_수_있다() {
+        //given
+        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
+        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
+        recordService.create(DomainFixture.createRecordCreateByOtherUser(), DomainFixture.createFile());
+        recordService.create(DomainFixture.createRecordCreateByOtherUser(), DomainFixture.createFile());
+        recordService.create(DomainFixture.createRecordCreateByOtherUser(), DomainFixture.createFile());
+
+        //when
+        Slice<Record> result = recordService.getRecentRecordsByUser(1,0,10);
+
+        //then
+        assertAll(
+                () -> assertThat(result.get()).hasSize(2),
+                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(2L),
+                () -> assertThat(result.getContent().get(1).getId()).isEqualTo(1L),
+                () -> assertThat(result.hasNext()).isFalse()
         );
     }
 

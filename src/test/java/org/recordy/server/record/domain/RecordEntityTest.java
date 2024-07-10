@@ -1,7 +1,7 @@
 package org.recordy.server.record.domain;
 
 import org.junit.jupiter.api.Test;
-import org.recordy.server.record.service.dto.FileUrl;
+import org.recordy.server.record.controller.dto.FileUrl;
 import org.recordy.server.user.domain.UserEntity;
 import org.recordy.server.user.domain.UserStatus;
 import org.recordy.server.util.DomainFixture;
@@ -87,6 +87,25 @@ class RecordEntityTest {
                 () -> assertThat(record.getLocation()).isEqualTo(recordEntity.getLocation()),
                 () -> assertThat(record.getContent()).isEqualTo(recordEntity.getContent()),
                 () -> assertThat(record.getUploader().getId()).isEqualTo(recordEntity.getUser().getId())
+        );
+    }
+
+    @Test
+    void isUploader를_통해_Record_객체의_업로더가_맞는지_확인할_수_있다() {
+        //given
+        RecordEntity recordEntity = RecordEntity.builder()
+                .videoUrl(DomainFixture.VIDEO_URL)
+                .thumbnailUrl(DomainFixture.THUMBNAIL_URL)
+                .location(DomainFixture.LOCATION)
+                .content(DomainFixture.CONTENT)
+                .user(DomainFixture.createUserEntity())
+                .build();
+
+        //when
+        //then
+        assertAll(
+                () -> assertThat(recordEntity.toDomain().isUploader(DomainFixture.createUserEntity().getId())).isTrue(),
+                () -> assertThat(recordEntity.toDomain().isUploader(100)).isFalse()
         );
     }
 }

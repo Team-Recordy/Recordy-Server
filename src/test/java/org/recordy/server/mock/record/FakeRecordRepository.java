@@ -1,5 +1,6 @@
 package org.recordy.server.mock.record;
 
+import java.util.Optional;
 import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.keyword.domain.KeywordEntity;
 import org.recordy.server.record.domain.Record;
@@ -45,8 +46,13 @@ public class FakeRecordRepository implements RecordRepository {
     }
 
     @Override
-    public Optional<Record> findById(long id) {
-        return Optional.ofNullable(records.get(id));
+    public void deleteById(long recordId) {
+        records.remove(recordId);
+    }
+
+    @Override
+    public Optional<Record> findById(long recordId) {
+        return Optional.ofNullable(records.get(recordId));
     }
 
     @Override
@@ -74,7 +80,15 @@ public class FakeRecordRepository implements RecordRepository {
     }
 
     @Override
-    public Slice<Record> findAllByUserIdOrderByCreatedAtDesc(long userId, long cursor, Pageable pageable) {
-        return null;
+    public Slice<Record> findAllByUserIdOrderByIdDesc(long userId, long cursor, Pageable pageable) {
+        List<Record> content = records.values().stream()
+                .filter(record -> record.getId() < cursor && record.getId() == userId)
+                .sorted(Comparator.comparing(Record::getId).reversed())
+                .toList();
+
+        if (content.size() < pageable.getPageSize())
+            return new SliceImpl<>(content, pageable, false);
+
+        return new SliceImpl<>(content.subList(0, pageable.getPageSize()), pageable, true);
     }
 }

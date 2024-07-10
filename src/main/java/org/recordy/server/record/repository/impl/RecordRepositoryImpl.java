@@ -1,6 +1,8 @@
 package org.recordy.server.record.repository.impl;
 
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.keyword.domain.KeywordEntity;
 import org.recordy.server.keyword.repository.impl.KeywordJpaRepository;
@@ -8,6 +10,9 @@ import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.RecordEntity;
 import org.recordy.server.record.domain.UploadEntity;
 import org.recordy.server.record.repository.RecordRepository;
+import org.recordy.server.user.domain.UserEntity;
+import org.recordy.server.user.exception.UserException;
+import org.recordy.server.user.repository.impl.UserJpaRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
@@ -23,6 +28,7 @@ public class RecordRepositoryImpl implements RecordRepository {
     private final RecordQueryDslRepository recordQueryDslRepository;
     private final KeywordJpaRepository keywordJpaRepository;
     private final UploadJpaRepository uploadJpaRepository;
+    private final UserJpaRepository userJpaRepository;
 
     @Override
     public Record save(Record record) {
@@ -39,8 +45,13 @@ public class RecordRepositoryImpl implements RecordRepository {
     }
 
     @Override
-    public Optional<Record> findById(long id) {
-        return recordJpaRepository.findById(id)
+    public void deleteById(long recordId) {
+        recordJpaRepository.deleteById(recordId);
+    }
+
+    @Override
+    public Optional<Record> findById(long recordId) {
+        return recordJpaRepository.findById(recordId)
                 .map(RecordEntity::toDomain);
     }
 
@@ -66,7 +77,10 @@ public class RecordRepositoryImpl implements RecordRepository {
     }
 
     @Override
-    public Slice<Record> findAllByUserIdOrderByCreatedAtDesc(long userId, long cursor, Pageable pageable) {
-        return null;
+    public Slice<Record> findAllByUserIdOrderByIdDesc(long userId, long cursor, Pageable pageable) {
+        UserEntity userEntity = userJpaRepository.findById(userId)
+                .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
+        return recordQueryDslRepository.findAllByUserIdOrderByIdDesc(userEntity,cursor, pageable)
+                .map(RecordEntity::toDomain);
     }
 }

@@ -12,10 +12,12 @@ public interface RecordService {
 
     // command
     Record create(RecordCreate recordCreate, File file);
+    void delete(long userId, long recordId);
 
     // query
     Slice<Record> getFamousRecords(long cursorId, int size);
     Slice<Record> getRecentRecordsLaterThanCursor(long cursorId, int size);
     Slice<Record> getRecentRecordsByKeywords(List<Keyword> keywords, long cursorId, int size);
     Slice<Record> getRecentRecordsByUser(long userId, long cursorId, int size);
+    Slice<Record> getRecentRecords(List<String> keywords, Long cursorId, int size);
 }

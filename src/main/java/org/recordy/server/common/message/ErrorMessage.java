@@ -55,17 +55,14 @@ public enum ErrorMessage {
     DUPLICATE_NICKNAME(HttpStatus.CONFLICT, "이미 존재하는 닉네임입니다."),
     DUPLICATE_USER(HttpStatus.CONFLICT, "이미 존재하는 회원입니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 회원입니다."),
+    FAILED_TO_UPLOAD_TO_S3(HttpStatus.INTERNAL_SERVER_ERROR, "S3에 업로드를 실패했습니다."),
 
     /**
      * RECORD
      */
+
+    FORBIDDEN_DELETE_RECORD(HttpStatus.FORBIDDEN, "삭제가 불가능한 기록입니다.")
     RECORD_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 레코드입니다."),
-
-   /**
-     * USER
-     */
-    FAILED_TO_UPLOAD_TO_S3(HttpStatus.INTERNAL_SERVER_ERROR, "S3에 업로드를 실패했습니다."),
-
     ;
 
     private final HttpStatus httpStatus;
