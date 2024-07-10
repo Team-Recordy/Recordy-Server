@@ -20,6 +20,7 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 @Repository
 public class BookmarkQueryDslRepository {
+
     private final JPAQueryFactory jpaQueryFactory;
 
     public Slice<BookmarkEntity> findAllByUserOrderByIdDesc(UserEntity userEntity, long cursor, Pageable pageable) {
