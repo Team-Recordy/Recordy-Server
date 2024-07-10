@@ -18,7 +18,9 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Repository
@@ -85,5 +87,16 @@ public class RecordRepositoryImpl implements RecordRepository {
                 .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
         return recordQueryDslRepository.findAllByUserIdOrderByIdDesc(userEntity,cursor, pageable)
                 .map(RecordEntity::toDomain);
+    }
+
+    @Override
+    public Map<Keyword, Long> countAllUploadsByUserIdGroupByKeyword(long userId) {
+        Map<KeywordEntity, Long> preference = recordQueryDslRepository.countAllUploadsByUserIdGroupByKeyword(userId);
+
+        return preference.entrySet().stream()
+                .collect(Collectors.toMap(
+                        entry -> entry.getKey().toDomain(),
+                        Map.Entry::getValue
+                ));
     }
 }

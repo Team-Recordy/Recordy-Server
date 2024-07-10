@@ -76,15 +76,17 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
 
         // then
         assertAll(
-                () -> assertThat(uploads).hasSize(3),
+                () -> assertThat(uploads).hasSize(4),
                 () -> assertThat(uploads.get(0).getKeyword().toDomain()).isEqualTo(DomainFixture.KEYWORD_1),
-                () -> assertThat(uploads.get(1).getKeyword().toDomain()).isEqualTo(DomainFixture.KEYWORD_2),
-                () -> assertThat(uploads.get(2).getKeyword().toDomain()).isEqualTo(DomainFixture.KEYWORD_3)
+                () -> assertThat(uploads.get(1).getKeyword().toDomain()).isEqualTo(DomainFixture.KEYWORD_1),
+                () -> assertThat(uploads.get(2).getKeyword().toDomain()).isEqualTo(DomainFixture.KEYWORD_2),
+                () -> assertThat(uploads.get(3).getKeyword().toDomain()).isEqualTo(DomainFixture.KEYWORD_3)
         );
         assertAll(
                 () -> assertThat(uploads.get(0).getRecord().getId()).isEqualTo(savedRecord.getId()),
                 () -> assertThat(uploads.get(1).getRecord().getId()).isEqualTo(savedRecord.getId()),
-                () -> assertThat(uploads.get(2).getRecord().getId()).isEqualTo(savedRecord.getId())
+                () -> assertThat(uploads.get(2).getRecord().getId()).isEqualTo(savedRecord.getId()),
+                () -> assertThat(uploads.get(3).getRecord().getId()).isEqualTo(savedRecord.getId())
         );
     }
 
@@ -99,10 +101,11 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
 
         // then
         assertAll(
-                () -> assertThat(uploads).hasSize(3),
+                () -> assertThat(uploads).hasSize(4),
                 () -> assertThat(uploads.get(0).getRecord().getId()).isEqualTo(savedRecord.getId()),
                 () -> assertThat(uploads.get(1).getRecord().getId()).isEqualTo(savedRecord.getId()),
-                () -> assertThat(uploads.get(2).getRecord().getId()).isEqualTo(savedRecord.getId())
+                () -> assertThat(uploads.get(2).getRecord().getId()).isEqualTo(savedRecord.getId()),
+                () -> assertThat(uploads.get(3).getRecord().getId()).isEqualTo(savedRecord.getId())
         );
     }
 

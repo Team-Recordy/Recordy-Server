@@ -4,6 +4,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record_stat.domain.Bookmark;
 import org.recordy.server.record_stat.repository.BookmarkRepository;
@@ -40,6 +42,11 @@ public class FakeBookmarkRepository implements BookmarkRepository {
             return new SliceImpl<>(content, pageable, false);
 
         return new SliceImpl<>(content.subList(0, pageable.getPageSize()), pageable, true);
+    }
+
+    @Override
+    public Map<Keyword, Long> countAllByUserIdGroupByKeyword(long userId) {
+        return Map.of();
     }
 
     @Override

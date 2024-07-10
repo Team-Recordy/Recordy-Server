@@ -1,5 +1,6 @@
 package org.recordy.server.record.repository.impl;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.util.QueryDslUtils;
@@ -14,6 +15,8 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.recordy.server.keyword.domain.QKeywordEntity.keywordEntity;
 import static org.recordy.server.record.domain.QRecordEntity.recordEntity;
@@ -83,6 +86,20 @@ public class RecordQueryDslRepository {
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
 
-        return new SliceImpl<>(recordEntities, pageable, QueryDslUtils.hasNext(pageable,recordEntities));
+        return new SliceImpl<>(recordEntities, pageable, QueryDslUtils.hasNext(pageable, recordEntities));
+    }
+
+    public Map<KeywordEntity, Long> countAllUploadsByUserIdGroupByKeyword(long userId) {
+        List<Tuple> results = jpaQueryFactory
+                .select(uploadEntity.keyword, uploadEntity.count())
+                .from(uploadEntity)
+                .where(uploadEntity.record.user.id.eq(userId))
+                .groupBy(uploadEntity.keyword)
+                .fetch();
+
+        return results.stream()
+                .collect(Collectors.toMap(
+                        tuple -> tuple.get(uploadEntity.keyword),
+                        tuple -> tuple.get(viewEntity.count())));
     }
 }

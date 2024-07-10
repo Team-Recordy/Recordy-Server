@@ -91,4 +91,9 @@ public class FakeRecordRepository implements RecordRepository {
 
         return new SliceImpl<>(content.subList(0, pageable.getPageSize()), pageable, true);
     }
+
+    @Override
+    public Map<Keyword, Long> countAllUploadsByUserIdGroupByKeyword(long userId) {
+        return Map.of();
+    }
 }
