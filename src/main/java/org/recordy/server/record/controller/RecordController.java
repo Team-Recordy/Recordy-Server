@@ -58,7 +58,7 @@ public class RecordController {
             @RequestParam long cursorId,
             @RequestParam int size
     ) {
-        Slice<Record> records = recordService.getRecentRecords(cursorId, size, keywords);
+        Slice<Record> records = recordService.getRecentRecords(keywords, cursorId, size);
 
         return new ResponseEntity<>(records, HttpStatus.OK);
     }

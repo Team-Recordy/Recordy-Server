@@ -79,7 +79,7 @@ class RecordServiceTest {
         // then
         assertThatThrownBy(() -> recordService.delete(100,record.getId()))
                 .isInstanceOf(RecordException.class)
-                .hasMessageContaining(ErrorMessage.UNAUTHORIZED_DELETE.getMessage());
+                .hasMessageContaining(ErrorMessage.FORBIDDEN_DELETE_RECORD.getMessage());
     }
 
     @Test

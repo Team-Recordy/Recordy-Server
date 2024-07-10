@@ -74,7 +74,8 @@ public class RecordServiceImpl implements RecordService {
         return recordRepository.findAllByUserIdOrderByIdDesc(userId, cursorId, PageRequest.ofSize(size));
     }
 
-    public Slice<Record> getRecentRecords(Long cursorId, int size, List<String> keywords) {
+    @Override
+    public Slice<Record> getRecentRecords(List<String> keywords, Long cursorId, int size) {
         if (keywords == null || keywords.isEmpty()) {
             return getRecentRecordsLaterThanCursor(cursorId, size);
         } else {
