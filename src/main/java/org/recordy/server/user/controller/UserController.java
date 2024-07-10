@@ -48,6 +48,7 @@ public class UserController implements UserApi {
                 build();
     }
 
+    //쿼리 파라미터로
     @Override
     @GetMapping("/check-nickname")
     public ResponseEntity<Void> checkDuplicateNickname(
@@ -92,7 +93,7 @@ public class UserController implements UserApi {
         userService.delete(userId);
 
         return ResponseEntity
-                .status(HttpStatus.OK)
+                .noContent()
                 .build();
     }
 }

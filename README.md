@@ -4,6 +4,9 @@
 ## 🌊 유영
 <span style="color:#ADD8E6">**유저가 ‘공간’을 ‘영상’으로 디깅하고, 나만의 ‘공간 취향’을 발견하는 서비스**</span>
 
+
+</br>
+
 ## 🔢 목차
 [프로젝트 설명](#프로젝트-설명) </br>
 [팀원](#팀원) </br>
@@ -13,6 +16,7 @@
 [레코디 컨벤션 및 API docs](#레코디-컨벤션-및-API-docs) </br>
 [폴더링](#폴더링) </br>
 
+</br>
 ## 🅿️ 프로젝트 설명 
 
 ### 🪼 우리가 해결하고자 하는 문제
@@ -20,17 +24,24 @@
 **- 공간감을 느낄 수 없는 가공된 사진**</br>
 **- 기존 플랫폼의 영상 알고리즘으로 내 취향에 맞지 않는 공간 노출** 
 
+</br>
+
 ### 📔 해결책
 **- 내 취향에 맞는 공간을 영상을 통해 향유할 수 있는 서비스가 필요**
+</br>
 
 ### 🙋‍♀️ 타겟
 **-공간을 좋아하는 1020 유저. 자신의 취향이 뚜렷한 유저**
+</br>
 
 ### 🧩 우리의 서비스
 **-유저가 ‘공간’을 ‘영상’으로 디깅하고, 나만의 ‘공간 취향’을 발견하는 서비스**
+</br>
 
 ### 🔑 핵심 키워드
-### '취향' '공간' '영상'
+***'취향' '공간' '영상'***
+</br>
+
 
 ### 🏅 기능 우선순위 3가지 (MVP에서 가져갈 기능)
 **- 영상 업로드** </br>
@@ -38,9 +49,12 @@
 **- 타 유저 영상 시청 후 북마크**
 </br>
 
+![image]()
+
 
 ## 👤 팀원
-|<img src="https://github.com/Team-Recordy/Recordy-Server/assets/94737768/76b261b4-bc99-49ef-b221-abd32126db78" width="128" /> |<img src="https://github.com/Team-Recordy/Recordy-Server/assets/94737768/b38469c6-9239-4972-b821-ca5263f889be" width="128" /> |<img src="https://github.com/Team-Recordy/Recordy-Server/assets/94737768/50606469-9d7b-4ced-aff2-acd3876fc9db" width="128" />|
+|<img src="https://github.com/Team-Recordy/Recordy-Server/assets/94737768/76b261b4-bc99-49ef-b221-abd32126db78" width="200" /> |<img src="https://github.com/Team-Recordy/Recordy-Server/assets/94737768/b38469c6-9239-4972-b821-ca5263f889be" width="200" /> |<img src="https://github.com/Team-Recordy/Recordy-Server/assets/94737768/e334819f-fbd4-4786-a7de-495603d0cfe7" width="200" />|
+
 |:---------:|:---------:|:---------:|
 |[나세빈](https://github.com/sebbbin)|[박수빈](https://github.com/elive7)|[진건우](https://github.com/jinkonu)|
 | `나세빈` | `박수빈` | `👑 진건우` | 
