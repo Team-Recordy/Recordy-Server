@@ -35,11 +35,14 @@ public class BookmarkEntity extends JpaMetaInfoEntity {
     }
 
     public static BookmarkEntity from(Bookmark bookmark) {
-        return BookmarkEntity.builder()
+        BookmarkEntity bookmarkEntity = BookmarkEntity.builder()
                 .id(bookmark.getId())
                 .record(RecordEntity.from(bookmark.getRecord()))
                 .user(UserEntity.from(bookmark.getUser()))
                 .build();
+        bookmarkEntity.getRecord().addBookmark(bookmarkEntity);
+
+        return bookmarkEntity;
     }
 
     public Bookmark toDomain() {

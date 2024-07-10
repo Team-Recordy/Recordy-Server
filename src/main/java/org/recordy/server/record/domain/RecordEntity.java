@@ -34,13 +34,13 @@ public class RecordEntity extends JpaMetaInfoEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    @OneToMany(mappedBy = "record")
+    @OneToMany(mappedBy = "record", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UploadEntity> uploads = new ArrayList<>();
 
-    @OneToMany(mappedBy = "record")
+    @OneToMany(mappedBy = "record", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ViewEntity> views = new ArrayList<>();
 
-    @OneToMany(mappedBy = "record")
+    @OneToMany(mappedBy = "record", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BookmarkEntity> bookmarks = new ArrayList<>();
 
     @Builder
@@ -64,10 +64,6 @@ public class RecordEntity extends JpaMetaInfoEntity {
         );
     }
 
-    private void addUpload(UploadEntity upload) {
-        uploads.add(upload);
-    }
-
     public Record toDomain() {
         return Record.builder()
                 .id(id)
@@ -83,5 +79,17 @@ public class RecordEntity extends JpaMetaInfoEntity {
                         .toList())
                 .uploader(user.toDomain())
                 .build();
+    }
+
+    public void addUpload(UploadEntity upload) {
+        uploads.add(upload);
+    }
+
+    public void addView(ViewEntity view) {
+        views.add(view);
+    }
+
+    public void addBookmark(BookmarkEntity bookmark) {
+        bookmarks.add(bookmark);
     }
 }
