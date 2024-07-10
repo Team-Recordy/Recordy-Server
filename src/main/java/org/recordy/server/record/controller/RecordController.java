@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/records")
 @RestController
-public class RecordController{
+public class RecordController {
 
     private final RecordService recordService;
 
@@ -32,7 +32,6 @@ public class RecordController{
             @RequestPart RecordCreateRequest recordCreateRequest,
             @RequestPart File file
     ) {
-
         RecordCreate recordCreate = RecordCreate.from(uploaderId, recordCreateRequest);
         Record createdRecord = recordService.create(recordCreate, file);
 
@@ -59,16 +58,7 @@ public class RecordController{
             @RequestParam long cursorId,
             @RequestParam int size
     ) {
-
-        Slice<Record> records;
-        if (keywords == null || keywords.isEmpty()) {
-            records = recordService.getRecentRecordsLaterThanCursor(cursorId, size);
-        } else {
-            List<Keyword> keywordEnums = keywords.stream()
-                    .map(Keyword::valueOf)
-                    .collect(Collectors.toList());
-            records = recordService.getRecentRecordsByKeywords(keywordEnums, cursorId, size);
-        }
+        Slice<Record> records = recordService.getRecentRecords(cursorId, size, keywords);
 
         return new ResponseEntity<>(records, HttpStatus.OK);
     }
@@ -77,8 +67,10 @@ public class RecordController{
     public ResponseEntity<Slice<Record>> getRecentRecordsByUser(
             @UserId long userId,
             @RequestParam long cursorId,
-            @RequestParam int size) {
-        Slice<Record> records = recordService.getRecentRecordsByUser(userId,cursorId, size);
+            @RequestParam int size
+    ) {
+        Slice<Record> records = recordService.getRecentRecordsByUser(userId, cursorId, size);
+
         return new ResponseEntity<>(records, HttpStatus.OK);
     }
 }

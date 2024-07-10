@@ -20,6 +20,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -71,5 +72,16 @@ public class RecordServiceImpl implements RecordService {
     @Override
     public Slice<Record> getRecentRecordsByUser(long userId, long cursorId, int size) {
         return recordRepository.findAllByUserIdOrderByIdDesc(userId, cursorId, PageRequest.ofSize(size));
+    }
+
+    public Slice<Record> getRecentRecords(Long cursorId, int size, List<String> keywords) {
+        if (keywords == null || keywords.isEmpty()) {
+            return getRecentRecordsLaterThanCursor(cursorId, size);
+        } else {
+            List<Keyword> keywordEnums = keywords.stream()
+                    .map(Keyword::valueOf)
+                    .collect(Collectors.toList());
+            return getRecentRecordsByKeywords(keywordEnums, cursorId, size);
+        }
     }
 }
