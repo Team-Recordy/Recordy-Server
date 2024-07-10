@@ -2,6 +2,8 @@ package org.recordy.server.record.repository.impl;
 
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.util.QueryDslUtils;
 import org.recordy.server.keyword.domain.KeywordEntity;
@@ -31,10 +33,17 @@ public class RecordQueryDslRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     public List<RecordEntity> findAllOrderByPopularity(int limit) {
+        LocalDateTime sevenDaysAgo = LocalDateTime.now().minus(7, ChronoUnit.DAYS);
+
         return jpaQueryFactory
                 .selectFrom(recordEntity)
                 .leftJoin(recordEntity.bookmarks, bookmarkEntity)
                 .leftJoin(recordEntity.views, viewEntity)
+                .where (
+                        bookmarkEntity.createdAt.after(sevenDaysAgo)
+                                .or(viewEntity.createdAt.after(sevenDaysAgo))
+
+                )
                 .groupBy(recordEntity.id)
                 .orderBy(bookmarkEntity.count().multiply(2).add(viewEntity.count()).desc())
                 .limit(limit)
