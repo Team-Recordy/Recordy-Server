@@ -10,6 +10,7 @@ import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.RecordEntity;
 import org.recordy.server.record.domain.usecase.RecordCreate;
 import org.recordy.server.record.service.dto.FileUrl;
+import org.recordy.server.record_stat.domain.Bookmark;
 import org.recordy.server.user.controller.dto.request.TermsAgreement;
 import org.recordy.server.user.domain.usecase.UserSignIn;
 import org.recordy.server.user.domain.User;
@@ -18,6 +19,7 @@ import org.recordy.server.user.domain.UserStatus;
 import org.recordy.server.user.domain.usecase.UserSignUp;
 import org.springframework.mock.web.MockMultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public final class DomainFixture {
@@ -137,7 +139,8 @@ public final class DomainFixture {
                 KAKAO_PLATFORM_TYPE,
                 DEFAULT_USER_STATUS,
                 USER_NICKNAME,
-                TermsAgreement.of(USE_TERM_AGREEMENT, PERSONAL_INFO_TERM_AGREEMENT, AGE_TERM_AGREEMENT)
+                TermsAgreement.of(USE_TERM_AGREEMENT, PERSONAL_INFO_TERM_AGREEMENT, AGE_TERM_AGREEMENT),
+                LocalDateTime.now()
         );
     }
 
@@ -177,5 +180,12 @@ public final class DomainFixture {
                 CONTENT,
                 createUserEntity()
         );
+    }
+
+    public static Bookmark createBookmark() {
+        return Bookmark.builder()
+                .record(createRecord())
+                .user(createUser(UserStatus.ACTIVE))
+                .build();
     }
 }

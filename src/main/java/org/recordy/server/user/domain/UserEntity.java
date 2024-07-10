@@ -6,6 +6,8 @@ import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.common.domain.JpaMetaInfoEntity;
 import org.recordy.server.user.controller.dto.request.TermsAgreement;
 
+import java.time.LocalDateTime;
+
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Table(name = "users")
@@ -25,7 +27,7 @@ public class UserEntity extends JpaMetaInfoEntity {
     private boolean personalInfoTerm;
     private boolean ageTerm;
 
-    public UserEntity(Long id, String platformId, AuthPlatform.Type platformType, UserStatus status, String nickname, TermsAgreement termsAgreement) {
+    public UserEntity(Long id, String platformId, AuthPlatform.Type platformType, UserStatus status, String nickname, TermsAgreement termsAgreement, LocalDateTime createdAt) {
         this.id = id;
         this.platformId = platformId;
         this.platformType = platformType;
@@ -43,17 +45,19 @@ public class UserEntity extends JpaMetaInfoEntity {
                 user.getAuthPlatform().getType(),
                 user.getStatus(),
                 user.getNickname(),
-                user.getTermsAgreement()
+                user.getTermsAgreement(),
+                user.getCreatedAt()
         );
     }
 
     public User toDomain() {
-        return new User(
-                id,
-                new AuthPlatform(platformId, platformType),
-                status,
-                nickname,
-                TermsAgreement.of(useTerm, personalInfoTerm, ageTerm)
-        );
+        return User.builder()
+                .id(id)
+                .authPlatform(new AuthPlatform(platformId, platformType))
+                .status(status)
+                .nickname(nickname)
+                .termsAgreement(TermsAgreement.of(useTerm, personalInfoTerm, ageTerm))
+                .createdAt(createdAt)
+                .build();
     }
 }

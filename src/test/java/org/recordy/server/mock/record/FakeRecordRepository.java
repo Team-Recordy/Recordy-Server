@@ -10,10 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class FakeRecordRepository implements RecordRepository {
 
@@ -45,6 +42,11 @@ public class FakeRecordRepository implements RecordRepository {
                 .forEach(upload -> uploads.put(upload.getId(), upload));
 
         return realRecord;
+    }
+
+    @Override
+    public Optional<Record> findById(long id) {
+        return Optional.ofNullable(records.get(id));
     }
 
     @Override

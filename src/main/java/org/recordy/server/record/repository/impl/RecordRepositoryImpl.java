@@ -13,6 +13,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Repository
@@ -35,6 +36,12 @@ public class RecordRepositoryImpl implements RecordRepository {
         uploadJpaRepository.saveAll(uploadEntities);
 
         return recordEntity.toDomain();
+    }
+
+    @Override
+    public Optional<Record> findById(long id) {
+        return recordJpaRepository.findById(id)
+                .map(RecordEntity::toDomain);
     }
 
     @Override
