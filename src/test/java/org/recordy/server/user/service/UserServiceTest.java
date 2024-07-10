@@ -165,7 +165,8 @@ public class UserServiceTest {
         Auth auth = userService.signIn(userSignIn);
 
         //when
-        String accessToken = userService.reissueToken(auth.getToken().getRefreshToken());
+        String refreshToken = "Bearer " + auth.getToken().getRefreshToken();
+        String accessToken = userService.reissueToken(refreshToken);
 
         //then
         assertThat(accessToken).isNotEmpty();

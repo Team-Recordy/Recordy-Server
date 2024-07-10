@@ -144,7 +144,7 @@ public class UserControllerTest {
     void reissueToken을_통해_accessToken을_재발급_받을_수_있다() {
         //given
         Auth auth = userService.signIn(DomainFixture.createUserSignIn(AuthPlatform.Type.KAKAO));
-        String refreshToken = auth.getToken().getRefreshToken();
+        String refreshToken = "Bearer " + auth.getToken().getRefreshToken();
 
 
         //when

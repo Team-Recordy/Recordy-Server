@@ -19,6 +19,7 @@ public class FakeUserRepository implements UserRepository {
                 .authPlatform(user.getAuthPlatform())
                 .status(user.getStatus())
                 .nickname(user.getNickname())
+                .termsAgreement(user.getTermsAgreement())
                 .build();
 
         users.put(autoIncrementId++, realUser);

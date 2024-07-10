@@ -10,6 +10,7 @@ import org.recordy.server.user.controller.dto.request.TermsAgreement;
 import org.recordy.server.user.domain.usecase.UserSignUp;
 import org.recordy.server.user.exception.UserException;
 
+import java.time.LocalDateTime;
 import java.util.regex.Pattern;
 
 import static org.recordy.server.user.domain.UserStatus.ACTIVE;
@@ -26,6 +27,7 @@ public class User {
     private UserStatus status;
     private String nickname;
     private TermsAgreement termsAgreement;
+    private LocalDateTime createdAt;
 
     public User activate(UserSignUp userSignUp) {
         validateNicknameFormat(userSignUp.nickname());
@@ -47,7 +49,7 @@ public class User {
     }
 
     private void validateTermsAgreed(TermsAgreement termsAgreement) {
-        if (termsAgreement.ageTerm() && termsAgreement.useTerm() && termsAgreement.personalInfoTerm()) {
+        if (!termsAgreement.ageTerm() || !termsAgreement.useTerm() || !termsAgreement.personalInfoTerm()) {
             throw new UserException(ErrorMessage.INVALID_REQUEST_TERM);
         }
     }
