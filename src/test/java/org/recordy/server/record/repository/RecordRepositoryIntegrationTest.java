@@ -22,6 +22,7 @@ import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -199,7 +200,7 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
                 () -> assertThat(result.getContent()).isEmpty(),
                 () -> assertThat(result.hasNext()).isFalse()
         );
-    }
+     }
 
     @Test
     void findAllByIdAfterAndKeywordsOrderByIdDesc를_통해_키워드로_필터링된_레코드_데이터를_최신순으로_조회할_수_있다() {
@@ -303,6 +304,37 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
                 () -> assertThat(result.get(1).getId()).isIn(3L, 4L),
                 () -> assertThat(result.get(2).getId()).isIn(1L, 2L),
                 () -> assertThat(result.get(3).getId()).isIn(1L, 2L)
+        );
+    }
+
+    @Test
+    void countAllByUserIdGroupByKeyword를_통해_사용자가_시청_저장_업로드한_모든_영상과_관련된_키워드별로_카운트할_수_있다() {
+        // given
+        // 현재 EXOTIC 키워드 영상 3개 업로드했고, QUITE 키워드 영상 2개 업로드했음.
+        long userId = 1L;
+
+        // QUITE 키워드 영상 1번 시청함
+        viewRepository.save(
+                DomainFixture.createRecord(2),
+                DomainFixture.createUser(UserStatus.ACTIVE)
+        );
+
+        // EXOTIC 키워드 영상 1번 저장함
+        bookmarkRepository.save(
+                Bookmark.builder()
+                        .user(DomainFixture.createUser(UserStatus.ACTIVE))
+                        .record(DomainFixture.createRecord(5))
+                        .build()
+        );
+
+        // when
+        Map<Keyword, Long> preference = recordRepository.countAllByUserIdGroupByKeyword(userId);
+
+        // then
+        assertAll(
+                () -> assertThat(preference).hasSize(2),
+                () -> assertThat(preference.get(Keyword.EXOTIC)).isEqualTo(4),
+                () -> assertThat(preference.get(Keyword.QUITE)).isEqualTo(3)
         );
     }
 }

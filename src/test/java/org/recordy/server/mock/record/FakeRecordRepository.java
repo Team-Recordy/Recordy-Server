@@ -93,7 +93,7 @@ public class FakeRecordRepository implements RecordRepository {
     }
 
     @Override
-    public Map<Keyword, Long> countAllUploadsByUserIdGroupByKeyword(long userId) {
+    public Map<Keyword, Long> countAllByUserIdGroupByKeyword(long userId) {
         return Map.of();
     }
 }

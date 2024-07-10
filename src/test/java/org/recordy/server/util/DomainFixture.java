@@ -180,6 +180,17 @@ public final class DomainFixture {
         );
     }
 
+    public static Record createRecord(long id) {
+        return new Record(
+                id,
+                new FileUrl(VIDEO_URL, THUMBNAIL_URL),
+                LOCATION,
+                CONTENT,
+                KEYWORDS,
+                createUser(UserStatus.ACTIVE)
+        );
+    }
+
     public static RecordEntity createRecordEntity() {
         return new RecordEntity(
                 RECORD_ID,

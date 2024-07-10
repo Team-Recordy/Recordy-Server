@@ -90,8 +90,8 @@ public class RecordRepositoryImpl implements RecordRepository {
     }
 
     @Override
-    public Map<Keyword, Long> countAllUploadsByUserIdGroupByKeyword(long userId) {
-        Map<KeywordEntity, Long> preference = recordQueryDslRepository.countAllUploadsByUserIdGroupByKeyword(userId);
+    public Map<Keyword, Long> countAllByUserIdGroupByKeyword(long userId) {
+        Map<KeywordEntity, Long> preference = recordQueryDslRepository.countAllByUserIdGroupByKeyword(userId);
 
         return preference.entrySet().stream()
                 .collect(Collectors.toMap(

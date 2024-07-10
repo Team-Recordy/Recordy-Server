@@ -89,17 +89,48 @@ public class RecordQueryDslRepository {
         return new SliceImpl<>(recordEntities, pageable, QueryDslUtils.hasNext(pageable, recordEntities));
     }
 
-    public Map<KeywordEntity, Long> countAllUploadsByUserIdGroupByKeyword(long userId) {
-        List<Tuple> results = jpaQueryFactory
+    public Map<KeywordEntity, Long> countAllByUserIdGroupByKeyword(long userId) {
+        List<Tuple> uploadResults = jpaQueryFactory
                 .select(uploadEntity.keyword, uploadEntity.count())
                 .from(uploadEntity)
-                .where(uploadEntity.record.user.id.eq(userId))
+                .join(uploadEntity.record, recordEntity)
+                .where(recordEntity.user.id.eq(userId))
                 .groupBy(uploadEntity.keyword)
                 .fetch();
 
-        return results.stream()
+        List<Tuple> viewResults = jpaQueryFactory
+                .select(uploadEntity.keyword, viewEntity.count())
+                .from(viewEntity)
+                .join(viewEntity.record, recordEntity)
+                .join(recordEntity.uploads, uploadEntity)
+                .where(viewEntity.user.id.eq(userId))
+                .groupBy(uploadEntity.keyword)
+                .fetch();
+
+        List<Tuple> bookmarkResults = jpaQueryFactory
+                .select(uploadEntity.keyword, bookmarkEntity.count())
+                .from(bookmarkEntity)
+                .join(bookmarkEntity.record, recordEntity)
+                .join(recordEntity.uploads, uploadEntity)
+                .where(bookmarkEntity.user.id.eq(userId))
+                .groupBy(uploadEntity.keyword)
+                .fetch();
+
+        Map<KeywordEntity, Long> preference = uploadResults.stream()
                 .collect(Collectors.toMap(
                         tuple -> tuple.get(uploadEntity.keyword),
-                        tuple -> tuple.get(viewEntity.count())));
+                        tuple -> tuple.get(uploadEntity.count())));
+
+        viewResults.forEach(tuple -> preference.merge(
+                tuple.get(uploadEntity.keyword),
+                tuple.get(viewEntity.count()),
+                Long::sum));
+
+        bookmarkResults.forEach(tuple -> preference.merge(
+                tuple.get(uploadEntity.keyword),
+                tuple.get(bookmarkEntity.count()),
+                Long::sum));
+
+        return preference;
     }
 }

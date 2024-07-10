@@ -2,6 +2,7 @@ package org.recordy.server.record_stat.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.message.ErrorMessage;
+import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.exception.RecordException;
 import org.recordy.server.record.repository.RecordRepository;
@@ -15,6 +16,8 @@ import org.recordy.server.user.repository.UserRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Service
@@ -39,7 +42,7 @@ public class RecordStatServiceImpl implements RecordStatService {
 
     @Override
     public Preference getPreference(long userId) {
-        return null;
+        return Preference.of(userId, recordRepository.countAllByUserIdGroupByKeyword(userId));
     }
 
     @Override
