@@ -1,4 +1,4 @@
-package org.recordy.server.external.controller;
+package org.recordy.server.common.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

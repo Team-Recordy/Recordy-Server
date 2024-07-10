@@ -1,7 +1,7 @@
-package org.recordy.server.external.controller;
+package org.recordy.server.common.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.recordy.server.external.service.impl.S3ServiceImpl;
+import org.recordy.server.common.service.impl.S3ServiceImpl;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
