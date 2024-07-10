@@ -44,12 +44,9 @@ public class FakeBookmarkRepository implements BookmarkRepository {
 
     @Override
     public Long countAllByRecordId(long recordId) {
-        List<Bookmark> content = bookmarks.keySet().stream()
+        return bookmarks.keySet().stream()
                 .filter(key -> bookmarks.get(key).getRecord().getId() == recordId)
                 .map(bookmarks::get)
-                .sorted(Comparator.comparing(Bookmark::getId).reversed())
-                .toList();
-
-        return Long.valueOf(content.size());
+                .count();
     }
 }
