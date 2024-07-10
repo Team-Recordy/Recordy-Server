@@ -48,7 +48,7 @@ public class RecordServiceImpl implements RecordService {
         Record record = recordRepository.findById(recordId)
                         .orElseThrow(() -> new RecordException(ErrorMessage.RECORD_NOT_FOUND));
         if (!record.isUploader(recordId)) {
-            throw new RecordyException(ErrorMessage.UNAUTHORIZED_DELETE_RECORD);
+            throw new RecordyException(ErrorMessage.FORBIDDEN_DELETE_RECORD);
         }
         recordRepository.deleteById(recordId);
     }

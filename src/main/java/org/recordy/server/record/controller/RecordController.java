@@ -30,13 +30,10 @@ public class RecordController{
     public ResponseEntity<Record> createRecord(
             @UserId Long uploaderId,
             @RequestPart RecordCreateRequest recordCreateRequest,
-            @RequestPart File file){
+            @RequestPart File file
+    ) {
 
-        List<Keyword> keywords = recordCreateRequest.keywords().stream()
-                .map(Keyword::fromString)
-                .collect(Collectors.toList());
-
-        RecordCreate recordCreate = RecordCreate.of(uploaderId, recordCreateRequest.location(), recordCreateRequest.content(), keywords);
+        RecordCreate recordCreate = RecordCreate.from(uploaderId, recordCreateRequest);
         Record createdRecord = recordService.create(recordCreate, file);
 
         return ResponseEntity
@@ -48,7 +45,7 @@ public class RecordController{
     public ResponseEntity<Void> deleteRecord(
             @UserId Long uploaderId,
             @PathVariable Long recordId
-    ){
+    ) {
         recordService.delete(uploaderId, recordId);
 
         return ResponseEntity
@@ -60,7 +57,8 @@ public class RecordController{
     public ResponseEntity<Slice<Record>> getRecentRecords(
             @RequestParam long cursorId,
             @RequestParam int size,
-            @RequestParam(required = false) List<String> keywords) {
+            @RequestParam(required = false) List<String> keywords
+    ) {
 
         Slice<Record> records;
         if (keywords == null || keywords.isEmpty()) {
