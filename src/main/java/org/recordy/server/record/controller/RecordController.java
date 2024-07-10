@@ -41,7 +41,7 @@ public class RecordController{
                 .body(createdRecord);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{recordId}")
     public ResponseEntity<Void> deleteRecord(
             @UserId Long uploaderId,
             @PathVariable Long recordId
@@ -55,9 +55,9 @@ public class RecordController{
 
     @GetMapping("/recent")
     public ResponseEntity<Slice<Record>> getRecentRecords(
+            @RequestParam(required = false) List<String> keywords,
             @RequestParam long cursorId,
-            @RequestParam int size,
-            @RequestParam(required = false) List<String> keywords
+            @RequestParam int size
     ) {
 
         Slice<Record> records;
