@@ -3,8 +3,7 @@ package org.recordy.server.record.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.security.UserId;
-import org.recordy.server.keyword.domain.Keyword;
-import org.recordy.server.record.controller.dto.RecordCreateRequest;
+import org.recordy.server.record.controller.dto.request.RecordCreateRequest;
 import org.recordy.server.record.domain.File;
 import org.recordy.server.record.domain.Record;
 
@@ -12,12 +11,10 @@ import org.recordy.server.record.domain.usecase.RecordCreate;
 import org.recordy.server.record.service.RecordService;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/records")

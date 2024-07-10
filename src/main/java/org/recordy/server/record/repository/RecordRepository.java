@@ -20,6 +20,6 @@ public interface RecordRepository {
     List<Record> findAllOrderByPopularity(int size);
     Slice<Record> findAllByIdAfterOrderByIdDesc(long cursor, Pageable pageable);
     Slice<Record> findAllByIdAfterAndKeywordsOrderByIdDesc(List<Keyword> keywords, long cursor, Pageable pageable);
-    Map<Keyword, Long> countAllUploadsByUserIdGroupByKeyword(long userId);
     Slice<Record> findAllByUserIdOrderByIdDesc(long userId, long cursor, Pageable pageable);
+    Map<Keyword, Long> countAllByUserIdGroupByKeyword(long userId);
 }

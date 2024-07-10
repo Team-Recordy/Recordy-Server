@@ -8,9 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.util.QueryDslUtils;
 import org.recordy.server.keyword.domain.KeywordEntity;
 import org.recordy.server.record.domain.RecordEntity;
-import org.recordy.server.user.domain.QUserEntity;
-import org.recordy.server.user.domain.UserEntity;
-import org.recordy.server.user.repository.UserRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -25,6 +22,7 @@ import static org.recordy.server.record.domain.QRecordEntity.recordEntity;
 import static org.recordy.server.record.domain.QUploadEntity.uploadEntity;
 import static org.recordy.server.record_stat.domain.QBookmarkEntity.bookmarkEntity;
 import static org.recordy.server.record_stat.domain.QViewEntity.viewEntity;
+import static org.recordy.server.user.domain.QUserEntity.userEntity;
 
 @RequiredArgsConstructor
 @Repository
@@ -42,7 +40,6 @@ public class RecordQueryDslRepository {
                 .where (
                         bookmarkEntity.createdAt.after(sevenDaysAgo)
                                 .or(viewEntity.createdAt.after(sevenDaysAgo))
-
                 )
                 .groupBy(recordEntity.id)
                 .orderBy(bookmarkEntity.count().multiply(2).add(viewEntity.count()).desc())
@@ -83,15 +80,15 @@ public class RecordQueryDslRepository {
         return new SliceImpl<>(recordEntities, pageable, QueryDslUtils.hasNext(pageable, recordEntities));
     }
 
-    public Slice<RecordEntity> findAllByUserIdOrderByIdDesc(UserEntity userEntity, long cursor, Pageable pageable) {
+    public Slice<RecordEntity> findAllByUserIdOrderByIdDesc(long userId, long cursor, Pageable pageable) {
         List<RecordEntity> recordEntities = jpaQueryFactory
-                .selectFrom((QRecordEntity.recordEntity))
-                .join(QRecordEntity.recordEntity.user, QUserEntity.userEntity)
+                .selectFrom((recordEntity))
+                .join(recordEntity.user, userEntity)
                 .where(
-                        QueryDslUtils.ltCursorId(cursor,QRecordEntity.recordEntity.id),
-                        QUserEntity.userEntity.eq(userEntity)
+                        QueryDslUtils.ltCursorId(cursor, recordEntity.id),
+                        userEntity.id.eq(userId)
                 )
-                .orderBy(QRecordEntity.recordEntity.id.desc())
+                .orderBy(recordEntity.id.desc())
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
 
