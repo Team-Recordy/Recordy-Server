@@ -249,6 +249,14 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
     void findAllOrderByPopularity를_통해_조회한_레코드는_조회수보다_저장수에서_더_큰_가중치를_얻는다() {
         // given
         viewRepository.save(new Record(
+                1L,
+                new FileUrl(VIDEO_URL, THUMBNAIL_URL),
+                LOCATION,
+                CONTENT,
+                KEYWORDS,
+                createUser(UserStatus.ACTIVE)
+        ), createUser(UserStatus.ACTIVE));
+        viewRepository.save(new Record(
                 2L,
                 new FileUrl(VIDEO_URL, THUMBNAIL_URL),
                 LOCATION,
@@ -269,15 +277,29 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
                 ))
                 .build()
         );
+        bookmarkRepository.save(Bookmark.builder()
+                .user(createUser(UserStatus.ACTIVE))
+                .record(new Record(
+                        4L,
+                        new FileUrl(VIDEO_URL, THUMBNAIL_URL),
+                        LOCATION,
+                        CONTENT,
+                        KEYWORDS,
+                        createUser(UserStatus.ACTIVE)
+                ))
+                .build()
+        );
 
         // when
-        List<Record> result = recordRepository.findAllOrderByPopularity(3);
+        List<Record> result = recordRepository.findAllOrderByPopularity(4);
 
         // then
         assertAll(
-                () -> assertThat(result).hasSize(3),
-                () -> assertThat(result.get(0).getId()).isEqualTo(3L),
-                () -> assertThat(result.get(1).getId()).isEqualTo(2L)
+                () -> assertThat(result).hasSize(4),
+                () -> assertThat(result.get(0).getId()).isIn(3L, 4L),
+                () -> assertThat(result.get(1).getId()).isIn(3L, 4L),
+                () -> assertThat(result.get(2).getId()).isIn(1L, 2L),
+                () -> assertThat(result.get(3).getId()).isIn(1L, 2L)
         );
     }
 }
