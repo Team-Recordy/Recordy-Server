@@ -2,6 +2,7 @@ package org.recordy.server.record_stat.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.recordy.server.common.domain.JpaMetaInfoEntity;
 import org.recordy.server.record.domain.RecordEntity;
 import org.recordy.server.user.domain.UserEntity;
 
@@ -9,7 +10,7 @@ import org.recordy.server.user.domain.UserEntity;
 @Getter
 @Table(name = "views")
 @Entity
-public class ViewEntity {
+public class ViewEntity extends JpaMetaInfoEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

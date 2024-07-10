@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.recordy.server.common.domain.JpaMetaInfoEntity;
 import org.recordy.server.keyword.domain.KeywordEntity;
 import org.recordy.server.record.service.dto.FileUrl;
 import org.recordy.server.record_stat.domain.BookmarkEntity;
@@ -18,7 +19,7 @@ import java.util.List;
 @Getter
 @Table(name = "records")
 @Entity
-public class RecordEntity {
+public class RecordEntity extends JpaMetaInfoEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

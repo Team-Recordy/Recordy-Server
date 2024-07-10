@@ -69,8 +69,8 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public Slice<Record> getFamousRecords(long cursorId, int size) {
-        return null;
+    public List<Record> getFamousRecords(int size) {
+        return recordRepository.findAllOrderByPopularity(size);
     }
 
     @Override

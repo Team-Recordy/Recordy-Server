@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.recordy.server.common.domain.JpaMetaInfoEntity;
 import org.recordy.server.record.domain.RecordEntity;
 import org.recordy.server.user.domain.UserEntity;
 
@@ -12,7 +13,7 @@ import org.recordy.server.user.domain.UserEntity;
 @Getter
 @Table(name = "bookmarks")
 @Entity
-public class BookmarkEntity {
+public class BookmarkEntity extends JpaMetaInfoEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
