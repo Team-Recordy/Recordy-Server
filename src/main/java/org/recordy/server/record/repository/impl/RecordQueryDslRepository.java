@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.recordy.server.keyword.domain.QKeywordEntity.keywordEntity;
@@ -50,17 +51,23 @@ public class RecordQueryDslRepository {
         return new SliceImpl<>(recordEntities, pageable, QueryDslUtils.hasNext(pageable, recordEntities));
     }
 
-    public Slice<RecordEntity> findAllByIdAfterOrderByIdDesc(long cursor, Pageable pageable) {
-        // TODO: 0을 여기서 대체하지 말고, 서비스나 컨트롤러에서 처리하도록 수정
-        if (cursor == 0)
-            cursor = Long.MAX_VALUE;
+    public Slice<RecordEntity> findAllByKeywordsOrderByPopularity(List<KeywordEntity> keywords, Pageable pageable) {
+        LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
 
         List<RecordEntity> recordEntities = jpaQueryFactory
                 .selectFrom(recordEntity)
+                .leftJoin(recordEntity.bookmarks, bookmarkEntity)
+                .leftJoin(recordEntity.views, viewEntity)
+                .join(recordEntity.uploads, uploadEntity)
+                .join(uploadEntity.keyword, keywordEntity)
                 .where(
-                        QueryDslUtils.ltCursorId(cursor, recordEntity.id)
+                        bookmarkEntity.createdAt.after(sevenDaysAgo)
+                                .or(viewEntity.createdAt.after(sevenDaysAgo)),
+                        keywordEntity.in(keywords)
                 )
-                .orderBy(recordEntity.id.desc())
+                .groupBy(recordEntity.id)
+                .orderBy(bookmarkEntity.count().multiply(2).add(viewEntity.count()).desc())
+                .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
 
@@ -78,6 +85,23 @@ public class RecordQueryDslRepository {
                 .where(
                         QueryDslUtils.ltCursorId(cursor, recordEntity.id),
                         keywordEntity.in(keywords)
+                )
+                .orderBy(recordEntity.id.desc())
+                .limit(pageable.getPageSize() + 1)
+                .fetch();
+
+        return new SliceImpl<>(recordEntities, pageable, QueryDslUtils.hasNext(pageable, recordEntities));
+    }
+
+    public Slice<RecordEntity> findAllByIdAfterOrderByIdDesc(long cursor, Pageable pageable) {
+        // TODO: 0을 여기서 대체하지 말고, 서비스나 컨트롤러에서 처리하도록 수정
+        if (cursor == 0)
+            cursor = Long.MAX_VALUE;
+
+        List<RecordEntity> recordEntities = jpaQueryFactory
+                .selectFrom(recordEntity)
+                .where(
+                        QueryDslUtils.ltCursorId(cursor, recordEntity.id)
                 )
                 .orderBy(recordEntity.id.desc())
                 .limit(pageable.getPageSize() + 1)

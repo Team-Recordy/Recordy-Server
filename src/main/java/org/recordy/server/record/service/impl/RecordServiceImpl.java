@@ -70,8 +70,20 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public Slice<Record> getFamousRecords(int pageNumber, int size) {
+    public Slice<Record> getFamousRecords(List<String> keywords, int pageNumber, int size) {
+        if (Objects.isNull(keywords) || keywords.isEmpty()) {
+            return getFamousRecords(pageNumber, size);
+        }
+
+        return getFamousRecordsWithKeywords(Keyword.from(keywords), pageNumber, size);
+    }
+
+    private Slice<Record> getFamousRecords(int pageNumber, int size) {
         return recordRepository.findAllOrderByPopularity(PageRequest.of(pageNumber, size));
+    }
+
+    private Slice<Record> getFamousRecordsWithKeywords(List<Keyword> keywords, int pageNumber, int size) {
+        return recordRepository.findAllByKeywordsOrderByPopularity(keywords, PageRequest.of(pageNumber, size));
     }
 
     @Override

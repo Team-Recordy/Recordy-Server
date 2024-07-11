@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -68,6 +67,16 @@ public class RecordRepositoryImpl implements RecordRepository {
     @Override
     public Slice<Record> findAllOrderByPopularity(Pageable pageable) {
         return recordQueryDslRepository.findAllOrderByPopularity(pageable)
+                .map(RecordEntity::toDomain);
+    }
+
+    @Override
+    public Slice<Record> findAllByKeywordsOrderByPopularity(List<Keyword> keywords, Pageable pageable) {
+        List<KeywordEntity> keywordEntities = keywordJpaRepository.findAll().stream()
+                .filter(keyword -> keywords.contains(keyword.toDomain()))
+                .toList();
+
+        return recordQueryDslRepository.findAllByKeywordsOrderByPopularity(keywordEntities, pageable)
                 .map(RecordEntity::toDomain);
     }
 

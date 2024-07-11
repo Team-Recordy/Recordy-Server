@@ -61,6 +61,11 @@ public class FakeRecordRepository implements RecordRepository {
     }
 
     @Override
+    public Slice<Record> findAllByKeywordsOrderByPopularity(List<Keyword> keywords, Pageable pageable) {
+        return null;
+    }
+
+    @Override
     public Slice<Record> findAllByIdAfterOrderByIdDesc(long cursor, Pageable pageable) {
         List<Record> content = records.keySet().stream()
                 .filter(key -> key < cursor)

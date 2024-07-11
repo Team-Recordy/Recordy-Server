@@ -9,7 +9,6 @@ import org.recordy.server.record.domain.Record;
 
 import org.recordy.server.record.domain.usecase.RecordCreate;
 import org.recordy.server.record.service.RecordService;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -71,7 +70,7 @@ public class RecordController {
     ){
         return ResponseEntity
                 .ok()
-                .body(recordService.getFamousRecords(pageNumber, pageSize));
+                .body(recordService.getFamousRecords(keywords, pageNumber, pageSize));
     }
 
     @PostMapping("/watch")
