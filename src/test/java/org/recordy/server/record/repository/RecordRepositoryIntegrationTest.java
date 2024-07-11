@@ -263,7 +263,8 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
                 .build());
 
         // when
-        List<Record> result = recordRepository.findAllOrderByPopularity(2);
+        List<Record> result = recordRepository.findAllOrderByPopularity(PageRequest.of(0, 2))
+                .getContent();
 
         // then
         assertAll(
@@ -285,7 +286,8 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
         saveViewWithCreatedAt(6, sevenDaysAgo);
 
         // when
-        List<Record> result = recordRepository.findAllOrderByPopularity(2);
+        List<Record> result = recordRepository.findAllOrderByPopularity(PageRequest.of(0, 2))
+                .getContent();
 
         // then
         assertAll(
@@ -394,7 +396,8 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
         // 3번 레코드 1번 저장, 4번 레코드 1번 저장
 
         // when
-        List<Record> result = recordRepository.findAllOrderByPopularity(4);
+        List<Record> result = recordRepository.findAllOrderByPopularity(PageRequest.of(0, 4))
+                .getContent();
 
         // then
         assertAll(

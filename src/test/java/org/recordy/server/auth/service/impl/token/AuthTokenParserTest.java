@@ -26,7 +26,7 @@ class AuthTokenParserTest {
     @Test
     void getBody를_통해_토큰의_내용을_읽을_수_있다() {
         // given
-        String token = authTokenGenerator.generate(Map.of("A", "a", "B", "b"), 1000L);
+        String token = authTokenGenerator.generate(Map.of("A", "a", "B", "b"), 10000000L);
 
         // when
         Claims body = authTokenParser.getBody(token);
@@ -34,7 +34,7 @@ class AuthTokenParserTest {
         // then
         assertThat(body.get("A")).isEqualTo("a");
         assertThat(body.get("B")).isEqualTo("b");
-        assertThat(body.getExpiration().getTime() - body.getIssuedAt().getTime()).isEqualTo(1000L);
+        assertThat(body.getExpiration().getTime() - body.getIssuedAt().getTime()).isEqualTo(10000000L);
     }
 
     @Test

@@ -17,7 +17,7 @@ public interface RecordRepository {
 
     // query
     Optional<Record> findById(long id);
-    List<Record> findAllOrderByPopularity(int size);
+    Slice<Record> findAllOrderByPopularity(Pageable pageable);
     Slice<Record> findAllByIdAfterOrderByIdDesc(long cursor, Pageable pageable);
     Slice<Record> findAllByIdAfterAndKeywordsOrderByIdDesc(List<Keyword> keywords, long cursor, Pageable pageable);
     Slice<Record> findAllByUserIdOrderByIdDesc(long userId, long cursor, Pageable pageable);

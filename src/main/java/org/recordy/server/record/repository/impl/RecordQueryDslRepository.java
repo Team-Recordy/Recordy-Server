@@ -30,21 +30,24 @@ public class RecordQueryDslRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    public List<RecordEntity> findAllOrderByPopularity(int limit) {
+    public Slice<RecordEntity> findAllOrderByPopularity(Pageable pageable) {
         LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
 
-        return jpaQueryFactory
+        List<RecordEntity> recordEntities = jpaQueryFactory
                 .selectFrom(recordEntity)
                 .leftJoin(recordEntity.bookmarks, bookmarkEntity)
                 .leftJoin(recordEntity.views, viewEntity)
-                .where (
+                .where(
                         bookmarkEntity.createdAt.after(sevenDaysAgo)
                                 .or(viewEntity.createdAt.after(sevenDaysAgo))
                 )
                 .groupBy(recordEntity.id)
                 .orderBy(bookmarkEntity.count().multiply(2).add(viewEntity.count()).desc())
-                .limit(limit)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize() + 1)
                 .fetch();
+
+        return new SliceImpl<>(recordEntities, pageable, QueryDslUtils.hasNext(pageable, recordEntities));
     }
 
     public Slice<RecordEntity> findAllByIdAfterOrderByIdDesc(long cursor, Pageable pageable) {
