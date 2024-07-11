@@ -88,36 +88,4 @@ public class RecordStatServiceTest {
                 () -> assertThat(result.hasNext()).isFalse()
         );
     }
-
-    @Test
-    void getBookmarkCount를_통해_현재_기록의_북마크_수를_구할_수_있다() {
-        //given
-        recordStatService.bookmark(1, 1);
-        recordStatService.bookmark(2, 1);
-        recordStatService.bookmark(1, 2);
-        recordStatService.bookmark(2, 2);
-        recordStatService.bookmark(1, 3);
-        recordStatService.bookmark(2, 3);
-
-        // when
-        Long result = recordStatService.getBookmarkCount(1);
-
-        // then
-        assertAll(
-                () -> assertThat(result).isEqualTo(2)
-        );
-    }
-
-    @Test
-    void getBookmarkCount를_통해_북마크_수를_구할_때_북마크가_없으면_0을_리턴한다() {
-        //given
-        // when
-        Long result = recordStatService.getBookmarkCount(1);
-
-        // then
-        assertAll(
-                () -> assertThat(result).isEqualTo(0)
-        );
-    }
-
 }

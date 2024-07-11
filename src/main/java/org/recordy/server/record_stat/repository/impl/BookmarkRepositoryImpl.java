@@ -49,9 +49,4 @@ public class BookmarkRepositoryImpl implements BookmarkRepository {
                         Map.Entry::getValue
                 ));
     }
-
-    @Override
-    public Long countAllByRecordId(long recordId) {
-        return bookmarkJpaRepository.countAllByRecord_Id(recordId);
-    }
 }
