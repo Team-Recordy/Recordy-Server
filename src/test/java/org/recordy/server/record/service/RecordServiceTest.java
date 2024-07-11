@@ -2,13 +2,11 @@ package org.recordy.server.record.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.recordy.server.auth.exception.AuthException;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.mock.FakeContainer;
 import org.recordy.server.record.domain.File;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.usecase.RecordCreate;
-import org.recordy.server.record_stat.repository.ViewRepository;
 import org.recordy.server.record.exception.RecordException;
 import org.recordy.server.user.domain.UserStatus;
 import org.recordy.server.user.repository.UserRepository;
@@ -22,15 +20,14 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class RecordServiceTest {
 
     private RecordService recordService;
-    private ViewRepository viewRepository;
 
     @BeforeEach
     void init() {
         FakeContainer fakeContainer = new FakeContainer();
         recordService = fakeContainer.recordService;
-        viewRepository = fakeContainer.viewRepository;
         UserRepository userRepository = fakeContainer.userRepository;
 
+        userRepository.save(DomainFixture.createUser(UserStatus.ACTIVE));
         userRepository.save(DomainFixture.createUser(UserStatus.ACTIVE));
     }
 
@@ -61,10 +58,10 @@ class RecordServiceTest {
         Record record = recordService.create(recordCreate, file);
 
         // when
-        recordService.delete(1,record.getId());
+        recordService.delete(1, record.getId());
 
         // then
-        Slice<Record> result = recordService.getRecentRecordsLaterThanCursor(0,1);
+        Slice<Record> result = recordService.getRecentRecordsLaterThanCursor(0, 1);
         assertAll(
                 () -> assertThat(result.getContent()).hasSize(0),
                 () -> assertThat(result.hasNext()).isFalse()
@@ -80,7 +77,7 @@ class RecordServiceTest {
 
         // when
         // then
-        assertThatThrownBy(() -> recordService.delete(100,record.getId()))
+        assertThatThrownBy(() -> recordService.delete(100, record.getId()))
                 .isInstanceOf(RecordException.class)
                 .hasMessageContaining(ErrorMessage.FORBIDDEN_DELETE_RECORD.getMessage());
     }
@@ -95,7 +92,7 @@ class RecordServiceTest {
         recordService.create(DomainFixture.createRecordCreateByOtherUser(), DomainFixture.createFile());
 
         //when
-        Slice<Record> result = recordService.getRecentRecordsByUser(1,0,10);
+        Slice<Record> result = recordService.getRecentRecordsByUser(1, Long.MAX_VALUE, 10);
 
         //then
         assertAll(

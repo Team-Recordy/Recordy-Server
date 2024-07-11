@@ -80,6 +80,7 @@ public class RecordEntity extends JpaMetaInfoEntity {
                         .map(KeywordEntity::toDomain)
                         .toList())
                 .uploader(user.toDomain())
+                .bookmarkCount(bookmarks.size())
                 .build();
     }
 

@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import org.junit.jupiter.api.Test;
+import org.recordy.server.record.domain.Record;
+import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.record_stat.domain.Bookmark;
 import org.recordy.server.util.DomainFixture;
 import org.recordy.server.util.db.IntegrationTest;
@@ -22,11 +24,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @SpringBootTest
 public class BookmarkRepositoryIntegrationTest extends IntegrationTest {
+
     @Autowired
     private BookmarkRepository bookmarkRepository;
+    @Autowired
+    private RecordRepository recordRepository;
 
     @Test
-    void delete를_통해_북마크_테이터를_생성할_수_있다() {
+    void save를_통해_북마크_테이터를_생성할_수_있다() {
         //given
         Bookmark bookmark = DomainFixture.createBookmark();
 
@@ -37,7 +42,27 @@ public class BookmarkRepositoryIntegrationTest extends IntegrationTest {
         assertAll(
                 () -> assertThat(result.getId()).isNotNull(),
                 () -> assertThat(result.getUser().getId()).isEqualTo(DomainFixture.USER_ID),
-                () -> assertThat(result.getRecord().getId()).isEqualTo(DomainFixture.RECORD_ID)
+                () -> assertThat(result.getRecord().getId()).isEqualTo(DomainFixture.RECORD_ID),
+                () -> assertThat(result.getRecord().getBookmarkCount()).isEqualTo(1)
+        );
+    }
+
+    @Test
+    void save를_통해_저장된_북마크_데이터는_레코드_조회_시_데이터_개수로_카운트될_수_있다() {
+        // given
+        // userId 1 <-> recordId 1
+        // userId 1 <-> recordId 2
+        // userId 2 <-> recordId 1
+        // userId 2 <-> recordId 1
+
+        // when
+        Slice<Record> result = recordRepository.findAllByIdAfterOrderByIdDesc(0, PageRequest.ofSize(4));
+
+        // then
+        assertAll(
+                () -> assertThat(result.getContent().size()).isEqualTo(2),
+                () -> assertThat(result.getContent().get(0).getBookmarkCount()).isEqualTo(2),
+                () -> assertThat(result.getContent().get(1).getBookmarkCount()).isEqualTo(2)
         );
     }
 

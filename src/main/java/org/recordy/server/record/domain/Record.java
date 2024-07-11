@@ -22,6 +22,7 @@ public class Record {
     List<Keyword> keywords;
     User uploader;
     private LocalDateTime createdAt;
+    long bookmarkCount;
 
     public boolean isUploader(long userId) {
         return uploader.getId() == userId;

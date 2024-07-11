@@ -82,7 +82,7 @@ public class FakeRecordRepository implements RecordRepository {
     @Override
     public Slice<Record> findAllByUserIdOrderByIdDesc(long userId, long cursor, Pageable pageable) {
         List<Record> content = records.values().stream()
-                .filter(record -> record.getId() < cursor && record.getId() == userId)
+                .filter(record -> record.getId() < cursor && record.getUploader().getId() == userId)
                 .sorted(Comparator.comparing(Record::getId).reversed())
                 .toList();
 
