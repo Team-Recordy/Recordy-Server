@@ -52,8 +52,8 @@ public class RecordController {
     @GetMapping("/recent")
     public ResponseEntity<Slice<Record>> getRecentRecords(
             @RequestParam(required = false) List<String> keywords,
-            @RequestParam long cursorId,
-            @RequestParam int size
+            @RequestParam(required = false, defaultValue = "0L") long cursorId,
+            @RequestParam(required = false, defaultValue = "10") int size
     ) {
         Slice<Record> records = recordService.getRecentRecords(keywords, cursorId, size);
 
@@ -63,11 +63,14 @@ public class RecordController {
     }
 
     @GetMapping("/famous")
-    public ResponseEntity<List<Record>> getFamousRecords(int size){
-        //todo: 이것도 키워드 맞춰서 하고 싶은데 결국 키워드 선택하면 해당 키워드 전체를 보여주어야 한다네여.... list가 아닌 slice로 바구는 것은 어떨까요?
+    public ResponseEntity<Slice<Record>> getFamousRecords(
+            @RequestParam(required = false) List<String> keywords,
+            @RequestParam(required = false, defaultValue = "0") int pageNumber,
+            @RequestParam(required = false, defaultValue = "10") int pageSize
+    ){
         return ResponseEntity
                 .ok()
-                .body(recordService.getFamousRecords(size));
+                .body(recordService.getFamousRecords(keywords, pageNumber, pageSize));
     }
 
     @PostMapping("/watch")
@@ -84,8 +87,8 @@ public class RecordController {
     @GetMapping("/user")
     public ResponseEntity<Slice<Record>> getRecentRecordsByUser(
             @UserId long userId,
-            @RequestParam long cursorId,
-            @RequestParam int size
+            @RequestParam(required = false, defaultValue = "0L") long cursorId,
+            @RequestParam(required = false, defaultValue = "10") int size
     ) {
         Slice<Record> records = recordService.getRecentRecordsByUser(userId, cursorId, size);
 

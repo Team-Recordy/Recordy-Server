@@ -56,7 +56,12 @@ public class FakeRecordRepository implements RecordRepository {
     }
 
     @Override
-    public List<Record> findAllOrderByPopularity(int size) {
+    public Slice<Record> findAllOrderByPopularity(Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public Slice<Record> findAllByKeywordsOrderByPopularity(List<Keyword> keywords, Pageable pageable) {
         return null;
     }
 

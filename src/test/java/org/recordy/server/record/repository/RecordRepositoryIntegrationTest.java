@@ -263,7 +263,8 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
                 .build());
 
         // when
-        List<Record> result = recordRepository.findAllOrderByPopularity(2);
+        List<Record> result = recordRepository.findAllOrderByPopularity(PageRequest.of(0, 2))
+                .getContent();
 
         // then
         assertAll(
@@ -285,7 +286,8 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
         saveViewWithCreatedAt(6, sevenDaysAgo);
 
         // when
-        List<Record> result = recordRepository.findAllOrderByPopularity(2);
+        List<Record> result = recordRepository.findAllOrderByPopularity(PageRequest.of(0, 2))
+                .getContent();
 
         // then
         assertAll(
@@ -318,83 +320,49 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
     @Test
     void findAllOrderByPopularity를_통해_조회한_레코드는_조회수보다_저장수에서_더_큰_가중치를_얻는다() {
         // given
-        // 이미 1번 레코드를 1번 시청함
         viewRepository.save(View.builder()
-                .record(Record.builder()
-                        .id(1L)
-                        .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
-                        .location(LOCATION)
-                        .content(CONTENT)
-                        .keywords(KEYWORDS)
-                        .uploader(createUser(UserStatus.ACTIVE))
-                        .build()
-                )
+                .record(createRecord(1))
                 .user(createUser(UserStatus.ACTIVE))
                 .createdAt(sevenDaysAgo)
                 .build()
         );
         viewRepository.save(View.builder()
-                .record(Record.builder()
-                        .id(1L)
-                        .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
-                        .location(LOCATION)
-                        .content(CONTENT)
-                        .keywords(KEYWORDS)
-                        .uploader(createUser(UserStatus.ACTIVE))
-                        .build()
-                )
+                .record(createRecord(1))
                 .user(createUser(UserStatus.ACTIVE))
                 .createdAt(sevenDaysAgo)
                 .build()
         );
         viewRepository.save(View.builder()
-                .record(Record.builder()
-                        .id(2L)
-                        .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
-                        .location(LOCATION)
-                        .content(CONTENT)
-                        .keywords(KEYWORDS)
-                        .uploader(createUser(UserStatus.ACTIVE))
-                        .build()
-                )
+                .record(createRecord(1))
                 .user(createUser(UserStatus.ACTIVE))
                 .createdAt(sevenDaysAgo)
                 .build()
         );
+        viewRepository.save(View.builder()
+                .record(createRecord(2))
+                .user(createUser(UserStatus.ACTIVE))
+                .createdAt(sevenDaysAgo)
+                .build()
+        );
+        // 1번 레코드 3번 시청, 2번 레코드 1번 시청
 
-        // 1번 레코드 2번 더 시청, 2번 레코드 1번 시청
         bookmarkRepository.save(Bookmark.builder()
                 .user(createUser(UserStatus.ACTIVE))
-                .record(Record.builder()
-                        .id(3L)
-                        .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
-                        .location(LOCATION)
-                        .content(CONTENT)
-                        .keywords(KEYWORDS)
-                        .uploader(createUser(UserStatus.ACTIVE))
-                        .build()
-                )
+                .record(createRecord(3))
                 .createdAt(sevenDaysAgo)
                 .build()
         );
         bookmarkRepository.save(Bookmark.builder()
                 .user(createUser(UserStatus.ACTIVE))
-                .record(Record.builder()
-                        .id(4L)
-                        .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
-                        .location(LOCATION)
-                        .content(CONTENT)
-                        .keywords(KEYWORDS)
-                        .uploader(createUser(UserStatus.ACTIVE))
-                        .build()
-                )
+                .record(createRecord(4))
                 .createdAt(sevenDaysAgo)
                 .build()
         );
         // 3번 레코드 1번 저장, 4번 레코드 1번 저장
 
         // when
-        List<Record> result = recordRepository.findAllOrderByPopularity(4);
+        List<Record> result = recordRepository.findAllOrderByPopularity(PageRequest.of(0, 4))
+                .getContent();
 
         // then
         assertAll(
@@ -403,6 +371,30 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
                 () -> assertThat(result.get(1).getId()).isIn(3L, 4L),
                 () -> assertThat(result.get(2).getId()).isIn(3L, 4L),
                 () -> assertThat(result.get(3).getId()).isEqualTo(2)
+        );
+    }
+
+    @Test
+    void findAllByKeywordsOrderByPopularity를_통해_조회한_레코드는_키워드_필터링이_적용된다() {
+        // given
+        viewRepository.save(View.builder()
+                .record(createRecord(1))
+                .user(createUser(UserStatus.ACTIVE))
+                .createdAt(sevenDaysAgo)
+                .build()
+        );
+
+        // when
+        List<Record> inclusiveResult = recordRepository.findAllByKeywordsOrderByPopularity(List.of(Keyword.EXOTIC), PageRequest.of(0, 4))
+                .getContent();
+        List<Record> exclusiveResult = recordRepository.findAllByKeywordsOrderByPopularity(List.of(Keyword.DUCKUMORI), PageRequest.of(0, 4))
+                .getContent();
+
+        // then
+        assertAll(
+                () -> assertThat(inclusiveResult).hasSize(1),
+                () -> assertThat(inclusiveResult.get(0).getId()).isEqualTo(1),
+                () -> assertThat(exclusiveResult).isEmpty()
         );
     }
 

@@ -1,7 +1,6 @@
 package org.recordy.server.record.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.recordy.server.common.exception.RecordyException;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.record.domain.File;
@@ -22,7 +21,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
@@ -71,18 +70,20 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public List<Record> getFamousRecords(int size) {
-        return recordRepository.findAllOrderByPopularity(size);
+    public Slice<Record> getFamousRecords(List<String> keywords, int pageNumber, int size) {
+        if (Objects.isNull(keywords) || keywords.isEmpty()) {
+            return getFamousRecords(pageNumber, size);
+        }
+
+        return getFamousRecordsWithKeywords(Keyword.from(keywords), pageNumber, size);
     }
 
-    @Override
-    public Slice<Record> getRecentRecordsLaterThanCursor(long cursorId, int size) {
-        return recordRepository.findAllByIdAfterOrderByIdDesc(cursorId, PageRequest.ofSize(size));
+    private Slice<Record> getFamousRecords(int pageNumber, int size) {
+        return recordRepository.findAllOrderByPopularity(PageRequest.of(pageNumber, size));
     }
 
-    @Override
-    public Slice<Record> getRecentRecordsByKeywords(List<Keyword> keywords, long cursorId, int size) {
-        return recordRepository.findAllByIdAfterAndKeywordsOrderByIdDesc(keywords, cursorId, PageRequest.ofSize(size));
+    private Slice<Record> getFamousRecordsWithKeywords(List<Keyword> keywords, int pageNumber, int size) {
+        return recordRepository.findAllByKeywordsOrderByPopularity(keywords, PageRequest.of(pageNumber, size));
     }
 
     @Override
@@ -92,12 +93,18 @@ public class RecordServiceImpl implements RecordService {
 
     @Override
     public Slice<Record> getRecentRecords(List<String> keywords, Long cursorId, int size) {
-        if (keywords == null || keywords.isEmpty()) {
-            return getRecentRecordsLaterThanCursor(cursorId, size);
+        if (Objects.isNull(keywords) || keywords.isEmpty()) {
+            return getRecentRecords(cursorId, size);
         }
-        List<Keyword> keywordEnums = keywords.stream()
-                .map(Keyword::valueOf)
-                .collect(Collectors.toList());
-        return getRecentRecordsByKeywords(keywordEnums, cursorId, size);
+
+        return getRecentRecordsWithKeywords(Keyword.from(keywords), cursorId, size);
+    }
+
+    private Slice<Record> getRecentRecords(long cursorId, int size) {
+        return recordRepository.findAllByIdAfterOrderByIdDesc(cursorId, PageRequest.ofSize(size));
+    }
+
+    private Slice<Record> getRecentRecordsWithKeywords(List<Keyword> keywords, long cursorId, int size) {
+        return recordRepository.findAllByIdAfterAndKeywordsOrderByIdDesc(keywords, cursorId, PageRequest.ofSize(size));
     }
 }

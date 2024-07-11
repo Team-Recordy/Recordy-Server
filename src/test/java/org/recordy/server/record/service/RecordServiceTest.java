@@ -61,7 +61,7 @@ class RecordServiceTest {
         recordService.delete(1, record.getId());
 
         // then
-        Slice<Record> result = recordService.getRecentRecordsLaterThanCursor(0, 1);
+        Slice<Record> result = recordService.getRecentRecords(null, 0L, 1);
         assertAll(
                 () -> assertThat(result.getContent()).hasSize(0),
                 () -> assertThat(result.hasNext()).isFalse()
@@ -104,7 +104,7 @@ class RecordServiceTest {
     }
 
     @Test
-    void getRecentRecordsLaterThanCursor를_통해_커서_이후의_레코드를_최신_순서로_읽을_수_있다() {
+    void getRecentRecords를_통해_커서_이후의_레코드를_최신_순서로_읽을_수_있다() {
         // given
         recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
         recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
@@ -113,7 +113,7 @@ class RecordServiceTest {
         recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
 
         // when
-        Slice<Record> result = recordService.getRecentRecordsLaterThanCursor(6, 10);
+        Slice<Record> result = recordService.getRecentRecords(null, 6L, 10);
 
         // then
         assertAll(
@@ -128,14 +128,14 @@ class RecordServiceTest {
     }
 
     @Test
-    void getRecentRecordsLaterThanCursorByUser를_통해_커서가_제일_오래된_값이라면_아무것도_반환되지_않는다() {
+    void getRecentRecords를_통해_커서가_제일_오래된_값이라면_아무것도_반환되지_않는다() {
         // given
         recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
         recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
         recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
 
         // when
-        Slice<Record> result = recordService.getRecentRecordsLaterThanCursor(1, 3);
+        Slice<Record> result = recordService.getRecentRecords(null, 1L, 3);
 
         // then
         assertAll(
