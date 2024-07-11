@@ -45,11 +45,6 @@ public class FakeBookmarkRepository implements BookmarkRepository {
     }
 
     @Override
-    public Map<Keyword, Long> countAllByUserIdGroupByKeyword(long userId) {
-        return Map.of();
-    }
-
-    @Override
     public Long countAllByRecordId(long recordId) {
         return bookmarks.keySet().stream()
                 .filter(key -> bookmarks.get(key).getRecord().getId() == recordId)

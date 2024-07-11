@@ -170,36 +170,36 @@ public final class DomainFixture {
     }
 
     public static Record createRecord() {
-        return new Record(
-                RECORD_ID,
-                new FileUrl(VIDEO_URL, THUMBNAIL_URL),
-                LOCATION,
-                CONTENT,
-                KEYWORDS,
-                createUser(UserStatus.ACTIVE)
-        );
+        return Record.builder()
+                .id(RECORD_ID)
+                .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
+                .location(LOCATION)
+                .content(CONTENT)
+                .keywords(KEYWORDS)
+                .uploader(createUser(UserStatus.ACTIVE))
+                .build();
     }
 
     public static Record createRecord(long id) {
-        return new Record(
-                id,
-                new FileUrl(VIDEO_URL, THUMBNAIL_URL),
-                LOCATION,
-                CONTENT,
-                KEYWORDS,
-                createUser(UserStatus.ACTIVE)
-        );
+        return Record.builder()
+                .id(id)
+                .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
+                .location(LOCATION)
+                .content(CONTENT)
+                .keywords(KEYWORDS)
+                .uploader(createUser(UserStatus.ACTIVE))
+                .build();
     }
 
     public static RecordEntity createRecordEntity() {
-        return new RecordEntity(
-                RECORD_ID,
-                VIDEO_URL,
-                THUMBNAIL_URL,
-                LOCATION,
-                CONTENT,
-                createUserEntity()
-        );
+        return RecordEntity.builder()
+                .id(RECORD_ID)
+                .videoUrl(VIDEO_URL)
+                .thumbnailUrl(THUMBNAIL_URL)
+                .location(LOCATION)
+                .content(CONTENT)
+                .user(createUserEntity())
+                .build();
     }
 
     public static Bookmark createBookmark() {

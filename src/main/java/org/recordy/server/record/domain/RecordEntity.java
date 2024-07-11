@@ -1,6 +1,7 @@
 package org.recordy.server.record.domain;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -44,7 +45,7 @@ public class RecordEntity extends JpaMetaInfoEntity {
     private List<BookmarkEntity> bookmarks = new ArrayList<>();
 
     @Builder
-    public RecordEntity(Long id, String videoUrl, String thumbnailUrl, String location, String content, UserEntity user) {
+    public RecordEntity(Long id, String videoUrl, String thumbnailUrl, String location, String content, UserEntity user, LocalDateTime createdAt) {
         this.id = id;
         this.videoUrl = videoUrl;
         this.thumbnailUrl = thumbnailUrl;
@@ -60,7 +61,8 @@ public class RecordEntity extends JpaMetaInfoEntity {
                 record.getFileUrl().thumbnailUrl(),
                 record.getLocation(),
                 record.getContent(),
-                UserEntity.from(record.getUploader())
+                UserEntity.from(record.getUploader()),
+                record.getCreatedAt()
         );
     }
 

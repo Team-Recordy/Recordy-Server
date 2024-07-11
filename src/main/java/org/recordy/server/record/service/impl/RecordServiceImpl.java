@@ -12,6 +12,7 @@ import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.record.service.FileService;
 import org.recordy.server.record.service.RecordService;
 import org.recordy.server.record.service.dto.FileUrl;
+import org.recordy.server.record_stat.domain.View;
 import org.recordy.server.record_stat.repository.ViewRepository;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.exception.UserException;
@@ -64,7 +65,10 @@ public class RecordServiceImpl implements RecordService {
         Record record = recordRepository.findById(recordId)
                 .orElseThrow(() -> new RecordException(ErrorMessage.RECORD_NOT_FOUND));
 
-        viewRepository.save(record, user);
+        viewRepository.save(View.builder()
+                .record(record)
+                .user(user)
+                .build());
         return record;
     }
 

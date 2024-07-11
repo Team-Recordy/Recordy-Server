@@ -1,5 +1,6 @@
 package org.recordy.server.record.domain;
 
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,6 +21,7 @@ public class Record {
     String content;
     List<Keyword> keywords;
     User uploader;
+    private LocalDateTime createdAt;
 
     public boolean isUploader(long userId) {
         return uploader.getId() == userId;

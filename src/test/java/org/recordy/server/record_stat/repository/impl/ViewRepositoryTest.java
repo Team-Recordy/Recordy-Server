@@ -3,6 +3,7 @@ package org.recordy.server.record_stat.repository.impl;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.record.domain.Record;
+import org.recordy.server.record_stat.domain.View;
 import org.recordy.server.record_stat.repository.ViewRepository;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.UserStatus;
@@ -33,30 +34,16 @@ class ViewRepositoryIntegrationTest extends IntegrationTest {
         Record record = DomainFixture.createRecord();
 
         // when
-        viewRepository.save(record, user);
-        Map<Keyword, Long> keywordCounts = viewRepository.countAllByUserIdGroupByKeyword(user.getId());
+        View view = viewRepository.save(View.builder()
+                        .record(record)
+                        .user(user)
+                .build());
 
         // then
         assertAll(
-                () -> assertThat(keywordCounts.get(Keyword.EXOTIC)).isEqualTo(1),
-                () -> assertThat(keywordCounts.get(Keyword.QUITE)).isEqualTo(1)
-        );
-    }
-
-    @Test
-    void countAllByUserIdGroupByKeyword를_통해_유저별_키워드_조회수를_조회할_수_있다() {
-        // given
-        User user = DomainFixture.createUser(UserStatus.ACTIVE);
-        Record record = DomainFixture.createRecord();
-
-        // when
-        viewRepository.save(record, user);
-        Map<Keyword, Long> keywordCounts = viewRepository.countAllByUserIdGroupByKeyword(user.getId());
-
-        // then
-        assertAll(
-                () -> assertThat(keywordCounts.get(Keyword.EXOTIC)).isEqualTo(1),
-                () -> assertThat(keywordCounts.get(Keyword.QUITE)).isEqualTo(1)
+                () -> assertThat(view).isNotNull(),
+                () -> assertThat(view.getUser().getId()).isEqualTo(user.getId()),
+                () -> assertThat(view.getRecord().getId()).isEqualTo(record.getId())
         );
     }
 }

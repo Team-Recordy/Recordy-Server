@@ -8,6 +8,7 @@ import org.recordy.server.record.domain.UploadEntity;
 import org.recordy.server.record.repository.impl.UploadJpaRepository;
 import org.recordy.server.record.service.dto.FileUrl;
 import org.recordy.server.record_stat.domain.Bookmark;
+import org.recordy.server.record_stat.domain.View;
 import org.recordy.server.record_stat.repository.BookmarkRepository;
 import org.recordy.server.record_stat.repository.ViewRepository;
 import org.recordy.server.user.domain.UserStatus;
@@ -214,14 +215,14 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
         // 테스트 시점으로부터 일주일 안에 1번 레코드가 1번 시청됨
         bookmarkRepository.save(Bookmark.builder()
                 .user(createUser(UserStatus.ACTIVE))
-                .record(new Record(
-                        2L,
-                        new FileUrl(VIDEO_URL, THUMBNAIL_URL),
-                        LOCATION,
-                        CONTENT,
-                        KEYWORDS,
-                        createUser(UserStatus.ACTIVE)
-                ))
+                .record(Record.builder()
+                        .id(2L)
+                        .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
+                        .location(LOCATION)
+                        .content(CONTENT)
+                        .keywords(KEYWORDS)
+                        .uploader(createUser(UserStatus.ACTIVE))
+                        .build())
                 .build());
 
         // when
@@ -238,54 +239,71 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
     void findAllOrderByPopularity를_통해_조회한_레코드는_조회수보다_저장수에서_더_큰_가중치를_얻는다() {
         // given
         // 이미 1번 레코드를 1번 시청함
-        viewRepository.save(new Record(
-                1L,
-                new FileUrl(VIDEO_URL, THUMBNAIL_URL),
-                LOCATION,
-                CONTENT,
-                KEYWORDS,
-                createUser(UserStatus.ACTIVE)
-        ), createUser(UserStatus.ACTIVE));
-        viewRepository.save(new Record(
-                1L,
-                new FileUrl(VIDEO_URL, THUMBNAIL_URL),
-                LOCATION,
-                CONTENT,
-                KEYWORDS,
-                createUser(UserStatus.ACTIVE)
-        ), createUser(UserStatus.ACTIVE));
-        viewRepository.save(new Record(
-                2L,
-                new FileUrl(VIDEO_URL, THUMBNAIL_URL),
-                LOCATION,
-                CONTENT,
-                KEYWORDS,
-                createUser(UserStatus.ACTIVE)
-        ), createUser(UserStatus.ACTIVE));
-        // 1번 레코드 2번 더 시청, 2번 레코드 1번 시청
+        viewRepository.save(View.builder()
+                        .record(Record.builder()
+                                        .id(1L)
+                                        .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
+                                        .location(LOCATION)
+                                        .content(CONTENT)
+                                        .keywords(KEYWORDS)
+                                        .uploader(createUser(UserStatus.ACTIVE))
+                                        .build()
+                        )
+                        .user(createUser(UserStatus.ACTIVE))
+                        .build()
+                );
+        viewRepository.save(View.builder()
+                .record(Record.builder()
+                                .id(1L)
+                                .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
+                                .location(LOCATION)
+                                .content(CONTENT)
+                                .keywords(KEYWORDS)
+                                .uploader(createUser(UserStatus.ACTIVE))
+                                .build()
+                )
+                .user(createUser(UserStatus.ACTIVE))
+                .build()
+        );
+        viewRepository.save(View.builder()
+                .record(Record.builder()
+                                .id(2L)
+                                .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
+                                .location(LOCATION)
+                                .content(CONTENT)
+                                .keywords(KEYWORDS)
+                                .uploader(createUser(UserStatus.ACTIVE))
+                                .build()
+                )
+                .user(createUser(UserStatus.ACTIVE))
+                .build()
+        );
 
+        // 1번 레코드 2번 더 시청, 2번 레코드 1번 시청
         bookmarkRepository.save(Bookmark.builder()
                 .user(createUser(UserStatus.ACTIVE))
-                .record(new Record(
-                        3L,
-                        new FileUrl(VIDEO_URL, THUMBNAIL_URL),
-                        LOCATION,
-                        CONTENT,
-                        KEYWORDS,
-                        createUser(UserStatus.ACTIVE)
-                ))
+                .record(Record.builder()
+                        .id(3L)
+                        .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
+                        .location(LOCATION)
+                        .content(CONTENT)
+                        .keywords(KEYWORDS)
+                        .uploader(createUser(UserStatus.ACTIVE))
+                        .build()
+                )
                 .build()
         );
         bookmarkRepository.save(Bookmark.builder()
                 .user(createUser(UserStatus.ACTIVE))
-                .record(new Record(
-                        4L,
-                        new FileUrl(VIDEO_URL, THUMBNAIL_URL),
-                        LOCATION,
-                        CONTENT,
-                        KEYWORDS,
-                        createUser(UserStatus.ACTIVE)
-                ))
+                .record(Record.builder()
+                        .id(4L)
+                        .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
+                        .location(LOCATION)
+                        .content(CONTENT)
+                        .keywords(KEYWORDS)
+                        .uploader(createUser(UserStatus.ACTIVE))
+                        .build()
+                )
                 .build()
         );
         // 3번 레코드 1번 저장, 4번 레코드 1번 저장
@@ -311,8 +329,10 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
 
         // QUITE 키워드 영상 1번 시청함
         viewRepository.save(
-                DomainFixture.createRecord(2),
-                DomainFixture.createUser(UserStatus.ACTIVE)
+                View.builder()
+                    .record(DomainFixture.createRecord(2))
+                    .user(DomainFixture.createUser(UserStatus.ACTIVE))
+                    .build()
         );
 
         // EXOTIC 키워드 영상 1번 저장함

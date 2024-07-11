@@ -1,6 +1,7 @@
 package org.recordy.server.record_stat.domain;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import lombok.*;
 import org.recordy.server.common.domain.JpaMetaInfoEntity;
 import org.recordy.server.record.domain.RecordEntity;
@@ -25,7 +26,7 @@ public class ViewEntity extends JpaMetaInfoEntity {
     private UserEntity user;
 
     @Builder
-    private ViewEntity(Long id, RecordEntity record, UserEntity user) {
+    private ViewEntity(Long id, RecordEntity record, UserEntity user, LocalDateTime createdAt) {
         this.id = id;
         this.record = record;
         this.user = user;
@@ -39,5 +40,26 @@ public class ViewEntity extends JpaMetaInfoEntity {
         record.addView(view);
 
         return view;
+    }
+
+    public static ViewEntity from(View view) {
+        ViewEntity viewEntity = ViewEntity.builder()
+                .id(view.getId())
+                .record(RecordEntity.from(view.getRecord()))
+                .user(UserEntity.from(view.getUser()))
+                .createdAt(view.getCreatedAt())
+                .build();
+        viewEntity.getRecord().addView(viewEntity);
+
+        return viewEntity;
+    }
+
+    public View toDomain() {
+        return View.builder()
+                .id(id)
+                .record(record.toDomain())
+                .user(user.toDomain())
+                .createdAt(createdAt)
+                .build();
     }
 }
