@@ -31,7 +31,7 @@ public class RecordQueryDslRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     public List<RecordEntity> findAllOrderByPopularity(int limit) {
-        LocalDateTime sevenDaysAgo = LocalDateTime.now().minus(7, ChronoUnit.DAYS);
+        LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
 
         return jpaQueryFactory
                 .selectFrom(recordEntity)
