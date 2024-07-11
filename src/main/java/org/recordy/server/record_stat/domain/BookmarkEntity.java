@@ -55,4 +55,8 @@ public class BookmarkEntity extends JpaMetaInfoEntity {
                 .createdAt(createdAt)
                 .build();
     }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 }

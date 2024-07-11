@@ -2,6 +2,7 @@ package org.recordy.server.record.repository;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.keyword.domain.Keyword;
@@ -11,9 +12,13 @@ import org.recordy.server.record.domain.UploadEntity;
 import org.recordy.server.record.repository.impl.UploadJpaRepository;
 import org.recordy.server.record.service.dto.FileUrl;
 import org.recordy.server.record_stat.domain.Bookmark;
+import org.recordy.server.record_stat.domain.BookmarkEntity;
 import org.recordy.server.record_stat.domain.View;
+import org.recordy.server.record_stat.domain.ViewEntity;
 import org.recordy.server.record_stat.repository.BookmarkRepository;
 import org.recordy.server.record_stat.repository.ViewRepository;
+import org.recordy.server.record_stat.repository.impl.BookmarkJpaRepository;
+import org.recordy.server.record_stat.repository.impl.ViewJpaRepository;
 import org.recordy.server.user.domain.UserStatus;
 import org.recordy.server.util.DomainFixture;
 import org.recordy.server.util.db.IntegrationTest;
@@ -49,9 +54,13 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
 
     @Autowired
     private BookmarkRepository bookmarkRepository;
+    @Autowired
+    private BookmarkJpaRepository bookmarkJpaRepository;
 
     @Autowired
     private ViewRepository viewRepository;
+    @Autowired
+    private ViewJpaRepository viewJpaRepository;
 
     private static LocalDateTime now;
     private static LocalDateTime sevenDaysAgo;
@@ -142,10 +151,10 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
 
         //then
         assertAll(
-            () -> assertThat(result.get()).hasSize(2),
-            () -> assertThat(result.getContent().get(0).getId()).isEqualTo(2L),
-            () -> assertThat(result.getContent().get(1).getId()).isEqualTo(1L),
-            () -> assertThat((result.hasNext())).isFalse()
+                () -> assertThat(result.get()).hasSize(2),
+                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(2L),
+                () -> assertThat(result.getContent().get(1).getId()).isEqualTo(1L),
+                () -> assertThat((result.hasNext())).isFalse()
         );
 
     }
@@ -204,7 +213,7 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
                 () -> assertThat(result.getContent()).isEmpty(),
                 () -> assertThat(result.hasNext()).isFalse()
         );
-     }
+    }
 
     @Test
     void findAllByIdAfterAndKeywordsOrderByIdDesc를_통해_키워드로_필터링된_레코드_데이터를_최신순으로_조회할_수_있다() {
@@ -238,7 +247,7 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
                         .keywords(KEYWORDS)
                         .uploader(createUser(UserStatus.ACTIVE))
                         .build())
-                    .createdAt(sevenDaysAgo)
+                .createdAt(sevenDaysAgo)
                 .build());
         bookmarkRepository.save(Bookmark.builder()
                 .user(createUser(UserStatus.ACTIVE))
@@ -268,83 +277,16 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
         // given
         // 8일 전에 1L,2L을 저장, 7일 전에 3L를 저장
         // 8일 전에 4L,5L을 시청, 7일 전에 6L를 시청
-
-        bookmarkRepository.save(Bookmark.builder()
-                .user(createUser(UserStatus.ACTIVE))
-                .record(Record.builder()
-                        .id(1L)
-                        .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
-                        .location(LOCATION)
-                        .content(CONTENT)
-                        .keywords(KEYWORDS)
-                        .uploader(createUser(UserStatus.ACTIVE))
-                        .build())
-                .createdAt(eightDaysAgo)
-                .build());
-        bookmarkRepository.save(Bookmark.builder()
-                .user(createUser(UserStatus.ACTIVE))
-                .record(Record.builder()
-                        .id(2L)
-                        .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
-                        .location(LOCATION)
-                        .content(CONTENT)
-                        .keywords(KEYWORDS)
-                        .uploader(createUser(UserStatus.ACTIVE))
-                        .build())
-                .createdAt(eightDaysAgo)
-                .build());
-        bookmarkRepository.save(Bookmark.builder()
-                .user(createUser(UserStatus.ACTIVE))
-                .record(Record.builder()
-                        .id(3L)
-                        .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
-                        .location(LOCATION)
-                        .content(CONTENT)
-                        .keywords(KEYWORDS)
-                        .uploader(createUser(UserStatus.ACTIVE))
-                        .build())
-                .createdAt(sevenDaysAgo)
-                .build());
-
-        viewRepository.save(View.builder()
-                .user(createUser(UserStatus.ACTIVE))
-                .record(Record.builder()
-                        .id(4L)
-                        .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
-                        .location(LOCATION)
-                        .content(CONTENT)
-                        .keywords(KEYWORDS)
-                        .uploader(createUser(UserStatus.ACTIVE))
-                        .build())
-                .createdAt(eightDaysAgo)
-                .build());
-        viewRepository.save(View.builder()
-                .user(createUser(UserStatus.ACTIVE))
-                .record(Record.builder()
-                        .id(5L)
-                        .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
-                        .location(LOCATION)
-                        .content(CONTENT)
-                        .keywords(KEYWORDS)
-                        .uploader(createUser(UserStatus.ACTIVE))
-                        .build())
-                .createdAt(eightDaysAgo)
-                .build());
-        viewRepository.save(View.builder()
-                .user(createUser(UserStatus.ACTIVE))
-                .record(Record.builder()
-                        .id(6L)
-                        .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
-                        .location(LOCATION)
-                        .content(CONTENT)
-                        .keywords(KEYWORDS)
-                        .uploader(createUser(UserStatus.ACTIVE))
-                        .build())
-                .createdAt(sevenDaysAgo)
-                .build());
+        saveBookmarkWithCreatedAt(1, eightDaysAgo);
+        saveBookmarkWithCreatedAt(2, eightDaysAgo);
+        saveBookmarkWithCreatedAt(3, sevenDaysAgo);
+        saveViewWithCreatedAt(4, eightDaysAgo);
+        saveViewWithCreatedAt(5, eightDaysAgo);
+        saveViewWithCreatedAt(6, sevenDaysAgo);
 
         // when
         List<Record> result = recordRepository.findAllOrderByPopularity(2);
+
         // then
         assertAll(
                 () -> assertThat(result).hasSize(2),
@@ -353,33 +295,39 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
         );
     }
 
+    private void saveBookmarkWithCreatedAt(long recordId, LocalDateTime createdAt) {
+        Bookmark bookmark = bookmarkRepository.save(Bookmark.builder()
+                .user(createUser(UserStatus.ACTIVE))
+                .record(createRecord(recordId))
+                .build());
+        BookmarkEntity bookmarkEntity = bookmarkJpaRepository.findById(bookmark.getId())
+                .orElseThrow();
+        bookmarkEntity.setCreatedAt(createdAt.plusSeconds(1));
+    }
+
+    private void saveViewWithCreatedAt(long recordId, LocalDateTime createdAt) {
+        View view = viewRepository.save(View.builder()
+                .user(createUser(UserStatus.ACTIVE))
+                .record(createRecord(recordId))
+                .build());
+        ViewEntity viewEntity = viewJpaRepository.findById(view.getId())
+                .orElseThrow();
+        viewEntity.setCreatedAt(createdAt.plusSeconds(1));
+    }
+
     @Test
     void findAllOrderByPopularity를_통해_조회한_레코드는_조회수보다_저장수에서_더_큰_가중치를_얻는다() {
         // given
         // 이미 1번 레코드를 1번 시청함
         viewRepository.save(View.builder()
-                        .record(Record.builder()
-                                        .id(1L)
-                                        .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
-                                        .location(LOCATION)
-                                        .content(CONTENT)
-                                        .keywords(KEYWORDS)
-                                        .uploader(createUser(UserStatus.ACTIVE))
-                                        .build()
-                        )
-                        .user(createUser(UserStatus.ACTIVE))
-                        .createdAt(sevenDaysAgo)
-                        .build()
-                );
-        viewRepository.save(View.builder()
                 .record(Record.builder()
-                                .id(1L)
-                                .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
-                                .location(LOCATION)
-                                .content(CONTENT)
-                                .keywords(KEYWORDS)
-                                .uploader(createUser(UserStatus.ACTIVE))
-                                .build()
+                        .id(1L)
+                        .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
+                        .location(LOCATION)
+                        .content(CONTENT)
+                        .keywords(KEYWORDS)
+                        .uploader(createUser(UserStatus.ACTIVE))
+                        .build()
                 )
                 .user(createUser(UserStatus.ACTIVE))
                 .createdAt(sevenDaysAgo)
@@ -387,13 +335,27 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
         );
         viewRepository.save(View.builder()
                 .record(Record.builder()
-                                .id(2L)
-                                .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
-                                .location(LOCATION)
-                                .content(CONTENT)
-                                .keywords(KEYWORDS)
-                                .uploader(createUser(UserStatus.ACTIVE))
-                                .build()
+                        .id(1L)
+                        .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
+                        .location(LOCATION)
+                        .content(CONTENT)
+                        .keywords(KEYWORDS)
+                        .uploader(createUser(UserStatus.ACTIVE))
+                        .build()
+                )
+                .user(createUser(UserStatus.ACTIVE))
+                .createdAt(sevenDaysAgo)
+                .build()
+        );
+        viewRepository.save(View.builder()
+                .record(Record.builder()
+                        .id(2L)
+                        .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
+                        .location(LOCATION)
+                        .content(CONTENT)
+                        .keywords(KEYWORDS)
+                        .uploader(createUser(UserStatus.ACTIVE))
+                        .build()
                 )
                 .user(createUser(UserStatus.ACTIVE))
                 .createdAt(sevenDaysAgo)
@@ -465,9 +427,9 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
         // QUITE 키워드 영상 1번 시청함
         viewRepository.save(
                 View.builder()
-                    .record(DomainFixture.createRecord(2))
-                    .user(DomainFixture.createUser(UserStatus.ACTIVE))
-                    .build()
+                        .record(DomainFixture.createRecord(2))
+                        .user(DomainFixture.createUser(UserStatus.ACTIVE))
+                        .build()
         );
 
         // EXOTIC 키워드 영상 1번 저장함
