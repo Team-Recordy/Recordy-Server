@@ -1,12 +1,8 @@
 package org.recordy.server.auth.repository.impl;
 
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.domain.Auth;
 import org.recordy.server.auth.domain.AuthEntity;
-import org.recordy.server.auth.domain.AuthPlatform;
-import org.recordy.server.auth.exception.AuthException;
-import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.auth.repository.AuthRepository;
 import org.springframework.stereotype.Repository;
 

@@ -2,7 +2,7 @@ package org.recordy.server.mock;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.recordy.server.auth.repository.AuthRepository;
-import org.recordy.server.auth.security.TokenAuthenticationFilter;
+import org.recordy.server.auth.security.filter.TokenAuthenticationFilter;
 import org.recordy.server.auth.security.handler.AuthFilterExceptionHandler;
 import org.recordy.server.auth.service.AuthPlatformService;
 import org.recordy.server.auth.service.impl.*;
