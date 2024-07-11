@@ -28,6 +28,9 @@ values (4, 2, 'content', 'location', 'thumbnail_url', 'video_url');
 insert into `records` (`id`, `user_id`, `content`, `location`,`thumbnail_url`, `video_url`)
 values (5, 1, 'content', 'location', 'thumbnail_url', 'video_url');
 
+insert into `records` (`id`, `user_id`, `content`, `location`,`thumbnail_url`, `video_url`)
+values (6, 2, 'content', 'location', 'thumbnail_url', 'video_url');
+
 insert into `uploads` (`id`, `record_id`, `keyword_id`)
 values(1, 1, 1);
 
@@ -45,6 +48,3 @@ values(4, 4, 2);
 
 insert into `uploads` (`id`, `record_id`, `keyword_id`)
 values(5, 5, 1);
-
-insert into `views` (`id`, `record_id`, `user_id`, `created_at`)
-values (1, 1, 1, '2024-07-11 12:34:56');

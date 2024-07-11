@@ -2,6 +2,7 @@ package org.recordy.server.record.repository;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.record.domain.Record;
@@ -50,6 +51,17 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
 
     @Autowired
     private ViewRepository viewRepository;
+
+    private static LocalDateTime now;
+    private static LocalDateTime sevenDaysAgo;
+    private static LocalDateTime eightDaysAgo;
+
+    @BeforeAll
+    static void setup() {
+        now = LocalDateTime.now();
+        sevenDaysAgo = now.minus(7, ChronoUnit.DAYS);
+        eightDaysAgo = now.minus(8, ChronoUnit.DAYS);
+    }
 
     @Test
     void save를_통해_레코드_데이터를_저장할_수_있다() {
@@ -215,7 +227,18 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
     @Test
     void findAllOrderByPopularity를_통해_인기순으로_레코드_데이터를_조회할_수_있다() {
         // given
-        // 테스트 시점으로부터 일주일 안에 1번 레코드가 1번 시청됨
+        viewRepository.save(View.builder()
+                .user(createUser(UserStatus.ACTIVE))
+                .record(Record.builder()
+                        .id(1L)
+                        .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
+                        .location(LOCATION)
+                        .content(CONTENT)
+                        .keywords(KEYWORDS)
+                        .uploader(createUser(UserStatus.ACTIVE))
+                        .build())
+                    .createdAt(sevenDaysAgo)
+                .build());
         bookmarkRepository.save(Bookmark.builder()
                 .user(createUser(UserStatus.ACTIVE))
                 .record(Record.builder()
@@ -225,6 +248,7 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
                         .content(CONTENT)
                         .keywords(KEYWORDS)
                         .uploader(createUser(UserStatus.ACTIVE))
+                        .createdAt(sevenDaysAgo)
                         .build())
                 .build());
 
@@ -243,8 +267,6 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
         // given
         // 8일 전에 1L,2L을 저장, 7일 전에 3L를 저장
         // 8일 전에 4L,5L을 시청, 7일 전에 6L를 시청
-        LocalDateTime eightDaysAgo = LocalDateTime.now().minus(8, ChronoUnit.DAYS);
-        LocalDateTime sevenDaysAgo = LocalDateTime.now().minus(6, ChronoUnit.DAYS);
 
         bookmarkRepository.save(Bookmark.builder()
                 .user(createUser(UserStatus.ACTIVE))
@@ -322,7 +344,6 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
 
         // when
         List<Record> result = recordRepository.findAllOrderByPopularity(2);
-
         // then
         assertAll(
                 () -> assertThat(result).hasSize(2),
@@ -346,6 +367,7 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
                                         .build()
                         )
                         .user(createUser(UserStatus.ACTIVE))
+                        .createdAt(sevenDaysAgo)
                         .build()
                 );
         viewRepository.save(View.builder()
@@ -359,6 +381,7 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
                                 .build()
                 )
                 .user(createUser(UserStatus.ACTIVE))
+                .createdAt(sevenDaysAgo)
                 .build()
         );
         viewRepository.save(View.builder()
@@ -372,6 +395,7 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
                                 .build()
                 )
                 .user(createUser(UserStatus.ACTIVE))
+                .createdAt(sevenDaysAgo)
                 .build()
         );
 
@@ -387,6 +411,7 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
                         .uploader(createUser(UserStatus.ACTIVE))
                         .build()
                 )
+                .createdAt(sevenDaysAgo)
                 .build()
         );
         bookmarkRepository.save(Bookmark.builder()
@@ -400,6 +425,7 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
                         .uploader(createUser(UserStatus.ACTIVE))
                         .build()
                 )
+                .createdAt(sevenDaysAgo)
                 .build()
         );
         // 3번 레코드 1번 저장, 4번 레코드 1번 저장
@@ -422,6 +448,18 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
         // given
         // 현재 EXOTIC 3개 업로드했고, QUITE 3개 업로드했음
         long userId = 1L;
+        viewRepository.save(View.builder()
+                .user(createUser(UserStatus.ACTIVE))
+                .record(Record.builder()
+                        .id(1L)
+                        .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
+                        .location(LOCATION)
+                        .content(CONTENT)
+                        .keywords(KEYWORDS)
+                        .uploader(createUser(UserStatus.ACTIVE))
+                        .build())
+                .createdAt(sevenDaysAgo)
+                .build());
 
         // QUITE 키워드 영상 1번 시청함
         viewRepository.save(
