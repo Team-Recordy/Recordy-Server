@@ -62,6 +62,24 @@ public class RecordController {
                 .body(records);
     }
 
+    @GetMapping("/famous")
+    public ResponseEntity<List<Record>> getFamousRecords(int size){
+        //todo: 이것도 키워드 맞춰서 하고 싶은데 결국 키워드 선택하면 해당 키워드 전체를 보여주어야 한다네여.... list가 아닌 slice로 바구는 것은 어떨까요?
+        return ResponseEntity
+                .ok()
+                .body(recordService.getFamousRecords(size));
+    }
+
+    @PostMapping("/watch")
+    public ResponseEntity<Record> watch(
+            @UserId long userId,
+            @RequestParam long recordId
+    ) {
+        return ResponseEntity
+                .ok()
+                .body(recordService.watch(userId,recordId));
+    }
+
     @GetMapping("/user")
     public ResponseEntity<Slice<Record>> getRecentRecordsByUser(
             @UserId long userId,
