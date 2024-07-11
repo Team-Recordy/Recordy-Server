@@ -1,5 +1,6 @@
 package org.recordy.server.record_stat.repository.impl;
 
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.keyword.domain.Keyword;
@@ -31,16 +32,23 @@ public class BookmarkRepositoryImpl implements BookmarkRepository {
                 .toDomain();
     }
 
-    @Override
-    public void delete(Bookmark bookmark) {
-        bookmarkJpaRepository.delete(BookmarkEntity.from(bookmark));
-    }
 
     @Override
     public Slice<Bookmark> findAllByBookmarksOrderByIdDesc(long userId, long cursor, Pageable pageable) {
         UserEntity userEntity = userJpaRepository.findById(userId)
                         .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
         return bookmarkQueryDslRepository.findAllByUserOrderByIdDesc(userEntity, cursor, pageable)
+                .map(BookmarkEntity::toDomain);
+    }
+
+    @Override
+    public void deleteById(long bookmarkId) {
+            bookmarkJpaRepository.deleteById(bookmarkId);
+    }
+
+    @Override
+    public Optional<Bookmark> findByUserAndRecord(long userId, long recordId) {
+        return bookmarkJpaRepository.findByUser_IdAndRecord_Id(userId, recordId)
                 .map(BookmarkEntity::toDomain);
     }
 }

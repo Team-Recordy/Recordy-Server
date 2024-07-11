@@ -47,6 +47,22 @@ public class RecordStatServiceTest {
     }
 
     @Test
+    void deleteBookmark를_통해_북마크를_삭제할_수_있다() {
+        // given
+        recordStatService.bookmark(1, 1);
+
+        // when
+        recordStatService.deleteBookmark(1,1);
+
+        // then
+        Slice<Record> result = recordStatService.getBookmarkedRecords(1, 7, 10);
+
+        assertAll(
+                () -> assertThat(result.getContent()).hasSize(0)
+        );
+    }
+
+    @Test
     void getBookmarkedRecords를_통해_커서_이후의_북마크된_레코드를_최신_순서로_읽을_수_있다() {
         // given
         recordStatService.bookmark(1, 1);

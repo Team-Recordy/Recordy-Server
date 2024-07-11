@@ -68,6 +68,20 @@ public class BookmarkRepositoryIntegrationTest extends IntegrationTest {
     }
 
     @Test
+    void deleteById를_통해_북마크를_삭제할_수_있다() {
+        //given
+        //when
+        bookmarkRepository.deleteById(1);
+
+        //then
+        //원래 user1의 북마크 2개 있음 -> 이중 1개 삭제
+        Slice<Bookmark> bookmarks = bookmarkRepository.findAllByBookmarksOrderByIdDesc(1L, 3L, PageRequest.ofSize(10));
+        assertAll(
+                () -> assertThat(bookmarks.getContent()).hasSize(0)
+        );
+    }
+
+    @Test
     void findAllByBookmarksOrderByIdDesc를_통해_커서보다_오래된_레코드_데이터를_최신순으로_조회할_수_있다() {
         // given
         long userId = 1L;
@@ -102,4 +116,17 @@ public class BookmarkRepositoryIntegrationTest extends IntegrationTest {
         );
     }
 
+    @Test
+    void findByUserAndRecord를_통해_북마크를_찾을_수_있다() {
+        //given
+
+        //when
+        Bookmark bookmark = bookmarkRepository.findByUserAndRecord(1,1).get();
+
+        //then
+        assertAll(
+                () -> assertThat(bookmark.getUser().getId()).isEqualTo(1),
+                () -> assertThat(bookmark.getRecord().getId()).isEqualTo(1)
+        );
+    }
 }
