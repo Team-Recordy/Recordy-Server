@@ -65,6 +65,9 @@ public class RecordQueryDslRepository {
     }
 
     public Slice<RecordEntity> findAllByIdAfterAndKeywordsOrderByIdDesc(List<KeywordEntity> keywords, long cursor, Pageable pageable) {
+        if (cursor == 0)
+            cursor = Long.MAX_VALUE;
+
         List<RecordEntity> recordEntities = jpaQueryFactory
                 .selectFrom(recordEntity)
                 .join(recordEntity.uploads, uploadEntity)
@@ -81,6 +84,9 @@ public class RecordQueryDslRepository {
     }
 
     public Slice<RecordEntity> findAllByUserIdOrderByIdDesc(long userId, long cursor, Pageable pageable) {
+        if (cursor == 0)
+            cursor = Long.MAX_VALUE;
+
         List<RecordEntity> recordEntities = jpaQueryFactory
                 .selectFrom((recordEntity))
                 .join(recordEntity.user, userEntity)
