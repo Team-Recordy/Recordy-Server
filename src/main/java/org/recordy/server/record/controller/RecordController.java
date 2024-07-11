@@ -71,13 +71,14 @@ public class RecordController {
     }
 
     @PostMapping("/watch")
-    public ResponseEntity<Record> watch(
+    public ResponseEntity<Void> watch(
             @UserId long userId,
             @RequestParam long recordId
     ) {
+        recordService.watch(userId, recordId);
         return ResponseEntity
                 .ok()
-                .body(recordService.watch(userId,recordId));
+                .build();
     }
 
     @GetMapping("/user")

@@ -59,17 +59,15 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public Record watch(long userId, long recordId) {
+    public void watch(long userId, long recordId) {
         User user = userService.getById(userId)
                 .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
         Record record = recordRepository.findById(recordId)
                 .orElseThrow(() -> new RecordException(ErrorMessage.RECORD_NOT_FOUND));
-
         viewRepository.save(View.builder()
                 .record(record)
                 .user(user)
                 .build());
-        return record;
     }
 
     @Override
