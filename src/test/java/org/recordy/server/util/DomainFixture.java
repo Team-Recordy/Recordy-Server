@@ -176,7 +176,8 @@ public final class DomainFixture {
                 LOCATION,
                 CONTENT,
                 KEYWORDS,
-                createUser(UserStatus.ACTIVE)
+                createUser(UserStatus.ACTIVE),
+                0
         );
     }
 
@@ -187,7 +188,8 @@ public final class DomainFixture {
                 LOCATION,
                 CONTENT,
                 KEYWORDS,
-                createUser(UserStatus.ACTIVE)
+                createUser(UserStatus.ACTIVE),
+                0
         );
     }
 

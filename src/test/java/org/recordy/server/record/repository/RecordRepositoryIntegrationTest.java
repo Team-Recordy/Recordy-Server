@@ -220,7 +220,8 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
                         LOCATION,
                         CONTENT,
                         KEYWORDS,
-                        createUser(UserStatus.ACTIVE)
+                        createUser(UserStatus.ACTIVE),
+                        0
                 ))
                 .build());
 
@@ -244,7 +245,8 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
                 LOCATION,
                 CONTENT,
                 KEYWORDS,
-                createUser(UserStatus.ACTIVE)
+                createUser(UserStatus.ACTIVE),
+                0
         ), createUser(UserStatus.ACTIVE));
         viewRepository.save(new Record(
                 1L,
@@ -252,7 +254,8 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
                 LOCATION,
                 CONTENT,
                 KEYWORDS,
-                createUser(UserStatus.ACTIVE)
+                createUser(UserStatus.ACTIVE),
+                0
         ), createUser(UserStatus.ACTIVE));
         viewRepository.save(new Record(
                 2L,
@@ -260,7 +263,8 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
                 LOCATION,
                 CONTENT,
                 KEYWORDS,
-                createUser(UserStatus.ACTIVE)
+                createUser(UserStatus.ACTIVE),
+                0
         ), createUser(UserStatus.ACTIVE));
         // 1번 레코드 2번 더 시청, 2번 레코드 1번 시청
 
@@ -272,7 +276,8 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
                         LOCATION,
                         CONTENT,
                         KEYWORDS,
-                        createUser(UserStatus.ACTIVE)
+                        createUser(UserStatus.ACTIVE),
+                        0
                 ))
                 .build()
         );
@@ -284,7 +289,8 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
                         LOCATION,
                         CONTENT,
                         KEYWORDS,
-                        createUser(UserStatus.ACTIVE)
+                        createUser(UserStatus.ACTIVE),
+                        0
                 ))
                 .build()
         );

@@ -20,6 +20,7 @@ public class Record {
     String content;
     List<Keyword> keywords;
     User uploader;
+    long bookmarkCount;
 
     public boolean isUploader(long userId) {
         return uploader.getId() == userId;
