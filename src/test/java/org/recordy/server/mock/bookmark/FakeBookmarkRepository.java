@@ -42,9 +42,4 @@ public class FakeBookmarkRepository implements BookmarkRepository {
 
         return new SliceImpl<>(content.subList(0, pageable.getPageSize()), pageable, true);
     }
-
-    @Override
-    public Map<Keyword, Long> countAllByUserIdGroupByKeyword(long userId) {
-        return Map.of();
-    }
 }

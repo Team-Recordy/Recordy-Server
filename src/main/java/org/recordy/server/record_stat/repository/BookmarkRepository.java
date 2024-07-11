@@ -14,5 +14,4 @@ public interface BookmarkRepository {
 
     //query
     Slice<Bookmark> findAllByBookmarksOrderByIdDesc(long userId, long cursor, Pageable pageable);
-    Map<Keyword, Long> countAllByUserIdGroupByKeyword(long userId);
 }

@@ -1,5 +1,7 @@
 package org.recordy.server.record.repository;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.record.domain.Record;
@@ -146,12 +148,13 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
 
         // then
         assertAll(
-                () -> assertThat(result.getContent()).hasSize(5),
-                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(5L),
-                () -> assertThat(result.getContent().get(1).getId()).isEqualTo(4L),
-                () -> assertThat(result.getContent().get(2).getId()).isEqualTo(3L),
-                () -> assertThat(result.getContent().get(3).getId()).isEqualTo(2L),
-                () -> assertThat(result.getContent().get(4).getId()).isEqualTo(1L),
+                () -> assertThat(result.getContent()).hasSize(6),
+                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(6L),
+                () -> assertThat(result.getContent().get(1).getId()).isEqualTo(5L),
+                () -> assertThat(result.getContent().get(2).getId()).isEqualTo(4L),
+                () -> assertThat(result.getContent().get(3).getId()).isEqualTo(3L),
+                () -> assertThat(result.getContent().get(4).getId()).isEqualTo(2L),
+                () -> assertThat(result.getContent().get(5).getId()).isEqualTo(1L),
                 () -> assertThat(result.hasNext()).isFalse()
         );
     }
@@ -232,6 +235,99 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
         assertAll(
                 () -> assertThat(result).hasSize(2),
                 () -> assertThat(result.get(0).getId()).isEqualTo(2L)
+        );
+    }
+
+    @Test
+    void findAllOrderByPopularity를_통해_계산한_인기순은_7일간의_데이터만_반영한다() {
+        // given
+        // 8일 전에 1L,2L을 저장, 7일 전에 3L를 저장
+        // 8일 전에 4L,5L을 시청, 7일 전에 6L를 시청
+        LocalDateTime eightDaysAgo = LocalDateTime.now().minus(8, ChronoUnit.DAYS);
+        LocalDateTime sevenDaysAgo = LocalDateTime.now().minus(6, ChronoUnit.DAYS);
+
+        bookmarkRepository.save(Bookmark.builder()
+                .user(createUser(UserStatus.ACTIVE))
+                .record(Record.builder()
+                        .id(1L)
+                        .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
+                        .location(LOCATION)
+                        .content(CONTENT)
+                        .keywords(KEYWORDS)
+                        .uploader(createUser(UserStatus.ACTIVE))
+                        .build())
+                .createdAt(eightDaysAgo)
+                .build());
+        bookmarkRepository.save(Bookmark.builder()
+                .user(createUser(UserStatus.ACTIVE))
+                .record(Record.builder()
+                        .id(2L)
+                        .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
+                        .location(LOCATION)
+                        .content(CONTENT)
+                        .keywords(KEYWORDS)
+                        .uploader(createUser(UserStatus.ACTIVE))
+                        .build())
+                .createdAt(eightDaysAgo)
+                .build());
+        bookmarkRepository.save(Bookmark.builder()
+                .user(createUser(UserStatus.ACTIVE))
+                .record(Record.builder()
+                        .id(3L)
+                        .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
+                        .location(LOCATION)
+                        .content(CONTENT)
+                        .keywords(KEYWORDS)
+                        .uploader(createUser(UserStatus.ACTIVE))
+                        .build())
+                .createdAt(sevenDaysAgo)
+                .build());
+
+        viewRepository.save(View.builder()
+                .user(createUser(UserStatus.ACTIVE))
+                .record(Record.builder()
+                        .id(4L)
+                        .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
+                        .location(LOCATION)
+                        .content(CONTENT)
+                        .keywords(KEYWORDS)
+                        .uploader(createUser(UserStatus.ACTIVE))
+                        .build())
+                .createdAt(eightDaysAgo)
+                .build());
+        viewRepository.save(View.builder()
+                .user(createUser(UserStatus.ACTIVE))
+                .record(Record.builder()
+                        .id(5L)
+                        .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
+                        .location(LOCATION)
+                        .content(CONTENT)
+                        .keywords(KEYWORDS)
+                        .uploader(createUser(UserStatus.ACTIVE))
+                        .build())
+                .createdAt(eightDaysAgo)
+                .build());
+        viewRepository.save(View.builder()
+                .user(createUser(UserStatus.ACTIVE))
+                .record(Record.builder()
+                        .id(6L)
+                        .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
+                        .location(LOCATION)
+                        .content(CONTENT)
+                        .keywords(KEYWORDS)
+                        .uploader(createUser(UserStatus.ACTIVE))
+                        .build())
+                .createdAt(sevenDaysAgo)
+                .build());
+
+        // when
+        List<Record> result = recordRepository.findAllOrderByPopularity(2);
+
+        // then
+        assertAll(
+                () -> assertThat(result).hasSize(2),
+                () -> assertThat(result.get(0).getId()).isEqualTo(3L),
+                () -> assertThat(result.get(1).getId()).isEqualTo(6L)
         );
     }
 

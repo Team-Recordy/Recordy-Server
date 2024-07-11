@@ -38,15 +38,4 @@ public class BookmarkRepositoryImpl implements BookmarkRepository {
         return bookmarkQueryDslRepository.findAllByUserOrderByIdDesc(userEntity, cursor, pageable)
                 .map(BookmarkEntity::toDomain);
     }
-
-    @Override
-    public Map<Keyword, Long> countAllByUserIdGroupByKeyword(long userId) {
-        Map<KeywordEntity, Long> preference = bookmarkQueryDslRepository.countAllByUserIdGroupByKeyword(userId);
-
-        return preference.entrySet().stream()
-                .collect(Collectors.toMap(
-                        entry -> entry.getKey().toDomain(),
-                        Map.Entry::getValue
-                ));
-    }
 }
