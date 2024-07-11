@@ -32,6 +32,11 @@ public class BookmarkRepositoryImpl implements BookmarkRepository {
     }
 
     @Override
+    public void delete(Bookmark bookmark) {
+        bookmarkJpaRepository.delete(BookmarkEntity.from(bookmark));
+    }
+
+    @Override
     public Slice<Bookmark> findAllByBookmarksOrderByIdDesc(long userId, long cursor, Pageable pageable) {
         UserEntity userEntity = userJpaRepository.findById(userId)
                         .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));

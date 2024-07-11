@@ -38,6 +38,18 @@ public class RecordStatServiceImpl implements RecordStatService {
     }
 
     @Override
+    public void deleteBookmark(long userId, long recordId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
+        Record record = recordRepository.findById(recordId)
+                .orElseThrow(() -> new RecordException(ErrorMessage.RECORD_NOT_FOUND));
+        bookmarkRepository.delete(Bookmark.builder()
+                .user(user)
+                .record(record)
+                .build());
+    }
+
+    @Override
     public Preference getPreference(long userId) {
         return Preference.of(userId, recordRepository.countAllByUserIdGroupByKeyword(userId));
     }

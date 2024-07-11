@@ -11,6 +11,7 @@ public interface BookmarkRepository {
 
     // command
     Bookmark save(Bookmark bookmark);
+    void delete(Bookmark bookmark);
 
     //query
     Slice<Bookmark> findAllByBookmarksOrderByIdDesc(long userId, long cursor, Pageable pageable);

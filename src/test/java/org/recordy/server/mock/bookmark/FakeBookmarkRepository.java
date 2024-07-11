@@ -30,6 +30,11 @@ public class FakeBookmarkRepository implements BookmarkRepository {
     }
 
     @Override
+    public void delete(Bookmark bookmark) {
+        bookmarks.remove(bookmark.getId());
+    }
+
+    @Override
     public Slice<Bookmark> findAllByBookmarksOrderByIdDesc(long userId, long cursor, Pageable pageable) {
         List<Bookmark> content = bookmarks.keySet().stream()
                 .filter(key -> bookmarks.get(key).getUser().getId() == userId && key < cursor)

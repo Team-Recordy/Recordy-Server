@@ -9,6 +9,7 @@ public interface RecordStatService {
 
     // command
     Bookmark bookmark(long userId, long recordId);
+    void deleteBookmark(long userId, long recordId);
 
     // query
     Preference getPreference(long userId);
