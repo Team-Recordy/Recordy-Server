@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface SubscribeJpaRepository extends JpaRepository<SubscribeEntity, Long> {
 
-    void deleteBySubscribingUserIdAndSubscribedUserId(long subscribingUserId, long subscribedUserId);
+    void deleteAllBySubscribingUserIdAndSubscribedUserId(long subscribingUserId, long subscribedUserId);
 }

@@ -3,6 +3,7 @@ package org.recordy.server.subscribe.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.subscribe.domain.Subscribe;
+import org.recordy.server.subscribe.domain.usecase.SubscribeCreate;
 import org.recordy.server.subscribe.repository.SubscribeRepository;
 import org.recordy.server.subscribe.service.SubscribeService;
 import org.recordy.server.user.domain.User;
@@ -20,10 +21,10 @@ public class SubscribeServiceImpl implements SubscribeService {
     private final UserRepository userRepository;
 
     @Override
-    public void subscribe(long subscribingUserId, long subscribedUserId) {
-        User subscribingUser = userRepository.findById(subscribingUserId)
+    public void subscribe(SubscribeCreate subscribeCreate) {
+        User subscribingUser = userRepository.findById(subscribeCreate.subscribingUserId())
                 .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
-        User subscribedUser = userRepository.findById(subscribedUserId)
+        User subscribedUser = userRepository.findById(subscribeCreate.subscribedUserId())
                 .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
 
         subscribeRepository.save(Subscribe.builder()

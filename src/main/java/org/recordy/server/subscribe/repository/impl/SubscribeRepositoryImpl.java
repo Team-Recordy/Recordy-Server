@@ -7,6 +7,7 @@ import org.recordy.server.subscribe.repository.SubscribeRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Repository
@@ -20,9 +21,10 @@ public class SubscribeRepositoryImpl implements SubscribeRepository {
         subscribeJpaRepository.save(SubscribeEntity.from(subscribe));
     }
 
+    @Transactional
     @Override
     public void delete(long subscribingUserId, long subscribedUserId) {
-        subscribeJpaRepository.deleteBySubscribingUserIdAndSubscribedUserId(subscribingUserId, subscribedUserId);
+        subscribeJpaRepository.deleteAllBySubscribingUserIdAndSubscribedUserId(subscribingUserId, subscribedUserId);
     }
 
     @Override
