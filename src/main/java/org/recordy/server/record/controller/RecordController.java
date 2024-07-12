@@ -1,6 +1,5 @@
 package org.recordy.server.record.controller;
 
-
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.security.UserId;
 import org.recordy.server.record.controller.dto.request.RecordCreateRequest;
@@ -22,11 +21,12 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/records")
 @RestController
-public class RecordController {
+public class RecordController implements RecordApi {
 
     private final RecordService recordService;
     private final RecordStatService recordStatService;
 
+    @Override
     @PostMapping
     public ResponseEntity<Record> createRecord(
             @UserId Long uploaderId,
