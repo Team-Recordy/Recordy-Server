@@ -10,8 +10,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest
 @SqlGroup({
+        @Sql(value = "/sql/clean-database.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS),
         @Sql(value = "/sql/user-service-test-data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
-        @Sql(value = "/sql/user-service-test-clean.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+        @Sql(value = "/sql/clean-database.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 })
 @AutoConfigureMockMvc
 class UserControllerIntegrationTest {

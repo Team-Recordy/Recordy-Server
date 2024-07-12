@@ -102,7 +102,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void delete를_통해_사용자를_삭제하는_데_성공하면_200_OK를_받는다() {
+    void delete를_통해_사용자를_삭제하는_데_성공하면_204_NO_CONTENT를_받는다() {
         // given
         userService.signIn(DomainFixture.createUserSignIn(AuthPlatform.Type.KAKAO));
 
@@ -110,7 +110,7 @@ public class UserControllerTest {
         ResponseEntity<Void> result = userController.delete(DomainFixture.USER_ID);
 
         // then
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }
 
     @Test

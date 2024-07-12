@@ -29,9 +29,12 @@ public class UploadEntity {
     }
 
     public static UploadEntity of(RecordEntity record, KeywordEntity keyword) {
-        return UploadEntity.builder()
+        UploadEntity upload = UploadEntity.builder()
                 .record(record)
                 .keyword(keyword)
                 .build();
+        record.addUpload(upload);
+
+        return upload;
     }
 }

@@ -2,8 +2,7 @@ package org.recordy.server.record.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.security.UserId;
-import org.recordy.server.keyword.domain.Keyword;
-import org.recordy.server.record.controller.dto.RecordCreateRequest;
+import org.recordy.server.record.controller.dto.request.RecordCreateRequest;
 import org.recordy.server.record.domain.File;
 import org.recordy.server.record.domain.Record;
 
@@ -11,12 +10,10 @@ import org.recordy.server.record.domain.usecase.RecordCreate;
 import org.recordy.server.record.service.RecordService;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/records")
@@ -55,8 +52,8 @@ public class RecordController implements RecordApi {
     @GetMapping("/recent")
     public ResponseEntity<Slice<Record>> getRecentRecords(
             @RequestParam(required = false) List<String> keywords,
-            @RequestParam long cursorId,
-            @RequestParam int size
+            @RequestParam(required = false, defaultValue = "0L") long cursorId,
+            @RequestParam(required = false, defaultValue = "10") int size
     ) {
         Slice<Record> records = recordService.getRecentRecords(keywords, cursorId, size);
 
@@ -65,11 +62,33 @@ public class RecordController implements RecordApi {
                 .body(records);
     }
 
+    @GetMapping("/famous")
+    public ResponseEntity<Slice<Record>> getFamousRecords(
+            @RequestParam(required = false) List<String> keywords,
+            @RequestParam(required = false, defaultValue = "0") int pageNumber,
+            @RequestParam(required = false, defaultValue = "10") int pageSize
+    ){
+        return ResponseEntity
+                .ok()
+                .body(recordService.getFamousRecords(keywords, pageNumber, pageSize));
+    }
+
+    @PostMapping("/watch")
+    public ResponseEntity<Void> watch(
+            @UserId long userId,
+            @RequestParam long recordId
+    ) {
+        recordService.watch(userId, recordId);
+        return ResponseEntity
+                .ok()
+                .build();
+    }
+
     @GetMapping("/user")
     public ResponseEntity<Slice<Record>> getRecentRecordsByUser(
             @UserId long userId,
-            @RequestParam long cursorId,
-            @RequestParam int size
+            @RequestParam(required = false, defaultValue = "0L") long cursorId,
+            @RequestParam(required = false, defaultValue = "10") int size
     ) {
         Slice<Record> records = recordService.getRecentRecordsByUser(userId, cursorId, size);
 

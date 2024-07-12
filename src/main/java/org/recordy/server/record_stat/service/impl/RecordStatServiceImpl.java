@@ -1,5 +1,6 @@
 package org.recordy.server.record_stat.service.impl;
 
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.record.domain.Record;
@@ -38,18 +39,22 @@ public class RecordStatServiceImpl implements RecordStatService {
     }
 
     @Override
+    public void deleteBookmark(long userId, long recordId) {
+        Optional<Bookmark> optionalBookmark = bookmarkRepository.findByUserAndRecord(userId, recordId);
+        if (optionalBookmark.isPresent()) {
+            Bookmark bookmark = optionalBookmark.get();
+            bookmarkRepository.deleteById(bookmark.getId());
+        }
+    }
+
+    @Override
     public Preference getPreference(long userId) {
-        return null;
+        return Preference.of(userId, recordRepository.countAllByUserIdGroupByKeyword(userId));
     }
 
     @Override
     public Slice<Record> getBookmarkedRecords(long userId, long cursorId, int size) {
         return bookmarkRepository.findAllByBookmarksOrderByIdDesc(userId, cursorId, PageRequest.ofSize(size))
                 .map(Bookmark::getRecord);
-    }
-
-    @Override
-    public long getBookmarkCount(long recordId) {
-        return bookmarkRepository.countAllByRecordId(recordId);
     }
 }

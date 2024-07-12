@@ -2,19 +2,16 @@ package org.recordy.server.record_stat.domain;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.recordy.server.common.domain.JpaMetaInfoEntity;
 import org.recordy.server.record.domain.RecordEntity;
 import org.recordy.server.user.domain.UserEntity;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Table(name = "bookmarks")
+@Table(name = "views")
 @Entity
-public class BookmarkEntity extends JpaMetaInfoEntity {
+public class ViewEntity extends JpaMetaInfoEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,26 +26,36 @@ public class BookmarkEntity extends JpaMetaInfoEntity {
     private UserEntity user;
 
     @Builder
-    public BookmarkEntity(Long id, RecordEntity record, UserEntity user, LocalDateTime createdAt) {
+    private ViewEntity(Long id, RecordEntity record, UserEntity user, LocalDateTime createdAt) {
         this.id = id;
         this.record = record;
         this.user = user;
     }
 
-    public static BookmarkEntity from(Bookmark bookmark) {
-        BookmarkEntity bookmarkEntity = BookmarkEntity.builder()
-                .id(bookmark.getId())
-                .record(RecordEntity.from(bookmark.getRecord()))
-                .user(UserEntity.from(bookmark.getUser()))
-                .createdAt(bookmark.getCreatedAt())
+    public static ViewEntity of(RecordEntity record, UserEntity user) {
+        ViewEntity view = ViewEntity.builder()
+                .record(record)
+                .user(user)
                 .build();
-        bookmarkEntity.getRecord().addBookmark(bookmarkEntity);
+        record.addView(view);
 
-        return bookmarkEntity;
+        return view;
     }
 
-    public Bookmark toDomain() {
-        return Bookmark.builder()
+    public static ViewEntity from(View view) {
+        ViewEntity viewEntity = ViewEntity.builder()
+                .id(view.getId())
+                .record(RecordEntity.from(view.getRecord()))
+                .user(UserEntity.from(view.getUser()))
+                .createdAt(view.getCreatedAt())
+                .build();
+        viewEntity.getRecord().addView(viewEntity);
+
+        return viewEntity;
+    }
+
+    public View toDomain() {
+        return View.builder()
                 .id(id)
                 .record(record.toDomain())
                 .user(user.toDomain())

@@ -1,7 +1,7 @@
 package org.recordy.server.record.domain;
 
 import org.junit.jupiter.api.Test;
-import org.recordy.server.record.controller.dto.FileUrl;
+import org.recordy.server.record.service.dto.FileUrl;
 import org.recordy.server.user.domain.UserEntity;
 import org.recordy.server.user.domain.UserStatus;
 import org.recordy.server.util.DomainFixture;

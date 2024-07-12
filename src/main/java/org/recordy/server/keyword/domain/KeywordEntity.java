@@ -4,12 +4,13 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.recordy.server.common.domain.JpaMetaInfoEntity;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Table(name = "keywords")
 @Entity
-public class KeywordEntity {
+public class KeywordEntity extends JpaMetaInfoEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

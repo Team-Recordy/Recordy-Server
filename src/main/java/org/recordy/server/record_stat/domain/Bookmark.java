@@ -1,5 +1,6 @@
 package org.recordy.server.record_stat.domain;
 
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,4 +15,5 @@ public class Bookmark {
     private Long id;
     private User user;
     private Record record;
+    private LocalDateTime createdAt;
 }

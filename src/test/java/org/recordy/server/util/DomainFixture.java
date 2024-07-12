@@ -9,7 +9,7 @@ import org.recordy.server.record.domain.File;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.RecordEntity;
 import org.recordy.server.record.domain.usecase.RecordCreate;
-import org.recordy.server.record.controller.dto.FileUrl;
+import org.recordy.server.record.service.dto.FileUrl;
 import org.recordy.server.record_stat.domain.Bookmark;
 import org.recordy.server.user.controller.dto.request.TermsAgreement;
 import org.recordy.server.user.domain.usecase.UserSignIn;
@@ -170,26 +170,36 @@ public final class DomainFixture {
     }
 
     public static Record createRecord() {
-        return new Record(
-                RECORD_ID,
-                new FileUrl(VIDEO_URL, THUMBNAIL_URL),
-                LOCATION,
-                CONTENT,
-                KEYWORDS,
-                createUser(UserStatus.ACTIVE)
-        );
+        return Record.builder()
+                .id(RECORD_ID)
+                .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
+                .location(LOCATION)
+                .content(CONTENT)
+                .keywords(KEYWORDS)
+                .uploader(createUser(UserStatus.ACTIVE))
+                .build();
+    }
+
+    public static Record createRecord(long id) {
+        return Record.builder()
+                .id(id)
+                .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
+                .location(LOCATION)
+                .content(CONTENT)
+                .keywords(KEYWORDS)
+                .uploader(createUser(UserStatus.ACTIVE))
+                .build();
     }
 
     public static RecordEntity createRecordEntity() {
-        return new RecordEntity(
-                RECORD_ID,
-                VIDEO_URL,
-                THUMBNAIL_URL,
-                LOCATION,
-                CONTENT,
-                KEYWORDS,
-                createUserEntity()
-        );
+        return RecordEntity.builder()
+                .id(RECORD_ID)
+                .videoUrl(VIDEO_URL)
+                .thumbnailUrl(THUMBNAIL_URL)
+                .location(LOCATION)
+                .content(CONTENT)
+                .user(createUserEntity())
+                .build();
     }
 
     public static Bookmark createBookmark() {
