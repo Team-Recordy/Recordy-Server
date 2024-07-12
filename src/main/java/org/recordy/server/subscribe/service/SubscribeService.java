@@ -1,8 +1,7 @@
 package org.recordy.server.subscribe.service;
 
 import org.recordy.server.user.domain.User;
-
-import java.util.List;
+import org.springframework.data.domain.Slice;
 
 public interface SubscribeService {
 
@@ -11,5 +10,5 @@ public interface SubscribeService {
     void unsubscribe(long subscribingUserId, long subscribedUserId);
 
     // query
-    List<User> getSubscribedUsers(long subscribingUserId);
+    Slice<User> getSubscribedUsers(long subscribingUserId, long cursor, int size);
 }
