@@ -53,6 +53,8 @@ public class FakeBookmarkRepository implements BookmarkRepository {
 
     @Override
     public Optional<Bookmark> findByUserIdAndRecordId(long userId, long recordId) {
-        return Optional.empty();
+        return bookmarks.values().stream()
+                .filter(bookmark -> bookmark.getUser().getId() == userId && bookmark.getRecord().getId() == recordId)
+                .findFirst();
     }
 }
