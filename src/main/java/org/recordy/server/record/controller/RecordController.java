@@ -26,7 +26,6 @@ import java.util.List;
 public class RecordController {
 
     private final RecordService recordService;
-    private final RecordStatService recordStatService;
 
     @PostMapping
     public ResponseEntity<Record> createRecord(
@@ -68,14 +67,15 @@ public class RecordController {
     }
 
     @GetMapping("/famous")
-    public ResponseEntity<Slice<Record>> getFamousRecords(
+    public ResponseEntity<Slice<RecordInfoWithBookmark>> getFamousRecordInfoWithBookmarks(
+            @UserId Long userId,
             @RequestParam(required = false) List<String> keywords,
             @RequestParam(required = false, defaultValue = "0") int pageNumber,
             @RequestParam(required = false, defaultValue = "10") int pageSize
     ){
         return ResponseEntity
                 .ok()
-                .body(recordService.getFamousRecords(keywords, pageNumber, pageSize));
+                .body(recordService.getFamousRecordInfoWithBookmarks(userId, keywords, pageNumber, pageSize));
     }
 
     @PostMapping("/{recordId}")
@@ -89,13 +89,13 @@ public class RecordController {
                 .build();
     }
 
-    @GetMapping
-    public ResponseEntity<Slice<Record>> getRecentRecordsByUser(
+    @GetMapping("/user")
+    public ResponseEntity<Slice<RecordInfoWithBookmark>> getRecentRecordInfoWithBookmarksByUser(
             @UserId long userId,
             @RequestParam(required = false, defaultValue = "0") long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
-        Slice<Record> records = recordService.getRecentRecordsByUser(userId, cursorId, size);
+        Slice<RecordInfoWithBookmark> records = recordService.getRecentRecordInfoWithBookmarksByUser(userId, cursorId, size);
 
         return ResponseEntity
                 .ok()

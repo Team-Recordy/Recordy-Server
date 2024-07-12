@@ -93,13 +93,13 @@ class RecordServiceTest {
         recordService.create(DomainFixture.createRecordCreateByOtherUser(), DomainFixture.createFile());
 
         //when
-        Slice<Record> result = recordService.getRecentRecordsByUser(1, Long.MAX_VALUE, 10);
+        Slice<RecordInfoWithBookmark> result = recordService.getRecentRecordInfoWithBookmarksByUser(1, Long.MAX_VALUE, 10);
 
         //then
         assertAll(
                 () -> assertThat(result.get()).hasSize(2),
-                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(2L),
-                () -> assertThat(result.getContent().get(1).getId()).isEqualTo(1L),
+                () -> assertThat(result.getContent().get(0).recordInfo().id()).isEqualTo(2L),
+                () -> assertThat(result.getContent().get(1).recordInfo().id()).isEqualTo(1L),
                 () -> assertThat(result.hasNext()).isFalse()
         );
     }
@@ -120,10 +120,10 @@ class RecordServiceTest {
         assertAll(
                 () -> assertThat(result.getContent()).hasSize(5),
                 () -> assertThat(result.getContent().get(0).recordInfo().id()).isEqualTo(5L),
-                () -> assertThat(result.getContent().get(0).recordInfo().id()).isEqualTo(4L),
-                () -> assertThat(result.getContent().get(0).recordInfo().id()).isEqualTo(3L),
-                () -> assertThat(result.getContent().get(0).recordInfo().id()).isEqualTo(2L),
-                () -> assertThat(result.getContent().get(0).recordInfo().id()).isEqualTo(1L),
+                () -> assertThat(result.getContent().get(1).recordInfo().id()).isEqualTo(4L),
+                () -> assertThat(result.getContent().get(2).recordInfo().id()).isEqualTo(3L),
+                () -> assertThat(result.getContent().get(3).recordInfo().id()).isEqualTo(2L),
+                () -> assertThat(result.getContent().get(4).recordInfo().id()).isEqualTo(1L),
                 () -> assertThat(result.hasNext()).isFalse()
         );
     }

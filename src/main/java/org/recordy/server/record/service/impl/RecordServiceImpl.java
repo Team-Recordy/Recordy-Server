@@ -75,6 +75,21 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
+    public Slice<RecordInfoWithBookmark> getFamousRecordInfoWithBookmarks(long userId, List<String> keywords,
+                                                                          int pageNumber, int size) {
+
+        Slice<Record> records = getFamousRecords(keywords, pageNumber,size);
+        List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records);
+
+        return records.map(record -> {
+            int index = records.getContent().indexOf(record);
+            Boolean isBookmarked = bookmarks.get(index);
+            RecordInfo recordInfo = RecordInfo.from(record);
+            return new RecordInfoWithBookmark(recordInfo, isBookmarked);
+        });
+    }
+
+
     public Slice<Record> getFamousRecords(List<String> keywords, int pageNumber, int size) {
         if (Objects.isNull(keywords) || keywords.isEmpty()) {
             return getFamousRecords(pageNumber, size);
@@ -92,6 +107,19 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
+    public Slice<RecordInfoWithBookmark> getRecentRecordInfoWithBookmarksByUser(long userId, long cursorId, int size) {
+
+        Slice<Record> records = getRecentRecordsByUser(userId, cursorId, size);
+        List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records);
+
+        return records.map(record -> {
+            int index = records.getContent().indexOf(record);
+            Boolean isBookmarked = bookmarks.get(index);
+            RecordInfo recordInfo = RecordInfo.from(record);
+            return new RecordInfoWithBookmark(recordInfo, isBookmarked);
+        });
+    }
+
     public Slice<Record> getRecentRecordsByUser(long userId, long cursorId, int size) {
         return recordRepository.findAllByUserIdOrderByIdDesc(userId, cursorId, PageRequest.ofSize(size));
     }
