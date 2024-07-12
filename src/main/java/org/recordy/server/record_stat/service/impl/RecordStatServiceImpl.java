@@ -1,6 +1,5 @@
 package org.recordy.server.record_stat.service.impl;
 
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.record.domain.Record;
@@ -41,7 +40,7 @@ public class RecordStatServiceImpl implements RecordStatService {
 
     @Override
     public void deleteBookmark(long userId, long recordId) {
-        bookmarkRepostiory.delete(userId, recordId);
+        bookmarkRepository.delete(userId, recordId);
     }
 
     @Override

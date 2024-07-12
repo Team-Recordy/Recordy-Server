@@ -6,10 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import java.util.Optional;
-import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.record_stat.domain.Bookmark;
 import org.recordy.server.record_stat.repository.BookmarkRepository;
-import org.recordy.server.user.domain.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -32,8 +30,11 @@ public class FakeBookmarkRepository implements BookmarkRepository {
     }
 
     @Override
-    public void deleteById(long bookmarkId) {
-        bookmarks.remove(bookmarkId);
+    public void delete(long userId, long recordId) {
+        bookmarks.values()
+                .removeIf(bookmark ->
+                        bookmark.getUser().getId() == userId && bookmark.getRecord().getId() == recordId
+                );
     }
 
     @Override

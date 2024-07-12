@@ -69,16 +69,11 @@ public class BookmarkRepositoryIntegrationTest extends IntegrationTest {
 
     @Test
     void deleteById를_통해_북마크를_삭제할_수_있다() {
-        //given
-        //when
-        Slice<Bookmark> bk = bookmarkRepository.findAllByBookmarksOrderByIdDesc(1L, 4L, PageRequest.ofSize(10));
-        System.out.println("sssssssssssss");
-        System.out.println(bk.getContent().size());
-        bookmarkRepository.deleteById(1);
-
-        //then
-        //원래 user1의 북마크 2개 있음 -> 이중 1개 삭제
+        // given, when
+        bookmarkRepository.delete(1, 1);
         Slice<Bookmark> bookmarks = bookmarkRepository.findAllByBookmarksOrderByIdDesc(1L, 4L, PageRequest.ofSize(10));
+
+        // then
         assertAll(
                 () -> assertThat(bookmarks.getContent()).hasSize(1)
         );

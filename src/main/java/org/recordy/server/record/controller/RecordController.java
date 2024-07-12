@@ -13,6 +13,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -26,15 +27,16 @@ public class RecordController {
     @PostMapping
     public ResponseEntity<Record> createRecord(
             @UserId Long uploaderId,
-            @RequestPart RecordCreateRequest recordCreateRequest,
-            @RequestPart File file
+            @RequestPart RecordCreateRequest request,
+            @RequestPart MultipartFile thumbnail,
+            @RequestPart MultipartFile video
     ) {
-        RecordCreate recordCreate = RecordCreate.from(uploaderId, recordCreateRequest);
-        Record createdRecord = recordService.create(recordCreate, file);
+        RecordCreate recordCreate = RecordCreate.from(uploaderId, request);
+        Record record = recordService.create(recordCreate, File.of(video, thumbnail));
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(createdRecord);
+                .body(record);
     }
 
     @DeleteMapping("/{recordId}")
@@ -73,10 +75,10 @@ public class RecordController {
                 .body(recordService.getFamousRecords(keywords, pageNumber, pageSize));
     }
 
-    @PostMapping("/watch")
+    @PostMapping("/{recordId}")
     public ResponseEntity<Void> watch(
-            @UserId long userId,
-            @RequestParam long recordId
+            @UserId Long userId,
+            @PathVariable long recordId
     ) {
         recordService.watch(userId, recordId);
         return ResponseEntity
@@ -84,9 +86,9 @@ public class RecordController {
                 .build();
     }
 
-    @GetMapping("/user")
+    @GetMapping
     public ResponseEntity<Slice<Record>> getRecentRecordsByUser(
-            @UserId long userId,
+            @RequestParam long userId,
             @RequestParam(required = false, defaultValue = "0") long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {

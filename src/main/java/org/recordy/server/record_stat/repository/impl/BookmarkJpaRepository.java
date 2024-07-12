@@ -6,6 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface BookmarkJpaRepository extends JpaRepository<BookmarkEntity, Long> {
 
-    //query
+    // command
+    void deleteAllByUserIdAndRecordId(long userId, long recordId);
+
+    // query
     Optional<BookmarkEntity> findByUser_IdAndRecord_Id(long userId, long recordId);
 }
