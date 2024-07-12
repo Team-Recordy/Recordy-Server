@@ -1,5 +1,6 @@
 package org.recordy.server.record_stat.service;
 
+import java.util.List;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record_stat.domain.Bookmark;
 import org.recordy.server.record_stat.domain.usecase.Preference;
@@ -14,4 +15,5 @@ public interface RecordStatService {
     // query
     Preference getPreference(long userId);
     Slice<Record> getBookmarkedRecords(long userId, long cursorId, int size);
+    List<Boolean> findBookmarks(long userId, Slice<Record> records);
 }

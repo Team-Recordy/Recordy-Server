@@ -4,11 +4,14 @@ package org.recordy.server.record.controller;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.security.UserId;
 import org.recordy.server.record.controller.dto.request.RecordCreateRequest;
+import org.recordy.server.record.controller.dto.response.RecordInfo;
+import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
 import org.recordy.server.record.domain.File;
 import org.recordy.server.record.domain.Record;
 
 import org.recordy.server.record.domain.usecase.RecordCreate;
 import org.recordy.server.record.service.RecordService;
+import org.recordy.server.record_stat.service.RecordStatService;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +26,7 @@ import java.util.List;
 public class RecordController {
 
     private final RecordService recordService;
+    private final RecordStatService recordStatService;
 
     @PostMapping
     public ResponseEntity<Record> createRecord(
@@ -52,16 +56,15 @@ public class RecordController {
     }
 
     @GetMapping("/recent")
-    public ResponseEntity<Slice<Record>> getRecentRecords(
+    public ResponseEntity<Slice<RecordInfoWithBookmark>> getRecentRecordInfoWithBookmarks(
+            @UserId Long userId,
             @RequestParam(required = false) List<String> keywords,
             @RequestParam(required = false, defaultValue = "0") long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
-        Slice<Record> records = recordService.getRecentRecords(keywords, cursorId, size);
 
-        return ResponseEntity
-                .ok()
-                .body(records);
+        Slice<RecordInfoWithBookmark> recordInfoWithBookmarks = recordService.getRecentRecordInfoWithBookmarks(userId, keywords, cursorId, size);
+        return ResponseEntity.ok().body(recordInfoWithBookmarks);
     }
 
     @GetMapping("/famous")
@@ -88,7 +91,7 @@ public class RecordController {
 
     @GetMapping
     public ResponseEntity<Slice<Record>> getRecentRecordsByUser(
-            @RequestParam long userId,
+            @UserId long userId,
             @RequestParam(required = false, defaultValue = "0") long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {

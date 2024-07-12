@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.mock.FakeContainer;
+import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
 import org.recordy.server.record.domain.File;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.usecase.RecordCreate;
@@ -61,7 +62,7 @@ class RecordServiceTest {
         recordService.delete(1, record.getId());
 
         // then
-        Slice<Record> result = recordService.getRecentRecords(null, 0L, 1);
+        Slice<RecordInfoWithBookmark> result = recordService.getRecentRecordInfoWithBookmarks(1,null, 0L, 1);
         assertAll(
                 () -> assertThat(result.getContent()).hasSize(0),
                 () -> assertThat(result.hasNext()).isFalse()
@@ -113,16 +114,16 @@ class RecordServiceTest {
         recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
 
         // when
-        Slice<Record> result = recordService.getRecentRecords(null, 6L, 10);
+        Slice<RecordInfoWithBookmark> result = recordService.getRecentRecordInfoWithBookmarks(1, null, 6L, 10);
 
         // then
         assertAll(
                 () -> assertThat(result.getContent()).hasSize(5),
-                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(5L),
-                () -> assertThat(result.getContent().get(1).getId()).isEqualTo(4L),
-                () -> assertThat(result.getContent().get(2).getId()).isEqualTo(3L),
-                () -> assertThat(result.getContent().get(3).getId()).isEqualTo(2L),
-                () -> assertThat(result.getContent().get(4).getId()).isEqualTo(1L),
+                () -> assertThat(result.getContent().get(0).recordInfo().id()).isEqualTo(5L),
+                () -> assertThat(result.getContent().get(0).recordInfo().id()).isEqualTo(4L),
+                () -> assertThat(result.getContent().get(0).recordInfo().id()).isEqualTo(3L),
+                () -> assertThat(result.getContent().get(0).recordInfo().id()).isEqualTo(2L),
+                () -> assertThat(result.getContent().get(0).recordInfo().id()).isEqualTo(1L),
                 () -> assertThat(result.hasNext()).isFalse()
         );
     }
@@ -135,7 +136,7 @@ class RecordServiceTest {
         recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
 
         // when
-        Slice<Record> result = recordService.getRecentRecords(null, 1L, 3);
+        Slice<RecordInfoWithBookmark> result = recordService.getRecentRecordInfoWithBookmarks(1, null, 1L, 3);
 
         // then
         assertAll(
