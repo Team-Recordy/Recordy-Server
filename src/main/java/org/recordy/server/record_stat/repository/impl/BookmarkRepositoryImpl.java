@@ -47,7 +47,7 @@ public class BookmarkRepositoryImpl implements BookmarkRepository {
     }
 
     @Override
-    public Optional<Bookmark> findByUserAndRecord(long userId, long recordId) {
+    public Optional<Bookmark> findByUserIdAndRecordId(long userId, long recordId) {
         return bookmarkJpaRepository.findByUser_IdAndRecord_Id(userId, recordId)
                 .map(BookmarkEntity::toDomain);
     }

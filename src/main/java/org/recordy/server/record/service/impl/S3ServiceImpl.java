@@ -1,9 +1,9 @@
-package org.recordy.server.common.service.impl;
+package org.recordy.server.record.service.impl;
 
 import org.recordy.server.common.config.S3Config;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.common.exception.ExternalException;
-import org.recordy.server.common.service.S3Service;
+import org.recordy.server.record.service.S3Service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;

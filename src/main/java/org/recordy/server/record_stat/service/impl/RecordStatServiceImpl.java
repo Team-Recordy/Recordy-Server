@@ -41,17 +41,7 @@ public class RecordStatServiceImpl implements RecordStatService {
 
     @Override
     public void deleteBookmark(long userId, long recordId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
-        Record record = recordRepository.findById(recordId)
-                .orElseThrow(() -> new RecordException(ErrorMessage.RECORD_NOT_FOUND));
-
-        Optional<Bookmark> optionalBookmark = bookmarkRepository.findByUserAndRecord(userId, recordId);
-        if (optionalBookmark.isPresent()) {
-            Bookmark bookmark = optionalBookmark.get();
-            System.out.println(bookmark.getId());
-            bookmarkRepository.deleteById(bookmark.getId());
-        }
+        bookmarkRepostiory.delete(userId, recordId);
     }
 
     @Override
