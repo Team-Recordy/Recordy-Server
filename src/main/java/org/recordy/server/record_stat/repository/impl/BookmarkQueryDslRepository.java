@@ -22,6 +22,10 @@ public class BookmarkQueryDslRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     public Slice<BookmarkEntity> findAllByUserOrderByIdDesc(long userId, long cursor, Pageable pageable) {
+        if (cursor == 0) {
+            cursor = Long.MAX_VALUE;
+        }
+
         List<BookmarkEntity> bookmarkEntities = jpaQueryFactory
                 .selectFrom(bookmarkEntity)
                 .join(bookmarkEntity.record, recordEntity)

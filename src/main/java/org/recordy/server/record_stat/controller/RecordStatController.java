@@ -67,7 +67,7 @@ public class RecordStatController implements RecordStatApi{
     @GetMapping("/bookmark")
     public ResponseEntity<Slice<Record>> getBookmarkedRecords(
             @UserId Long userId,
-            @RequestParam(required = false, defaultValue = "0L") long cursorId,
+            @RequestParam(required = false, defaultValue = "0") long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
         return ResponseEntity
