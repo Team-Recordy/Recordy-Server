@@ -55,7 +55,7 @@ public class RecordEntity extends JpaMetaInfoEntity {
     }
 
     public static RecordEntity from(Record record) {
-        return new RecordEntity(
+        RecordEntity recordEntity = new RecordEntity(
                 record.getId(),
                 record.getFileUrl().videoUrl(),
                 record.getFileUrl().thumbnailUrl(),
@@ -64,6 +64,9 @@ public class RecordEntity extends JpaMetaInfoEntity {
                 UserEntity.from(record.getUploader()),
                 record.getCreatedAt()
         );
+        recordEntity.user.addRecord(recordEntity);
+
+        return recordEntity;
     }
 
     public Record toDomain() {

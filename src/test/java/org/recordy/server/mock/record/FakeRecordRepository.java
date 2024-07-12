@@ -101,4 +101,9 @@ public class FakeRecordRepository implements RecordRepository {
     public Map<Keyword, Long> countAllByUserIdGroupByKeyword(long userId) {
         return Map.of();
     }
+
+    @Override
+    public Slice<Record> findAllBySubscribingUserIdOrderByIdDesc(long userId, long cursor, Pageable pageable) {
+        return null;
+    }
 }
