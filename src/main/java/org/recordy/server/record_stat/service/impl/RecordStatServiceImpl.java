@@ -1,6 +1,5 @@
 package org.recordy.server.record_stat.service.impl;
 
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.record.domain.Record;
@@ -16,7 +15,6 @@ import org.recordy.server.user.repository.UserRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -41,17 +39,7 @@ public class RecordStatServiceImpl implements RecordStatService {
 
     @Override
     public void deleteBookmark(long userId, long recordId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
-        Record record = recordRepository.findById(recordId)
-                .orElseThrow(() -> new RecordException(ErrorMessage.RECORD_NOT_FOUND));
-
-        Optional<Bookmark> optionalBookmark = bookmarkRepository.findByUserAndRecord(userId, recordId);
-        if (optionalBookmark.isPresent()) {
-            Bookmark bookmark = optionalBookmark.get();
-            System.out.println(bookmark.getId());
-            bookmarkRepository.deleteById(bookmark.getId());
-        }
+        bookmarkRepository.delete(userId, recordId);
     }
 
     @Override
