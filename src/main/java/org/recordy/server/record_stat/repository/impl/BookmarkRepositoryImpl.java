@@ -1,6 +1,5 @@
 package org.recordy.server.record_stat.repository.impl;
 
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.record_stat.domain.Bookmark;
@@ -12,6 +11,8 @@ import org.recordy.server.user.repository.impl.UserJpaRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Repository
@@ -42,8 +43,10 @@ public class BookmarkRepositoryImpl implements BookmarkRepository {
     }
 
     @Override
-    public Optional<Bookmark> findByUserAndRecord(long userId, long recordId) {
+    public Optional<Bookmark> findByUserIdAndRecordId(long userId, long recordId) {
         return bookmarkJpaRepository.findByUser_IdAndRecord_Id(userId, recordId)
                 .map(BookmarkEntity::toDomain);
     }
+
+
 }

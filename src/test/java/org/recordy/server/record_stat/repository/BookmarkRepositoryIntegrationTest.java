@@ -119,7 +119,7 @@ public class BookmarkRepositoryIntegrationTest extends IntegrationTest {
         //given
 
         //when
-        Bookmark bookmark = bookmarkRepository.findByUserAndRecord(1,1).get();
+        Bookmark bookmark = bookmarkRepository.findByUserIdAndRecordId(1,1).get();
 
         //then
         assertAll(
