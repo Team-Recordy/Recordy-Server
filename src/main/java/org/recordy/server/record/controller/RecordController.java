@@ -52,7 +52,7 @@ public class RecordController {
     @GetMapping("/recent")
     public ResponseEntity<Slice<Record>> getRecentRecords(
             @RequestParam(required = false) List<String> keywords,
-            @RequestParam(required = false, defaultValue = "0L") long cursorId,
+            @RequestParam(required = false, defaultValue = "0") long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
         Slice<Record> records = recordService.getRecentRecords(keywords, cursorId, size);
@@ -87,7 +87,7 @@ public class RecordController {
     @GetMapping("/user")
     public ResponseEntity<Slice<Record>> getRecentRecordsByUser(
             @UserId long userId,
-            @RequestParam(required = false, defaultValue = "0L") long cursorId,
+            @RequestParam(required = false, defaultValue = "0") long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
         Slice<Record> records = recordService.getRecentRecordsByUser(userId, cursorId, size);
