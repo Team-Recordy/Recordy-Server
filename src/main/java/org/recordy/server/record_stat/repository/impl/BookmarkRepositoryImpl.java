@@ -43,7 +43,7 @@ public class BookmarkRepositoryImpl implements BookmarkRepository {
 
     @Override
     public void deleteById(long bookmarkId) {
-            bookmarkJpaRepository.deleteById(bookmarkId);
+        bookmarkJpaRepository.deleteById(bookmarkId);
     }
 
     @Override
