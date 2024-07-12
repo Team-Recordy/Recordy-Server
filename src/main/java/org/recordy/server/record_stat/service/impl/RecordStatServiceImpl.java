@@ -40,7 +40,7 @@ public class RecordStatServiceImpl implements RecordStatService {
 
     @Override
     public void deleteBookmark(long userId, long recordId) {
-        Optional<Bookmark> optionalBookmark = bookmarkRepository.findByUserAndRecord(userId, recordId);
+        Optional<Bookmark> optionalBookmark = bookmarkRepository.findByUserIdAndRecordId(userId, recordId);
         if (optionalBookmark.isPresent()) {
             Bookmark bookmark = optionalBookmark.get();
             bookmarkRepository.deleteById(bookmark.getId());

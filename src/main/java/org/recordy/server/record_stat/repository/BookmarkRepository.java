@@ -17,5 +17,5 @@ public interface BookmarkRepository {
 
     //query
     Slice<Bookmark> findAllByBookmarksOrderByIdDesc(long userId, long cursor, Pageable pageable);
-    Optional<Bookmark> findByUserAndRecord(long userId, long recordId);
+    Optional<Bookmark> findByUserIdAndRecordId(long userId, long recordId);
 }
