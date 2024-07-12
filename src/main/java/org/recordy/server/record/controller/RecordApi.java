@@ -11,10 +11,13 @@ import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.record.controller.dto.RecordCreateRequest;
 import org.recordy.server.record.domain.File;
 import org.recordy.server.record.domain.Record;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "기록 관련 API")
 public interface RecordApi {
@@ -127,4 +130,97 @@ public interface RecordApi {
             @PathVariable Long recordId
     );
 
+    @Operation(
+            summary = "최근 레코드 조회 API",
+            description = "사용자의 최근 레코드를 조회합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "요청이 성공적으로 처리되었습니다.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = Slice.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized - 액세스 토큰의 형식이 올바르지 않습니다. Bearer 타입을 확인해 주세요.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = ErrorMessage.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized - 카카오 액세스 토큰의 정보를 조회하는 과정에서 오류가 발생하였습니다.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = ErrorMessage.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Internal Server Error - 서버 내부 오류입니다.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = ErrorMessage.class
+                                    )
+                            )
+                    )
+            }
+    )
+    public ResponseEntity<Slice<Record>> getRecentRecords(
+            @RequestParam(required = false) List<String> keywords,
+            @RequestParam long cursorId,
+            @RequestParam int size
+    );
+
+    @Operation(
+            summary = "회원의 레코드 리스트 조회 API",
+            description = "회원의 최근 레코드 리스트를 조회합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "요청이 성공적으로 처리되었습니다.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = Slice.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized - 인증이 필요합니다.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = ErrorMessage.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Internal Server Error - 서버 내부 오류입니다.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = ErrorMessage.class
+                                    )
+                            )
+                    )
+            }
+    )
+    public ResponseEntity<Slice<Record>> getRecentRecordsByUser(
+            @UserId long userId,
+            @RequestParam long cursorId,
+            @RequestParam int size
+    );
 }
