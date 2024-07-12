@@ -36,6 +36,7 @@ public class UserEntity extends JpaMetaInfoEntity {
         this.useTerm = termsAgreement.useTerm();
         this.personalInfoTerm = termsAgreement.personalInfoTerm();
         this.ageTerm = termsAgreement.ageTerm();
+        this.createdAt = createdAt;
     }
 
     public static UserEntity from(User user) {

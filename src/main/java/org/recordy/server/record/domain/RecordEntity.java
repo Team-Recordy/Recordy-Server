@@ -52,6 +52,7 @@ public class RecordEntity extends JpaMetaInfoEntity {
         this.location = location;
         this.content = content;
         this.user = user;
+        this.createdAt = createdAt;
     }
 
     public static RecordEntity from(Record record) {
@@ -81,6 +82,7 @@ public class RecordEntity extends JpaMetaInfoEntity {
                         .toList())
                 .uploader(user.toDomain())
                 .bookmarkCount(bookmarks.size())
+                .createdAt(createdAt)
                 .build();
     }
 
