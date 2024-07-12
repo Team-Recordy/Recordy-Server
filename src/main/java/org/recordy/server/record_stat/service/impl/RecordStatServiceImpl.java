@@ -16,6 +16,7 @@ import org.recordy.server.user.repository.UserRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -40,11 +41,7 @@ public class RecordStatServiceImpl implements RecordStatService {
 
     @Override
     public void deleteBookmark(long userId, long recordId) {
-        Optional<Bookmark> optionalBookmark = bookmarkRepository.findByUserIdAndRecordId(userId, recordId);
-        if (optionalBookmark.isPresent()) {
-            Bookmark bookmark = optionalBookmark.get();
-            bookmarkRepository.deleteById(bookmark.getId());
-        }
+        bookmarkRepostiory.delete(userId, recordId);
     }
 
     @Override
