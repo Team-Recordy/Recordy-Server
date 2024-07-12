@@ -122,6 +122,26 @@ public final class DomainFixture {
         );
     }
 
+    public static User createUser() {
+        return User.builder()
+                .id(USER_ID)
+                .authPlatform(createAuthPlatform())
+                .status(DEFAULT_USER_STATUS)
+                .nickname(USER_NICKNAME)
+                .termsAgreement(TermsAgreement.of(USE_TERM_AGREEMENT, PERSONAL_INFO_TERM_AGREEMENT, AGE_TERM_AGREEMENT))
+                .build();
+    }
+
+    public static User createUser(long id) {
+        return User.builder()
+                .id(id)
+                .authPlatform(createAuthPlatform())
+                .status(DEFAULT_USER_STATUS)
+                .nickname(USER_NICKNAME)
+                .termsAgreement(TermsAgreement.of(USE_TERM_AGREEMENT, PERSONAL_INFO_TERM_AGREEMENT, AGE_TERM_AGREEMENT))
+                .build();
+    }
+
     public static User createUser(UserStatus userStatus) {
         return User.builder()
                 .id(USER_ID)

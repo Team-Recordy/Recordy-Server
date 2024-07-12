@@ -19,6 +19,8 @@ import org.recordy.server.record_stat.repository.BookmarkRepository;
 import org.recordy.server.record_stat.repository.ViewRepository;
 import org.recordy.server.record_stat.repository.impl.BookmarkJpaRepository;
 import org.recordy.server.record_stat.repository.impl.ViewJpaRepository;
+import org.recordy.server.subscribe.domain.Subscribe;
+import org.recordy.server.subscribe.repository.SubscribeRepository;
 import org.recordy.server.user.domain.UserStatus;
 import org.recordy.server.util.DomainFixture;
 import org.recordy.server.util.db.IntegrationTest;
@@ -61,6 +63,9 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
     private ViewRepository viewRepository;
     @Autowired
     private ViewJpaRepository viewJpaRepository;
+
+    @Autowired
+    private SubscribeRepository subscribeRepository;
 
     private static LocalDateTime now;
     private static LocalDateTime sevenDaysAgo;
@@ -442,6 +447,35 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
                 () -> assertThat(preference.size()).isEqualTo(2),
                 () -> assertThat(preference.get(Keyword.EXOTIC)).isEqualTo(4),
                 () -> assertThat(preference.get(Keyword.QUITE)).isEqualTo(4)
+        );
+    }
+
+    @Test
+    void findAllBySubscribingUserIdOrderByIdDesc를_통해_구독한_사용자의_레코드_데이터를_최신순으로_조회할_수_있다() {
+        // given
+        // user 1의 레코드 : {1, 2, 5}
+        // user 2의 레코드 : {3, 4, 6}
+        long userId = 1;
+        long cursor = 0;
+        int size = 3;
+
+        // user 1 -> user 2 구독
+        subscribeRepository.save(Subscribe.builder()
+                .subscribingUser(DomainFixture.createUser(1))
+                .subscribedUser(DomainFixture.createUser(2))
+                .build()
+        );
+
+        // when
+        Slice<Record> result = recordRepository.findAllBySubscribingUserIdOrderByIdDesc(userId, cursor, PageRequest.ofSize(size));
+
+        // then
+        assertAll(
+                () -> assertThat(result.get()).hasSize(3),
+                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(6L),
+                () -> assertThat(result.getContent().get(1).getId()).isEqualTo(4L),
+                () -> assertThat(result.getContent().get(2).getId()).isEqualTo(3L),
+                () -> assertThat((result.hasNext())).isFalse()
         );
     }
 }

@@ -109,4 +109,10 @@ public class RecordRepositoryImpl implements RecordRepository {
                         Map.Entry::getValue
                 ));
     }
+
+    @Override
+    public Slice<Record> findAllBySubscribingUserIdOrderByIdDesc(long userId, long cursor, Pageable pageable) {
+        return recordQueryDslRepository.findAllBySubscribingUserIdOrderByIdDesc(userId, cursor, pageable)
+                .map(RecordEntity::toDomain);
+    }
 }
