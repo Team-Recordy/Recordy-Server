@@ -12,7 +12,7 @@ import org.recordy.server.auth.service.impl.token.AuthTokenGenerator;
 import org.recordy.server.auth.service.impl.token.AuthTokenParser;
 import org.recordy.server.auth.service.impl.token.AuthTokenServiceImpl;
 import org.recordy.server.auth.service.impl.token.AuthTokenSigningKeyProvider;
-import org.recordy.server.common.service.S3Service;
+import org.recordy.server.record.service.S3Service;
 import org.recordy.server.keyword.repository.KeywordRepository;
 import org.recordy.server.keyword.service.KeywordService;
 import org.recordy.server.keyword.service.impl.KeywordServiceImpl;

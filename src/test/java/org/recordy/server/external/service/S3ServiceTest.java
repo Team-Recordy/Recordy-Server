@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.common.config.S3Config;
 import org.recordy.server.common.exception.ExternalException;
-import org.recordy.server.common.service.impl.S3ServiceImpl;
+import org.recordy.server.record.service.impl.S3ServiceImpl;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
