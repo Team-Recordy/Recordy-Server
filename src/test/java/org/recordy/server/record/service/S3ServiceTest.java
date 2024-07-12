@@ -1,4 +1,4 @@
-package org.recordy.server.external.service;
+package org.recordy.server.record.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
