@@ -19,20 +19,4 @@ import static org.recordy.server.record_stat.domain.QViewEntity.viewEntity;
 public class ViewQueryDslRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
-
-    public Map<KeywordEntity, Long> countAllByUserIdGroupByKeyword(long userId) {
-        List<Tuple> results = jpaQueryFactory
-                .select(uploadEntity.keyword, viewEntity.count())
-                .from(viewEntity)
-                .join(viewEntity.record, recordEntity)
-                .join(recordEntity.uploads, uploadEntity)
-                .where(viewEntity.user.id.eq(userId))
-                .groupBy(uploadEntity.keyword)
-                .fetch();
-
-        return results.stream()
-                .collect(Collectors.toMap(
-                        tuple -> tuple.get(uploadEntity.keyword),
-                        tuple -> tuple.get(viewEntity.count())));
-    }
 }
