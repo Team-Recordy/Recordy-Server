@@ -75,10 +75,10 @@ public class RecordController {
                 .body(recordService.getFamousRecords(keywords, pageNumber, pageSize));
     }
 
-    @PostMapping("/watch")
+    @PostMapping("/{recordId}")
     public ResponseEntity<Void> watch(
-            @UserId long userId,
-            @RequestParam long recordId
+            @UserId Long userId,
+            @PathVariable long recordId
     ) {
         recordService.watch(userId, recordId);
         return ResponseEntity
@@ -86,10 +86,10 @@ public class RecordController {
                 .build();
     }
 
-    @GetMapping("/user")
+    @GetMapping
     public ResponseEntity<Slice<Record>> getRecentRecordsByUser(
-            @UserId long userId,
-            @RequestParam(required = false, defaultValue = "0L") long cursorId,
+            @RequestParam long userId,
+            @RequestParam(required = false, defaultValue = "0") long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
         Slice<Record> records = recordService.getRecentRecordsByUser(userId, cursorId, size);
