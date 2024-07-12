@@ -7,6 +7,7 @@ import org.recordy.server.record_stat.repository.BookmarkRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Repository
@@ -21,6 +22,7 @@ public class BookmarkRepositoryImpl implements BookmarkRepository {
                 .toDomain();
     }
 
+    @Transactional
     @Override
     public void delete(long userId, long recordId) {
         bookmarkJpaRepository.deleteAllByUserIdAndRecordId(userId, recordId);
