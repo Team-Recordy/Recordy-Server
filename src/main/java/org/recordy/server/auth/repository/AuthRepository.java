@@ -8,11 +8,9 @@ public interface AuthRepository {
 
     // command
     Auth save(Auth auth);
-
     void delete(Auth auth);
 
     // query
     Optional<Auth> findByRefreshToken(String refreshToken);
-
     Optional<Auth> findByPlatformId(String platformId);
 }

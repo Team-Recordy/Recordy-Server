@@ -67,7 +67,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         AuthTokenValidationResult validationResult = authTokenService.validateToken(token);
 
         switch (validationResult) {
-            case VALID_JWT:
+            case VALID_TOKEN:
                 return;
             case EXPIRED_TOKEN:
                 throw new AuthException(ErrorMessage.EXPIRED_TOKEN);
