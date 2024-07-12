@@ -1,4 +1,4 @@
-package org.recordy.server.common.service;
+package org.recordy.server.record.service;
 
 import org.springframework.web.multipart.MultipartFile;
 

@@ -2,7 +2,7 @@ package org.recordy.server.record.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.message.ErrorMessage;
-import org.recordy.server.common.service.S3Service;
+import org.recordy.server.record.service.S3Service;
 import org.recordy.server.record.exception.RecordException;
 import org.recordy.server.record.service.FileService;
 import org.recordy.server.record.domain.File;
