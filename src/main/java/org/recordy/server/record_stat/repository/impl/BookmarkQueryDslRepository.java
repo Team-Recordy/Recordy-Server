@@ -47,20 +47,4 @@ public class BookmarkQueryDslRepository {
 
         return new SliceImpl<>(bookmarkEntities, pageable, QueryDslUtils.hasNext(pageable, bookmarkEntities));
     }
-
-    public Map<KeywordEntity, Long> countAllByUserIdGroupByKeyword(long userId) {
-        List<Tuple> results = jpaQueryFactory
-                .select(uploadEntity.keyword, bookmarkEntity.count())
-                .from(bookmarkEntity)
-                .join(bookmarkEntity.record, recordEntity)
-                .join(recordEntity.uploads, uploadEntity)
-                .where(bookmarkEntity.user.id.eq(userId))
-                .groupBy(uploadEntity.keyword)
-                .fetch();
-
-        return results.stream()
-                .collect(Collectors.toMap(
-                        tuple -> tuple.get(uploadEntity.keyword),
-                        tuple -> tuple.get(viewEntity.count())));
-    }
 }
