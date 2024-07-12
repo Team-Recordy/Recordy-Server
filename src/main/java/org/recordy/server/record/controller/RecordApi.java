@@ -14,10 +14,7 @@ import org.recordy.server.record.domain.Record;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "기록 관련 API")
 public interface RecordApi {
@@ -83,4 +80,51 @@ public interface RecordApi {
             @RequestPart RecordCreateRequest recordCreateRequest,
             @RequestPart File file
     );
+
+    @Operation(
+            summary = "레코드 삭제 API",
+            description = "주어진 record_id의 소유자라면 해당 record_id에 해당하는 레코드를 삭제합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "204",
+                            description = "레코드가 성공적으로 삭제되었습니다.",
+                            content = @Content
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden - 삭제가 불가능한 기록입니다.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = ErrorMessage.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Not Found - 존재하지 않는 기록입니다.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = ErrorMessage.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Internal Server Error - 서버 내부 오류입니다.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = ErrorMessage.class
+                                    )
+                            )
+                    )
+            }
+    )
+    public ResponseEntity<Void> deleteRecord(
+            @UserId Long uploaderId,
+            @PathVariable Long recordId
+    );
+
 }
