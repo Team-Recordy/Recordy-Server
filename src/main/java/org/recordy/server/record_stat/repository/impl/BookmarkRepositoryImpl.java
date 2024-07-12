@@ -40,10 +40,4 @@ public class BookmarkRepositoryImpl implements BookmarkRepository {
         return bookmarkQueryDslRepository.findAllByUserOrderByIdDesc(userEntity, cursor, pageable)
                 .map(BookmarkEntity::toDomain);
     }
-
-    @Override
-    public Optional<Bookmark> findByUserIdAndRecordId(long userId, long recordId) {
-        return bookmarkJpaRepository.findByUser_IdAndRecord_Id(userId, recordId)
-                .map(BookmarkEntity::toDomain);
-    }
 }
