@@ -56,7 +56,12 @@ public class FakeRecordRepository implements RecordRepository {
     }
 
     @Override
-    public Slice<Record> findAllOrderByPopularity(long cursor, Pageable pageable) {
+    public Slice<Record> findAllOrderByPopularity(Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public Slice<Record> findAllByKeywordsOrderByPopularity(List<Keyword> keywords, Pageable pageable) {
         return null;
     }
 
@@ -82,7 +87,7 @@ public class FakeRecordRepository implements RecordRepository {
     @Override
     public Slice<Record> findAllByUserIdOrderByIdDesc(long userId, long cursor, Pageable pageable) {
         List<Record> content = records.values().stream()
-                .filter(record -> record.getId() < cursor && record.getId() == userId)
+                .filter(record -> record.getId() < cursor && record.getUploader().getId() == userId)
                 .sorted(Comparator.comparing(Record::getId).reversed())
                 .toList();
 
@@ -90,5 +95,10 @@ public class FakeRecordRepository implements RecordRepository {
             return new SliceImpl<>(content, pageable, false);
 
         return new SliceImpl<>(content.subList(0, pageable.getPageSize()), pageable, true);
+    }
+
+    @Override
+    public Map<Keyword, Long> countAllByUserIdGroupByKeyword(long userId) {
+        return Map.of();
     }
 }

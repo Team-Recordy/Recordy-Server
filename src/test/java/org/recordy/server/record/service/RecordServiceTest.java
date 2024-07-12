@@ -2,7 +2,6 @@ package org.recordy.server.record.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.recordy.server.auth.exception.AuthException;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.mock.FakeContainer;
 import org.recordy.server.record.domain.File;
@@ -28,6 +27,7 @@ class RecordServiceTest {
         recordService = fakeContainer.recordService;
         UserRepository userRepository = fakeContainer.userRepository;
 
+        userRepository.save(DomainFixture.createUser(UserStatus.ACTIVE));
         userRepository.save(DomainFixture.createUser(UserStatus.ACTIVE));
     }
 
@@ -58,10 +58,10 @@ class RecordServiceTest {
         Record record = recordService.create(recordCreate, file);
 
         // when
-        recordService.delete(1,record.getId());
+        recordService.delete(1, record.getId());
 
         // then
-        Slice<Record> result = recordService.getRecentRecordsLaterThanCursor(0,1);
+        Slice<Record> result = recordService.getRecentRecords(null, 0L, 1);
         assertAll(
                 () -> assertThat(result.getContent()).hasSize(0),
                 () -> assertThat(result.hasNext()).isFalse()
@@ -77,7 +77,7 @@ class RecordServiceTest {
 
         // when
         // then
-        assertThatThrownBy(() -> recordService.delete(100,record.getId()))
+        assertThatThrownBy(() -> recordService.delete(100, record.getId()))
                 .isInstanceOf(RecordException.class)
                 .hasMessageContaining(ErrorMessage.FORBIDDEN_DELETE_RECORD.getMessage());
     }
@@ -92,7 +92,7 @@ class RecordServiceTest {
         recordService.create(DomainFixture.createRecordCreateByOtherUser(), DomainFixture.createFile());
 
         //when
-        Slice<Record> result = recordService.getRecentRecordsByUser(1,0,10);
+        Slice<Record> result = recordService.getRecentRecordsByUser(1, Long.MAX_VALUE, 10);
 
         //then
         assertAll(
@@ -104,7 +104,7 @@ class RecordServiceTest {
     }
 
     @Test
-    void getRecentRecordsLaterThanCursor를_통해_커서_이후의_레코드를_최신_순서로_읽을_수_있다() {
+    void getRecentRecords를_통해_커서_이후의_레코드를_최신_순서로_읽을_수_있다() {
         // given
         recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
         recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
@@ -113,7 +113,7 @@ class RecordServiceTest {
         recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
 
         // when
-        Slice<Record> result = recordService.getRecentRecordsLaterThanCursor(6, 10);
+        Slice<Record> result = recordService.getRecentRecords(null, 6L, 10);
 
         // then
         assertAll(
@@ -128,14 +128,14 @@ class RecordServiceTest {
     }
 
     @Test
-    void getRecentRecordsLaterThanCursorByUser를_통해_커서가_제일_오래된_값이라면_아무것도_반환되지_않는다() {
+    void getRecentRecords를_통해_커서가_제일_오래된_값이라면_아무것도_반환되지_않는다() {
         // given
         recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
         recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
         recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
 
         // when
-        Slice<Record> result = recordService.getRecentRecordsLaterThanCursor(1, 3);
+        Slice<Record> result = recordService.getRecentRecords(null, 1L, 3);
 
         // then
         assertAll(

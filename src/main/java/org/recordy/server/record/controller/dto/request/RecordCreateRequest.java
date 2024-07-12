@@ -1,4 +1,4 @@
-package org.recordy.server.record.controller.dto;
+package org.recordy.server.record.controller.dto.request;
 
 import java.util.List;
 

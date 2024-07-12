@@ -1,5 +1,7 @@
 package org.recordy.server.keyword.domain;
 
+import java.util.List;
+
 public enum Keyword {
 
     EXOTIC("이색적인"),
@@ -23,7 +25,9 @@ public enum Keyword {
         this.name = name;
     }
 
-    public static Keyword fromString(String keyword) {
-        return Keyword.valueOf(keyword.toUpperCase());
+    public static List<Keyword> from(List<String> keywords) {
+        return keywords.stream()
+                .map(Keyword::valueOf)
+                .toList();
     }
 }

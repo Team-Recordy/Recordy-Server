@@ -47,6 +47,22 @@ public class RecordStatServiceTest {
     }
 
     @Test
+    void deleteBookmark를_통해_북마크를_삭제할_수_있다() {
+        // given
+        recordStatService.bookmark(1, 1);
+
+        // when
+        recordStatService.deleteBookmark(1,1);
+
+        // then
+        Slice<Record> result = recordStatService.getBookmarkedRecords(1, 7, 10);
+
+        assertAll(
+                () -> assertThat(result.getContent()).hasSize(0)
+        );
+    }
+
+    @Test
     void getBookmarkedRecords를_통해_커서_이후의_북마크된_레코드를_최신_순서로_읽을_수_있다() {
         // given
         recordStatService.bookmark(1, 1);
@@ -88,36 +104,4 @@ public class RecordStatServiceTest {
                 () -> assertThat(result.hasNext()).isFalse()
         );
     }
-
-    @Test
-    void getBookmarkCount를_통해_현재_기록의_북마크_수를_구할_수_있다() {
-        //given
-        recordStatService.bookmark(1, 1);
-        recordStatService.bookmark(2, 1);
-        recordStatService.bookmark(1, 2);
-        recordStatService.bookmark(2, 2);
-        recordStatService.bookmark(1, 3);
-        recordStatService.bookmark(2, 3);
-
-        // when
-        Long result = recordStatService.getBookmarkCount(1);
-
-        // then
-        assertAll(
-                () -> assertThat(result).isEqualTo(2)
-        );
-    }
-
-    @Test
-    void getBookmarkCount를_통해_북마크_수를_구할_때_북마크가_없으면_0을_리턴한다() {
-        //given
-        // when
-        Long result = recordStatService.getBookmarkCount(1);
-
-        // then
-        assertAll(
-                () -> assertThat(result).isEqualTo(0)
-        );
-    }
-
 }
