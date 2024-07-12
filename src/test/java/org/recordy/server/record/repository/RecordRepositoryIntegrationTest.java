@@ -304,7 +304,7 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
                 .build());
         BookmarkEntity bookmarkEntity = bookmarkJpaRepository.findById(bookmark.getId())
                 .orElseThrow();
-        bookmarkEntity.setCreatedAt(createdAt.plusSeconds(1));
+        bookmarkEntity.setCreatedAt(createdAt.plusMinutes(1));
     }
 
     private void saveViewWithCreatedAt(long recordId, LocalDateTime createdAt) {
@@ -314,7 +314,7 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
                 .build());
         ViewEntity viewEntity = viewJpaRepository.findById(view.getId())
                 .orElseThrow();
-        viewEntity.setCreatedAt(createdAt.plusSeconds(1));
+        viewEntity.setCreatedAt(createdAt.plusMinutes(1));
     }
 
     @Test
