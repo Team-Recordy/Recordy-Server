@@ -4,7 +4,7 @@ import org.recordy.server.auth.domain.Auth;
 import org.recordy.server.auth.domain.AuthEntity;
 import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.auth.domain.AuthToken;
-import org.recordy.server.keyword.domain.Keyword;
+import org.recordy.server.record.service.keyword.domain.Keyword;
 import org.recordy.server.record.domain.File;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.RecordEntity;

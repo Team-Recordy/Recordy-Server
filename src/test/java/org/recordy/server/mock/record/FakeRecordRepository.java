@@ -1,8 +1,8 @@
 package org.recordy.server.mock.record;
 
 import java.util.Optional;
-import org.recordy.server.keyword.domain.Keyword;
-import org.recordy.server.keyword.domain.KeywordEntity;
+import org.recordy.server.record.service.keyword.domain.Keyword;
+import org.recordy.server.record.service.keyword.domain.KeywordEntity;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.RecordEntity;
 import org.recordy.server.record.domain.UploadEntity;

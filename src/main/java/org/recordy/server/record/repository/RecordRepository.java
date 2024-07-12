@@ -1,13 +1,12 @@
 package org.recordy.server.record.repository;
 
 import java.util.Optional;
-import org.recordy.server.keyword.domain.Keyword;
+import org.recordy.server.record.service.keyword.domain.Keyword;
 import org.recordy.server.record.domain.Record;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface RecordRepository {
 

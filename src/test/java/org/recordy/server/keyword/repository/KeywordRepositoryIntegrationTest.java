@@ -1,7 +1,8 @@
 package org.recordy.server.keyword.repository;
 
 import org.junit.jupiter.api.Test;
-import org.recordy.server.keyword.domain.Keyword;
+import org.recordy.server.record.service.keyword.domain.Keyword;
+import org.recordy.server.record.service.keyword.repository.KeywordRepository;
 import org.recordy.server.util.DomainFixture;
 import org.recordy.server.util.db.IntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;

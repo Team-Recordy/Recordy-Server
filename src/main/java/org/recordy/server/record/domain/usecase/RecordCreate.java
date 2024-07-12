@@ -1,6 +1,6 @@
 package org.recordy.server.record.domain.usecase;
 
-import org.recordy.server.keyword.domain.Keyword;
+import org.recordy.server.record.service.keyword.domain.Keyword;
 import org.recordy.server.record.controller.dto.RecordCreateRequest;
 
 import java.util.List;

@@ -2,8 +2,9 @@ package org.recordy.server.keyword.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.recordy.server.keyword.domain.Keyword;
+import org.recordy.server.record.service.keyword.domain.Keyword;
 import org.recordy.server.mock.FakeContainer;
+import org.recordy.server.record.service.keyword.service.KeywordService;
 import org.recordy.server.util.DomainFixture;
 
 import java.util.List;

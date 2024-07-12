@@ -3,7 +3,7 @@ package org.recordy.server.record.domain;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import org.recordy.server.keyword.domain.Keyword;
+import org.recordy.server.record.service.keyword.domain.Keyword;
 import org.recordy.server.record.controller.dto.FileUrl;
 import org.recordy.server.user.domain.User;
 

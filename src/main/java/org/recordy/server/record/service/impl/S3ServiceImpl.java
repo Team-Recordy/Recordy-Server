@@ -1,9 +1,9 @@
-package org.recordy.server.external.service.impl;
+package org.recordy.server.record.service.impl;
 
 import org.recordy.server.common.message.ErrorMessage;
-import org.recordy.server.external.config.S3Config;
-import org.recordy.server.external.exception.ExternalException;
+import org.recordy.server.common.config.S3Config;
 import org.recordy.server.external.service.S3Service;
+import org.recordy.server.record.exception.RecordException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -56,7 +56,7 @@ public class S3ServiceImpl implements S3Service {
             case "image/webp" -> ".webp";
             case "video/mp4" -> ".mp4";
             case "video/mov", "video/quicktime" -> ".mov";
-            default -> throw new ExternalException(ErrorMessage.INVALID_FILE_TYPE);
+            default -> throw new RecordException(ErrorMessage.INVALID_FILE_TYPE);
         };
     }
 
@@ -83,13 +83,13 @@ public class S3ServiceImpl implements S3Service {
     public void validateFileExtension(MultipartFile file) {
         String contentType = file.getContentType();
         if (!FILE_EXTENSIONS.contains(contentType)) {
-            throw new ExternalException(ErrorMessage.INVALID_FILE_TYPE);
+            throw new RecordException(ErrorMessage.INVALID_FILE_TYPE);
         }
     }
 
     public void validateFileSize(MultipartFile file) {
         if (file.getSize() > MAX_SIZE) {
-            throw new ExternalException(ErrorMessage.INVALID_FILE_SIZE);
+            throw new RecordException(ErrorMessage.INVALID_FILE_SIZE);
         }
     }
 }

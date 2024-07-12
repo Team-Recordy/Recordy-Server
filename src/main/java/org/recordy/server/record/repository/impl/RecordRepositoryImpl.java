@@ -3,9 +3,9 @@ package org.recordy.server.record.repository.impl;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.message.ErrorMessage;
-import org.recordy.server.keyword.domain.Keyword;
-import org.recordy.server.keyword.domain.KeywordEntity;
-import org.recordy.server.keyword.repository.impl.KeywordJpaRepository;
+import org.recordy.server.record.service.keyword.domain.Keyword;
+import org.recordy.server.record.service.keyword.domain.KeywordEntity;
+import org.recordy.server.record.service.keyword.repository.impl.KeywordJpaRepository;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.RecordEntity;
 import org.recordy.server.record.domain.UploadEntity;
@@ -18,7 +18,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Repository

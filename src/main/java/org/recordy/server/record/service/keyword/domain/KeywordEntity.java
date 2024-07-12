@@ -1,4 +1,4 @@
-package org.recordy.server.keyword.domain;
+package org.recordy.server.record.service.keyword.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;

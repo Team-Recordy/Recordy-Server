@@ -2,7 +2,7 @@ package org.recordy.server.record.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.recordy.server.keyword.domain.KeywordEntity;
+import org.recordy.server.record.service.keyword.domain.KeywordEntity;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter

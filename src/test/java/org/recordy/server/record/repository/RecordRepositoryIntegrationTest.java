@@ -1,8 +1,6 @@
 package org.recordy.server.record.repository;
 
 import org.junit.jupiter.api.Test;
-import org.recordy.server.keyword.domain.KeywordEntity;
-import org.recordy.server.keyword.repository.impl.KeywordJpaRepository;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.RecordEntity;
 import org.recordy.server.record.domain.UploadEntity;

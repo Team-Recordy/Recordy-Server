@@ -5,7 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.recordy.server.keyword.domain.KeywordEntity;
+import org.recordy.server.record.service.keyword.domain.KeywordEntity;
 import org.recordy.server.record.controller.dto.FileUrl;
 import org.recordy.server.user.domain.UserEntity;
 
