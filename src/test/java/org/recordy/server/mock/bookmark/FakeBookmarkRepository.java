@@ -32,8 +32,11 @@ public class FakeBookmarkRepository implements BookmarkRepository {
     }
 
     @Override
-    public void deleteById(long bookmarkId) {
-        bookmarks.remove(bookmarkId);
+    public void delete(long userId, long recordId) {
+        bookmarks.values()
+                .removeIf(bookmark ->
+                        bookmark.getUser().getId() == userId && bookmark.getRecord().getId() == recordId
+                );
     }
 
     @Override

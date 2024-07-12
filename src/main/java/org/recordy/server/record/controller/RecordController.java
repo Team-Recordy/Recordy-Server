@@ -13,6 +13,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -26,15 +27,16 @@ public class RecordController {
     @PostMapping
     public ResponseEntity<Record> createRecord(
             @UserId Long uploaderId,
-            @RequestPart RecordCreateRequest recordCreateRequest,
-            @RequestPart File file
+            @RequestPart RecordCreateRequest request,
+            @RequestPart MultipartFile thumbnail,
+            @RequestPart MultipartFile video
     ) {
-        RecordCreate recordCreate = RecordCreate.from(uploaderId, recordCreateRequest);
-        Record createdRecord = recordService.create(recordCreate, file);
+        RecordCreate recordCreate = RecordCreate.from(uploaderId, request);
+        Record record = recordService.create(recordCreate, File.of(video, thumbnail));
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(createdRecord);
+                .body(record);
     }
 
     @DeleteMapping("/{recordId}")
