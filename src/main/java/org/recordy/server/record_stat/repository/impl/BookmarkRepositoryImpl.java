@@ -30,8 +30,7 @@ public class BookmarkRepositoryImpl implements BookmarkRepository {
 
     @Override
     public void delete(long userId, long recordId) {
-        bookmarkJpaRepository.findByUser_IdAndRecord_Id(userId, recordId)
-                .ifPresent(bookmarkJpaRepository::delete);
+        bookmarkJpaRepository.deleteAllByUserIdAndRecordId(userId, recordId);
     }
 
     @Override
@@ -47,6 +46,4 @@ public class BookmarkRepositoryImpl implements BookmarkRepository {
         return bookmarkJpaRepository.findByUser_IdAndRecord_Id(userId, recordId)
                 .map(BookmarkEntity::toDomain);
     }
-
-
 }
