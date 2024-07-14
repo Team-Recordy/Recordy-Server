@@ -72,6 +72,6 @@ public class RecordStatController implements RecordStatApi{
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(recordStatService.getBookmarkedRecords(userId,cursorId,size));
+                .body(recordStatService.getBookmarkedRecords(userId, cursorId, size));
     }
 }
