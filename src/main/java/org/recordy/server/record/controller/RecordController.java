@@ -122,10 +122,5 @@ public class RecordController implements RecordApi {
                 .ok()
                 .body(RecordInfoWithBookmark.of(records, bookmarks));
     }
-    @GetMapping("/file/{filename}")
-    public ResponseEntity<String> getFile(@PathVariable(value = "filename") String fileName) throws IOException {
-        String url = s3Service.getPresignUrl(fileName);
-        return new ResponseEntity<>(url, HttpStatus.OK);
-    }
 }
 
