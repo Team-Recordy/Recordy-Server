@@ -3,17 +3,15 @@ package org.recordy.server.record.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.keyword.domain.Keyword;
-import org.recordy.server.record.controller.dto.response.RecordInfo;
-import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
 import org.recordy.server.record.domain.File;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.usecase.RecordCreate;
+import org.recordy.server.record.domain.usecase.RecordInfoWithBookmark;
 import org.recordy.server.record.exception.RecordException;
 import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.record.service.FileService;
 import org.recordy.server.record.service.RecordService;
 import org.recordy.server.record.service.dto.FileUrl;
-import org.recordy.server.record_stat.domain.Bookmark;
 import org.recordy.server.record_stat.domain.View;
 import org.recordy.server.record_stat.repository.ViewRepository;
 import org.recordy.server.record_stat.service.RecordStatService;
@@ -76,17 +74,12 @@ public class RecordServiceImpl implements RecordService {
 
     @Override
     public Slice<RecordInfoWithBookmark> getFamousRecordInfosWithBookmarks(long userId, List<String> keywords,
-                                                                          int pageNumber, int size) {
+                                                                           int pageNumber, int size) {
 
         Slice<Record> records = getFamousRecords(keywords, pageNumber,size);
         List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records);
 
-        return records.map(record -> {
-            int index = records.getContent().indexOf(record);
-            Boolean isBookmarked = bookmarks.get(index);
-            RecordInfo recordInfo = RecordInfo.from(record);
-            return new RecordInfoWithBookmark(recordInfo, isBookmarked);
-        });
+        return RecordInfoWithBookmark.of(records, bookmarks);
     }
 
 
@@ -112,12 +105,7 @@ public class RecordServiceImpl implements RecordService {
         Slice<Record> records = getRecentRecordsByUser(userId, cursorId, size);
         List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records);
 
-        return records.map(record -> {
-            int index = records.getContent().indexOf(record);
-            Boolean isBookmarked = bookmarks.get(index);
-            RecordInfo recordInfo = RecordInfo.from(record);
-            return new RecordInfoWithBookmark(recordInfo, isBookmarked);
-        });
+        return RecordInfoWithBookmark.of(records, bookmarks);
     }
 
     public Slice<Record> getRecentRecordsByUser(long userId, long cursorId, int size) {
@@ -130,12 +118,7 @@ public class RecordServiceImpl implements RecordService {
         Slice<Record> records = getRecentRecords(keywords,cursorId, size);
         List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records);
 
-        return records.map(record -> {
-            int index = records.getContent().indexOf(record);
-            Boolean isBookmarked = bookmarks.get(index);
-            RecordInfo recordInfo = RecordInfo.from(record);
-            return new RecordInfoWithBookmark(recordInfo, isBookmarked);
-        });
+        return RecordInfoWithBookmark.of(records, bookmarks);
     }
 
     public Slice<Record> getRecentRecords(List<String> keywords, Long cursorId, int size) {
@@ -159,12 +142,7 @@ public class RecordServiceImpl implements RecordService {
         Slice<Record> records = getSubscribingRecords(userId,cursorId, size);
         List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records);
 
-        return records.map(record -> {
-            int index = records.getContent().indexOf(record);
-            Boolean isBookmarked = bookmarks.get(index);
-            RecordInfo recordInfo = RecordInfo.from(record);
-            return new RecordInfoWithBookmark(recordInfo, isBookmarked);
-        });
+        return RecordInfoWithBookmark.of(records, bookmarks);
     }
 
     public Slice<Record> getSubscribingRecords(long userId, long cursorId, int size) {
