@@ -14,6 +14,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -78,8 +79,9 @@ public interface RecordApi {
     )
     public ResponseEntity<Record> createRecord(
             @UserId Long uploaderId,
-            @RequestPart RecordCreateRequest recordCreateRequest,
-            @RequestPart File file
+            @RequestPart RecordCreateRequest request,
+            @RequestPart MultipartFile thumbnail,
+            @RequestPart MultipartFile video
     ) ;
 
     @Operation(
@@ -165,9 +167,9 @@ public interface RecordApi {
             }
     )
     public ResponseEntity<Slice<Record>> getRecentRecordsByUser(
-            @UserId long userId,
-            @RequestParam long cursorId,
-            @RequestParam int size
+            @UserId Long userId,
+            @RequestParam(required = false, defaultValue = "0") Long cursorId,
+            @RequestParam(required = false, defaultValue = "10") int size
     );
 
     @Operation(
@@ -202,8 +204,8 @@ public interface RecordApi {
             }
     )
     public ResponseEntity<Void> watch(
-            @UserId long userId,
-            @RequestParam long recordId
+            @UserId Long userId,
+            @PathVariable Long recordId
     );
 
     @Operation(
@@ -246,7 +248,7 @@ public interface RecordApi {
             @RequestParam(required = false) List<String> keywords,
             @RequestParam(required = false, defaultValue = "0") int pageNumber,
             @RequestParam(required = false, defaultValue = "10") int pageSize
-    );
+    ) ;
 
     @Operation(
             summary = "최근 레코드 조회 API",
@@ -286,7 +288,7 @@ public interface RecordApi {
     )
     public ResponseEntity<Slice<Record>> getRecentRecords(
             @RequestParam(required = false) List<String> keywords,
-            @RequestParam(required = false, defaultValue = "0") long cursorId,
+            @RequestParam(required = false, defaultValue = "0") Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     );
 }

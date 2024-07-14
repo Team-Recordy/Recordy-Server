@@ -56,11 +56,12 @@ public class RecordController implements RecordApi {
                 .build();
     }
 
+    @Override
     @GetMapping("/recent")
     public ResponseEntity<Slice<RecordInfoWithBookmark>> getRecentRecordInfoWithBookmarks(
             @UserId Long userId,
             @RequestParam(required = false) List<String> keywords,
-            @RequestParam(required = false, defaultValue = "0") long cursorId,
+            @RequestParam(required = false, defaultValue = "0") Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
         Slice<Record> records = recordService.getRecentRecords(keywords, cursorId, size);
@@ -69,6 +70,7 @@ public class RecordController implements RecordApi {
         return ResponseEntity.ok().body(RecordInfoWithBookmark.of(records, bookmarks));
     }
 
+    @Override
     @GetMapping("/famous")
     public ResponseEntity<Slice<RecordInfoWithBookmark>> getFamousRecordInfoWithBookmarks(
             @UserId Long userId,
@@ -84,10 +86,11 @@ public class RecordController implements RecordApi {
                 .body(RecordInfoWithBookmark.of(records, bookmarks));
     }
 
+    @Override
     @PostMapping("/{recordId}")
     public ResponseEntity<Void> watch(
             @UserId Long userId,
-            @PathVariable long recordId
+            @PathVariable Long recordId
     ) {
         recordService.watch(userId, recordId);
         return ResponseEntity
@@ -95,6 +98,7 @@ public class RecordController implements RecordApi {
                 .build();
     }
 
+    @Override
     @GetMapping
     public ResponseEntity<Slice<RecordInfoWithBookmark>> getRecentRecordInfoWithBookmarksByUser(
             @UserId Long userId,
