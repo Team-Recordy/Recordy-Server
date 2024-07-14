@@ -8,7 +8,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.recordy.server.auth.security.UserId;
 import org.recordy.server.record_stat.domain.usecase.Preference;
-import org.recordy.server.user.domain.response.UserInfo;
+import org.recordy.server.subscribe.controller.dto.response.UserInfoWithFollowing;
+import org.recordy.server.user.controller.dto.response.UserInfo;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -88,7 +89,7 @@ public interface SubscribeApi {
                     )
             }
     )
-    public ResponseEntity<Slice<UserInfo>> getSubscribingUserInfos(
+    public ResponseEntity<Slice<UserInfoWithFollowing>> getSubscribingUserInfos(
             @UserId Long userId,
             @RequestParam(required = false, defaultValue = "0L") long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size

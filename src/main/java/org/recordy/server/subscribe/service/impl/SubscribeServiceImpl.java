@@ -1,5 +1,7 @@
 package org.recordy.server.subscribe.service.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.subscribe.domain.Subscribe;
@@ -7,7 +9,6 @@ import org.recordy.server.subscribe.domain.usecase.SubscribeCreate;
 import org.recordy.server.subscribe.repository.SubscribeRepository;
 import org.recordy.server.subscribe.service.SubscribeService;
 import org.recordy.server.user.domain.User;
-import org.recordy.server.user.domain.response.UserInfo;
 import org.recordy.server.user.exception.UserException;
 import org.recordy.server.user.repository.UserRepository;
 import org.springframework.data.domain.PageRequest;
@@ -40,22 +41,21 @@ public class SubscribeServiceImpl implements SubscribeService {
     }
 
     @Override
-    public Slice<UserInfo> getSubscribedUserInfos(long subscribingUserId, long cursor, int size) {
-        return UserInfo.of(getSubscribedUsers(subscribingUserId, cursor, size));
-    }
-
     public Slice<User> getSubscribedUsers(long subscribingUserId, long cursor, int size) {
         return subscribeRepository.findAllBySubscribingUserId(subscribingUserId, cursor, PageRequest.ofSize(size))
                 .map(Subscribe::getSubscribedUser);
     }
 
     @Override
-    public Slice<UserInfo> getSubscribingUserInfos(long subscribedserId, long cursor, int size) {
-        return UserInfo.of(getSubscribingUsers(subscribedserId, cursor, size));
-    }
-
     public Slice<User> getSubscribingUsers(long subscribedUserId, long cursor, int size) {
         return subscribeRepository.findAllBySubscribedUserId(subscribedUserId, cursor, PageRequest.ofSize(size))
-                .map(Subscribe::getSubscribedUser);
+                .map(Subscribe::getSubscribingUser);
+    }
+
+    @Override
+    public List<Boolean> findSubscribes(long userId, Slice<User> subscribingUsers) {
+        return subscribingUsers.getContent().stream()
+                .map(subscribingUser -> subscribeRepository.existsBySubscribingUserIdAndSubscribedUserId(userId, subscribingUser.getId()))
+                .collect(Collectors.toList());
     }
 }

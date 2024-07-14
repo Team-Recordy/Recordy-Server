@@ -1,10 +1,13 @@
 package org.recordy.server.subscribe.controller;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.security.UserId;
+import org.recordy.server.subscribe.controller.dto.response.UserInfoWithFollowing;
 import org.recordy.server.subscribe.domain.usecase.SubscribeCreate;
 import org.recordy.server.subscribe.service.SubscribeService;
-import org.recordy.server.user.domain.response.UserInfo;
+import org.recordy.server.user.domain.User;
+import org.recordy.server.user.controller.dto.response.UserInfo;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,24 +26,24 @@ public class SubscribeController implements SubscribeApi{
     private final SubscribeService subscribeService;
 
     @Override
-    @PostMapping("/follow/{userId}")
+    @PostMapping("/follow/{followingId}")
     public ResponseEntity<Void> subscribe(
             @UserId Long userId,
-            @PathVariable Long subscribedUserId
+            @PathVariable Long followingId
     ) {
-        subscribeService.subscribe(new SubscribeCreate(userId, subscribedUserId));
+        subscribeService.subscribe(new SubscribeCreate(userId, followingId));
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .build();
     }
 
     @Override
-    @DeleteMapping("/unfollow/{userId}")
+    @DeleteMapping("/unfollow/{followingId}")
     public ResponseEntity<Void> unsubscribe(
             @UserId Long userId,
-            @PathVariable Long subscribedUserId
+            @PathVariable Long followingId
     ) {
-        subscribeService.unsubscribe(userId, subscribedUserId);
+        subscribeService.unsubscribe(userId, followingId);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .build();
@@ -53,20 +56,25 @@ public class SubscribeController implements SubscribeApi{
             @RequestParam(required = false, defaultValue = "0") long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
+        System.out.println(subscribeService.getSubscribedUsers(userId, cursorId, size));
+
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(subscribeService.getSubscribedUserInfos(userId, cursorId, size));
+                .body(UserInfo.of(subscribeService.getSubscribedUsers(userId, cursorId, size)));
     }
 
     @Override
     @GetMapping("/follower")
-    public ResponseEntity<Slice<UserInfo>> getSubscribingUserInfos(
+    public ResponseEntity<Slice<UserInfoWithFollowing>> getSubscribingUserInfos(
             @UserId Long userId,
             @RequestParam(required = false, defaultValue = "0") long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
+        Slice<User> users = subscribeService.getSubscribingUsers(userId, cursorId, size);
+        List<Boolean> following = subscribeService.findSubscribes(userId, users);
+
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(subscribeService.getSubscribingUserInfos(userId, cursorId, size));
+                .body(UserInfoWithFollowing.of(users, following));
     }
 }

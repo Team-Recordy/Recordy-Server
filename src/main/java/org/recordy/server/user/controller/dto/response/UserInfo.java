@@ -1,4 +1,4 @@
-package org.recordy.server.user.domain.response;
+package org.recordy.server.user.controller.dto.response;
 
 import java.util.stream.Collectors;
 import org.recordy.server.user.domain.User;
