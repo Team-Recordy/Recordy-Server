@@ -39,6 +39,7 @@ public class RecordController implements RecordApi {
                 .body(record);
     }
 
+    @Override    
     @DeleteMapping("/{recordId}")
     public ResponseEntity<Void> deleteRecord(
             @UserId Long uploaderId,
@@ -51,6 +52,7 @@ public class RecordController implements RecordApi {
                 .build();
     }
 
+    @Override    
     @GetMapping("/recent")
     public ResponseEntity<Slice<Record>> getRecentRecords(
             @RequestParam(required = false) List<String> keywords,
@@ -64,6 +66,7 @@ public class RecordController implements RecordApi {
                 .body(records);
     }
 
+    @Override
     @GetMapping("/famous")
     public ResponseEntity<Slice<Record>> getFamousRecords(
             @RequestParam(required = false) List<String> keywords,
@@ -75,6 +78,7 @@ public class RecordController implements RecordApi {
                 .body(recordService.getFamousRecords(keywords, pageNumber, pageSize));
     }
 
+    @Override
     @PostMapping("/{recordId}")
     public ResponseEntity<Void> watch(
             @UserId Long userId,
@@ -86,6 +90,7 @@ public class RecordController implements RecordApi {
                 .build();
     }
 
+    @Override
     @GetMapping
     public ResponseEntity<Slice<Record>> getRecentRecordsByUser(
             @RequestParam Long userId,
