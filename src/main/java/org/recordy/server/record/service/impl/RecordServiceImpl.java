@@ -154,9 +154,19 @@ public class RecordServiceImpl implements RecordService {
         return recordRepository.findAllByIdAfterAndKeywordsOrderByIdDesc(keywords, cursorId, PageRequest.ofSize(size));
     }
 
-
-
     @Override
+    public Slice<RecordInfoWithBookmark> getSubscribingRecordInfosWithBookmarks(long userId, long cursorId, int size) {
+        Slice<Record> records = getSubscribingRecords(userId,cursorId, size);
+        List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records);
+
+        return records.map(record -> {
+            int index = records.getContent().indexOf(record);
+            Boolean isBookmarked = bookmarks.get(index);
+            RecordInfo recordInfo = RecordInfo.from(record);
+            return new RecordInfoWithBookmark(recordInfo, isBookmarked);
+        });
+    }
+
     public Slice<Record> getSubscribingRecords(long userId, long cursorId, int size) {
         return recordRepository.findAllBySubscribingUserIdOrderByIdDesc(userId, cursorId, PageRequest.ofSize(size));
     }

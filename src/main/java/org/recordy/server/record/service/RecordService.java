@@ -19,5 +19,5 @@ public interface RecordService {
     Slice<RecordInfoWithBookmark> getFamousRecordInfosWithBookmarks(long userId, List<String> keywords, int pageNumber, int size);
     Slice<RecordInfoWithBookmark> getRecentRecordInfosWithBookmarksByUser(long userId, long cursorId, int size);
     Slice<RecordInfoWithBookmark> getRecentRecordInfosWithBookmarks(long userId, List<String> keywords, Long cursorId, int size);
-
+    Slice<RecordInfoWithBookmark> getSubscribingRecordInfosWithBookmarks(long userId, long cursorId, int size);
 }

@@ -89,16 +89,25 @@ public class RecordController {
                 .build();
     }
 
-    @GetMapping("/user")
+    @GetMapping
     public ResponseEntity<Slice<RecordInfoWithBookmark>> getRecentRecordInfoWithBookmarksByUser(
-            @UserId long userId,
+            @UserId Long userId,
             @RequestParam(required = false, defaultValue = "0") long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
-        Slice<RecordInfoWithBookmark> records = recordService.getRecentRecordInfosWithBookmarksByUser(userId, cursorId, size);
-
         return ResponseEntity
                 .ok()
-                .body(records);
+                .body(recordService.getRecentRecordInfosWithBookmarksByUser(userId, cursorId, size));
+    }
+
+    @GetMapping("/follow")
+    public ResponseEntity<Slice<RecordInfoWithBookmark>> getSubscribingRecordInfosWithBookmarks(
+            @UserId Long userId,
+            @RequestParam(required = false, defaultValue = "0") long cursorId,
+            @RequestParam(required = false, defaultValue = "10") int size
+    ) {
+        return ResponseEntity
+                .ok()
+                .body(recordService.getSubscribingRecordInfosWithBookmarks(userId, cursorId, size));
     }
 }
