@@ -62,7 +62,7 @@ public class RecordController {
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
 
-        Slice<RecordInfoWithBookmark> recordInfoWithBookmarks = recordService.getRecentRecordInfoWithBookmarks(userId, keywords, cursorId, size);
+        Slice<RecordInfoWithBookmark> recordInfoWithBookmarks = recordService.getRecentRecordInfosWithBookmarks(userId, keywords, cursorId, size);
         return ResponseEntity.ok().body(recordInfoWithBookmarks);
     }
 
@@ -75,7 +75,7 @@ public class RecordController {
     ){
         return ResponseEntity
                 .ok()
-                .body(recordService.getFamousRecordInfoWithBookmarks(userId, keywords, pageNumber, pageSize));
+                .body(recordService.getFamousRecordInfosWithBookmarks(userId, keywords, pageNumber, pageSize));
     }
 
     @PostMapping("/{recordId}")
@@ -95,7 +95,7 @@ public class RecordController {
             @RequestParam(required = false, defaultValue = "0") long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
-        Slice<RecordInfoWithBookmark> records = recordService.getRecentRecordInfoWithBookmarksByUser(userId, cursorId, size);
+        Slice<RecordInfoWithBookmark> records = recordService.getRecentRecordInfosWithBookmarksByUser(userId, cursorId, size);
 
         return ResponseEntity
                 .ok()

@@ -16,8 +16,8 @@ public interface RecordService {
 
     // query
     void watch(long userId, long recordId);
-    Slice<RecordInfoWithBookmark> getFamousRecordInfoWithBookmarks(long userId, List<String> keywords, int pageNumber, int size);
-    Slice<RecordInfoWithBookmark> getRecentRecordInfoWithBookmarksByUser(long userId, long cursorId, int size);
-    Slice<RecordInfoWithBookmark> getRecentRecordInfoWithBookmarks(long userId, List<String> keywords, Long cursorId, int size);
+    Slice<RecordInfoWithBookmark> getFamousRecordInfosWithBookmarks(long userId, List<String> keywords, int pageNumber, int size);
+    Slice<RecordInfoWithBookmark> getRecentRecordInfosWithBookmarksByUser(long userId, long cursorId, int size);
+    Slice<RecordInfoWithBookmark> getRecentRecordInfosWithBookmarks(long userId, List<String> keywords, Long cursorId, int size);
 
 }

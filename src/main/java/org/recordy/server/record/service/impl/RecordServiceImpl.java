@@ -75,7 +75,7 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public Slice<RecordInfoWithBookmark> getFamousRecordInfoWithBookmarks(long userId, List<String> keywords,
+    public Slice<RecordInfoWithBookmark> getFamousRecordInfosWithBookmarks(long userId, List<String> keywords,
                                                                           int pageNumber, int size) {
 
         Slice<Record> records = getFamousRecords(keywords, pageNumber,size);
@@ -107,7 +107,7 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public Slice<RecordInfoWithBookmark> getRecentRecordInfoWithBookmarksByUser(long userId, long cursorId, int size) {
+    public Slice<RecordInfoWithBookmark> getRecentRecordInfosWithBookmarksByUser(long userId, long cursorId, int size) {
 
         Slice<Record> records = getRecentRecordsByUser(userId, cursorId, size);
         List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records);
@@ -125,7 +125,7 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public Slice<RecordInfoWithBookmark> getRecentRecordInfoWithBookmarks(long userId,List<String> keywords, Long cursorId,
+    public Slice<RecordInfoWithBookmark> getRecentRecordInfosWithBookmarks(long userId,List<String> keywords, Long cursorId,
                                                                           int size) {
         Slice<Record> records = getRecentRecords(keywords,cursorId, size);
         List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records);
@@ -154,10 +154,7 @@ public class RecordServiceImpl implements RecordService {
         return recordRepository.findAllByIdAfterAndKeywordsOrderByIdDesc(keywords, cursorId, PageRequest.ofSize(size));
     }
 
-    @Override
-    public Slice<Record> getRecentRecordsByUser(long userId, long cursorId, int size) {
-        return recordRepository.findAllByUserIdOrderByIdDesc(userId, cursorId, PageRequest.ofSize(size));
-    }
+
 
     @Override
     public Slice<Record> getSubscribingRecords(long userId, long cursorId, int size) {

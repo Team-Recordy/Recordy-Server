@@ -62,7 +62,7 @@ class RecordServiceTest {
         recordService.delete(1, record.getId());
 
         // then
-        Slice<RecordInfoWithBookmark> result = recordService.getRecentRecordInfoWithBookmarks(1,null, 0L, 1);
+        Slice<RecordInfoWithBookmark> result = recordService.getRecentRecordInfosWithBookmarks(1,null, 0L, 1);
         assertAll(
                 () -> assertThat(result.getContent()).hasSize(0),
                 () -> assertThat(result.hasNext()).isFalse()
@@ -93,7 +93,7 @@ class RecordServiceTest {
         recordService.create(DomainFixture.createRecordCreateByOtherUser(), DomainFixture.createFile());
 
         //when
-        Slice<RecordInfoWithBookmark> result = recordService.getRecentRecordInfoWithBookmarksByUser(1, Long.MAX_VALUE, 10);
+        Slice<RecordInfoWithBookmark> result = recordService.getRecentRecordInfosWithBookmarksByUser(1, Long.MAX_VALUE, 10);
 
         //then
         assertAll(
@@ -114,7 +114,7 @@ class RecordServiceTest {
         recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
 
         // when
-        Slice<RecordInfoWithBookmark> result = recordService.getRecentRecordInfoWithBookmarks(1, null, 6L, 10);
+        Slice<RecordInfoWithBookmark> result = recordService.getRecentRecordInfosWithBookmarks(1, null, 6L, 10);
 
         // then
         assertAll(
@@ -136,7 +136,7 @@ class RecordServiceTest {
         recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
 
         // when
-        Slice<RecordInfoWithBookmark> result = recordService.getRecentRecordInfoWithBookmarks(1, null, 1L, 3);
+        Slice<RecordInfoWithBookmark> result = recordService.getRecentRecordInfosWithBookmarks(1, null, 1L, 3);
 
         // then
         assertAll(
