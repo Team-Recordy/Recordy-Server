@@ -50,7 +50,7 @@ public interface RecordStatApi {
                     )
             }
     )
-    public ResponseEntity bookmark(
+    public ResponseEntity<Void> bookmark(
             @UserId Long userId,
             @PathVariable Long recordId
     );
@@ -86,7 +86,7 @@ public interface RecordStatApi {
                     )
             }
     )
-    public ResponseEntity deleteBookmark(
+    public ResponseEntity<Void> deleteBookmark(
             @UserId Long userId,
             @PathVariable Long recordId
     );
