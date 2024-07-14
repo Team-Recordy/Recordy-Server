@@ -6,7 +6,7 @@ import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.record.domain.File;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.usecase.RecordCreate;
-import org.recordy.server.record.domain.usecase.RecordInfoWithBookmark;
+import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
 import org.recordy.server.record.exception.RecordException;
 import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.record.service.FileService;
@@ -73,16 +73,6 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public Slice<RecordInfoWithBookmark> getFamousRecordInfosWithBookmarks(long userId, List<String> keywords,
-                                                                           int pageNumber, int size) {
-
-        Slice<Record> records = getFamousRecords(keywords, pageNumber,size);
-        List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records);
-
-        return RecordInfoWithBookmark.of(records, bookmarks);
-    }
-
-
     public Slice<Record> getFamousRecords(List<String> keywords, int pageNumber, int size) {
         if (Objects.isNull(keywords) || keywords.isEmpty()) {
             return getFamousRecords(pageNumber, size);
@@ -100,27 +90,11 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public Slice<RecordInfoWithBookmark> getRecentRecordInfosWithBookmarksByUser(long userId, long cursorId, int size) {
-
-        Slice<Record> records = getRecentRecordsByUser(userId, cursorId, size);
-        List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records);
-
-        return RecordInfoWithBookmark.of(records, bookmarks);
-    }
-
     public Slice<Record> getRecentRecordsByUser(long userId, long cursorId, int size) {
         return recordRepository.findAllByUserIdOrderByIdDesc(userId, cursorId, PageRequest.ofSize(size));
     }
 
     @Override
-    public Slice<RecordInfoWithBookmark> getRecentRecordInfosWithBookmarks(long userId,List<String> keywords, Long cursorId,
-                                                                          int size) {
-        Slice<Record> records = getRecentRecords(keywords,cursorId, size);
-        List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records);
-
-        return RecordInfoWithBookmark.of(records, bookmarks);
-    }
-
     public Slice<Record> getRecentRecords(List<String> keywords, Long cursorId, int size) {
         if (Objects.isNull(keywords) || keywords.isEmpty()) {
             return getRecentRecords(cursorId, size);
@@ -138,13 +112,6 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public Slice<RecordInfoWithBookmark> getSubscribingRecordInfosWithBookmarks(long userId, long cursorId, int size) {
-        Slice<Record> records = getSubscribingRecords(userId,cursorId, size);
-        List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records);
-
-        return RecordInfoWithBookmark.of(records, bookmarks);
-    }
-
     public Slice<Record> getSubscribingRecords(long userId, long cursorId, int size) {
         return recordRepository.findAllBySubscribingUserIdOrderByIdDesc(userId, cursorId, PageRequest.ofSize(size));
     }

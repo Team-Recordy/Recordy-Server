@@ -1,4 +1,4 @@
-package org.recordy.server.record.domain.usecase;
+package org.recordy.server.record.controller.dto.response;
 
 import org.recordy.server.record.service.dto.FileUrl;
 import org.recordy.server.record.domain.Record;

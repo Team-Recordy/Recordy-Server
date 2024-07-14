@@ -7,7 +7,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.mock.FakeContainer;
-import org.recordy.server.record.domain.usecase.RecordInfoWithBookmark;
+import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
+import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.record_stat.domain.Bookmark;
 import org.recordy.server.user.domain.UserStatus;
@@ -55,7 +56,7 @@ public class RecordStatServiceTest {
         recordStatService.deleteBookmark(1,1);
 
         // then
-        Slice<RecordInfoWithBookmark> result = recordStatService.getBookmarkedRecordInfosWithBookmarks(1, 7, 10);
+        Slice<Record> result = recordStatService.getBookmarkedRecords(1, 7, 10);
 
         assertAll(
                 () -> assertThat(result.getContent()).hasSize(0)
@@ -73,14 +74,14 @@ public class RecordStatServiceTest {
         recordStatService.bookmark(2, 3);
 
         // when
-        Slice<RecordInfoWithBookmark> result = recordStatService.getBookmarkedRecordInfosWithBookmarks(1, 7, 10);
+        Slice<Record> result = recordStatService.getBookmarkedRecords(1, 7, 10);
 
         // then
         assertAll(
                 () -> assertThat(result.getContent()).hasSize(3),
-                () -> assertThat(result.getContent().get(0).recordInfo().id()).isEqualTo(3L),
-                () -> assertThat(result.getContent().get(1).recordInfo().id()).isEqualTo(2L),
-                () -> assertThat(result.getContent().get(2).recordInfo().id()).isEqualTo(1L),
+                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(3L),
+                () -> assertThat(result.getContent().get(1).getId()).isEqualTo(2L),
+                () -> assertThat(result.getContent().get(2).getId()).isEqualTo(1L),
                 () -> assertThat(result.hasNext()).isFalse()
         );
     }
@@ -96,7 +97,7 @@ public class RecordStatServiceTest {
         recordStatService.bookmark(2, 3);
 
         // when
-        Slice<RecordInfoWithBookmark> result = recordStatService.getBookmarkedRecordInfosWithBookmarks(1, 1, 10);
+        Slice<Record> result = recordStatService.getBookmarkedRecords(1, 1, 10);
 
         // then
         assertAll(

@@ -1,4 +1,4 @@
-package org.recordy.server.record.domain.usecase;
+package org.recordy.server.record.controller.dto.response;
 
 import java.util.List;
 import org.recordy.server.record.domain.Record;

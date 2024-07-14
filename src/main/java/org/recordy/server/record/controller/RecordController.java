@@ -4,12 +4,13 @@ package org.recordy.server.record.controller;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.security.UserId;
 import org.recordy.server.record.controller.dto.request.RecordCreateRequest;
-import org.recordy.server.record.domain.usecase.RecordInfoWithBookmark;
+import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
 import org.recordy.server.record.domain.File;
 import org.recordy.server.record.domain.Record;
 
 import org.recordy.server.record.domain.usecase.RecordCreate;
 import org.recordy.server.record.service.RecordService;
+import org.recordy.server.record_stat.service.RecordStatService;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ import java.util.List;
 public class RecordController {
 
     private final RecordService recordService;
+    private final RecordStatService recordStatService;
 
     @PostMapping
     public ResponseEntity<Record> createRecord(
@@ -59,8 +61,10 @@ public class RecordController {
             @RequestParam(required = false, defaultValue = "0") long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
+        Slice<Record> records = recordService.getRecentRecords(keywords, cursorId, size);
+        List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records);
 
-        return ResponseEntity.ok().body(recordService.getRecentRecordInfosWithBookmarks(userId, keywords, cursorId, size));
+        return ResponseEntity.ok().body(RecordInfoWithBookmark.of(records, bookmarks));
     }
 
     @GetMapping("/famous")
@@ -70,9 +74,12 @@ public class RecordController {
             @RequestParam(required = false, defaultValue = "0") int pageNumber,
             @RequestParam(required = false, defaultValue = "10") int pageSize
     ){
+        Slice<Record> records = recordService.getFamousRecords(keywords, pageNumber, pageSize);
+        List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records);
+
         return ResponseEntity
                 .ok()
-                .body(recordService.getFamousRecordInfosWithBookmarks(userId, keywords, pageNumber, pageSize));
+                .body(RecordInfoWithBookmark.of(records, bookmarks));
     }
 
     @PostMapping("/{recordId}")
@@ -92,9 +99,12 @@ public class RecordController {
             @RequestParam(required = false, defaultValue = "0") long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
+        Slice<Record> records = recordService.getRecentRecordsByUser(userId, cursorId, size);
+        List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records);
+
         return ResponseEntity
                 .ok()
-                .body(recordService.getRecentRecordInfosWithBookmarksByUser(userId, cursorId, size));
+                .body(RecordInfoWithBookmark.of(records, bookmarks));
     }
 
     @GetMapping("/follow")
@@ -103,8 +113,11 @@ public class RecordController {
             @RequestParam(required = false, defaultValue = "0") long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
+        Slice<Record> records = recordService.getSubscribingRecords(userId, cursorId, size);
+        List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records);
+
         return ResponseEntity
                 .ok()
-                .body(recordService.getSubscribingRecordInfosWithBookmarks(userId, cursorId, size));
+                .body(RecordInfoWithBookmark.of(records, bookmarks));
     }
 }
