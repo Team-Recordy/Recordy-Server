@@ -72,7 +72,7 @@ public class RecordController {
             @RequestParam(required = false) List<String> keywords,
             @RequestParam(required = false, defaultValue = "0") int pageNumber,
             @RequestParam(required = false, defaultValue = "10") int pageSize
-    ){
+    ) {
         return ResponseEntity
                 .ok()
                 .body(recordService.getFamousRecords(keywords, pageNumber, pageSize));
