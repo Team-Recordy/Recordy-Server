@@ -5,17 +5,17 @@ import org.junit.jupiter.api.Test;
 import org.recordy.server.common.config.S3Config;
 import org.recordy.server.common.exception.ExternalException;
 import org.recordy.server.record.service.impl.S3ServiceImpl;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -24,12 +24,16 @@ public class S3ServiceTest {
 
     private S3ServiceImpl s3Service;
     private S3Client s3ClientMock;
+    private S3Presigner presignerMock;
+
+    @Value("${aws-property.s3-bucket-name}")
+    private String bucket = "recordy-bucket";
 
     @BeforeEach
     void init() {
-        s3Service = new S3ServiceImpl("recordy-bucket", new S3Config("access-key", "secret-key", "ap-northeast-2"));
         s3ClientMock = mock(S3Client.class);
-        s3Service.setS3Client(s3ClientMock);
+        presignerMock = mock(S3Presigner.class);
+        s3Service = new S3ServiceImpl(bucket, s3ClientMock, presignerMock);
     }
 
     @Test
@@ -43,10 +47,10 @@ public class S3ServiceTest {
                 .thenReturn(PutObjectResponse.builder().build());
 
         // when
-        String result = s3Service.uploadFile(imageMock);
+        String result = s3Service.uploadFile(imageMock.getBytes(), "test-image.jpg");
 
         // then
-        assertThatCode(() -> s3Service.uploadFile(imageMock)).doesNotThrowAnyException();
+        assertThatCode(() -> s3Service.uploadFile(imageMock.getBytes(), "test-image.jpg")).doesNotThrowAnyException();
     }
 
     @Test
@@ -60,10 +64,10 @@ public class S3ServiceTest {
                 .thenReturn(PutObjectResponse.builder().build());
 
         // when
-        String result = s3Service.uploadFile(videoMock);
+        String result = s3Service.uploadFile(videoMock.getBytes(), "test-video.mp4");
 
         // then
-        assertThatCode(() -> s3Service.uploadFile(videoMock)).doesNotThrowAnyException();
+        assertThatCode(() -> s3Service.uploadFile(videoMock.getBytes(), "test-video.mp4")).doesNotThrowAnyException();
     }
 
     @Test
@@ -73,12 +77,10 @@ public class S3ServiceTest {
         when(imageMock.getContentType()).thenReturn("image/mov");
         when(imageMock.getSize()).thenReturn(1024L);
         when(imageMock.getBytes()).thenReturn(new byte[1024]);
-        when(s3ClientMock.putObject(any(PutObjectRequest.class), any(software.amazon.awssdk.core.sync.RequestBody.class)))
-                .thenReturn(PutObjectResponse.builder().build());
 
         //when
         //then
-        assertThatThrownBy(() -> s3Service.uploadFile(imageMock))
+        assertThatThrownBy(() -> s3Service.uploadFile(imageMock.getBytes(), "test-image.mov"))
                 .isInstanceOf(ExternalException.class);
     }
 
@@ -89,12 +91,10 @@ public class S3ServiceTest {
         when(videoMock.getContentType()).thenReturn("video/hwp");
         when(videoMock.getSize()).thenReturn(1024L * 50);
         when(videoMock.getBytes()).thenReturn(new byte[1024 * 50]);
-        when(s3ClientMock.putObject(any(PutObjectRequest.class), any(software.amazon.awssdk.core.sync.RequestBody.class)))
-                .thenReturn(PutObjectResponse.builder().build());
 
         //when
         //then
-        assertThatThrownBy(() -> s3Service.uploadFile(videoMock))
+        assertThatThrownBy(() -> s3Service.uploadFile(videoMock.getBytes(), "test-video.hwp"))
                 .isInstanceOf(ExternalException.class);
     }
 
@@ -108,7 +108,7 @@ public class S3ServiceTest {
 
         //when
         //then
-        assertThatThrownBy(() -> s3Service.uploadFile(imageMock))
+        assertThatThrownBy(() -> s3Service.uploadFile(imageMock.getBytes(), "test-image.jpg"))
                 .isInstanceOf(ExternalException.class);
     }
 
@@ -118,12 +118,11 @@ public class S3ServiceTest {
         MultipartFile videoMock = mock(MultipartFile.class);
         when(videoMock.getContentType()).thenReturn("video/mov");
         when(videoMock.getSize()).thenReturn(1024L * 1024 * 200);
-        when(s3ClientMock.putObject(any(PutObjectRequest.class), any(software.amazon.awssdk.core.sync.RequestBody.class)))
-                .thenReturn(PutObjectResponse.builder().build());
+        when(videoMock.getBytes()).thenReturn(new byte[1024 * 1024 * 200]);
 
         //when
         //then
-        assertThatThrownBy(() -> s3Service.uploadFile(videoMock))
+        assertThatThrownBy(() -> s3Service.uploadFile(videoMock.getBytes(), "test-video.mov"))
                 .isInstanceOf(ExternalException.class);
     }
 }
