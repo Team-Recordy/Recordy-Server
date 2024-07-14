@@ -194,4 +194,13 @@ public class RecordQueryDslRepository {
 
         return new SliceImpl<>(recordEntities, pageable, QueryDslUtils.hasNext(pageable, recordEntities));
     }
+
+    public Optional<Long> findMaxId() {
+        return Optional.ofNullable(jpaQueryFactory
+                .select(recordEntity.id.max())
+                        .from(recordEntity)
+                        .fetchOne()
+        );
+    }
+
 }

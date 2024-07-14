@@ -115,4 +115,14 @@ public class RecordRepositoryImpl implements RecordRepository {
         return recordQueryDslRepository.findAllBySubscribingUserIdOrderByIdDesc(userId, cursor, pageable)
                 .map(RecordEntity::toDomain);
     }
+
+    @Override
+    public Optional<Long> findMaxId() {
+        return recordQueryDslRepository.findMaxId();
+    }
+
+    @Override
+    public Long count() {
+        return recordJpaRepository.count();
+    }
 }

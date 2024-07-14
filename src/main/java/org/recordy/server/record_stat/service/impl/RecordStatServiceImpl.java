@@ -64,4 +64,11 @@ public class RecordStatServiceImpl implements RecordStatService {
         return bookmarkRepository.findAllByBookmarksOrderByIdDesc(userId, cursorId, PageRequest.ofSize(size))
                 .map(Bookmark::getRecord);
     }
+
+    @Override
+    public List<Boolean> findBookmarks(long userId, List<Record> records) {
+        return records.stream()
+                .map(record -> bookmarkRepository.existsByUserIdAndRecordId(userId, record.getId()))
+                .collect(Collectors.toList());
+    }
 }
