@@ -62,8 +62,7 @@ public class RecordController {
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
 
-        Slice<RecordInfoWithBookmark> recordInfoWithBookmarks = recordService.getRecentRecordInfosWithBookmarks(userId, keywords, cursorId, size);
-        return ResponseEntity.ok().body(recordInfoWithBookmarks);
+        return ResponseEntity.ok().body(recordService.getRecentRecordInfosWithBookmarks(userId, keywords, cursorId, size));
     }
 
     @GetMapping("/famous")
