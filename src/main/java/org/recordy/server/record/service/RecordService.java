@@ -1,6 +1,6 @@
 package org.recordy.server.record.service;
 
-import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
+import org.recordy.server.record.domain.usecase.RecordInfoWithBookmark;
 import org.recordy.server.record.domain.File;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.usecase.RecordCreate;

@@ -4,14 +4,12 @@ package org.recordy.server.record.controller;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.security.UserId;
 import org.recordy.server.record.controller.dto.request.RecordCreateRequest;
-import org.recordy.server.record.controller.dto.response.RecordInfo;
-import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
+import org.recordy.server.record.domain.usecase.RecordInfoWithBookmark;
 import org.recordy.server.record.domain.File;
 import org.recordy.server.record.domain.Record;
 
 import org.recordy.server.record.domain.usecase.RecordCreate;
 import org.recordy.server.record.service.RecordService;
-import org.recordy.server.record_stat.service.RecordStatService;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
