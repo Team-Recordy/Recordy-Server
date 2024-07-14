@@ -69,15 +69,13 @@ public class BookmarkRepositoryIntegrationTest extends IntegrationTest {
 
     @Test
     void deleteById를_통해_북마크를_삭제할_수_있다() {
-        //given
-        //when
-        bookmarkRepository.deleteById(1);
+        // given, when
+        bookmarkRepository.delete(1, 1);
+        Slice<Bookmark> bookmarks = bookmarkRepository.findAllByBookmarksOrderByIdDesc(1L, 4L, PageRequest.ofSize(10));
 
-        //then
-        //원래 user1의 북마크 2개 있음 -> 이중 1개 삭제
-        Slice<Bookmark> bookmarks = bookmarkRepository.findAllByBookmarksOrderByIdDesc(1L, 3L, PageRequest.ofSize(10));
+        // then
         assertAll(
-                () -> assertThat(bookmarks.getContent()).hasSize(0)
+                () -> assertThat(bookmarks.getContent()).hasSize(1)
         );
     }
 
@@ -113,20 +111,6 @@ public class BookmarkRepositoryIntegrationTest extends IntegrationTest {
         assertAll(
                 () -> assertThat(result.getContent()).isEmpty(),
                 () -> assertThat(result.hasNext()).isFalse()
-        );
-    }
-
-    @Test
-    void findByUserAndRecord를_통해_북마크를_찾을_수_있다() {
-        //given
-
-        //when
-        Bookmark bookmark = bookmarkRepository.findByUserAndRecord(1,1).get();
-
-        //then
-        assertAll(
-                () -> assertThat(bookmark.getUser().getId()).isEqualTo(1),
-                () -> assertThat(bookmark.getRecord().getId()).isEqualTo(1)
         );
     }
 }

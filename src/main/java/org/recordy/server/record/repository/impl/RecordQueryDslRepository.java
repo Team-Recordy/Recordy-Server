@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.util.QueryDslUtils;
 import org.recordy.server.keyword.domain.KeywordEntity;
 import org.recordy.server.record.domain.RecordEntity;
+import org.recordy.server.subscribe.domain.QSubscribeEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -23,6 +24,7 @@ import static org.recordy.server.record.domain.QRecordEntity.recordEntity;
 import static org.recordy.server.record.domain.QUploadEntity.uploadEntity;
 import static org.recordy.server.record_stat.domain.QBookmarkEntity.bookmarkEntity;
 import static org.recordy.server.record_stat.domain.QViewEntity.viewEntity;
+import static org.recordy.server.subscribe.domain.QSubscribeEntity.subscribeEntity;
 import static org.recordy.server.user.domain.QUserEntity.userEntity;
 
 @RequiredArgsConstructor
@@ -171,5 +173,25 @@ public class RecordQueryDslRepository {
                 Long::sum));
 
         return preference;
+    }
+
+    public Slice<RecordEntity> findAllBySubscribingUserIdOrderByIdDesc(long userId, long cursor, Pageable pageable) {
+        if (cursor == 0)
+            cursor = Long.MAX_VALUE;
+
+        List<RecordEntity> recordEntities = jpaQueryFactory
+                .select(recordEntity)
+                .from(subscribeEntity)
+                .join(subscribeEntity.subscribedUser, userEntity)
+                .join(userEntity.records, recordEntity)
+                .where(
+                        QueryDslUtils.ltCursorId(cursor, recordEntity.id),
+                        subscribeEntity.subscribingUser.id.eq(userId)
+                )
+                .orderBy(recordEntity.id.desc())
+                .limit(pageable.getPageSize() + 1)
+                .fetch();
+
+        return new SliceImpl<>(recordEntities, pageable, QueryDslUtils.hasNext(pageable, recordEntities));
     }
 }

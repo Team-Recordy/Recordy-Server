@@ -87,11 +87,6 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public Slice<Record> getRecentRecordsByUser(long userId, long cursorId, int size) {
-        return recordRepository.findAllByUserIdOrderByIdDesc(userId, cursorId, PageRequest.ofSize(size));
-    }
-
-    @Override
     public Slice<Record> getRecentRecords(List<String> keywords, Long cursorId, int size) {
         if (Objects.isNull(keywords) || keywords.isEmpty()) {
             return getRecentRecords(cursorId, size);
@@ -106,5 +101,15 @@ public class RecordServiceImpl implements RecordService {
 
     private Slice<Record> getRecentRecordsWithKeywords(List<Keyword> keywords, long cursorId, int size) {
         return recordRepository.findAllByIdAfterAndKeywordsOrderByIdDesc(keywords, cursorId, PageRequest.ofSize(size));
+    }
+
+    @Override
+    public Slice<Record> getRecentRecordsByUser(long userId, long cursorId, int size) {
+        return recordRepository.findAllByUserIdOrderByIdDesc(userId, cursorId, PageRequest.ofSize(size));
+    }
+
+    @Override
+    public Slice<Record> getSubscribingRecords(long userId, long cursorId, int size) {
+        return recordRepository.findAllBySubscribingUserIdOrderByIdDesc(userId, cursorId, PageRequest.ofSize(size));
     }
 }

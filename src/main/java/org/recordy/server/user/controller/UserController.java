@@ -48,7 +48,6 @@ public class UserController implements UserApi {
                 build();
     }
 
-    //쿼리 파라미터로
     @Override
     @GetMapping("/check-nickname")
     public ResponseEntity<Void> checkDuplicateNickname(

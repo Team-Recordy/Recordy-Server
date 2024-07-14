@@ -52,10 +52,11 @@ public class RecordEntity extends JpaMetaInfoEntity {
         this.location = location;
         this.content = content;
         this.user = user;
+        this.createdAt = createdAt;
     }
 
     public static RecordEntity from(Record record) {
-        return new RecordEntity(
+        RecordEntity recordEntity = new RecordEntity(
                 record.getId(),
                 record.getFileUrl().videoUrl(),
                 record.getFileUrl().thumbnailUrl(),
@@ -64,6 +65,9 @@ public class RecordEntity extends JpaMetaInfoEntity {
                 UserEntity.from(record.getUploader()),
                 record.getCreatedAt()
         );
+        recordEntity.user.addRecord(recordEntity);
+
+        return recordEntity;
     }
 
     public Record toDomain() {
@@ -81,6 +85,7 @@ public class RecordEntity extends JpaMetaInfoEntity {
                         .toList())
                 .uploader(user.toDomain())
                 .bookmarkCount(bookmarks.size())
+                .createdAt(createdAt)
                 .build();
     }
 

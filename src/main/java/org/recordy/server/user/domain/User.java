@@ -39,6 +39,7 @@ public class User {
                 .nickname(userSignUp.nickname())
                 .status(ACTIVE)
                 .termsAgreement(userSignUp.termsAgreement())
+                .createdAt(createdAt)
                 .build();
     }
 
