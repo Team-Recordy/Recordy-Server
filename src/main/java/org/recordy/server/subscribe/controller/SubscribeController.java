@@ -57,4 +57,16 @@ public class SubscribeController implements SubscribeApi{
                 .status(HttpStatus.OK)
                 .body(subscribeService.getSubscribedUserInfos(userId, cursorId, size));
     }
+
+    @Override
+    @GetMapping("/follower")
+    public ResponseEntity<Slice<UserInfo>> getSubscribingUserInfos(
+            @UserId Long userId,
+            @RequestParam(required = false, defaultValue = "0") long cursorId,
+            @RequestParam(required = false, defaultValue = "10") int size
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(subscribeService.getSubscribingUserInfos(userId, cursorId, size));
+    }
 }

@@ -33,6 +33,20 @@ public class SubscribeQueryDslRepository {
         return new SliceImpl<>(subscribeEntities, pageable, QueryDslUtils.hasNext(pageable, subscribeEntities));
     }
 
+    public Slice<SubscribeEntity> findAllBySubscribedUserId(long subscribedUserId, long cursor, Pageable pageable) {
+        List<SubscribeEntity> subscribeEntities = jpaQueryFactory
+                .selectFrom(subscribeEntity)
+                .where(
+                        QueryDslUtils.ltCursorId(cursor, subscribeEntity.id),
+                        subscribeEntity.subscribedUser.id.eq(subscribedUserId)
+                )
+                .orderBy(subscribeEntity.id.desc())
+                .limit(pageable.getPageSize() + 1)
+                .fetch();
+
+        return new SliceImpl<>(subscribeEntities, pageable, QueryDslUtils.hasNext(pageable, subscribeEntities));
+    }
+
     public long countSubscribingUsers(long subscribedUserId) {
         return jpaQueryFactory
                 .select(subscribeEntity.id.count())

@@ -71,5 +71,27 @@ public interface SubscribeApi {
             @RequestParam(required = false, defaultValue = "10") int size
     );
 
+    @Operation(
+            security = @SecurityRequirement(name = "Authorization"),
+            summary = "팔로우 리스트 조회 API",
+            description = "사용자를 팔로우하고 있는 사람 리스트를 조회하는 API입니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "성공",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = Preference.class
+                                    )
+                            )
+                    )
+            }
+    )
+    public ResponseEntity<Slice<UserInfo>> getSubscribingUserInfos(
+            @UserId Long userId,
+            @RequestParam(required = false, defaultValue = "0L") long cursorId,
+            @RequestParam(required = false, defaultValue = "10") int size
+    );
 
 }

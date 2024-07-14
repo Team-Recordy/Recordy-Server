@@ -13,4 +13,5 @@ public interface SubscribeService {
 
     // query
     Slice<UserInfo> getSubscribedUserInfos(long subscribingUserId, long cursor, int size);
+    Slice<UserInfo> getSubscribingUserInfos(long subscribedUserId, long cursor, int size);
 }

@@ -12,6 +12,7 @@ public interface SubscribeRepository {
 
     // query
     Slice<Subscribe> findAllBySubscribingUserId(long subscribingUserId, long cursor, Pageable pageable);
+    Slice<Subscribe> findAllBySubscribedUserId(long subscribedUserId, long curson, Pageable pageable);
     boolean existsBySubscribingUserIdAndSubscribedUserId(long subscribingUserId, long subscribedUserId);
     long countSubscribingUsers(long subscribedUserId);
     long countSubscribedUsers(long subscribingUserId);
