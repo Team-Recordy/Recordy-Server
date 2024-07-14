@@ -1,95 +1,61 @@
 package org.recordy.server.record.service.impl;
 
-import org.recordy.server.common.config.S3Config;
-import org.recordy.server.common.message.ErrorMessage;
-import org.recordy.server.common.exception.ExternalException;
+import lombok.RequiredArgsConstructor;
 import org.recordy.server.record.service.S3Service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
+import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.time.Duration;
 
 @Component
+@RequiredArgsConstructor
 public class S3ServiceImpl implements S3Service {
 
-    private String bucketName;
-    private S3Config s3Config;
-    private S3Client s3Client;
-    private static final List<String> FILE_EXTENSIONS = Arrays.asList("image/jpeg", "image/png", "image/jpg", "image/webp", "video/mp4", "video/mov", "video/quicktime");
-    private static final Long MAX_SIZE = 100 * 1024 * 1024L; // 100MB
+    @Value("${aws-property.s3-bucket-name}")
+    private String bucket;
 
-    public S3ServiceImpl(@Value("${aws-property.s3-bucket-name}") final String bucketName, S3Config s3Config) {
-        this.bucketName = bucketName;
-        this.s3Config = s3Config;
-        this.s3Client = s3Config.getS3Client();
-    }
+    private final S3Client s3Client;
+    private final S3Presigner presigner;
 
     @Override
-    public String uploadFile(MultipartFile file) throws IOException {
-        validateFileExtension(file);
-        validateFileSize(file);
-        final String url = getFileExtension(file);
-        PutObjectRequest request = PutObjectRequest.builder()
-                .bucket(bucketName)
-                .key(url)
-                .contentType(file.getContentType())
-                .contentDisposition("inline")
+    public String getPresignUrl(String filename) {
+        if (filename == null || filename.equals("")) {
+            return null;
+        }
+
+        GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+                .bucket(bucket)
+                .key(filename)
                 .build();
-        RequestBody requestBody = RequestBody.fromBytes(file.getBytes());
-        s3Client.putObject(request, requestBody);
-        return url;
-    }
 
-    public String getFileExtension(MultipartFile file) {
-        return UUID.randomUUID() + switch (Objects.requireNonNull(file.getContentType())) {
-            case "image/jpeg", "image/jpg" -> ".jpg";
-            case "image/png" -> ".png";
-            case "image/webp" -> ".webp";
-            case "video/mp4" -> ".mp4";
-            case "video/mov", "video/quicktime" -> ".mov";
-            default -> throw new ExternalException(ErrorMessage.INVALID_FILE_TYPE);
-        };
+        GetObjectPresignRequest getObjectPresignRequest = GetObjectPresignRequest.builder()
+                .signatureDuration(Duration.ofMinutes(5))
+                .getObjectRequest(getObjectRequest)
+                .build();
+
+        PresignedGetObjectRequest presignedGetObjectRequest = presigner
+                .presignGetObject(getObjectPresignRequest);
+
+        return presignedGetObjectRequest.url().toString();
     }
 
     @Override
-    public void deleteFile(String key) throws IOException {
-        s3Client.deleteObject(DeleteObjectRequest.builder()
-                .bucket(bucketName)
-                .key(key)
-                .build());
-    }
+    public String uploadFile(byte[] fileData, String fileName) throws IOException {
+        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                .bucket(bucket)
+                .key(fileName)
+                .build();
 
-    public void setS3Client(S3Client s3Client) {
-        this.s3Client = s3Client;
-    }
+        s3Client.putObject(putObjectRequest, RequestBody.fromBytes(fileData));
 
-    private String generateImageFileName() {
-        return UUID.randomUUID() + ".jpg";
-    }
-
-    private String generateVideoFileName() {
-        return UUID.randomUUID() + ".mp4";
-    }
-
-    public void validateFileExtension(MultipartFile file) {
-        String contentType = file.getContentType();
-        if (!FILE_EXTENSIONS.contains(contentType)) {
-            throw new ExternalException(ErrorMessage.INVALID_FILE_TYPE);
-        }
-    }
-
-    public void validateFileSize(MultipartFile file) {
-        if (file.getSize() > MAX_SIZE) {
-            throw new ExternalException(ErrorMessage.INVALID_FILE_SIZE);
-        }
+        return getPresignUrl(fileName);
     }
 }
