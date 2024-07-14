@@ -42,6 +42,7 @@ public class RecordController implements RecordApi {
                 .body(record);
     }
 
+    @Override
     @DeleteMapping("/{recordId}")
     public ResponseEntity<Void> deleteRecord(
             @UserId Long uploaderId,
