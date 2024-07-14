@@ -54,10 +54,11 @@ public class RecordController implements RecordApi {
                 .build();
     }
 
+    @Override
     @GetMapping("/recent")
     public ResponseEntity<Slice<Record>> getRecentRecords(
             @RequestParam(required = false) List<String> keywords,
-            @RequestParam(required = false, defaultValue = "0") long cursorId,
+            @RequestParam(required = false, defaultValue = "0") Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
         Slice<Record> records = recordService.getRecentRecords(keywords, cursorId, size);
@@ -67,6 +68,7 @@ public class RecordController implements RecordApi {
                 .body(records);
     }
 
+    @Override
     @GetMapping("/famous")
     public ResponseEntity<Slice<Record>> getFamousRecords(
             @RequestParam(required = false) List<String> keywords,
@@ -78,10 +80,11 @@ public class RecordController implements RecordApi {
                 .body(recordService.getFamousRecords(keywords, pageNumber, pageSize));
     }
 
+    @Override
     @PostMapping("/{recordId}")
     public ResponseEntity<Void> watch(
             @UserId Long userId,
-            @PathVariable long recordId
+            @PathVariable Long recordId
     ) {
         recordService.watch(userId, recordId);
         return ResponseEntity
@@ -89,10 +92,11 @@ public class RecordController implements RecordApi {
                 .build();
     }
 
+    @Override
     @GetMapping
     public ResponseEntity<Slice<Record>> getRecentRecordsByUser(
-            @RequestParam long userId,
-            @RequestParam(required = false, defaultValue = "0") long cursorId,
+            @UserId Long userId,
+            @RequestParam(required = false, defaultValue = "0") Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
         Slice<Record> records = recordService.getRecentRecordsByUser(userId, cursorId, size);
