@@ -248,7 +248,7 @@ public interface RecordApi {
             @RequestParam(required = false) List<String> keywords,
             @RequestParam(required = false, defaultValue = "0") int pageNumber,
             @RequestParam(required = false, defaultValue = "10") int pageSize
-    ) ;
+    );
 
     @Operation(
             summary = "최근 레코드 조회 API",
