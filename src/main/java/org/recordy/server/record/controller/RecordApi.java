@@ -165,7 +165,7 @@ public interface RecordApi {
             }
     )
     public ResponseEntity<Slice<Record>> getRecentRecordsByUser(
-            @UserId long userId,
+            @UserId Long userId,
             @RequestParam long cursorId,
             @RequestParam int size
     );
@@ -202,7 +202,7 @@ public interface RecordApi {
             }
     )
     public ResponseEntity<Void> watch(
-            @UserId long userId,
+            @UserId Long userId,
             @RequestParam long recordId
     );
 
@@ -286,7 +286,7 @@ public interface RecordApi {
     )
     public ResponseEntity<Slice<Record>> getRecentRecords(
             @RequestParam(required = false) List<String> keywords,
-            @RequestParam(required = false, defaultValue = "0") long cursorId,
+            @RequestParam(required = false, defaultValue = "0") Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     );
 }
