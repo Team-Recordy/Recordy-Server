@@ -8,12 +8,14 @@ import org.recordy.server.record.domain.Record;
 
 import org.recordy.server.record.domain.usecase.RecordCreate;
 import org.recordy.server.record.service.RecordService;
+import org.recordy.server.record.service.S3Service;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -22,6 +24,7 @@ import java.util.List;
 public class RecordController implements RecordApi {
 
     private final RecordService recordService;
+    private final S3Service s3Service;
 
     @Override
     @PostMapping
@@ -98,4 +101,10 @@ public class RecordController implements RecordApi {
                 .ok()
                 .body(records);
     }
+    @GetMapping("/file/{filename}")
+    public ResponseEntity<String> getFile(@PathVariable(value = "filename") String fileName) throws IOException {
+        String url = s3Service.getPresignUrl(fileName);
+        return new ResponseEntity<>(url, HttpStatus.OK);
+    }
 }
+
