@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.recordy.server.auth.security.UserId;
+import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record_stat.domain.usecase.Preference;
 import org.springframework.data.domain.Slice;
@@ -86,7 +87,7 @@ public interface RecordStatApi {
                     )
             }
     )
-    public ResponseEntity<Slice<Record>> getBookmarkedRecords(
+    public ResponseEntity<Slice<RecordInfoWithBookmark>> getBookmarkedRecords(
             @UserId Long userId,
             @RequestParam(required = false, defaultValue = "0L") long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size

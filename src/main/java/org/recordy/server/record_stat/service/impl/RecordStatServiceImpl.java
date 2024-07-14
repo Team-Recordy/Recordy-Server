@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.message.ErrorMessage;
+import org.recordy.server.record.controller.dto.response.RecordInfo;
+import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.exception.RecordException;
 import org.recordy.server.record.repository.RecordRepository;
@@ -56,7 +58,20 @@ public class RecordStatServiceImpl implements RecordStatService {
         return Preference.of(userId, recordRepository.countAllByUserIdGroupByKeyword(userId));
     }
 
+
     @Override
+    public Slice<RecordInfoWithBookmark> getBookmarkedRecordInfosWithBookmarks(long userId, long cursorId, int size) {
+        Slice<Record> records = getBookmarkedRecords(userId, cursorId, size);
+        List<Boolean> bookmarks = findBookmarks(userId, records);
+
+        return records.map(record -> {
+            int index = records.getContent().indexOf(record);
+            Boolean isBookmarked = bookmarks.get(index);
+            RecordInfo recordInfo = RecordInfo.from(record);
+            return new RecordInfoWithBookmark(recordInfo, isBookmarked);
+        });
+    }
+
     public Slice<Record> getBookmarkedRecords(long userId, long cursorId, int size) {
         return bookmarkRepository.findAllByBookmarksOrderByIdDesc(userId, cursorId, PageRequest.ofSize(size))
                 .map(Bookmark::getRecord);

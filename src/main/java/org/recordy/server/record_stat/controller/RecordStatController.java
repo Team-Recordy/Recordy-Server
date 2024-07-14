@@ -2,6 +2,7 @@ package org.recordy.server.record_stat.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.security.UserId;
+import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.record_stat.domain.usecase.Preference;
@@ -65,13 +66,13 @@ public class RecordStatController implements RecordStatApi{
 
     @Override
     @GetMapping("/bookmark")
-    public ResponseEntity<Slice<Record>> getBookmarkedRecords(
+    public ResponseEntity<Slice<RecordInfoWithBookmark>> getBookmarkedRecords(
             @UserId Long userId,
             @RequestParam(required = false, defaultValue = "0") long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(recordStatService.getBookmarkedRecords(userId,cursorId,size));
+                .body(recordStatService.getBookmarkedRecordInfosWithBookmarks(userId,cursorId,size));
     }
 }
