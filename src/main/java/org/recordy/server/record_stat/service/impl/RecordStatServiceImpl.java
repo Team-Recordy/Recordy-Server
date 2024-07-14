@@ -49,7 +49,7 @@ public class RecordStatServiceImpl implements RecordStatService {
     @Override
     public List<Boolean> findBookmarks(long userId, Slice<Record> records) {
         return records.getContent().stream()
-                .map(record -> bookmarkRepository.findByUserIdAndRecordId(userId, record.getId()).isPresent())
+                .map(record -> bookmarkRepository.existsByUserIdAndRecordId(userId, record.getId()))
                 .collect(Collectors.toList());
     }
 
