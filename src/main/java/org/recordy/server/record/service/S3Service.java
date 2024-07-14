@@ -7,8 +7,8 @@ import java.io.IOException;
 public interface S3Service {
 
     // command
-    public String uploadFile(MultipartFile file) throws IOException;
-    void deleteFile(String key) throws IOException;
+    public String getPresignUrl(String filename);
+    String uploadFile(byte[] fileData, String fileName) throws IOException;
 
     // query
 

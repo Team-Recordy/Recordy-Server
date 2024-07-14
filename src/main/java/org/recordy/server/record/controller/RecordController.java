@@ -8,12 +8,14 @@ import org.recordy.server.record.domain.Record;
 
 import org.recordy.server.record.domain.usecase.RecordCreate;
 import org.recordy.server.record.service.RecordService;
+import org.recordy.server.record.service.S3Service;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -22,6 +24,7 @@ import java.util.List;
 public class RecordController implements RecordApi {
 
     private final RecordService recordService;
+    private final S3Service s3Service;
 
     @Override
     @PostMapping
@@ -52,11 +55,11 @@ public class RecordController implements RecordApi {
                 .build();
     }
 
-    @Override    
+    @Override
     @GetMapping("/recent")
     public ResponseEntity<Slice<Record>> getRecentRecords(
             @RequestParam(required = false) List<String> keywords,
-            @RequestParam(required = false, defaultValue = "0") Long cursorId,
+            @RequestParam(required = false, defaultValue = "0") Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
         Slice<Record> records = recordService.getRecentRecords(keywords, cursorId, size);
@@ -72,7 +75,7 @@ public class RecordController implements RecordApi {
             @RequestParam(required = false) List<String> keywords,
             @RequestParam(required = false, defaultValue = "0") int pageNumber,
             @RequestParam(required = false, defaultValue = "10") int pageSize
-    ){
+    ) {
         return ResponseEntity
                 .ok()
                 .body(recordService.getFamousRecords(keywords, pageNumber, pageSize));
@@ -93,7 +96,7 @@ public class RecordController implements RecordApi {
     @Override
     @GetMapping
     public ResponseEntity<Slice<Record>> getRecentRecordsByUser(
-            @RequestParam Long userId,
+            @UserId Long userId,
             @RequestParam(required = false, defaultValue = "0") Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
@@ -104,3 +107,4 @@ public class RecordController implements RecordApi {
                 .body(records);
     }
 }
+
