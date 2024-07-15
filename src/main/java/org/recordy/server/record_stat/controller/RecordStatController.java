@@ -70,7 +70,7 @@ public class RecordStatController implements RecordStatApi{
         List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records);
 
         return ResponseEntity
-                .ok()
+                .status(HttpStatus.OK)
                 .body(RecordInfoWithBookmark.of(records, bookmarks));
     }
 }
