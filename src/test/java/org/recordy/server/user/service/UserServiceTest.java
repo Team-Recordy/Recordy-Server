@@ -6,9 +6,13 @@ import org.recordy.server.auth.domain.Auth;
 import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.auth.repository.AuthRepository;
 import org.recordy.server.mock.FakeContainer;
+import org.recordy.server.record.repository.RecordRepository;
+import org.recordy.server.subscribe.domain.Subscribe;
+import org.recordy.server.subscribe.repository.SubscribeRepository;
 import org.recordy.server.user.controller.dto.request.TermsAgreement;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.UserStatus;
+import org.recordy.server.user.domain.usecase.UserProfile;
 import org.recordy.server.user.domain.usecase.UserSignIn;
 import org.recordy.server.user.domain.usecase.UserSignUp;
 import org.recordy.server.user.exception.UserException;
@@ -25,6 +29,8 @@ public class UserServiceTest {
     private UserService userService;
     private UserRepository userRepository;
     private AuthRepository authRepository;
+    private RecordRepository recordRepository;
+    private SubscribeRepository subscribeRepository;
 
     @BeforeEach
     void init() {
@@ -32,6 +38,8 @@ public class UserServiceTest {
         userService = fakeContainer.userService;
         userRepository = fakeContainer.userRepository;
         authRepository = fakeContainer.authRepository;
+        recordRepository = fakeContainer.recordRepository;
+        subscribeRepository = fakeContainer.subscribeRepository;
     }
 
     @Test
@@ -226,6 +234,29 @@ public class UserServiceTest {
         // when, then
         assertThatThrownBy(() -> userService.delete(userId))
                 .isInstanceOf(UserException.class);
+    }
+
+    @Test
+    void getProfile을_통해_사용자의_프로필_정보를_읽을_수_있다() {
+        // given
+        User user1 = userRepository.save(DomainFixture.createUser(1));
+        User user2 = userRepository.save(DomainFixture.createUser(2));
+
+        recordRepository.save(DomainFixture.createRecord());
+        subscribeRepository.save(new Subscribe(1L, user1, user2));
+        subscribeRepository.save(new Subscribe(2L, user2, user1));
+
+        // when
+        UserProfile userProfile = userService.getProfile(DomainFixture.USER_ID);
+
+        // then
+        assertAll(
+                () -> assertThat(userProfile.id()).isEqualTo(DomainFixture.USER_ID),
+                () -> assertThat(userProfile.nickname()).isEqualTo(DomainFixture.USER_NICKNAME),
+                () -> assertThat(userProfile.recordCount()).isEqualTo(1),
+                () -> assertThat(userProfile.followerCount()).isEqualTo(1),
+                () -> assertThat(userProfile.followingCount()).isEqualTo(1)
+        );
     }
 
     @Test

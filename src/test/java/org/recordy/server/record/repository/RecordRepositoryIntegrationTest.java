@@ -390,9 +390,9 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
         );
 
         // when
-        List<Record> inclusiveResult = recordRepository.findAllByKeywordsOrderByPopularity(List.of(Keyword.EXOTIC), PageRequest.of(0, 4))
+        List<Record> inclusiveResult = recordRepository.findAllByKeywordsOrderByPopularity(List.of(Keyword.감각적인), PageRequest.of(0, 4))
                 .getContent();
-        List<Record> exclusiveResult = recordRepository.findAllByKeywordsOrderByPopularity(List.of(Keyword.DUCKUMORI), PageRequest.of(0, 4))
+        List<Record> exclusiveResult = recordRepository.findAllByKeywordsOrderByPopularity(List.of(Keyword.아늑한), PageRequest.of(0, 4))
                 .getContent();
 
         // then
@@ -445,8 +445,8 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
         // then
         assertAll(
                 () -> assertThat(preference.size()).isEqualTo(2),
-                () -> assertThat(preference.get(Keyword.EXOTIC)).isEqualTo(4),
-                () -> assertThat(preference.get(Keyword.QUITE)).isEqualTo(4)
+                () -> assertThat(preference.get(Keyword.감각적인)).isEqualTo(4),
+                () -> assertThat(preference.get(Keyword.강렬한)).isEqualTo(4)
         );
     }
 

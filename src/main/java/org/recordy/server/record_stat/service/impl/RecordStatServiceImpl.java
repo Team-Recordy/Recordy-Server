@@ -1,7 +1,11 @@
 package org.recordy.server.record_stat.service.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.message.ErrorMessage;
+import org.recordy.server.record.controller.dto.response.RecordInfo;
+import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.exception.RecordException;
 import org.recordy.server.record.repository.RecordRepository;
@@ -47,9 +51,17 @@ public class RecordStatServiceImpl implements RecordStatService {
         return Preference.of(userId, recordRepository.countAllByUserIdGroupByKeyword(userId));
     }
 
+
     @Override
     public Slice<Record> getBookmarkedRecords(long userId, long cursorId, int size) {
         return bookmarkRepository.findAllByBookmarksOrderByIdDesc(userId, cursorId, PageRequest.ofSize(size))
                 .map(Bookmark::getRecord);
+    }
+
+    @Override
+    public List<Boolean> findBookmarks(long userId, List<Record> records) {
+        return records.stream()
+                .map(record -> bookmarkRepository.existsByUserIdAndRecordId(userId, record.getId()))
+                .collect(Collectors.toList());
     }
 }

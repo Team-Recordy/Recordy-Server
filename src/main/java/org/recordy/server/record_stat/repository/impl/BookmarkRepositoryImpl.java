@@ -1,6 +1,9 @@
 package org.recordy.server.record_stat.repository.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.recordy.server.record.domain.Record;
 import org.recordy.server.record_stat.domain.Bookmark;
 import org.recordy.server.record_stat.domain.BookmarkEntity;
 import org.recordy.server.record_stat.repository.BookmarkRepository;
@@ -32,5 +35,10 @@ public class BookmarkRepositoryImpl implements BookmarkRepository {
     public Slice<Bookmark> findAllByBookmarksOrderByIdDesc(long userId, long cursor, Pageable pageable) {
         return bookmarkQueryDslRepository.findAllByUserOrderByIdDesc(userId, cursor, pageable)
                 .map(BookmarkEntity::toDomain);
+    }
+
+    @Override
+    public boolean existsByUserIdAndRecordId(Long userId, Long recordId) {
+        return bookmarkJpaRepository.existsByUserIdAndRecordId(userId, recordId);
     }
 }

@@ -20,11 +20,29 @@ public class SubscribeQueryDslRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     public Slice<SubscribeEntity> findAllBySubscribingUserId(long subscribingUserId, long cursor, Pageable pageable) {
+        cursor = QueryDslUtils.cursorIdCheck(cursor);
+
         List<SubscribeEntity> subscribeEntities = jpaQueryFactory
                 .selectFrom(subscribeEntity)
                 .where(
                         QueryDslUtils.ltCursorId(cursor, subscribeEntity.id),
                         subscribeEntity.subscribingUser.id.eq(subscribingUserId)
+                )
+                .orderBy(subscribeEntity.id.desc())
+                .limit(pageable.getPageSize() + 1)
+                .fetch();
+
+        return new SliceImpl<>(subscribeEntities, pageable, QueryDslUtils.hasNext(pageable, subscribeEntities));
+    }
+
+    public Slice<SubscribeEntity> findAllBySubscribedUserId(long subscribedUserId, long cursor, Pageable pageable) {
+        cursor = QueryDslUtils.cursorIdCheck(cursor);
+
+        List<SubscribeEntity> subscribeEntities = jpaQueryFactory
+                .selectFrom(subscribeEntity)
+                .where(
+                        QueryDslUtils.ltCursorId(cursor, subscribeEntity.id),
+                        subscribeEntity.subscribedUser.id.eq(subscribedUserId)
                 )
                 .orderBy(subscribeEntity.id.desc())
                 .limit(pageable.getPageSize() + 1)

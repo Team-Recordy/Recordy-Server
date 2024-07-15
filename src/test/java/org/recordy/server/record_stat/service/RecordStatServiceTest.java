@@ -7,6 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.mock.FakeContainer;
+import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.record_stat.domain.Bookmark;
@@ -25,8 +26,8 @@ public class RecordStatServiceTest {
         UserRepository userRepository = fakeContainer.userRepository;
         RecordRepository recordRepository = fakeContainer.recordRepository;
 
-        userRepository.save(DomainFixture.createUser(UserStatus.ACTIVE));
-        userRepository.save(DomainFixture.createUser(UserStatus.ACTIVE));
+        userRepository.save(DomainFixture.createUser(1));
+        userRepository.save(DomainFixture.createUser(2));
         recordRepository.save(DomainFixture.createRecord());
         recordRepository.save(DomainFixture.createRecord());
         recordRepository.save(DomainFixture.createRecord());

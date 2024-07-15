@@ -16,15 +16,12 @@ public class KeywordEntity extends JpaMetaInfoEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
-
     @Column(unique = true, nullable = false)
     @Enumerated(EnumType.STRING)
     private Keyword keyword;
 
     public KeywordEntity(Keyword keyword) {
         this.keyword = keyword;
-        this.name = keyword.name();
     }
 
     public static KeywordEntity from(Keyword keyword) {

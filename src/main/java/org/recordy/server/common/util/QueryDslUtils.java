@@ -20,4 +20,11 @@ public class QueryDslUtils {
 
         return false;
     }
+
+    public static long cursorIdCheck(Long cursor){
+        if (cursor > 0) {
+            return cursor;
+        }
+        return Long.MAX_VALUE;
+    }
 }

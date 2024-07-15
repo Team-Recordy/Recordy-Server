@@ -49,4 +49,12 @@ public class FakeBookmarkRepository implements BookmarkRepository {
 
         return new SliceImpl<>(content.subList(0, pageable.getPageSize()), pageable, true);
     }
+
+    @Override
+    public boolean existsByUserIdAndRecordId(Long userId, Long recordId) {
+        return bookmarks.values().stream()
+                .anyMatch(bookmark ->
+                        bookmark.getUser().getId().equals(userId) && bookmark.getRecord().getId().equals(recordId)
+                );
+    }
 }

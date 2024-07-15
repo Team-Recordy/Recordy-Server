@@ -106,4 +106,22 @@ public class FakeRecordRepository implements RecordRepository {
     public Slice<Record> findAllBySubscribingUserIdOrderByIdDesc(long userId, long cursor, Pageable pageable) {
         return null;
     }
+
+    @Override
+    public long countAllByUserId(long userId) {
+        return records.values().stream()
+                .map(Record::getUploader)
+                .filter(user -> user.getId() == userId)
+                .count();
+    }
+
+    @Override
+    public Optional<Long> findMaxId() {
+        return records.keySet().stream().max(Long::compareTo);
+    }
+
+    @Override
+    public Long count() {
+        return (long) records.size();
+    }
 }

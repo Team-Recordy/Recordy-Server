@@ -56,4 +56,17 @@ class UserTest {
                 .isInstanceOf(UserException.class)
                 .hasMessageContaining(ErrorMessage.INVALID_REQUEST_TERM.getMessage());
     }
+
+    @Test
+    void activate를_통해_id로부터_임의의_프로필_이미지를_얻을_수_있다() {
+        // given
+        User user = DomainFixture.createUser(UserStatus.PENDING);
+        UserSignUp userSignUp = DomainFixture.createUserSignUp();
+
+        // when
+        User activatedUser = user.activate(userSignUp);
+
+        // then
+        assertThat(activatedUser.getProfileImageUrl()).contains("https://recordy-bucket.s3.ap-northeast-2.amazonaws.com/profile_");
+    }
 }

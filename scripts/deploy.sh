@@ -33,6 +33,7 @@ if [ -z "$IS_GREEN_EXIST" ];then
   sudo nginx -s reload
   echo ">>> down blue container"
   docker compose stop blue
+  docker image prune -f
 
 # blue up
 else
@@ -56,4 +57,5 @@ else
   sudo nginx -s reload
   echo ">>> down green container"
   docker compose stop green
+  docker image prune -fp
 fi
