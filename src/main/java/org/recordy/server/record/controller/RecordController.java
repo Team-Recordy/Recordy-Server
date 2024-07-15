@@ -58,7 +58,7 @@ public class RecordController implements RecordApi {
 
     @Override
     @GetMapping("/recent")
-    public ResponseEntity<Slice<RecordInfoWithBookmark>> getRecentRecordInfoWithBookmarks(
+    public ResponseEntity<Slice<RecordInfoWithBookmark>> getRecentRecordInfosWithBookmarks(
             @UserId Long userId,
             @RequestParam(required = false) List<String> keywords,
             @RequestParam(required = false, defaultValue = "0") Long cursorId,
@@ -100,7 +100,7 @@ public class RecordController implements RecordApi {
 
     @Override
     @GetMapping
-    public ResponseEntity<Slice<RecordInfoWithBookmark>> getRecentRecordInfoWithBookmarksByUser(
+    public ResponseEntity<Slice<RecordInfoWithBookmark>> getRecentRecordInfosWithBookmarksByUser(
             @UserId Long userId,
             @RequestParam(required = false, defaultValue = "0") long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
@@ -113,6 +113,7 @@ public class RecordController implements RecordApi {
                 .body(RecordInfoWithBookmark.of(records, bookmarks));
     }
 
+    @Override
     @GetMapping("/follow")
     public ResponseEntity<Slice<RecordInfoWithBookmark>> getSubscribingRecordInfosWithBookmarks(
             @UserId Long userId,
