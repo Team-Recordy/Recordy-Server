@@ -6,6 +6,7 @@ import org.recordy.server.mock.FakeContainer;
 import org.recordy.server.subscribe.domain.Subscribe;
 import org.recordy.server.subscribe.domain.usecase.SubscribeCreate;
 import org.recordy.server.subscribe.repository.SubscribeRepository;
+import org.recordy.server.user.controller.dto.response.UserInfo;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.util.DomainFixture;

@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import java.util.Optional;
 import org.recordy.server.record_stat.domain.Bookmark;
 import org.recordy.server.record_stat.repository.BookmarkRepository;
 import org.springframework.data.domain.Pageable;
@@ -52,9 +51,10 @@ public class FakeBookmarkRepository implements BookmarkRepository {
     }
 
     @Override
-    public Optional<Bookmark> findByUserIdAndRecordId(long userId, long recordId) {
+    public boolean existsByUserIdAndRecordId(Long userId, Long recordId) {
         return bookmarks.values().stream()
-                .filter(bookmark -> bookmark.getUser().getId() == userId && bookmark.getRecord().getId() == recordId)
-                .findFirst();
+                .anyMatch(bookmark ->
+                        bookmark.getUser().getId().equals(userId) && bookmark.getRecord().getId().equals(recordId)
+                );
     }
 }

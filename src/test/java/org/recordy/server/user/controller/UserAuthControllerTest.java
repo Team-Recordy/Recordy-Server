@@ -3,7 +3,6 @@ package org.recordy.server.user.controller;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.auth.domain.Auth;
-import org.recordy.server.auth.domain.AuthEntity;
 import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.auth.exception.AuthException;
 import org.recordy.server.mock.FakeContainer;
@@ -22,17 +21,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-public class UserControllerTest {
+public class UserAuthControllerTest {
 
     private FakeContainer fakeContainer;
-    private UserController userController;
+    private UserAuthController userAuthController;
     private UserService userService;
     private UserRepository userRepository;
 
     @BeforeEach
     void init() {
         fakeContainer = new FakeContainer();
-        userController = fakeContainer.userController;
+        userAuthController = fakeContainer.userAuthController;
         userService = fakeContainer.userService;
         userRepository = fakeContainer.userRepository;
     }
@@ -44,7 +43,7 @@ public class UserControllerTest {
         UserSignInRequest request = new UserSignInRequest(AuthPlatform.Type.KAKAO);
 
         // when
-        ResponseEntity<UserSignInResponse> result = userController.signIn(platformToken, request);
+        ResponseEntity<UserSignInResponse> result = userAuthController.signIn(platformToken, request);
 
         // then
         assertAll(
@@ -62,7 +61,7 @@ public class UserControllerTest {
         UserSignInRequest request = new UserSignInRequest(AuthPlatform.Type.APPLE);
 
         // when
-        ResponseEntity<UserSignInResponse> result = userController.signIn(platformToken, request);
+        ResponseEntity<UserSignInResponse> result = userAuthController.signIn(platformToken, request);
 
         // then
         assertAll(
@@ -79,7 +78,7 @@ public class UserControllerTest {
         String nickname = "nickname";
 
         // when
-        ResponseEntity<Void> result = userController.checkDuplicateNickname(nickname);
+        ResponseEntity<Void> result = userAuthController.checkDuplicateNickname(nickname);
 
         // then
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -97,7 +96,7 @@ public class UserControllerTest {
                 .build());
 
         // when
-        assertThatThrownBy(() -> userController.checkDuplicateNickname(duplicateNickname))
+        assertThatThrownBy(() -> userAuthController.checkDuplicateNickname(duplicateNickname))
                 .isInstanceOf(UserException.class);
     }
 
@@ -107,7 +106,7 @@ public class UserControllerTest {
         userService.signIn(DomainFixture.createUserSignIn(AuthPlatform.Type.KAKAO));
 
         // when
-        ResponseEntity<Void> result = userController.delete(DomainFixture.USER_ID);
+        ResponseEntity<Void> result = userAuthController.delete(DomainFixture.USER_ID);
 
         // then
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
@@ -116,7 +115,7 @@ public class UserControllerTest {
     @Test
     void delete를_통해_존재하지_않는_사용자를_삭제하려고_하면_예외가_발생한다() {
         // when
-        assertThatThrownBy(() -> userController.delete(DomainFixture.USER_ID))
+        assertThatThrownBy(() -> userAuthController.delete(DomainFixture.USER_ID))
                 .isInstanceOf(UserException.class);
     }
 
@@ -126,7 +125,7 @@ public class UserControllerTest {
         userService.signIn(DomainFixture.createUserSignIn(AuthPlatform.Type.KAKAO));
 
         //when
-        ResponseEntity result = userController.signOut(DomainFixture.USER_ID);
+        ResponseEntity result = userAuthController.signOut(DomainFixture.USER_ID);
 
         //then
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
@@ -136,7 +135,7 @@ public class UserControllerTest {
     void signOut을_통해_존재하지_않는_사용자를_로그아웃하려고_하면_예외가_발생한다() {
 
         //when
-        assertThatThrownBy(() -> userController.signOut(DomainFixture.USER_ID))
+        assertThatThrownBy(() -> userAuthController.signOut(DomainFixture.USER_ID))
                 .isInstanceOf(UserException.class);
     }
 
@@ -148,7 +147,7 @@ public class UserControllerTest {
 
 
         //when
-       ResponseEntity<UserReissueTokenResponse> result = userController.reissueToken(refreshToken);
+       ResponseEntity<UserReissueTokenResponse> result = userAuthController.reissueToken(refreshToken);
 
         //then
         assertAll(
@@ -163,7 +162,7 @@ public class UserControllerTest {
     void reissueToken에서_refreshToken으로_인증정보를_찾을_수_없다면_에러가_발생한다() {
 
         //when
-        assertThatThrownBy(() -> userController.reissueToken(DomainFixture.REFRESH_TOKEN))
+        assertThatThrownBy(() -> userAuthController.reissueToken(DomainFixture.REFRESH_TOKEN))
                 .isInstanceOf(AuthException.class);
     }
 }

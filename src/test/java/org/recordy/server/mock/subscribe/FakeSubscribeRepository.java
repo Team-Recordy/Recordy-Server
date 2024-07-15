@@ -53,6 +53,23 @@ public class FakeSubscribeRepository implements SubscribeRepository {
     }
 
     @Override
+    public Slice<Subscribe> findAllBySubscribedUserId(long subscribedUserId, long cursor, Pageable pageable) {
+        List<Subscribe> content = subscribes.values().stream()
+                .filter(subscribe ->
+                        subscribe.getSubscribingUser().getId() == subscribedUserId &&
+                                subscribe.getSubscribedUser().getId() < cursor
+                )
+                .sorted(Comparator.comparing(Subscribe::getId).reversed())
+                .toList();
+
+        if (content.size() <= pageable.getPageSize()) {
+            return new SliceImpl<>(content, pageable, false);
+        }
+
+        return new SliceImpl<>(content, pageable, true);
+    }
+
+    @Override
     public boolean existsBySubscribingUserIdAndSubscribedUserId(long subscribingUserId, long subscribedUserId) {
         return subscribes.values().stream()
                 .anyMatch(subscribe ->

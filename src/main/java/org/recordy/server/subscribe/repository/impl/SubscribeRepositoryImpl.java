@@ -34,6 +34,12 @@ public class SubscribeRepositoryImpl implements SubscribeRepository {
     }
 
     @Override
+    public Slice<Subscribe> findAllBySubscribedUserId(long subscribedUserId, long cursor, Pageable pageable) {
+        return subscribeQueryDslRepository.findAllBySubscribedUserId(subscribedUserId, cursor, pageable)
+                .map(SubscribeEntity::toDomain);
+    }
+
+    @Override
     public long countSubscribingUsers(long subscribedUserId) {
         return subscribeQueryDslRepository.countSubscribingUsers(subscribedUserId);
     }

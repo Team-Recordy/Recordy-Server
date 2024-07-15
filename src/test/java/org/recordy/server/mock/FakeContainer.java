@@ -38,7 +38,7 @@ import org.recordy.server.record_stat.service.impl.RecordStatServiceImpl;
 import org.recordy.server.subscribe.repository.SubscribeRepository;
 import org.recordy.server.subscribe.service.SubscribeService;
 import org.recordy.server.subscribe.service.impl.SubscribeServiceImpl;
-import org.recordy.server.user.controller.UserController;
+import org.recordy.server.user.controller.UserAuthController;
 import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.user.service.UserService;
 import org.recordy.server.user.service.impl.UserServiceImpl;
@@ -84,7 +84,7 @@ public class FakeContainer {
     public final TokenAuthenticationFilter tokenAuthenticationFilter;
 
     // controller
-    public final UserController userController;
+    public final UserAuthController userAuthController;
 
     public FakeContainer() {
         this.userRepository = new FakeUserRepository();
@@ -123,7 +123,6 @@ public class FakeContainer {
         this.recordStatService = new RecordStatServiceImpl(userRepository, recordRepository, bookmarkRepository);
         this.recordService = new RecordServiceImpl(recordRepository, viewRepository, fileService, userService, recordStatService);
         this.subscribeService = new SubscribeServiceImpl(subscribeRepository, userRepository);
-
         this.s3Service = mock(S3Service.class);  // S3Service mock 사용
 
         this.authFilterExceptionHandler = new AuthFilterExceptionHandler(new ObjectMapper());
@@ -134,6 +133,6 @@ public class FakeContainer {
                 authFilterExceptionHandler
         );
 
-        this.userController = new UserController(userService);
+        this.userAuthController = new UserAuthController(userService);
     }
 }

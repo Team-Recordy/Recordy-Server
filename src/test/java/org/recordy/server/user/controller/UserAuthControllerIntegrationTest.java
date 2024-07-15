@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
         @Sql(value = "/sql/clean-database.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 })
 @AutoConfigureMockMvc
-class UserControllerIntegrationTest {
+class UserAuthControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;

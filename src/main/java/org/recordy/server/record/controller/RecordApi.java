@@ -288,7 +288,7 @@ public interface RecordApi {
                     )
             }
     )
-    public ResponseEntity<Slice<RecordInfoWithBookmark>> getRecentRecordInfoWithBookmarks(
+    public ResponseEntity<Slice<RecordInfoWithBookmark>> getRecentRecordInfosWithBookmarks(
             @UserId Long userId,
             @RequestParam(required = false) List<String> keywords,
             @RequestParam(required = false, defaultValue = "0") Long cursorId,
