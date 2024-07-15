@@ -1,4 +1,4 @@
-package org.recordy.server.auth.security;
+package org.recordy.server.auth.security.filter;
 
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;

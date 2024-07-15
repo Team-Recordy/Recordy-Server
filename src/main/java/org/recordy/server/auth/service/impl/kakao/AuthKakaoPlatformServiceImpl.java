@@ -21,7 +21,6 @@ public class AuthKakaoPlatformServiceImpl implements AuthPlatformService {
     @Value("${auth.token.prefix}")
     private String TOKEN_TYPE;
 
-    //인증 플랫폼 서비스 식별
     @Override
     public AuthPlatform getPlatform(UserSignIn userSignIn) {
         String platformId = getKakaoPlatformId(userSignIn.platformToken());

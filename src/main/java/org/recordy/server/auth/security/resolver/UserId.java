@@ -1,4 +1,4 @@
-package org.recordy.server.auth.security;
+package org.recordy.server.auth.security.resolver;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
