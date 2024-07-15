@@ -5,16 +5,14 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.recordy.server.auth.security.UserId;
+import org.recordy.server.auth.security.resolver.UserId;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.record.controller.dto.request.RecordCreateRequest;
 import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
-import org.recordy.server.record.domain.Record;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 

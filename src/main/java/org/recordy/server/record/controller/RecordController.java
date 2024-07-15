@@ -1,7 +1,7 @@
 package org.recordy.server.record.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.recordy.server.auth.security.UserId;
+import org.recordy.server.auth.security.resolver.UserId;
 import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.record.controller.dto.request.RecordCreateRequest;
 import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;

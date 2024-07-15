@@ -2,7 +2,7 @@ package org.recordy.server.record_stat.controller;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.recordy.server.auth.security.UserId;
+import org.recordy.server.auth.security.resolver.UserId;
 import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record_stat.domain.usecase.Preference;

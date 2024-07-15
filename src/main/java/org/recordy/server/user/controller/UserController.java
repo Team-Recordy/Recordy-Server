@@ -2,7 +2,7 @@ package org.recordy.server.user.controller;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.recordy.server.auth.security.UserId;
+import org.recordy.server.auth.security.resolver.UserId;
 import org.recordy.server.user.controller.dto.response.UserInfoWithFollowing;
 import org.recordy.server.subscribe.domain.usecase.SubscribeCreate;
 import org.recordy.server.subscribe.service.SubscribeService;
