@@ -33,27 +33,33 @@ public class RecordQueryDslRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
+
     public Slice<RecordEntity> findAllOrderByPopularity(Pageable pageable) {
         LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
 
         List<RecordEntity> recordEntities = jpaQueryFactory
                 .selectFrom(recordEntity)
-                .leftJoin(recordEntity.bookmarks, bookmarkEntity)
-                .leftJoin(recordEntity.views, viewEntity)
-                .where(
-                        bookmarkEntity.createdAt.after(sevenDaysAgo)
-                                .or(viewEntity.createdAt.after(sevenDaysAgo))
-                )
+                .leftJoin(recordEntity.bookmarks, bookmarkEntity).on(bookmarkEntity.createdAt.after(sevenDaysAgo))
+                .leftJoin(recordEntity.views, viewEntity).on(viewEntity.createdAt.after(sevenDaysAgo))
                 .groupBy(recordEntity.id)
                 .orderBy(bookmarkEntity.count().multiply(2).add(viewEntity.count()).desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
 
-        return new SliceImpl<>(recordEntities, pageable, QueryDslUtils.hasNext(pageable, recordEntities));
+        return new SliceImpl<>(recordEntities, pageable, hasNext(pageable, recordEntities));
     }
 
-    public Slice<RecordEntity> findAllByKeywordsOrderByPopularity(List<KeywordEntity> keywords, Pageable pageable) {
+    private boolean hasNext(Pageable pageable, List<RecordEntity> results) {
+        if (results.size() > pageable.getPageSize()) {
+            results.remove(pageable.getPageSize());
+            return true;
+        }
+        return false;
+    }
+
+
+public Slice<RecordEntity> findAllByKeywordsOrderByPopularity(List<KeywordEntity> keywords, Pageable pageable) {
         LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
 
         List<RecordEntity> recordEntities = jpaQueryFactory
