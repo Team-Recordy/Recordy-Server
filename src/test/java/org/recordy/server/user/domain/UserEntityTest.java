@@ -77,7 +77,7 @@ class UserEntityTest {
                 () -> assertThat(user.getAuthPlatform().getId()).isEqualTo(userEntity.getPlatformId()),
                 () -> assertThat(user.getAuthPlatform().getType()).isEqualTo(userEntity.getPlatformType()),
                 () -> assertThat(user.getStatus()).isEqualTo(userEntity.getStatus()),
-                () -> assertThat(user.getProfileImageUrl()).isNotNull(),
+                () -> assertThat(user.getProfileImageUrl()).isEqualTo(userEntity.getProfileImageUrl()),
                 () -> assertThat(user.getNickname()).isEqualTo(userEntity.getNickname()),
                 () -> assertThat(user.getTermsAgreement().useTerm()).isEqualTo(userEntity.isUseTerm()),
                 () -> assertThat(user.getTermsAgreement().personalInfoTerm()).isEqualTo(userEntity.isPersonalInfoTerm()),
