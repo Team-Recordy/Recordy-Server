@@ -30,6 +30,7 @@ public class RecordController implements RecordApi {
 
     private final RecordService recordService;
     private final RecordStatService recordStatService;
+    private final S3Service s3Service;
 
     @GetMapping("/presigned-url")
     public ResponseEntity<FileUrl> getPresignedUrls() {

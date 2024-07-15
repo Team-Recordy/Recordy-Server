@@ -16,6 +16,7 @@ import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequ
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -51,7 +52,7 @@ public class S3ServiceImpl implements S3Service {
 
     @Override
     public String generatePresignedUrl(String directory) {
-        String fileName = directory + System.currentTimeMillis();
+        String fileName = directory + UUID.randomUUID().toString();
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucket)
                 .key(fileName)
