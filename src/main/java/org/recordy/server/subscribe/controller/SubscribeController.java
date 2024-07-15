@@ -56,7 +56,6 @@ public class SubscribeController implements SubscribeApi{
             @RequestParam(required = false, defaultValue = "0") long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
-        System.out.println(subscribeService.getSubscribedUsers(userId, cursorId, size));
 
         return ResponseEntity
                 .status(HttpStatus.OK)
