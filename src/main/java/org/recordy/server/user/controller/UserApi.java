@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Tag(name = "구독 관련 API")
 public interface UserApi {
     @Operation(
-            summary = "팔로우 API",
-            description = "특정 유저를 팔로우하는 API입니다. ",
+            summary = "팔로우 및 언팔로우 API",
+            description = "특정 유저를 팔로우하거나 언팔로우하는 API입니다. ",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
@@ -29,22 +29,6 @@ public interface UserApi {
             }
     )
     public ResponseEntity<Void> subscribe(
-            @UserId Long userId,
-            @PathVariable Long subscribedUserId
-    );
-
-    @Operation(
-            security = @SecurityRequirement(name = "Authorization"),
-            summary = "팔로우 취소 API",
-            description = "특정 유저에 대한 팔로우을 취소하는 API입니다.",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "204",
-                            description = "요청이 성공했습니다."
-                    )
-            }
-    )
-    public ResponseEntity<Void> unsubscribe(
             @UserId Long userId,
             @PathVariable Long subscribedUserId
     );

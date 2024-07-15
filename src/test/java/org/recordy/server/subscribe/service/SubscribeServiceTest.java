@@ -48,14 +48,15 @@ class SubscribeServiceTest {
     }
 
     @Test
-    void unsubscribe를_통해_사용자_간_구독을_취소할_수_있다() {
+    void subscribe를_통해_사용자_간_구독을_해지할_수_있다() {
         // given
         userRepository.save(DomainFixture.createUser(1));
         userRepository.save(DomainFixture.createUser(2));
+
         subscribeService.subscribe(new SubscribeCreate(1, 2));
 
         // when
-        subscribeService.unsubscribe(1, 2);
+        subscribeService.subscribe(new SubscribeCreate(1, 2));
 
         // then
         assertAll(

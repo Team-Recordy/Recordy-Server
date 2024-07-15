@@ -9,7 +9,6 @@ public interface SubscribeService {
 
     // command
     void subscribe(SubscribeCreate subscribeCreate);
-    void unsubscribe(long subscribingUserId, long subscribedUserId);
 
     // query
     Slice<User> getSubscribedUsers(long subscribingUserId, long cursor, int size);

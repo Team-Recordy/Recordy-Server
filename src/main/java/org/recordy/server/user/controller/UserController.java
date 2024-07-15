@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/users")
 @RestController
 public class UserController implements UserApi {
+
     private final SubscribeService subscribeService;
 
     @Override
@@ -34,18 +35,6 @@ public class UserController implements UserApi {
         subscribeService.subscribe(new SubscribeCreate(userId, followingId));
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .build();
-    }
-
-    @Override
-    @DeleteMapping("/unfollow/{followingId}")
-    public ResponseEntity<Void> unsubscribe(
-            @UserId Long userId,
-            @PathVariable Long followingId
-    ) {
-        subscribeService.unsubscribe(userId, followingId);
-        return ResponseEntity
-                .status(HttpStatus.NO_CONTENT)
                 .build();
     }
 
