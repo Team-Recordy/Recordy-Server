@@ -131,7 +131,7 @@ public class RecordServiceImpl implements RecordService {
         List<Record> records = new ArrayList<>();
 
         while (records.size() < size && records.size() < count) {
-            long randomId = random.nextInt(maxId.get().intValue()) + 1;
+            long randomId = random.nextLong(maxId.get()) + 1;
 
             if (!selectedIds.contains(randomId)) {
                 selectedIds.add(randomId);
