@@ -47,13 +47,6 @@ public class RecordStatServiceImpl implements RecordStatService {
     }
 
     @Override
-    public List<Boolean> findBookmarks(long userId, Slice<Record> records) {
-        return records.getContent().stream()
-                .map(record -> bookmarkRepository.existsByUserIdAndRecordId(userId, record.getId()))
-                .collect(Collectors.toList());
-    }
-
-    @Override
     public Preference getPreference(long userId) {
         return Preference.of(userId, recordRepository.countAllByUserIdGroupByKeyword(userId));
     }

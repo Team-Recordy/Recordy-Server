@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.security.UserId;
 import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
 import org.recordy.server.record.domain.Record;
-import org.recordy.server.record.service.RecordService;
 import org.recordy.server.record_stat.domain.usecase.Preference;
 import org.recordy.server.record_stat.service.RecordStatService;
 import org.springframework.data.domain.Slice;
@@ -67,7 +66,7 @@ public class RecordStatController implements RecordStatApi{
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
         Slice<Record> records = recordStatService.getBookmarkedRecords(userId, cursorId, size);
-        List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records);
+        List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records.getContent());
 
         return ResponseEntity
                 .ok()

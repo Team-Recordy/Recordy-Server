@@ -16,6 +16,5 @@ public interface RecordStatService {
     // query
     Preference getPreference(long userId);
     Slice<Record> getBookmarkedRecords(long userId, long cursorId, int size);
-    List<Boolean> findBookmarks(long userId, Slice<Record> records);
     List<Boolean> findBookmarks(long userId, List<Record> records);
 }

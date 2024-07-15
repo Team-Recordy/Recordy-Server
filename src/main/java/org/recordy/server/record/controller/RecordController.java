@@ -66,7 +66,7 @@ public class RecordController implements RecordApi {
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
         Slice<Record> records = recordService.getRecentRecords(keywords, cursorId, size);
-        List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records);
+        List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records.getContent());
 
         return ResponseEntity.ok().body(RecordInfoWithBookmark.of(records, bookmarks));
     }
@@ -80,7 +80,7 @@ public class RecordController implements RecordApi {
             @RequestParam(required = false, defaultValue = "10") int pageSize
     ){
         Slice<Record> records = recordService.getFamousRecords(keywords, pageNumber, pageSize);
-        List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records);
+        List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records.getContent());
 
         return ResponseEntity
                 .ok()
@@ -107,7 +107,7 @@ public class RecordController implements RecordApi {
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
         Slice<Record> records = recordService.getRecentRecordsByUser(userId, cursorId, size);
-        List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records);
+        List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records.getContent());
 
         return ResponseEntity
                 .ok()
@@ -122,7 +122,7 @@ public class RecordController implements RecordApi {
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
         Slice<Record> records = recordService.getSubscribingRecords(userId, cursorId, size);
-        List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records);
+        List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records.getContent());
 
         return ResponseEntity
                 .ok()
