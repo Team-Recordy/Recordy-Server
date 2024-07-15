@@ -28,8 +28,8 @@ class RecordServiceTest {
         recordService = fakeContainer.recordService;
         UserRepository userRepository = fakeContainer.userRepository;
 
-        userRepository.save(DomainFixture.createUser(UserStatus.ACTIVE));
-        userRepository.save(DomainFixture.createUser(UserStatus.ACTIVE));
+        userRepository.save(DomainFixture.createUser(1));
+        userRepository.save(DomainFixture.createUser(2));
     }
 
     @Test

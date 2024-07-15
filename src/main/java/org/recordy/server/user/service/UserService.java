@@ -1,7 +1,7 @@
 package org.recordy.server.user.service;
 
 import org.recordy.server.auth.domain.Auth;
-import org.recordy.server.user.controller.dto.request.UserSignUpRequest;
+import org.recordy.server.user.domain.usecase.UserProfile;
 import org.recordy.server.user.domain.usecase.UserSignIn;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.usecase.UserSignUp;
@@ -18,6 +18,7 @@ public interface UserService {
     void delete(long userId);
 
     // query
+    UserProfile getProfile(long id);
     Optional<User> getByPlatformId(String platformId);
     Optional<User> getById(long id);
     void validateDuplicateNickname(String nickname);

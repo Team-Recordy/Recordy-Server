@@ -9,7 +9,6 @@ import org.recordy.server.auth.security.UserId;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.record.controller.dto.request.RecordCreateRequest;
 import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
-import org.recordy.server.record.domain.File;
 import org.recordy.server.record.domain.Record;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.MediaType;
@@ -120,7 +119,7 @@ public interface RecordApi {
                     )
             }
     )
-    public ResponseEntity<Void> deleteRecord(
+    ResponseEntity<Void> deleteRecord(
             @UserId Long uploaderId,
             @PathVariable Long recordId
     );
@@ -161,7 +160,7 @@ public interface RecordApi {
                     )
             }
     )
-    public ResponseEntity<Slice<RecordInfoWithBookmark>> getRecentRecordInfosWithBookmarksByUser(
+    ResponseEntity<Slice<RecordInfoWithBookmark>> getRecentRecordInfosWithBookmarksByUser(
             @UserId Long userId,
             @RequestParam(required = false, defaultValue = "0") long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
@@ -198,7 +197,7 @@ public interface RecordApi {
                     )
             }
     )
-    public ResponseEntity<Void> watch(
+    ResponseEntity<Void> watch(
             @UserId Long userId,
             @PathVariable Long recordId
     );
@@ -239,9 +238,9 @@ public interface RecordApi {
                     )
             }
     )
-    public ResponseEntity<Slice<RecordInfoWithBookmark>> getFamousRecordInfoWithBookmarks(
+    ResponseEntity<Slice<RecordInfoWithBookmark>> getFamousRecordInfoWithBookmarks(
             @UserId Long userId,
-            @RequestParam(required = false) List<String> keywords,
+            @RequestParam(required = false) String keywords,
             @RequestParam(required = false, defaultValue = "0") int pageNumber,
             @RequestParam(required = false, defaultValue = "10") int pageSize
     ) ;
@@ -282,9 +281,9 @@ public interface RecordApi {
                     )
             }
     )
-    public ResponseEntity<Slice<RecordInfoWithBookmark>> getRecentRecordInfosWithBookmarks(
+    ResponseEntity<Slice<RecordInfoWithBookmark>> getRecentRecordInfosWithBookmarks(
             @UserId Long userId,
-            @RequestParam(required = false) List<String> keywords,
+            @RequestParam(required = false) String keywords,
             @RequestParam(required = false, defaultValue = "0") Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     );
@@ -325,7 +324,7 @@ public interface RecordApi {
                     )
             }
     )
-    public ResponseEntity<Slice<RecordInfoWithBookmark>> getSubscribingRecordInfosWithBookmarks(
+    ResponseEntity<Slice<RecordInfoWithBookmark>> getSubscribingRecordInfosWithBookmarks(
             @UserId Long userId,
             @RequestParam(required = false, defaultValue = "0") long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
@@ -367,7 +366,7 @@ public interface RecordApi {
                     )
             }
     )
-    public ResponseEntity<List<RecordInfoWithBookmark>> getTotalRecordInfosWithBookmarks(
+    ResponseEntity<List<RecordInfoWithBookmark>> getTotalRecordInfosWithBookmarks(
             @UserId Long userId,
             @RequestParam(required = false, defaultValue = "10") int size
     );

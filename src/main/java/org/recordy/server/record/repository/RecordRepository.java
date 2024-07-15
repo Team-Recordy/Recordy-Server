@@ -22,8 +22,9 @@ public interface RecordRepository {
     Slice<Record> findAllByIdAfterOrderByIdDesc(long cursor, Pageable pageable);
     Slice<Record> findAllByIdAfterAndKeywordsOrderByIdDesc(List<Keyword> keywords, long cursor, Pageable pageable);
     Slice<Record> findAllByUserIdOrderByIdDesc(long userId, long cursor, Pageable pageable);
-    Map<Keyword, Long> countAllByUserIdGroupByKeyword(long userId);
     Slice<Record> findAllBySubscribingUserIdOrderByIdDesc(long userId, long cursor, Pageable pageable);
+    Map<Keyword, Long> countAllByUserIdGroupByKeyword(long userId);
+    long countAllByUserId(long userId);
     Optional<Long> findMaxId();
     Long count();
 }

@@ -26,8 +26,8 @@ public class RecordStatServiceTest {
         UserRepository userRepository = fakeContainer.userRepository;
         RecordRepository recordRepository = fakeContainer.recordRepository;
 
-        userRepository.save(DomainFixture.createUser(UserStatus.ACTIVE));
-        userRepository.save(DomainFixture.createUser(UserStatus.ACTIVE));
+        userRepository.save(DomainFixture.createUser(1));
+        userRepository.save(DomainFixture.createUser(2));
         recordRepository.save(DomainFixture.createRecord());
         recordRepository.save(DomainFixture.createRecord());
         recordRepository.save(DomainFixture.createRecord());

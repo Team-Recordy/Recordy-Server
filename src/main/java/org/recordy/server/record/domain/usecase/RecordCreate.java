@@ -14,12 +14,12 @@ public record RecordCreate(
         FileUrl fileUrl
 ) {
 
-    public static RecordCreate from(Long uploaderId, RecordCreateRequest recordCreateRequest) {
+    public static RecordCreate of(Long uploaderId, RecordCreateRequest recordCreateRequest) {
         return new RecordCreate(
                 uploaderId,
                 recordCreateRequest.location(),
                 recordCreateRequest.content(),
-                Keyword.from(recordCreateRequest.keywords()),
+                Keyword.decode(recordCreateRequest.keywords()),
                 recordCreateRequest.fileUrl()
         );
     }
