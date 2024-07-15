@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/records")
 @RestController
@@ -32,12 +31,12 @@ public class RecordController implements RecordApi {
 
     @GetMapping("/presigned-url")
     public ResponseEntity<FileUrl> getPresignedUrls() {
-     return ResponseEntity
-             .status(HttpStatus.OK)
-             .body(new FileUrl(
-                     s3Service.generatePresignedUrl("videos/"),
-                     s3Service.generatePresignedUrl("thumbnails/")
-             ));
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new FileUrl(
+                        s3Service.generatePresignedUrl("videos/"),
+                        s3Service.generatePresignedUrl("thumbnails/")
+                ));
     }
 
     @Override
@@ -45,7 +44,7 @@ public class RecordController implements RecordApi {
     public ResponseEntity<Void> createRecord(
             @UserId Long uploaderId,
             @RequestBody RecordCreateRequest request) {
-        RecordCreate recordCreate = RecordCreate.from(uploaderId, request);
+        RecordCreate recordCreate = RecordCreate.of(uploaderId, request);
         Record record = recordService.create(recordCreate, new File(request.fileUrl().videoUrl(), request.fileUrl().thumbnailUrl()));
 
         return ResponseEntity
@@ -53,8 +52,7 @@ public class RecordController implements RecordApi {
                 .build();
     }
 
-
-    @Override    
+    @Override
     @DeleteMapping("/{recordId}")
     public ResponseEntity<Void> deleteRecord(
             @UserId Long uploaderId,
@@ -153,4 +151,3 @@ public class RecordController implements RecordApi {
                 .body(RecordInfoWithBookmark.of(records, bookmarks));
     }
 }
-
