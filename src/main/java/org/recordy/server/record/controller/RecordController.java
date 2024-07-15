@@ -2,6 +2,7 @@ package org.recordy.server.record.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.security.UserId;
+import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.record.controller.dto.request.RecordCreateRequest;
 import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
 import org.recordy.server.record.domain.File;
@@ -10,14 +11,12 @@ import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.usecase.RecordCreate;
 import org.recordy.server.record.service.RecordService;
 import org.recordy.server.record_stat.service.RecordStatService;
-import org.recordy.server.record.service.S3Service;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -36,7 +35,7 @@ public class RecordController implements RecordApi {
             @RequestPart MultipartFile thumbnail,
             @RequestPart MultipartFile video
     ) {
-        RecordCreate recordCreate = RecordCreate.from(uploaderId, request);
+        RecordCreate recordCreate = RecordCreate.of(uploaderId, request);
         Record record = recordService.create(recordCreate, File.of(video, thumbnail));
 
         return ResponseEntity
@@ -61,11 +60,11 @@ public class RecordController implements RecordApi {
     @GetMapping("/recent")
     public ResponseEntity<Slice<RecordInfoWithBookmark>> getRecentRecordInfosWithBookmarks(
             @UserId Long userId,
-            @RequestParam(required = false) List<String> keywords,
+            @RequestParam(required = false) String keywords,
             @RequestParam(required = false, defaultValue = "0") Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
-        Slice<Record> records = recordService.getRecentRecords(keywords, cursorId, size);
+        Slice<Record> records = recordService.getRecentRecords(Keyword.decode(keywords), cursorId, size);
         List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records.getContent());
 
         return ResponseEntity.ok().body(RecordInfoWithBookmark.of(records, bookmarks));
@@ -75,11 +74,11 @@ public class RecordController implements RecordApi {
     @GetMapping("/famous")
     public ResponseEntity<Slice<RecordInfoWithBookmark>> getFamousRecordInfoWithBookmarks(
             @UserId Long userId,
-            @RequestParam(required = false) List<String> keywords,
+            @RequestParam(required = false) String keywords,
             @RequestParam(required = false, defaultValue = "0") int pageNumber,
             @RequestParam(required = false, defaultValue = "10") int pageSize
     ){
-        Slice<Record> records = recordService.getFamousRecords(keywords, pageNumber, pageSize);
+        Slice<Record> records = recordService.getFamousRecords(Keyword.decode(keywords), pageNumber, pageSize);
         List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records.getContent());
 
         return ResponseEntity

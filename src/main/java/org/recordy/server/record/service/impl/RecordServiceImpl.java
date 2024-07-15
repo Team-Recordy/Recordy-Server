@@ -1,7 +1,6 @@
 package org.recordy.server.record.service.impl;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Random;
