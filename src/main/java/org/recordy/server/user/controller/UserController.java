@@ -3,6 +3,7 @@ package org.recordy.server.user.controller;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.security.UserId;
+import org.recordy.server.common.dto.response.CursorBasePaginatedResponse;
 import org.recordy.server.user.controller.dto.response.UserInfoWithFollowing;
 import org.recordy.server.subscribe.domain.usecase.SubscribeCreate;
 import org.recordy.server.subscribe.service.SubscribeService;
@@ -51,7 +52,7 @@ public class UserController implements UserApi {
 
     @Override
     @GetMapping("/following")
-    public ResponseEntity<Slice<UserInfo>> getSubscribedUserInfos(
+    public ResponseEntity<CursorBasePaginatedResponse<UserInfo>> getSubscribedUserInfos(
             @UserId Long userId,
             @RequestParam(required = false, defaultValue = "0") long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
@@ -59,12 +60,12 @@ public class UserController implements UserApi {
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(UserInfo.of(subscribeService.getSubscribedUsers(userId, cursorId, size)));
+                .body(CursorBasePaginatedResponse.of(UserInfo.of(subscribeService.getSubscribedUsers(userId, cursorId, size)), userInfo -> userInfo.id()));
     }
 
     @Override
     @GetMapping("/follower")
-    public ResponseEntity<Slice<UserInfoWithFollowing>> getSubscribingUserInfos(
+    public ResponseEntity<CursorBasePaginatedResponse<UserInfoWithFollowing>> getSubscribingUserInfos(
             @UserId Long userId,
             @RequestParam(required = false, defaultValue = "0") long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
@@ -74,6 +75,6 @@ public class UserController implements UserApi {
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(UserInfoWithFollowing.of(users, following));
-    }
+                .body(CursorBasePaginatedResponse.of(UserInfoWithFollowing.of(users, following), userInfoWithFollowing -> userInfoWithFollowing.userInfo().id()));
+        }
 }

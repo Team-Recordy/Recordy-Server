@@ -3,6 +3,7 @@ package org.recordy.server.record_stat.controller;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.security.UserId;
+import org.recordy.server.common.dto.response.CursorBasePaginatedResponse;
 import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record_stat.domain.usecase.Preference;
@@ -60,7 +61,7 @@ public class RecordStatController implements RecordStatApi{
 
     @Override
     @GetMapping("/bookmark")
-    public ResponseEntity<Slice<RecordInfoWithBookmark>> getBookmarkedRecords(
+    public ResponseEntity<CursorBasePaginatedResponse<RecordInfoWithBookmark>> getBookmarkedRecords(
             @UserId Long userId,
             @RequestParam(required = false, defaultValue = "0") long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
@@ -70,6 +71,7 @@ public class RecordStatController implements RecordStatApi{
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(RecordInfoWithBookmark.of(records, bookmarks));
+                .body(CursorBasePaginatedResponse.of(RecordInfoWithBookmark.of(records, bookmarks), recordInfoWithBookmark -> recordInfoWithBookmark.recordInfo()
+                        .id()));
     }
 }

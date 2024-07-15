@@ -2,6 +2,8 @@ package org.recordy.server.record.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.security.UserId;
+import org.recordy.server.common.dto.response.CursorBasePaginatedResponse;
+import org.recordy.server.common.dto.response.PaginatedResponse;
 import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.record.controller.dto.request.RecordCreateRequest;
 import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
@@ -45,7 +47,7 @@ public class RecordController implements RecordApi {
     public ResponseEntity<Void> createRecord(
             @UserId Long uploaderId,
             @RequestBody RecordCreateRequest request) {
-        RecordCreate recordCreate = RecordCreate.from(uploaderId, request);
+        RecordCreate recordCreate = RecordCreate.of(uploaderId, request);
         Record record = recordService.create(recordCreate, new File(request.fileUrl().videoUrl(), request.fileUrl().thumbnailUrl()));
 
         return ResponseEntity
@@ -69,32 +71,33 @@ public class RecordController implements RecordApi {
 
     @Override
     @GetMapping("/recent")
-    public ResponseEntity<Slice<RecordInfoWithBookmark>> getRecentRecordInfosWithBookmarks(
+    public ResponseEntity<CursorBasePaginatedResponse<RecordInfoWithBookmark>> getRecentRecordInfosWithBookmarks(
             @UserId Long userId,
             @RequestParam(required = false) String keywords,
             @RequestParam(required = false, defaultValue = "0") Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
-        Slice<Record> records = recordService.getRecentRecords(Keyword.decode(keywords), cursorId, size);
+        Slice<Record> records = recordService.getRecentRecords(keywords, cursorId, size);
         List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records.getContent());
 
-        return ResponseEntity.ok().body(RecordInfoWithBookmark.of(records, bookmarks));
+        return ResponseEntity.ok().body(CursorBasePaginatedResponse.of(RecordInfoWithBookmark.of(records, bookmarks),recordInfoWithBookmark -> recordInfoWithBookmark.recordInfo()
+                .id()));
     }
 
     @Override
     @GetMapping("/famous")
-    public ResponseEntity<Slice<RecordInfoWithBookmark>> getFamousRecordInfoWithBookmarks(
+    public ResponseEntity<PaginatedResponse<RecordInfoWithBookmark>> getFamousRecordInfoWithBookmarks(
             @UserId Long userId,
             @RequestParam(required = false) String keywords,
             @RequestParam(required = false, defaultValue = "0") int pageNumber,
             @RequestParam(required = false, defaultValue = "10") int pageSize
     ){
-        Slice<Record> records = recordService.getFamousRecords(Keyword.decode(keywords), pageNumber, pageSize);
+        Slice<Record> records = recordService.getFamousRecords(keywords, pageNumber, pageSize);
         List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records.getContent());
 
         return ResponseEntity
                 .ok()
-                .body(RecordInfoWithBookmark.of(records, bookmarks));
+                .body(PaginatedResponse.of(RecordInfoWithBookmark.of(records, bookmarks)));
     }
 
     @Override
@@ -111,7 +114,7 @@ public class RecordController implements RecordApi {
 
     @Override
     @GetMapping("/user")
-    public ResponseEntity<Slice<RecordInfoWithBookmark>> getRecentRecordInfosWithBookmarksByUser(
+    public ResponseEntity<CursorBasePaginatedResponse<RecordInfoWithBookmark>> getRecentRecordInfosWithBookmarksByUser(
             @UserId Long userId,
             @RequestParam(required = false, defaultValue = "0") long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
@@ -121,12 +124,13 @@ public class RecordController implements RecordApi {
 
         return ResponseEntity
                 .ok()
-                .body(RecordInfoWithBookmark.of(records, bookmarks));
+                .body(CursorBasePaginatedResponse.of(RecordInfoWithBookmark.of(records, bookmarks), recordInfoWithBookmark -> recordInfoWithBookmark.recordInfo()
+                        .id()));
     }
 
     @Override
     @GetMapping("/follow")
-    public ResponseEntity<Slice<RecordInfoWithBookmark>> getSubscribingRecordInfosWithBookmarks(
+    public ResponseEntity<CursorBasePaginatedResponse<RecordInfoWithBookmark>> getSubscribingRecordInfosWithBookmarks(
             @UserId Long userId,
             @RequestParam(required = false, defaultValue = "0") long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
@@ -136,7 +140,8 @@ public class RecordController implements RecordApi {
 
         return ResponseEntity
                 .ok()
-                .body(RecordInfoWithBookmark.of(records, bookmarks));
+                .body(CursorBasePaginatedResponse.of(RecordInfoWithBookmark.of(records, bookmarks), recordInfoWithBookmark -> recordInfoWithBookmark.recordInfo()
+                        .id()));
     }
 
     @Override
