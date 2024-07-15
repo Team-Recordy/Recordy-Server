@@ -28,7 +28,9 @@ public final class DomainFixture {
      * USER
      */
     public static final Long USER_ID = 1L;
+    public static final Long ROOT_USER_ID = 1L;
     public static final UserStatus DEFAULT_USER_STATUS = UserStatus.ACTIVE;
+    public static final String USER_PROFILE_IMAGE_URL = "profile";
     public static final String USER_NICKNAME = "레코디";
     public static final boolean USE_TERM_AGREEMENT = true;
     public static final boolean PERSONAL_INFO_TERM_AGREEMENT = true;
@@ -69,10 +71,10 @@ public final class DomainFixture {
      * KEYWORD
      */
     public static final Long KEYWORD_ID = 1L;
-    public static final Keyword KEYWORD_1 = Keyword.EXOTIC;
-    public static final Keyword KEYWORD_2 = Keyword.QUITE;
-    public static final Keyword KEYWORD_3 = Keyword.TRENDY;
-    public static final List<Keyword> KEYWORDS = List.of(Keyword.EXOTIC, Keyword.QUITE, Keyword.TRENDY);
+    public static final Keyword KEYWORD_1 = Keyword.감각적인;
+    public static final Keyword KEYWORD_2 = Keyword.강렬한;
+    public static final Keyword KEYWORD_3 = Keyword.귀여운;
+    public static final List<Keyword> KEYWORDS = List.of(Keyword.감각적인, Keyword.강렬한, Keyword.귀여운);
 
     public static AuthPlatform createAuthPlatform() {
         return new AuthPlatform(PLATFORM_ID, KAKAO_PLATFORM_TYPE);
@@ -122,12 +124,46 @@ public final class DomainFixture {
         );
     }
 
+    public static UserSignUp createUserSignUp(Long id) {
+        return new UserSignUp(
+                id,
+                USER_NICKNAME,
+                TermsAgreement.of(
+                        USE_TERM_AGREEMENT,
+                        PERSONAL_INFO_TERM_AGREEMENT,
+                        AGE_TERM_AGREEMENT
+                )
+        );
+    }
+
+    public static UserSignUp createUserSignUp(Long id, String nickname) {
+        return new UserSignUp(
+                id,
+                nickname,
+                TermsAgreement.of(
+                        USE_TERM_AGREEMENT,
+                        PERSONAL_INFO_TERM_AGREEMENT,
+                        AGE_TERM_AGREEMENT
+                )
+        );
+    }
+
     public static User createUser() {
         return User.builder()
                 .id(USER_ID)
                 .authPlatform(createAuthPlatform())
                 .status(DEFAULT_USER_STATUS)
                 .nickname(USER_NICKNAME)
+                .termsAgreement(TermsAgreement.of(USE_TERM_AGREEMENT, PERSONAL_INFO_TERM_AGREEMENT, AGE_TERM_AGREEMENT))
+                .build();
+    }
+
+    public static User createUser(String nickname) {
+        return User.builder()
+                .id(USER_ID)
+                .authPlatform(createAuthPlatform())
+                .status(DEFAULT_USER_STATUS)
+                .nickname(nickname)
                 .termsAgreement(TermsAgreement.of(USE_TERM_AGREEMENT, PERSONAL_INFO_TERM_AGREEMENT, AGE_TERM_AGREEMENT))
                 .build();
     }
@@ -142,11 +178,22 @@ public final class DomainFixture {
                 .build();
     }
 
+    public static User createUser(long id, String nickname) {
+        return User.builder()
+                .id(id)
+                .authPlatform(createAuthPlatform())
+                .status(DEFAULT_USER_STATUS)
+                .nickname(nickname)
+                .termsAgreement(TermsAgreement.of(USE_TERM_AGREEMENT, PERSONAL_INFO_TERM_AGREEMENT, AGE_TERM_AGREEMENT))
+                .build();
+    }
+
     public static User createUser(UserStatus userStatus) {
         return User.builder()
                 .id(USER_ID)
                 .authPlatform(createAuthPlatform())
                 .status(userStatus)
+                .profileImageUrl(USER_PROFILE_IMAGE_URL)
                 .nickname(USER_NICKNAME)
                 .termsAgreement(TermsAgreement.of(USE_TERM_AGREEMENT, PERSONAL_INFO_TERM_AGREEMENT, AGE_TERM_AGREEMENT))
                 .build();

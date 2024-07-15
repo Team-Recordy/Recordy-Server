@@ -78,12 +78,12 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public Slice<Record> getFamousRecords(List<String> keywords, int pageNumber, int size) {
+    public Slice<Record> getFamousRecords(List<Keyword> keywords, int pageNumber, int size) {
         if (Objects.isNull(keywords) || keywords.isEmpty()) {
             return getFamousRecords(pageNumber, size);
         }
 
-        return getFamousRecordsWithKeywords(Keyword.from(keywords), pageNumber, size);
+        return getFamousRecordsWithKeywords(keywords, pageNumber, size);
     }
 
     private Slice<Record> getFamousRecords(int pageNumber, int size) {
@@ -100,12 +100,12 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public Slice<Record> getRecentRecords(List<String> keywords, Long cursorId, int size) {
-        if (Objects.isNull(keywords) || keywords.isEmpty()) {
+    public Slice<Record> getRecentRecords(List<Keyword> keywords, Long cursorId, int size) {
+        if (Objects.isNull(keywords)) {
             return getRecentRecords(cursorId, size);
         }
 
-        return getRecentRecordsWithKeywords(Keyword.from(keywords), cursorId, size);
+        return getRecentRecordsWithKeywords(keywords, cursorId, size);
     }
 
     private Slice<Record> getRecentRecords(long cursorId, int size) {

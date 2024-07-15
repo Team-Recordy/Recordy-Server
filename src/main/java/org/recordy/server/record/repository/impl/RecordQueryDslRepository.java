@@ -195,6 +195,14 @@ public class RecordQueryDslRepository {
         return new SliceImpl<>(recordEntities, pageable, QueryDslUtils.hasNext(pageable, recordEntities));
     }
 
+    public long countAllByUserId(long userId) {
+        return jpaQueryFactory
+                .select(recordEntity.id.count())
+                .from(recordEntity)
+                .where(recordEntity.user.id.eq(userId))
+                .fetchOne();
+    }
+
     public Optional<Long> findMaxId() {
         return Optional.ofNullable(jpaQueryFactory
                 .select(recordEntity.id.max())
