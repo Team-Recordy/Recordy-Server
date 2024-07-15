@@ -1,6 +1,5 @@
 package org.recordy.server.record.controller;
 
-
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.security.UserId;
 import org.recordy.server.record.controller.dto.request.RecordCreateRequest;
@@ -17,16 +16,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/records")
 @RestController
-public class RecordController {
+public class RecordController implements RecordApi {
 
     private final RecordService recordService;
     private final RecordStatService recordStatService;
 
+    @Override
     @PostMapping
     public ResponseEntity<Record> createRecord(
             @UserId Long uploaderId,
@@ -42,6 +43,7 @@ public class RecordController {
                 .body(record);
     }
 
+    @Override    
     @DeleteMapping("/{recordId}")
     public ResponseEntity<Void> deleteRecord(
             @UserId Long uploaderId,
@@ -54,11 +56,12 @@ public class RecordController {
                 .build();
     }
 
+    @Override
     @GetMapping("/recent")
     public ResponseEntity<Slice<RecordInfoWithBookmark>> getRecentRecordInfoWithBookmarks(
             @UserId Long userId,
             @RequestParam(required = false) List<String> keywords,
-            @RequestParam(required = false, defaultValue = "0") long cursorId,
+            @RequestParam(required = false, defaultValue = "0") Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
         Slice<Record> records = recordService.getRecentRecords(keywords, cursorId, size);
@@ -67,6 +70,7 @@ public class RecordController {
         return ResponseEntity.ok().body(RecordInfoWithBookmark.of(records, bookmarks));
     }
 
+    @Override
     @GetMapping("/famous")
     public ResponseEntity<Slice<RecordInfoWithBookmark>> getFamousRecordInfoWithBookmarks(
             @UserId Long userId,
@@ -82,10 +86,11 @@ public class RecordController {
                 .body(RecordInfoWithBookmark.of(records, bookmarks));
     }
 
+    @Override
     @PostMapping("/{recordId}")
     public ResponseEntity<Void> watch(
             @UserId Long userId,
-            @PathVariable long recordId
+            @PathVariable Long recordId
     ) {
         recordService.watch(userId, recordId);
         return ResponseEntity
@@ -93,6 +98,7 @@ public class RecordController {
                 .build();
     }
 
+    @Override
     @GetMapping
     public ResponseEntity<Slice<RecordInfoWithBookmark>> getRecentRecordInfoWithBookmarksByUser(
             @UserId Long userId,
@@ -121,3 +127,4 @@ public class RecordController {
                 .body(RecordInfoWithBookmark.of(records, bookmarks));
     }
 }
+

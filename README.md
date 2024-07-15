@@ -52,10 +52,12 @@
 
 
 ## 👤 팀원
-|<img src="https://github.com/Team-Recordy/Recordy-Server/assets/94737768/76b261b4-bc99-49ef-b221-abd32126db78" width="200" /> |<img src="https://github.com/Team-Recordy/Recordy-Server/assets/94737768/b38469c6-9239-4972-b821-ca5263f889be" width="200" /> |<img src="https://github.com/Team-Recordy/Recordy-Server/assets/94737768/e334819f-fbd4-4786-a7de-495603d0cfe7" width="200" />|
+<img src="https://github.com/user-attachments/assets/a1f90c12-4c08-4734-9d64-dac155cc6643" width="830" /> 
+</br>
 
+| <img src="https://github.com/Team-Recordy/Recordy-Server/assets/94737768/76b261b4-bc99-49ef-b221-abd32126db78" width="250" /> | <img src="https://github.com/Team-Recordy/Recordy-Server/assets/94737768/b38469c6-9239-4972-b821-ca5263f889be" width="250" /> | <img src="https://github.com/Team-Recordy/Recordy-Server/assets/94737768/e334819f-fbd4-4786-a7de-495603d0cfe7" width="250" /> |
 |:---------:|:---------:|:---------:|
-|[나세빈](https://github.com/sebbbin)|[박수빈](https://github.com/elive7)|[진건우](https://github.com/jinkonu)|
+|[@sebbbin](https://github.com/sebbbin)|[@elive7](https://github.com/elive7)|[@jinkonu](https://github.com/jinkonu)|
 | `나세빈` | `박수빈` | `👑 진건우` | 
 </br>
 
