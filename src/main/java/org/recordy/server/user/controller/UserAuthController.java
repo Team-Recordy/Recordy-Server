@@ -85,7 +85,7 @@ public class UserAuthController implements UserAuthApi {
     }
 
     @Override
-    @DeleteMapping
+    @DeleteMapping("/delete")
     public ResponseEntity<Void> delete(
             @UserId Long userId
     ) {
