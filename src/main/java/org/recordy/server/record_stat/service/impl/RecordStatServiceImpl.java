@@ -47,13 +47,6 @@ public class RecordStatServiceImpl implements RecordStatService {
     }
 
     @Override
-    public List<Boolean> findBookmarks(long userId, Slice<Record> records) {
-        return records.getContent().stream()
-                .map(record -> bookmarkRepository.existsByUserIdAndRecordId(userId, record.getId()))
-                .collect(Collectors.toList());
-    }
-
-    @Override
     public Preference getPreference(long userId) {
         return Preference.of(userId, recordRepository.countAllByUserIdGroupByKeyword(userId));
     }
@@ -63,5 +56,12 @@ public class RecordStatServiceImpl implements RecordStatService {
     public Slice<Record> getBookmarkedRecords(long userId, long cursorId, int size) {
         return bookmarkRepository.findAllByBookmarksOrderByIdDesc(userId, cursorId, PageRequest.ofSize(size))
                 .map(Bookmark::getRecord);
+    }
+
+    @Override
+    public List<Boolean> findBookmarks(long userId, List<Record> records) {
+        return records.stream()
+                .map(record -> bookmarkRepository.existsByUserIdAndRecordId(userId, record.getId()))
+                .collect(Collectors.toList());
     }
 }

@@ -10,6 +10,7 @@ import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.usecase.RecordCreate;
 import org.recordy.server.record.service.RecordService;
 import org.recordy.server.record_stat.service.RecordStatService;
+import org.recordy.server.record.service.S3Service;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -65,7 +66,7 @@ public class RecordController implements RecordApi {
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
         Slice<Record> records = recordService.getRecentRecords(keywords, cursorId, size);
-        List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records);
+        List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records.getContent());
 
         return ResponseEntity.ok().body(RecordInfoWithBookmark.of(records, bookmarks));
     }
@@ -79,7 +80,7 @@ public class RecordController implements RecordApi {
             @RequestParam(required = false, defaultValue = "10") int pageSize
     ){
         Slice<Record> records = recordService.getFamousRecords(keywords, pageNumber, pageSize);
-        List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records);
+        List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records.getContent());
 
         return ResponseEntity
                 .ok()
@@ -99,14 +100,14 @@ public class RecordController implements RecordApi {
     }
 
     @Override
-    @GetMapping
+    @GetMapping("/user")
     public ResponseEntity<Slice<RecordInfoWithBookmark>> getRecentRecordInfosWithBookmarksByUser(
             @UserId Long userId,
             @RequestParam(required = false, defaultValue = "0") long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
         Slice<Record> records = recordService.getRecentRecordsByUser(userId, cursorId, size);
-        List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records);
+        List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records.getContent());
 
         return ResponseEntity
                 .ok()
@@ -121,6 +122,20 @@ public class RecordController implements RecordApi {
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
         Slice<Record> records = recordService.getSubscribingRecords(userId, cursorId, size);
+        List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records.getContent());
+
+        return ResponseEntity
+                .ok()
+                .body(RecordInfoWithBookmark.of(records, bookmarks));
+    }
+
+    @Override
+    @GetMapping
+    public ResponseEntity<List<RecordInfoWithBookmark>> getTotalRecordInfosWithBookmarks(
+            @UserId Long userId,
+            @RequestParam(required = false, defaultValue = "10") int size
+    ){
+        List<Record> records = recordService.getTotalRecords(size);
         List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records);
 
         return ResponseEntity
