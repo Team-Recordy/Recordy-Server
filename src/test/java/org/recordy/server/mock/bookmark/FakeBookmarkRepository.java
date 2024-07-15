@@ -50,11 +50,4 @@ public class FakeBookmarkRepository implements BookmarkRepository {
 
         return new SliceImpl<>(content.subList(0, pageable.getPageSize()), pageable, true);
     }
-
-    @Override
-    public Optional<Bookmark> findByUserIdAndRecordId(long userId, long recordId) {
-        return bookmarks.values().stream()
-                .filter(bookmark -> bookmark.getUser().getId() == userId && bookmark.getRecord().getId() == recordId)
-                .findFirst();
-    }
 }

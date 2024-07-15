@@ -41,11 +41,4 @@ public class BookmarkRepositoryImpl implements BookmarkRepository {
     public boolean existsByUserIdAndRecordId(Long userId, Long recordId) {
         return bookmarkJpaRepository.existsByUserIdAndRecordId(userId, recordId);
     }
-
-    @Override
-    public List<Boolean> findBookmarks(long userId, Slice<Record> records) {
-        return records.getContent().stream()
-                .map(record -> bookmarkJpaRepository.existsByUserIdAndRecordId(userId, record.getId()))
-                .collect(Collectors.toList());
-    }
 }
