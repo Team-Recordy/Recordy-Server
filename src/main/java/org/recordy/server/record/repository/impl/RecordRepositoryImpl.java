@@ -120,4 +120,14 @@ public class RecordRepositoryImpl implements RecordRepository {
     public long countAllByUserId(long userId) {
         return recordQueryDslRepository.countAllByUserId(userId);
     }
+
+    @Override
+    public Optional<Long> findMaxId() {
+        return recordQueryDslRepository.findMaxId();
+    }
+
+    @Override
+    public Long count() {
+        return recordJpaRepository.count();
+    }
 }

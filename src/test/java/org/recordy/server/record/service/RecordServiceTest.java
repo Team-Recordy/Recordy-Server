@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.mock.FakeContainer;
+import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
 import org.recordy.server.record.domain.File;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.usecase.RecordCreate;
@@ -83,7 +84,7 @@ class RecordServiceTest {
     }
 
     @Test
-    void findAllByUserIdOrderByCreatedAtDesc를_통해_userId를_기반으로_레코드_데이터를_조회할_수_있다() {
+    void getRecentRecordsByUser를_통해_userId를_기반으로_레코드_데이터를_조회할_수_있다() {
         //given
         recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
         recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());

@@ -202,4 +202,13 @@ public class RecordQueryDslRepository {
                 .where(recordEntity.user.id.eq(userId))
                 .fetchOne();
     }
+
+    public Optional<Long> findMaxId() {
+        return Optional.ofNullable(jpaQueryFactory
+                .select(recordEntity.id.max())
+                        .from(recordEntity)
+                        .fetchOne()
+        );
+    }
+
 }

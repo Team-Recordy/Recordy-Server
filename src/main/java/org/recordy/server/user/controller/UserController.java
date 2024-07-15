@@ -1,98 +1,79 @@
 package org.recordy.server.user.controller;
 
-
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.security.UserId;
-import org.recordy.server.user.controller.dto.request.UserSignUpRequest;
-import org.recordy.server.user.domain.usecase.UserSignIn;
-import org.recordy.server.user.controller.dto.request.UserSignInRequest;
-import org.recordy.server.user.controller.dto.response.UserReissueTokenResponse;
-import org.recordy.server.user.controller.dto.response.UserSignInResponse;
-import org.recordy.server.user.domain.usecase.UserSignUp;
-import org.recordy.server.user.service.UserService;
-import org.springframework.http.HttpHeaders;
+import org.recordy.server.user.controller.dto.response.UserInfoWithFollowing;
+import org.recordy.server.subscribe.domain.usecase.SubscribeCreate;
+import org.recordy.server.subscribe.service.SubscribeService;
+import org.recordy.server.user.domain.User;
+import org.recordy.server.user.controller.dto.response.UserInfo;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
 @RestController
 public class UserController implements UserApi {
-
-    private final UserService userService;
-
-    @Override
-    @PostMapping("/signIn")
-    public ResponseEntity<UserSignInResponse> signIn(
-            @RequestHeader(HttpHeaders.AUTHORIZATION) String platformToken,
-            @RequestBody UserSignInRequest request
-    ) {
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(UserSignInResponse.from(
-                        userService.signIn(UserSignIn.of(platformToken, request.platformType()))
-                ));
-    }
+    private final SubscribeService subscribeService;
 
     @Override
-    @PostMapping("/signUp")
-    public ResponseEntity<Void> signUp(
+    @PostMapping("/follow/{followingId}")
+    public ResponseEntity<Void> subscribe(
             @UserId Long userId,
-            @RequestBody UserSignUpRequest request
+            @PathVariable Long followingId
     ) {
-        userService.signUp(UserSignUp.of(userId, request.nickname(), request.termsAgreement()));
-
-        return ResponseEntity.
-                status(HttpStatus.CREATED).
-                build();
-    }
-
-    @Override
-    @GetMapping("/check-nickname")
-    public ResponseEntity<Void> checkDuplicateNickname(
-            @RequestParam String nickname
-    ) {
-        userService.validateDuplicateNickname(nickname);
-
+        subscribeService.subscribe(new SubscribeCreate(userId, followingId));
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .build();
     }
 
     @Override
-    @PostMapping("/token")
-    public ResponseEntity<UserReissueTokenResponse> reissueToken(
-            @RequestHeader(HttpHeaders.AUTHORIZATION) String refreshToken
+    @DeleteMapping("/unfollow/{followingId}")
+    public ResponseEntity<Void> unsubscribe(
+            @UserId Long userId,
+            @PathVariable Long followingId
     ) {
+        subscribeService.unsubscribe(userId, followingId);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
+    }
+
+    @Override
+    @GetMapping("/following")
+    public ResponseEntity<Slice<UserInfo>> getSubscribedUserInfos(
+            @UserId Long userId,
+            @RequestParam(required = false, defaultValue = "0") long cursorId,
+            @RequestParam(required = false, defaultValue = "10") int size
+    ) {
+
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(UserReissueTokenResponse.of(
-                        userService.reissueToken(refreshToken)
-                ));
+                .body(UserInfo.of(subscribeService.getSubscribedUsers(userId, cursorId, size)));
     }
 
     @Override
-    @DeleteMapping("/logout")
-    public ResponseEntity<Void> signOut(
-            @UserId Long userId
+    @GetMapping("/follower")
+    public ResponseEntity<Slice<UserInfoWithFollowing>> getSubscribingUserInfos(
+            @UserId Long userId,
+            @RequestParam(required = false, defaultValue = "0") long cursorId,
+            @RequestParam(required = false, defaultValue = "10") int size
     ) {
-        userService.signOut(userId);
+        Slice<User> users = subscribeService.getSubscribingUsers(userId, cursorId, size);
+        List<Boolean> following = subscribeService.findSubscribes(userId, users);
 
         return ResponseEntity
-                .noContent()
-                .build();
-    }
-
-    @Override
-    @DeleteMapping
-    public ResponseEntity<Void> delete(
-            @UserId Long userId
-    ) {
-        userService.delete(userId);
-
-        return ResponseEntity
-                .noContent()
-                .build();
+                .status(HttpStatus.OK)
+                .body(UserInfoWithFollowing.of(users, following));
     }
 }

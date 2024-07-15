@@ -114,4 +114,14 @@ public class FakeRecordRepository implements RecordRepository {
                 .filter(user -> user.getId() == userId)
                 .count();
     }
+
+    @Override
+    public Optional<Long> findMaxId() {
+        return records.keySet().stream().max(Long::compareTo);
+    }
+
+    @Override
+    public Long count() {
+        return (long) records.size();
+    }
 }
