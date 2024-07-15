@@ -47,6 +47,7 @@ import org.recordy.server.util.DomainFixture;
 import java.util.List;
 
 import static org.mockito.Mockito.mock;
+import static org.recordy.server.util.DomainFixture.ROOT_USER_ID;
 
 public class FakeContainer {
 
@@ -117,7 +118,7 @@ public class FakeContainer {
                 authRepository
         );
         this.authService = new AuthServiceImpl(authRepository, authPlatformServiceFactory, authTokenService);
-        this.userService = new UserServiceImpl(userRepository, subscribeRepository, recordRepository, authService, authTokenService);
+        this.userService = new UserServiceImpl(ROOT_USER_ID, userRepository, subscribeRepository, recordRepository, authService, authTokenService);
         this.fileService = new FakeFileService();
         this.recordService = new RecordServiceImpl(recordRepository, viewRepository, fileService, userService);
         this.keywordService = new KeywordServiceImpl(keywordRepository);

@@ -166,6 +166,26 @@ public class UserServiceTest {
     }
 
     @Test
+    void signUp을_통해_가입된_사용자가_ROOT_사용자를_팔로우할_수_있다() {
+        // given
+        UserSignIn rootSignIn = new UserSignIn("root", AuthPlatform.Type.KAKAO);
+        userService.signIn(rootSignIn);
+        UserSignUp rootSignUp = new UserSignUp(1L, "유영", TermsAgreement.of(true, true, true));
+        userService.signUp(rootSignUp);
+
+        // when
+        UserSignIn userSignIn = DomainFixture.createUserSignIn(AuthPlatform.Type.APPLE);
+        userService.signIn(userSignIn);
+        UserSignUp userSignUp = DomainFixture.createUserSignUp();
+        User result = userService.signUp(userSignUp);
+
+        // then
+        assertAll(
+                () -> assertThat(userRepository.findById(3)).isNotEmpty()
+        );
+    }
+
+    @Test
     void reissueToken을_통해_accessToken을_재발급_받을_수_있다() {
         //given
         AuthPlatform platform = DomainFixture.createAuthPlatform();
