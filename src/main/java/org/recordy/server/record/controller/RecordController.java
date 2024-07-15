@@ -76,7 +76,7 @@ public class RecordController implements RecordApi {
         Slice<Record> records = recordService.getRecentRecords(Keyword.decode(keywords), cursorId, size);
         List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records.getContent());
 
-        return ResponseEntity.ok().body(RecordInfoWithBookmark.of(records, bookmarks));
+        return ResponseEntity.ok().body(RecordInfoWithBookmark.of(records, bookmarks, userId));
     }
 
     @Override
@@ -92,7 +92,7 @@ public class RecordController implements RecordApi {
 
         return ResponseEntity
                 .ok()
-                .body(RecordInfoWithBookmark.of(records, bookmarks));
+                .body(RecordInfoWithBookmark.of(records, bookmarks, userId));
     }
 
     @Override
@@ -119,7 +119,7 @@ public class RecordController implements RecordApi {
 
         return ResponseEntity
                 .ok()
-                .body(RecordInfoWithBookmark.of(records, bookmarks));
+                .body(RecordInfoWithBookmark.of(records, bookmarks, userId));
     }
 
     @Override
@@ -134,7 +134,7 @@ public class RecordController implements RecordApi {
 
         return ResponseEntity
                 .ok()
-                .body(RecordInfoWithBookmark.of(records, bookmarks));
+                .body(RecordInfoWithBookmark.of(records, bookmarks, userId));
     }
 
     @Override
@@ -148,6 +148,6 @@ public class RecordController implements RecordApi {
 
         return ResponseEntity
                 .ok()
-                .body(RecordInfoWithBookmark.of(records, bookmarks));
+                .body(RecordInfoWithBookmark.of(records, bookmarks, userId));
     }
 }

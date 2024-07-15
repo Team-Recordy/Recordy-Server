@@ -9,9 +9,10 @@ public record RecordInfo (
         String content,
         Long uploaderId,
         String uploaderNickname,
-        Long bookmarkCount
+        Long bookmarkCount,
+        boolean isMine
 ){
-    public static RecordInfo from(Record record){
+    public static RecordInfo from(Record record, Long currentUserId){
         return new RecordInfo(
                 record.getId(),
                 record.getFileUrl(),
@@ -19,7 +20,8 @@ public record RecordInfo (
                 record.getContent(),
                 record.getUploader().getId(),
                 record.getUploader().getNickname(),
-                record.getBookmarkCount()
+                record.getBookmarkCount(),
+                record.getUploader().getId().equals(currentUserId)
         );
     }
 }
