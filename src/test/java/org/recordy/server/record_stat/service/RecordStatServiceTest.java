@@ -7,6 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.mock.FakeContainer;
+import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.record_stat.domain.Bookmark;
