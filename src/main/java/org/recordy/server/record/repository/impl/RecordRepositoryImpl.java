@@ -100,6 +100,12 @@ public class RecordRepositoryImpl implements RecordRepository {
     }
 
     @Override
+    public Slice<Record> findAllBySubscribingUserIdOrderByIdDesc(long userId, long cursor, Pageable pageable) {
+        return recordQueryDslRepository.findAllBySubscribingUserIdOrderByIdDesc(userId, cursor, pageable)
+                .map(RecordEntity::toDomain);
+    }
+
+    @Override
     public Map<Keyword, Long> countAllByUserIdGroupByKeyword(long userId) {
         Map<KeywordEntity, Long> preference = recordQueryDslRepository.countAllByUserIdGroupByKeyword(userId);
 
@@ -111,8 +117,7 @@ public class RecordRepositoryImpl implements RecordRepository {
     }
 
     @Override
-    public Slice<Record> findAllBySubscribingUserIdOrderByIdDesc(long userId, long cursor, Pageable pageable) {
-        return recordQueryDslRepository.findAllBySubscribingUserIdOrderByIdDesc(userId, cursor, pageable)
-                .map(RecordEntity::toDomain);
+    public long countAllByUserId(long userId) {
+        return recordQueryDslRepository.countAllByUserId(userId);
     }
 }

@@ -29,7 +29,6 @@ public class User {
     private String profileImageUrl;
     private String nickname;
     private TermsAgreement termsAgreement;
-
     private LocalDateTime createdAt;
 
     public User activate(UserSignUp userSignUp) {

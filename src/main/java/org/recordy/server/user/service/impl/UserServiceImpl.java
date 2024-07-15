@@ -6,7 +6,10 @@ import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.auth.service.AuthService;
 import org.recordy.server.auth.service.AuthTokenService;
 import org.recordy.server.common.message.ErrorMessage;
+import org.recordy.server.record.repository.RecordRepository;
+import org.recordy.server.subscribe.repository.SubscribeRepository;
 import org.recordy.server.user.controller.dto.request.TermsAgreement;
+import org.recordy.server.user.domain.usecase.UserProfile;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.UserStatus;
 import org.recordy.server.user.domain.usecase.UserSignIn;
@@ -23,6 +26,8 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final SubscribeRepository subscribeRepository;
+    private final RecordRepository recordRepository;
     private final AuthService authService;
     private final AuthTokenService authTokenService;
 
@@ -84,6 +89,17 @@ public class UserServiceImpl implements UserService {
 
         authService.signOut(user.getAuthPlatform().getId());
         userRepository.deleteById(userId);
+    }
+
+    @Override
+    public UserProfile getProfile(long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
+        long records = recordRepository.countAllByUserId(user.getId());
+        long followers = subscribeRepository.countSubscribingUsers(user.getId());
+        long followings = subscribeRepository.countSubscribedUsers(user.getId());
+
+        return UserProfile.of(user, records, followers, followings);
     }
 
     @Override

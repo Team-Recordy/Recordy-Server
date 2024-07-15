@@ -95,7 +95,7 @@ public class RecordController implements RecordApi {
     @Override
     @GetMapping
     public ResponseEntity<Slice<Record>> getRecentRecordsByUser(
-            @UserId Long userId,
+            @RequestParam Long userId,
             @RequestParam(required = false, defaultValue = "0") Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
@@ -106,4 +106,3 @@ public class RecordController implements RecordApi {
                 .body(records);
     }
 }
-

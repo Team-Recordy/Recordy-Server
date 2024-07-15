@@ -33,7 +33,7 @@ public class S3ServiceTest {
     void init() {
         s3ClientMock = mock(S3Client.class);
         presignerMock = mock(S3Presigner.class);
-        s3Service = new S3ServiceImpl(bucket, s3ClientMock, presignerMock);
+        s3Service = new S3ServiceImpl(s3ClientMock, presignerMock);
     }
 
     @Test

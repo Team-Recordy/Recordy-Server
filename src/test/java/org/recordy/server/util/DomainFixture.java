@@ -29,6 +29,7 @@ public final class DomainFixture {
      */
     public static final Long USER_ID = 1L;
     public static final UserStatus DEFAULT_USER_STATUS = UserStatus.ACTIVE;
+    public static final String USER_PROFILE_IMAGE_URL = "profile";
     public static final String USER_NICKNAME = "레코디";
     public static final boolean USE_TERM_AGREEMENT = true;
     public static final boolean PERSONAL_INFO_TERM_AGREEMENT = true;
@@ -147,6 +148,7 @@ public final class DomainFixture {
                 .id(USER_ID)
                 .authPlatform(createAuthPlatform())
                 .status(userStatus)
+                .profileImageUrl(USER_PROFILE_IMAGE_URL)
                 .nickname(USER_NICKNAME)
                 .termsAgreement(TermsAgreement.of(USE_TERM_AGREEMENT, PERSONAL_INFO_TERM_AGREEMENT, AGE_TERM_AGREEMENT))
                 .build();
