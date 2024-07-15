@@ -26,13 +26,10 @@ public interface RecordApi {
             description = "유저가 레코드를 생성하는 API입니다. 파일과 함께 레코드 정보를 전송합니다.",
             responses = {
                     @ApiResponse(
-                            responseCode = "201",
+                            responseCode = "200",
                             description = "레코드가 성공적으로 생성되었습니다.",
                             content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(
-                                            implementation = Record.class
-                                    )
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE
                             )
                     ),
                     @ApiResponse(
@@ -77,12 +74,9 @@ public interface RecordApi {
                     )
             }
     )
-    ResponseEntity<Record> createRecord(
+    public ResponseEntity<Void> createRecord(
             @UserId Long uploaderId,
-            @RequestPart RecordCreateRequest request,
-            @RequestPart MultipartFile thumbnail,
-            @RequestPart MultipartFile video
-    ) ;
+            @RequestBody RecordCreateRequest request);
 
     @Operation(
             summary = "레코드 삭제 API",

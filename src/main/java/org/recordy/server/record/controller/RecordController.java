@@ -11,13 +11,15 @@ import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.usecase.RecordCreate;
 import org.recordy.server.record.service.RecordService;
 import org.recordy.server.record_stat.service.RecordStatService;
+import org.recordy.server.record.service.S3Service;
+import org.recordy.server.record.service.dto.FileUrl;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+
 
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/records")
@@ -26,22 +28,31 @@ public class RecordController implements RecordApi {
 
     private final RecordService recordService;
     private final RecordStatService recordStatService;
+    private final S3Service s3Service;
+
+    @GetMapping("/presigned-url")
+    public ResponseEntity<FileUrl> getPresignedUrls() {
+     return ResponseEntity
+             .status(HttpStatus.OK)
+             .body(new FileUrl(
+                     s3Service.generatePresignedUrl("videos/"),
+                     s3Service.generatePresignedUrl("thumbnails/")
+             ));
+    }
 
     @Override
     @PostMapping
-    public ResponseEntity<Record> createRecord(
+    public ResponseEntity<Void> createRecord(
             @UserId Long uploaderId,
-            @RequestPart RecordCreateRequest request,
-            @RequestPart MultipartFile thumbnail,
-            @RequestPart MultipartFile video
-    ) {
-        RecordCreate recordCreate = RecordCreate.of(uploaderId, request);
-        Record record = recordService.create(recordCreate, File.of(video, thumbnail));
+            @RequestBody RecordCreateRequest request) {
+        RecordCreate recordCreate = RecordCreate.from(uploaderId, request);
+        Record record = recordService.create(recordCreate, new File(request.fileUrl().videoUrl(), request.fileUrl().thumbnailUrl()));
 
         return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(record);
+                .ok()
+                .build();
     }
+
 
     @Override    
     @DeleteMapping("/{recordId}")

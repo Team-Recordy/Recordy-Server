@@ -1,29 +1,23 @@
 package org.recordy.server.record.domain;
 
-import org.springframework.web.multipart.MultipartFile;
+public record File (
+        String videoUrl,
+        String thumbnailUrl) {
 
-import java.util.UUID;
-
-public record File(
-        MultipartFile video,
-        MultipartFile thumbnail
-) {
-
-    public static File of(MultipartFile video, MultipartFile thumbnail) {
-        return new File(video, thumbnail);
+    public File(String videoUrl, String thumbnailUrl) {
+        this.videoUrl = videoUrl;
+        this.thumbnailUrl = thumbnailUrl;
     }
 
-    public String generateFileName(MultipartFile file) {
-        String originalFilename = file.getOriginalFilename();
-        String extension = originalFilename.substring(originalFilename.lastIndexOf('.'));
-        return UUID.randomUUID() + extension;
+    public String getVideoUrl() {
+        return videoUrl;
     }
 
-    public String getVideoFileName() {
-        return generateFileName(video);
+    public String getThumbnailUrl() {
+        return thumbnailUrl;
     }
 
-    public String getThumbnailFileName() {
-        return generateFileName(thumbnail);
+    public static File of(String videoUrl, String thumbnailUrl) {
+        return new File(videoUrl, thumbnailUrl);
     }
 }

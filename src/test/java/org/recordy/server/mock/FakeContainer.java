@@ -28,7 +28,6 @@ import org.recordy.server.mock.record.FakeRecordRepository;
 import org.recordy.server.mock.user.FakeUserRepository;
 import org.recordy.server.mock.view.FakeViewRepository;
 import org.recordy.server.record.repository.RecordRepository;
-import org.recordy.server.record.service.FileService;
 import org.recordy.server.record.service.RecordService;
 import org.recordy.server.record.service.impl.RecordServiceImpl;
 import org.recordy.server.record_stat.repository.BookmarkRepository;
@@ -73,7 +72,6 @@ public class FakeContainer {
     public final AuthTokenService authTokenService;
     public final AuthService authService;
     public final UserService userService;
-    public final FileService fileService;
     public final RecordService recordService;
     public final KeywordService keywordService;
     public final RecordStatService recordStatService;
