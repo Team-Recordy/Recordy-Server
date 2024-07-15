@@ -26,7 +26,6 @@ public class AuthRepositoryIntegrationTest {
     @BeforeEach
     void tearDown() {
         authRedisRepository.deleteAll();
-        System.out.println("shibal");
         authRedisRepository.findAll().forEach(System.out::println);
     }
 
