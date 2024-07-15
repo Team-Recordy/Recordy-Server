@@ -78,8 +78,8 @@ public interface RecordApi {
             }
     )
     public ResponseEntity<Record> createRecord(
-            @UserId Long uploaderId,
-            @RequestBody RecordCreateRequest request);
+            @RequestBody RecordCreateRequest request,
+            @UserId Long uploaderId);
 
     @Operation(
             summary = "레코드 삭제 API",

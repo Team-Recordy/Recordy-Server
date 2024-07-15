@@ -1,6 +1,7 @@
 package org.recordy.server.keyword.domain;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public enum Keyword {
 
@@ -28,6 +29,6 @@ public enum Keyword {
     public static List<Keyword> from(List<String> keywords) {
         return keywords.stream()
                 .map(Keyword::valueOf)
-                .toList();
+                .collect(Collectors.toList());
     }
 }

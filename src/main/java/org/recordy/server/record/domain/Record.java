@@ -1,6 +1,8 @@
 package org.recordy.server.record.domain;
 
 import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,6 +18,7 @@ import java.util.List;
 public class Record {
 
     Long id;
+    @Column(length = 1024)
     FileUrl fileUrl;
     String location;
     String content;

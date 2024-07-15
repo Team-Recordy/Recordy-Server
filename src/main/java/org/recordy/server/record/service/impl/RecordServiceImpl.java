@@ -8,8 +8,8 @@ import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.usecase.RecordCreate;
 import org.recordy.server.record.exception.RecordException;
 import org.recordy.server.record.repository.RecordRepository;
-import org.recordy.server.record.service.FileService;
 import org.recordy.server.record.service.RecordService;
+import org.recordy.server.record.service.S3Service;
 import org.recordy.server.record.service.dto.FileUrl;
 import org.recordy.server.record_stat.domain.View;
 import org.recordy.server.record_stat.repository.ViewRepository;
@@ -30,14 +30,19 @@ public class RecordServiceImpl implements RecordService {
     private final RecordRepository recordRepository;
     private final ViewRepository viewRepository;
     private final UserService userService;
+    private final S3Service s3Service;
 
     @Override
-    public Record create(RecordCreate recordCreate, File file) {
+    public Record create(RecordCreate recordCreate) {
+        String videoPresignedUrl = s3Service.generatePresignedUrl("videos/");
+        String thumbnailPresignedUrl = s3Service.generatePresignedUrl("thumbnails/");
+        FileUrl fileUrl = new FileUrl(videoPresignedUrl, thumbnailPresignedUrl);
+
         User user = userService.getById(recordCreate.uploaderId())
                 .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
 
         return recordRepository.save(Record.builder()
-                .fileUrl(FileUrl.of(file.videoUrl(), file.getThumbnailUrl()))
+                .fileUrl(fileUrl)
                 .location(recordCreate.location())
                 .content(recordCreate.content())
                 .uploader(user)
