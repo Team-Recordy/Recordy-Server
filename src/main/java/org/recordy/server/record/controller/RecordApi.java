@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.recordy.server.auth.security.UserId;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.record.controller.dto.request.RecordCreateRequest;
+import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
 import org.recordy.server.record.domain.File;
 import org.recordy.server.record.domain.Record;
 import org.springframework.data.domain.Slice;
@@ -163,9 +164,9 @@ public interface RecordApi {
                     )
             }
     )
-    public ResponseEntity<Slice<Record>> getRecentRecordsByUser(
+    public ResponseEntity<Slice<RecordInfoWithBookmark>> getRecentRecordInfosWithBookmarksByUser(
             @UserId Long userId,
-            @RequestParam(required = false, defaultValue = "0") Long cursorId,
+            @RequestParam(required = false, defaultValue = "0") long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     );
 
@@ -206,7 +207,7 @@ public interface RecordApi {
     );
 
     @Operation(
-            summary = "인기 레코드 조회 API",
+            summary = "인기 레코드 리스트 조회 API",
             description = "사용자가 인기 레코드를 키워드와 함께 조회합니다. 키워드가 없으면 전체 인기 레코드를 조회합니다.",
             responses = {
                     @ApiResponse(
@@ -241,14 +242,15 @@ public interface RecordApi {
                     )
             }
     )
-    public ResponseEntity<Slice<Record>> getFamousRecords(
+    public ResponseEntity<Slice<RecordInfoWithBookmark>> getFamousRecordInfoWithBookmarks(
+            @UserId Long userId,
             @RequestParam(required = false) List<String> keywords,
             @RequestParam(required = false, defaultValue = "0") int pageNumber,
             @RequestParam(required = false, defaultValue = "10") int pageSize
-    );
+    ) ;
 
     @Operation(
-            summary = "최근 레코드 조회 API",
+            summary = "최근 레코드 리스트 조회 API",
             description = "사용자가 최근 레코드를 키워드와 함께 조회합니다. 키워드가 없으면 전체 최근 레코드를 조회합니다.",
             responses = {
                     @ApiResponse(
@@ -283,9 +285,93 @@ public interface RecordApi {
                     )
             }
     )
-    public ResponseEntity<Slice<Record>> getRecentRecords(
+    public ResponseEntity<Slice<RecordInfoWithBookmark>> getRecentRecordInfosWithBookmarks(
+            @UserId Long userId,
             @RequestParam(required = false) List<String> keywords,
             @RequestParam(required = false, defaultValue = "0") Long cursorId,
+            @RequestParam(required = false, defaultValue = "10") int size
+    );
+
+    @Operation(
+            summary = "구독 레코드 리스트 조회 API",
+            description = "구독 중인 유저의 레코드 리스트를 최신순으로 반환합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "요청이 성공적으로 처리되었습니다.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = Slice.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized - 인증이 필요합니다.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = ErrorMessage.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Internal Server Error - 서버 내부 오류입니다.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = ErrorMessage.class
+                                    )
+                            )
+                    )
+            }
+    )
+    public ResponseEntity<Slice<RecordInfoWithBookmark>> getSubscribingRecordInfosWithBookmarks(
+            @UserId Long userId,
+            @RequestParam(required = false, defaultValue = "0") long cursorId,
+            @RequestParam(required = false, defaultValue = "10") int size
+    );
+
+    @Operation(
+            summary = "전체 레코드 조회 API",
+            description = "전체 레코드 중 정해진 크기만큼 랜덤으로 만든 레코드 리스트를 반환합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "요청이 성공적으로 처리되었습니다.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = Slice.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized - 인증이 필요합니다.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = ErrorMessage.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Internal Server Error - 서버 내부 오류입니다.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = ErrorMessage.class
+                                    )
+                            )
+                    )
+            }
+    )
+    public ResponseEntity<List<RecordInfoWithBookmark>> getTotalRecordInfosWithBookmarks(
+            @UserId Long userId,
             @RequestParam(required = false, defaultValue = "10") int size
     );
 }

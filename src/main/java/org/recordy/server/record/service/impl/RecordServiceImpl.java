@@ -1,5 +1,11 @@
 package org.recordy.server.record.service.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Random;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.keyword.domain.Keyword;
@@ -14,6 +20,7 @@ import org.recordy.server.record.service.S3Service;
 import org.recordy.server.record.service.dto.FileUrl;
 import org.recordy.server.record_stat.domain.View;
 import org.recordy.server.record_stat.repository.ViewRepository;
+import org.recordy.server.record_stat.service.RecordStatService;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.exception.UserException;
 import org.recordy.server.user.service.UserService;
@@ -33,6 +40,8 @@ public class RecordServiceImpl implements RecordService {
     private final UserService userService;
     private final S3Service s3Service;
     private final FileService fileService;
+    private final RecordStatService recordStatService;
+
 
     @Override
     public Record create(RecordCreate recordCreate, File file) {
@@ -92,6 +101,11 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
+    public Slice<Record> getRecentRecordsByUser(long userId, long cursorId, int size) {
+        return recordRepository.findAllByUserIdOrderByIdDesc(userId, cursorId, PageRequest.ofSize(size));
+    }
+
+    @Override
     public Slice<Record> getRecentRecords(List<String> keywords, Long cursorId, int size) {
         if (Objects.isNull(keywords) || keywords.isEmpty()) {
             return getRecentRecords(cursorId, size);
@@ -109,12 +123,31 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public Slice<Record> getRecentRecordsByUser(long userId, long cursorId, int size) {
-        return recordRepository.findAllByUserIdOrderByIdDesc(userId, cursorId, PageRequest.ofSize(size));
-    }
-
-    @Override
     public Slice<Record> getSubscribingRecords(long userId, long cursorId, int size) {
         return recordRepository.findAllBySubscribingUserIdOrderByIdDesc(userId, cursorId, PageRequest.ofSize(size));
     }
+
+    @Override
+    public List<Record> getTotalRecords(int size) {
+        Optional<Long> maxId = recordRepository.findMaxId();
+        Long count = recordRepository.count();
+
+        Set<Long> selectedIds = new HashSet<>();
+        Random random = new Random();
+        List<Record> records = new ArrayList<>();
+
+        while (records.size() < size && records.size() < count) {
+            long randomId = random.nextLong(maxId.get()) + 1;
+
+            if (!selectedIds.contains(randomId)) {
+                selectedIds.add(randomId);
+
+                Optional<Record> findRecord = recordRepository.findById(randomId);
+                findRecord.ifPresent(records::add);
+            }
+        }
+
+        return records;
+    }
+
 }
