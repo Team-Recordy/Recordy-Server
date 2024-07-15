@@ -16,12 +16,8 @@ import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/records")
@@ -34,11 +30,12 @@ public class RecordController implements RecordApi {
 
     @GetMapping("/presigned-url")
     public ResponseEntity<FileUrl> getPresignedUrls() {
-        String videoPresignedUrl = s3Service.generatePresignedUrl("videos/");
-        String thumbnailPresignedUrl = s3Service.generatePresignedUrl("thumbnails/");
-
-        FileUrl fileUrl = new FileUrl(videoPresignedUrl, thumbnailPresignedUrl);
-        return ResponseEntity.ok(fileUrl);
+     return ResponseEntity
+             .status(HttpStatus.OK)
+             .body(new FileUrl(
+                     s3Service.generatePresignedUrl("videos/"),
+                     s3Service.generatePresignedUrl("thumbnails/")
+             ));
     }
 
     @Override

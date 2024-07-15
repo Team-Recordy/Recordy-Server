@@ -49,15 +49,13 @@ public class RecordServiceImpl implements RecordService {
         User user = userService.getById(recordCreate.uploaderId())
                 .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
 
-        Record record = Record.builder()
+        return recordRepository.save(Record.builder()
                 .fileUrl(fileUrl)
                 .location(recordCreate.location())
                 .content(recordCreate.content())
                 .uploader(user)
                 .keywords(recordCreate.keywords())
-                .build();
-
-        return recordRepository.save(record);
+                .build());
     }
 
 

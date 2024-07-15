@@ -67,14 +67,4 @@ public class S3ServiceImpl implements S3Service {
 
         return presignedRequest.url().toString();
     }
-
-    @Override
-    public void uploadFile(byte[] fileData, String fileName) throws IOException {
-        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                .bucket(bucket)
-                .key(fileName)
-                .build();
-
-        s3Client.putObject(putObjectRequest, RequestBody.fromBytes(fileData));
-    }
 }

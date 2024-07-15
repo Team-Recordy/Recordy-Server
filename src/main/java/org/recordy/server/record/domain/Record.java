@@ -18,7 +18,6 @@ import java.util.List;
 public class Record {
 
     Long id;
-    @Column(length = 1024)
     FileUrl fileUrl;
     String location;
     String content;
