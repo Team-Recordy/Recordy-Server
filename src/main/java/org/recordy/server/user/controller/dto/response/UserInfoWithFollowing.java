@@ -1,8 +1,7 @@
-package org.recordy.server.subscribe.controller.dto.response;
+package org.recordy.server.user.controller.dto.response;
 
 import java.util.List;
 import org.recordy.server.user.domain.User;
-import org.recordy.server.user.controller.dto.response.UserInfo;
 import org.springframework.data.domain.Slice;
 
 public record UserInfoWithFollowing(
