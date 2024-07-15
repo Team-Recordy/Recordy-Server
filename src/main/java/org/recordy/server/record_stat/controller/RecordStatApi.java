@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface RecordStatApi {
 
     @Operation(
-            summary = "레코드 북마크 API",
-            description = "사용자가 특정 레코드를 북마크합니다.",
+            summary = "레코드 북마크 및 북마크 해제 API",
+            description = "사용자가 특정 레코드를 북마크하거나 북마크 해제합니다.",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
@@ -52,42 +52,6 @@ public interface RecordStatApi {
             }
     )
     public ResponseEntity<Void> bookmark(
-            @UserId Long userId,
-            @PathVariable Long recordId
-    );
-
-    @Operation(
-            summary = "레코드 북마크 삭제 API",
-            description = "사용자가 특정 레코드의 북마크를 삭제합니다.",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "204",
-                            description = "요청이 성공적으로 처리되었습니다.",
-                            content = @Content
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Not Found - 존재하지 않는 사용자 또는 레코드입니다.",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(
-                                            implementation = ErrorMessage.class
-                                    )
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "500",
-                            description = "Internal Server Error - 서버 내부 오류입니다.",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(
-                                            implementation = ErrorMessage.class
-                                    )
-                            )
-                    )
-            }
-    )
-    public ResponseEntity<Void> deleteBookmark(
             @UserId Long userId,
             @PathVariable Long recordId
     );

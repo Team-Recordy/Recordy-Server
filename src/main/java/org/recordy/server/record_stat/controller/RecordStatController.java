@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/records")
 @RestController
 public class RecordStatController implements RecordStatApi{
+
     private final RecordStatService recordStatService;
 
     @Override
@@ -31,20 +32,9 @@ public class RecordStatController implements RecordStatApi{
             @PathVariable Long recordId
     ) {
         recordStatService.bookmark(userId, recordId);
+
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .build();
-    }
-
-    @Override
-    @DeleteMapping("/bookmark/{recordId}")
-    public ResponseEntity<Void> deleteBookmark(
-            @UserId Long userId,
-            @PathVariable Long recordId
-    ) {
-        recordStatService.deleteBookmark(userId, recordId);
-        return ResponseEntity
-                .status(HttpStatus.NO_CONTENT)
                 .build();
     }
 

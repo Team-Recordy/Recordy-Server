@@ -2,10 +2,9 @@ package org.recordy.server.record_stat.service.impl;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.message.ErrorMessage;
-import org.recordy.server.record.controller.dto.response.RecordInfo;
-import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.exception.RecordException;
 import org.recordy.server.record.repository.RecordRepository;
@@ -29,21 +28,21 @@ public class RecordStatServiceImpl implements RecordStatService {
     private final BookmarkRepository bookmarkRepository;
 
     @Override
-    public Bookmark bookmark(long userId, long recordId) {
+    public void bookmark(long userId, long recordId) {
+        if (bookmarkRepository.existsByUserIdAndRecordId(userId, recordId)) {
+            bookmarkRepository.delete(userId, recordId);
+            return;
+        }
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
         Record record = recordRepository.findById(recordId)
                 .orElseThrow(() -> new RecordException(ErrorMessage.RECORD_NOT_FOUND));
 
-        return bookmarkRepository.save(Bookmark.builder()
+        bookmarkRepository.save(Bookmark.builder()
                 .user(user)
                 .record(record)
                 .build());
-    }
-
-    @Override
-    public void deleteBookmark(long userId, long recordId) {
-        bookmarkRepository.delete(userId, recordId);
     }
 
     @Override
