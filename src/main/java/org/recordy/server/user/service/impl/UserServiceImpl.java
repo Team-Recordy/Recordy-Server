@@ -83,13 +83,15 @@ public class UserServiceImpl implements UserService {
     }
 
     private void followRoot(User user) {
-        userRepository.findById(rootUserId)
-                .ifPresent(rootUser ->
-                        subscribeRepository.save(Subscribe.builder()
-                                .subscribingUser(user)
-                                .subscribedUser(rootUser)
-                                .build())
-                );
+        if (!user.getId().equals(rootUserId)) {
+            userRepository.findById(rootUserId)
+                    .ifPresent(rootUser ->
+                                subscribeRepository.save(Subscribe.builder()
+                                        .subscribingUser(user)
+                                        .subscribedUser(rootUser)
+                                        .build())
+                    );
+        }
     }
 
     @Override
