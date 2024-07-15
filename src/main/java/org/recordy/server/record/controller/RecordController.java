@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/records")
@@ -26,21 +28,29 @@ public class RecordController implements RecordApi {
     private final RecordService recordService;
     private final S3Service s3Service;
 
-    @Override
+    @GetMapping("/presigned-url")
+    public ResponseEntity<Map<String, String>> getPresignedUrls() {
+        String videoPresignedUrl = s3Service.generatePresignedUrl("videos/");
+        String thumbnailPresignedUrl = s3Service.generatePresignedUrl("thumbnails/");
+
+        Map<String, String> urls = new HashMap<>();
+        urls.put("videoPresignedUrl", videoPresignedUrl);
+        urls.put("thumbnailPresignedUrl", thumbnailPresignedUrl);
+
+        return ResponseEntity.ok(urls);
+    }
+
     @PostMapping
     public ResponseEntity<Record> createRecord(
             @UserId Long uploaderId,
-            @RequestPart RecordCreateRequest request,
-            @RequestPart MultipartFile thumbnail,
-            @RequestPart MultipartFile video
-    ) {
-        RecordCreate recordCreate = RecordCreate.from(uploaderId, request);
-        Record record = recordService.create(recordCreate, File.of(video, thumbnail));
+            @RequestBody RecordCreateRequest request) {
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(record);
+        RecordCreate recordCreate = RecordCreate.from(uploaderId, request);
+        Record record = recordService.create(recordCreate, new File(request.fileUrl().videoUrl(), request.fileUrl().thumbnailUrl());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(record);
     }
+
 
     @Override    
     @DeleteMapping("/{recordId}")

@@ -7,8 +7,9 @@ import java.io.IOException;
 public interface S3Service {
 
     // command
-    public String getPresignUrl(String filename);
-    String uploadFile(byte[] fileData, String fileName) throws IOException;
+    String generatePresignedUrl(String directory);
+    String getPresignedUrl(String filename);
+    void uploadFile(byte[] fileData, String fileName) throws IOException;
 
     // query
 
