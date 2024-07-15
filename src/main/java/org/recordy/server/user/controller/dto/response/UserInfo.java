@@ -5,16 +5,16 @@ import org.recordy.server.user.domain.User;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 
-public record UserInfo (
+public record UserInfo(
         Long id,
-        String nickname
-        //todo
-        // 유저 프로필 추가
+        String nickname,
+        String profileImageUrl
 ){
     public static UserInfo from(User user) {
         return new UserInfo(
                 user.getId(),
-                user.getNickname()
+                user.getNickname(),
+                user.getProfileImageUrl()
         );
     }
 
