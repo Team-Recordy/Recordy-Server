@@ -43,14 +43,16 @@ public class RecordController implements RecordApi {
 
     @Override
     @PostMapping
-    public ResponseEntity<Record> createRecord(
+    public ResponseEntity<Void> createRecord(
             @UserId Long uploaderId,
             @RequestBody RecordCreateRequest request) {
 
         RecordCreate recordCreate = RecordCreate.from(uploaderId, request);
         Record record = recordService.create(recordCreate, new File(request.fileUrl().videoUrl(), request.fileUrl().thumbnailUrl()));
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(record);
+        return ResponseEntity
+                .ok()
+                .build();
     }
 
 
