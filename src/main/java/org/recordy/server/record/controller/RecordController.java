@@ -38,6 +38,7 @@ public class RecordController implements RecordApi {
         return ResponseEntity.ok(fileUrl);
     }
 
+    @Override
     @PostMapping
     public ResponseEntity<Record> createRecord(
             @UserId Long uploaderId,

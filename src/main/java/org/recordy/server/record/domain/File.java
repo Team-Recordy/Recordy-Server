@@ -1,16 +1,12 @@
 package org.recordy.server.record.domain;
 
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.UUID;
-
-public record File(
+public record File (
         String videoUrl,
-        String thumbnailUrl
-) {
+        String thumbnailUrl) {
 
-    public static File of(String videoUrl, String thumbnailUrl) {
-        return new File(videoUrl, thumbnailUrl);
+    public File(String videoUrl, String thumbnailUrl) {
+        this.videoUrl = videoUrl;
+        this.thumbnailUrl = thumbnailUrl;
     }
 
     public String getVideoUrl() {
@@ -21,4 +17,7 @@ public record File(
         return thumbnailUrl;
     }
 
+    public static File of(String videoUrl, String thumbnailUrl) {
+        return new File(videoUrl, thumbnailUrl);
+    }
 }

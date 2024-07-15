@@ -8,6 +8,7 @@ import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.usecase.RecordCreate;
 import org.recordy.server.record.exception.RecordException;
 import org.recordy.server.record.repository.RecordRepository;
+import org.recordy.server.record.service.FileService;
 import org.recordy.server.record.service.RecordService;
 import org.recordy.server.record.service.S3Service;
 import org.recordy.server.record.service.dto.FileUrl;
@@ -31,6 +32,7 @@ public class RecordServiceImpl implements RecordService {
     private final ViewRepository viewRepository;
     private final UserService userService;
     private final S3Service s3Service;
+    private final FileService fileService;
 
     @Override
     public Record create(RecordCreate recordCreate, File file) {
