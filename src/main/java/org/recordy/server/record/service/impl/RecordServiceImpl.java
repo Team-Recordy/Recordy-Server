@@ -6,6 +6,7 @@ import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.record.domain.File;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.usecase.RecordCreate;
+import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
 import org.recordy.server.record.exception.RecordException;
 import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.record.service.FileService;
@@ -13,6 +14,7 @@ import org.recordy.server.record.service.RecordService;
 import org.recordy.server.record.service.dto.FileUrl;
 import org.recordy.server.record_stat.domain.View;
 import org.recordy.server.record_stat.repository.ViewRepository;
+import org.recordy.server.record_stat.service.RecordStatService;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.exception.UserException;
 import org.recordy.server.user.service.UserService;
@@ -31,6 +33,7 @@ public class RecordServiceImpl implements RecordService {
     private final ViewRepository viewRepository;
     private final FileService fileService;
     private final UserService userService;
+    private final RecordStatService recordStatService;
 
     @Override
     public Record create(RecordCreate recordCreate, File file) {
@@ -87,6 +90,11 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
+    public Slice<Record> getRecentRecordsByUser(long userId, long cursorId, int size) {
+        return recordRepository.findAllByUserIdOrderByIdDesc(userId, cursorId, PageRequest.ofSize(size));
+    }
+
+    @Override
     public Slice<Record> getRecentRecords(List<String> keywords, Long cursorId, int size) {
         if (Objects.isNull(keywords) || keywords.isEmpty()) {
             return getRecentRecords(cursorId, size);
@@ -101,11 +109,6 @@ public class RecordServiceImpl implements RecordService {
 
     private Slice<Record> getRecentRecordsWithKeywords(List<Keyword> keywords, long cursorId, int size) {
         return recordRepository.findAllByIdAfterAndKeywordsOrderByIdDesc(keywords, cursorId, PageRequest.ofSize(size));
-    }
-
-    @Override
-    public Slice<Record> getRecentRecordsByUser(long userId, long cursorId, int size) {
-        return recordRepository.findAllByUserIdOrderByIdDesc(userId, cursorId, PageRequest.ofSize(size));
     }
 
     @Override

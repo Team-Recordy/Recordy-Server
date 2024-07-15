@@ -113,4 +113,18 @@ public class BookmarkRepositoryIntegrationTest extends IntegrationTest {
                 () -> assertThat(result.hasNext()).isFalse()
         );
     }
+
+    @Test
+    void findByUserAndRecord를_통해_북마크를_찾을_수_있다() {
+        //given
+
+        //when
+        Bookmark bookmark = bookmarkRepository.findByUserIdAndRecordId(1,1).get();
+
+        //then
+        assertAll(
+                () -> assertThat(bookmark.getUser().getId()).isEqualTo(1),
+                () -> assertThat(bookmark.getRecord().getId()).isEqualTo(1)
+        );
+    }
 }

@@ -1,24 +1,20 @@
 package org.recordy.server.record_stat.controller;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.security.UserId;
+import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
 import org.recordy.server.record.domain.Record;
-import org.recordy.server.record.repository.RecordRepository;
+import org.recordy.server.record.service.RecordService;
 import org.recordy.server.record_stat.domain.usecase.Preference;
-import org.recordy.server.record_stat.repository.BookmarkRepository;
 import org.recordy.server.record_stat.service.RecordStatService;
-import org.recordy.server.user.controller.dto.request.UserSignInRequest;
-import org.recordy.server.user.repository.UserRepository;
 import org.springframework.data.domain.Slice;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -65,13 +61,16 @@ public class RecordStatController implements RecordStatApi{
 
     @Override
     @GetMapping("/bookmark")
-    public ResponseEntity<Slice<Record>> getBookmarkedRecords(
+    public ResponseEntity<Slice<RecordInfoWithBookmark>> getBookmarkedRecords(
             @UserId Long userId,
             @RequestParam(required = false, defaultValue = "0") long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
+        Slice<Record> records = recordStatService.getBookmarkedRecords(userId, cursorId, size);
+        List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records);
+
         return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(recordStatService.getBookmarkedRecords(userId,cursorId,size));
+                .ok()
+                .body(RecordInfoWithBookmark.of(records, bookmarks));
     }
 }
