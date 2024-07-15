@@ -9,6 +9,7 @@ import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.usecase.RecordCreate;
 import org.recordy.server.record.service.RecordService;
 import org.recordy.server.record.service.S3Service;
+import org.recordy.server.record.service.dto.FileUrl;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,24 +30,21 @@ public class RecordController implements RecordApi {
     private final S3Service s3Service;
 
     @GetMapping("/presigned-url")
-    public ResponseEntity<Map<String, String>> getPresignedUrls() {
+    public ResponseEntity<FileUrl> getPresignedUrls() {
         String videoPresignedUrl = s3Service.generatePresignedUrl("videos/");
         String thumbnailPresignedUrl = s3Service.generatePresignedUrl("thumbnails/");
 
-        Map<String, String> urls = new HashMap<>();
-        urls.put("videoPresignedUrl", videoPresignedUrl);
-        urls.put("thumbnailPresignedUrl", thumbnailPresignedUrl);
-
-        return ResponseEntity.ok(urls);
+        FileUrl fileUrl = new FileUrl(videoPresignedUrl, thumbnailPresignedUrl);
+        return ResponseEntity.ok(fileUrl);
     }
 
     @PostMapping
     public ResponseEntity<Record> createRecord(
-            @RequestBody RecordCreateRequest request,
-            @UserId Long uploaderId) {
+            @UserId Long uploaderId,
+            @RequestBody RecordCreateRequest request) {
 
         RecordCreate recordCreate = RecordCreate.from(uploaderId, request);
-        Record record = recordService.create(recordCreate);
+        Record record = recordService.create(recordCreate, new File(request.fileUrl().videoUrl(), request.fileUrl().thumbnailUrl()));
 
         return ResponseEntity.status(HttpStatus.CREATED).body(record);
     }

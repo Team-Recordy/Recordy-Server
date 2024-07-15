@@ -33,22 +33,22 @@ public class RecordServiceImpl implements RecordService {
     private final S3Service s3Service;
 
     @Override
-    public Record create(RecordCreate recordCreate) {
-        String videoPresignedUrl = s3Service.generatePresignedUrl("videos/");
-        String thumbnailPresignedUrl = s3Service.generatePresignedUrl("thumbnails/");
-        FileUrl fileUrl = new FileUrl(videoPresignedUrl, thumbnailPresignedUrl);
-
+    public Record create(RecordCreate recordCreate, File file) {
+        FileUrl fileUrl = fileService.save(file);
         User user = userService.getById(recordCreate.uploaderId())
                 .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
 
-        return recordRepository.save(Record.builder()
+        Record record = Record.builder()
                 .fileUrl(fileUrl)
                 .location(recordCreate.location())
                 .content(recordCreate.content())
                 .uploader(user)
                 .keywords(recordCreate.keywords())
-                .build());
+                .build();
+
+        return recordRepository.save(record);
     }
+
 
     @Override
     public void delete(long userId, long recordId) {

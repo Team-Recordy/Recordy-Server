@@ -10,7 +10,7 @@ import java.util.List;
 public interface RecordService {
 
     // command
-    Record create(RecordCreate recordCreate);
+    Record create(RecordCreate recordCreate, File file);
     void delete(long userId, long recordId);
 
     // query
