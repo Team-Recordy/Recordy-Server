@@ -8,15 +8,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.recordy.server.auth.security.UserId;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.record.controller.dto.request.RecordCreateRequest;
-import org.recordy.server.record.domain.File;
 import org.recordy.server.record.domain.Record;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @Tag(name = "기록 관련 API")
 public interface RecordApi {
@@ -245,7 +242,7 @@ public interface RecordApi {
             }
     )
     public ResponseEntity<Slice<Record>> getFamousRecords(
-            @RequestParam(required = false) byte[] keywords,
+            @RequestParam(required = false) String keywords,
             @RequestParam(required = false, defaultValue = "0") int pageNumber,
             @RequestParam(required = false, defaultValue = "10") int pageSize
     ) ;
@@ -287,7 +284,7 @@ public interface RecordApi {
             }
     )
     public ResponseEntity<Slice<Record>> getRecentRecords(
-            @RequestParam(required = false) byte[] keywords,
+            @RequestParam(required = false) String keywords,
             @RequestParam(required = false, defaultValue = "0") Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     );

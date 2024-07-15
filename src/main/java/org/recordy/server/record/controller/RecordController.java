@@ -32,7 +32,7 @@ public class RecordController implements RecordApi {
             @RequestPart MultipartFile thumbnail,
             @RequestPart MultipartFile video
     ) {
-        RecordCreate recordCreate = RecordCreate.from(uploaderId, request);
+        RecordCreate recordCreate = RecordCreate.of(uploaderId, request);
         Record record = recordService.create(recordCreate, File.of(video, thumbnail));
 
         return ResponseEntity
@@ -56,7 +56,7 @@ public class RecordController implements RecordApi {
     @Override
     @GetMapping("/recent")
     public ResponseEntity<Slice<Record>> getRecentRecords(
-            @RequestParam(required = false) byte[] keywords,
+            @RequestParam(required = false) String keywords,
             @RequestParam(required = false, defaultValue = "0") Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
@@ -70,7 +70,7 @@ public class RecordController implements RecordApi {
     @Override
     @GetMapping("/famous")
     public ResponseEntity<Slice<Record>> getFamousRecords(
-            @RequestParam(required = false) byte[] keywords,
+            @RequestParam(required = false) String keywords,
             @RequestParam(required = false, defaultValue = "0") int pageNumber,
             @RequestParam(required = false, defaultValue = "10") int pageSize
     ) {

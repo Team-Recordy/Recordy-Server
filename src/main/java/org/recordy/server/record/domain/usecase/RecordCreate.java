@@ -12,11 +12,12 @@ public record RecordCreate(
         List<Keyword> keywords
 ) {
 
-    public static RecordCreate from(Long uploaderId, RecordCreateRequest recordCreateRequest) {
+    public static RecordCreate of(Long uploaderId, RecordCreateRequest recordCreateRequest) {
         return new RecordCreate(
                 uploaderId,
                 recordCreateRequest.location(),
                 recordCreateRequest.content(),
-                Keyword.decode(recordCreateRequest.keywords()));
+                Keyword.decode(recordCreateRequest.keywords())
+        );
     }
 }
