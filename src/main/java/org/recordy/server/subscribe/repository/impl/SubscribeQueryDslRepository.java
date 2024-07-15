@@ -20,9 +20,7 @@ public class SubscribeQueryDslRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     public Slice<SubscribeEntity> findAllBySubscribingUserId(long subscribingUserId, long cursor, Pageable pageable) {
-        if (cursor == 0) {
-            cursor = Long.MAX_VALUE;
-        }
+        cursor = QueryDslUtils.cursorIdCheck(cursor);
 
         List<SubscribeEntity> subscribeEntities = jpaQueryFactory
                 .selectFrom(subscribeEntity)
@@ -38,9 +36,7 @@ public class SubscribeQueryDslRepository {
     }
 
     public Slice<SubscribeEntity> findAllBySubscribedUserId(long subscribedUserId, long cursor, Pageable pageable) {
-        if (cursor == 0) {
-            cursor = Long.MAX_VALUE;
-        }
+        cursor = QueryDslUtils.cursorIdCheck(cursor);
 
         List<SubscribeEntity> subscribeEntities = jpaQueryFactory
                 .selectFrom(subscribeEntity)

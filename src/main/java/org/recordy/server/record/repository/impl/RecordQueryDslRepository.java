@@ -77,9 +77,8 @@ public class RecordQueryDslRepository {
     }
 
     public Slice<RecordEntity> findAllByIdAfterAndKeywordsOrderByIdDesc(List<KeywordEntity> keywords, long cursor, Pageable pageable) {
-        if (cursor == 0) {
-            cursor = Long.MAX_VALUE;
-        }
+        cursor = QueryDslUtils.cursorIdCheck(cursor);
+
 
         List<RecordEntity> recordEntities = jpaQueryFactory
                 .selectFrom(recordEntity)
@@ -97,9 +96,7 @@ public class RecordQueryDslRepository {
     }
 
     public Slice<RecordEntity> findAllByIdAfterOrderByIdDesc(long cursor, Pageable pageable) {
-        if (cursor == 0) {
-            cursor = Long.MAX_VALUE;
-        }
+        cursor = QueryDslUtils.cursorIdCheck(cursor);
 
         List<RecordEntity> recordEntities = jpaQueryFactory
                 .selectFrom(recordEntity)
@@ -114,9 +111,7 @@ public class RecordQueryDslRepository {
     }
 
     public Slice<RecordEntity> findAllByUserIdOrderByIdDesc(long userId, long cursor, Pageable pageable) {
-        if (cursor == 0) {
-            cursor = Long.MAX_VALUE;
-        }
+        cursor = QueryDslUtils.cursorIdCheck(cursor);
 
         List<RecordEntity> recordEntities = jpaQueryFactory
                 .selectFrom((recordEntity))
@@ -178,9 +173,7 @@ public class RecordQueryDslRepository {
     }
 
     public Slice<RecordEntity> findAllBySubscribingUserIdOrderByIdDesc(long userId, long cursor, Pageable pageable) {
-        if (cursor == 0) {
-            cursor = Long.MAX_VALUE;
-        }
+        cursor = QueryDslUtils.cursorIdCheck(cursor);
 
         List<RecordEntity> recordEntities = jpaQueryFactory
                 .select(recordEntity)
