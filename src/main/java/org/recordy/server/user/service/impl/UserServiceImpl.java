@@ -1,12 +1,15 @@
 package org.recordy.server.user.service.impl;
 
-import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.domain.Auth;
 import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.auth.service.AuthService;
 import org.recordy.server.auth.service.AuthTokenService;
 import org.recordy.server.common.message.ErrorMessage;
+import org.recordy.server.record.repository.RecordRepository;
+import org.recordy.server.subscribe.domain.Subscribe;
+import org.recordy.server.subscribe.repository.SubscribeRepository;
 import org.recordy.server.user.controller.dto.request.TermsAgreement;
+import org.recordy.server.user.domain.usecase.UserProfile;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.UserStatus;
 import org.recordy.server.user.domain.usecase.UserSignIn;
@@ -14,17 +17,37 @@ import org.recordy.server.user.domain.usecase.UserSignUp;
 import org.recordy.server.user.exception.UserException;
 import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.user.service.UserService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-@RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
 
+    private final Long rootUserId;
+
     private final UserRepository userRepository;
+    private final SubscribeRepository subscribeRepository;
+    private final RecordRepository recordRepository;
     private final AuthService authService;
     private final AuthTokenService authTokenService;
+
+    public UserServiceImpl(
+            @Value("${user.root.id}") Long rootUserId,
+            UserRepository userRepository,
+            SubscribeRepository subscribeRepository,
+            RecordRepository recordRepository,
+            AuthService authService,
+            AuthTokenService authTokenService
+    ) {
+        this.rootUserId = rootUserId;
+        this.userRepository = userRepository;
+        this.subscribeRepository = subscribeRepository;
+        this.recordRepository = recordRepository;
+        this.authService = authService;
+        this.authTokenService = authTokenService;
+    }
 
     @Override
     public Auth signIn(UserSignIn userSignIn) {
@@ -54,8 +77,21 @@ public class UserServiceImpl implements UserService {
         User pendingUser = userRepository.findById(userSignUp.userId())
                 .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
         User updatedUser = pendingUser.activate(userSignUp);
+        followRoot(updatedUser);
 
         return userRepository.save(updatedUser);
+    }
+
+    private void followRoot(User user) {
+        if (!user.getId().equals(rootUserId)) {
+            userRepository.findById(rootUserId)
+                    .ifPresent(rootUser ->
+                            subscribeRepository.save(Subscribe.builder()
+                                    .subscribingUser(user)
+                                    .subscribedUser(rootUser)
+                                    .build())
+                    );
+        }
     }
 
     @Override
@@ -84,6 +120,17 @@ public class UserServiceImpl implements UserService {
 
         authService.signOut(user.getAuthPlatform().getId());
         userRepository.deleteById(userId);
+    }
+
+    @Override
+    public UserProfile getProfile(long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
+        long records = recordRepository.countAllByUserId(user.getId());
+        long followers = subscribeRepository.countSubscribingUsers(user.getId());
+        long followings = subscribeRepository.countSubscribedUsers(user.getId());
+
+        return UserProfile.of(user, records, followers, followings);
     }
 
     @Override

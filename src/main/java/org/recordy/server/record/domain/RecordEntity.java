@@ -1,6 +1,7 @@
 package org.recordy.server.record.domain;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -44,24 +45,29 @@ public class RecordEntity extends JpaMetaInfoEntity {
     private List<BookmarkEntity> bookmarks = new ArrayList<>();
 
     @Builder
-    public RecordEntity(Long id, String videoUrl, String thumbnailUrl, String location, String content, UserEntity user) {
+    public RecordEntity(Long id, String videoUrl, String thumbnailUrl, String location, String content, UserEntity user, LocalDateTime createdAt) {
         this.id = id;
         this.videoUrl = videoUrl;
         this.thumbnailUrl = thumbnailUrl;
         this.location = location;
         this.content = content;
         this.user = user;
+        this.createdAt = createdAt;
     }
 
     public static RecordEntity from(Record record) {
-        return new RecordEntity(
+        RecordEntity recordEntity = new RecordEntity(
                 record.getId(),
                 record.getFileUrl().videoUrl(),
                 record.getFileUrl().thumbnailUrl(),
                 record.getLocation(),
                 record.getContent(),
-                UserEntity.from(record.getUploader())
+                UserEntity.from(record.getUploader()),
+                record.getCreatedAt()
         );
+        recordEntity.user.addRecord(recordEntity);
+
+        return recordEntity;
     }
 
     public Record toDomain() {
@@ -78,6 +84,8 @@ public class RecordEntity extends JpaMetaInfoEntity {
                         .map(KeywordEntity::toDomain)
                         .toList())
                 .uploader(user.toDomain())
+                .bookmarkCount(bookmarks.size())
+                .createdAt(createdAt)
                 .build();
     }
 

@@ -56,7 +56,12 @@ public class FakeRecordRepository implements RecordRepository {
     }
 
     @Override
-    public List<Record> findAllOrderByPopularity(int size) {
+    public Slice<Record> findAllOrderByPopularity(Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public Slice<Record> findAllByKeywordsOrderByPopularity(List<Keyword> keywords, Pageable pageable) {
         return null;
     }
 
@@ -82,7 +87,7 @@ public class FakeRecordRepository implements RecordRepository {
     @Override
     public Slice<Record> findAllByUserIdOrderByIdDesc(long userId, long cursor, Pageable pageable) {
         List<Record> content = records.values().stream()
-                .filter(record -> record.getId() < cursor && record.getId() == userId)
+                .filter(record -> record.getId() < cursor && record.getUploader().getId() == userId)
                 .sorted(Comparator.comparing(Record::getId).reversed())
                 .toList();
 
@@ -95,5 +100,28 @@ public class FakeRecordRepository implements RecordRepository {
     @Override
     public Map<Keyword, Long> countAllByUserIdGroupByKeyword(long userId) {
         return Map.of();
+    }
+
+    @Override
+    public Slice<Record> findAllBySubscribingUserIdOrderByIdDesc(long userId, long cursor, Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public long countAllByUserId(long userId) {
+        return records.values().stream()
+                .map(Record::getUploader)
+                .filter(user -> user.getId() == userId)
+                .count();
+    }
+
+    @Override
+    public Optional<Long> findMaxId() {
+        return records.keySet().stream().max(Long::compareTo);
+    }
+
+    @Override
+    public Long count() {
+        return (long) records.size();
     }
 }

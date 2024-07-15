@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.recordy.server.keyword.domain.Keyword;
-import org.recordy.server.record.domain.Record;
 import org.recordy.server.record_stat.domain.Bookmark;
 import org.recordy.server.record_stat.repository.BookmarkRepository;
 import org.springframework.data.domain.Pageable;
@@ -31,6 +29,14 @@ public class FakeBookmarkRepository implements BookmarkRepository {
     }
 
     @Override
+    public void delete(long userId, long recordId) {
+        bookmarks.values()
+                .removeIf(bookmark ->
+                        bookmark.getUser().getId() == userId && bookmark.getRecord().getId() == recordId
+                );
+    }
+
+    @Override
     public Slice<Bookmark> findAllByBookmarksOrderByIdDesc(long userId, long cursor, Pageable pageable) {
         List<Bookmark> content = bookmarks.keySet().stream()
                 .filter(key -> bookmarks.get(key).getUser().getId() == userId && key < cursor)
@@ -45,15 +51,10 @@ public class FakeBookmarkRepository implements BookmarkRepository {
     }
 
     @Override
-    public Map<Keyword, Long> countAllByUserIdGroupByKeyword(long userId) {
-        return Map.of();
-    }
-
-    @Override
-    public Long countAllByRecordId(long recordId) {
-        return bookmarks.keySet().stream()
-                .filter(key -> bookmarks.get(key).getRecord().getId() == recordId)
-                .map(bookmarks::get)
-                .count();
+    public boolean existsByUserIdAndRecordId(Long userId, Long recordId) {
+        return bookmarks.values().stream()
+                .anyMatch(bookmark ->
+                        bookmark.getUser().getId().equals(userId) && bookmark.getRecord().getId().equals(recordId)
+                );
     }
 }

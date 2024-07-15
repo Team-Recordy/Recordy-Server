@@ -1,1 +1,0 @@
-delete from `keywords` where 1;

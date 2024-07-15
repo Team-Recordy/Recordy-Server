@@ -14,6 +14,11 @@ public class FakeUserRepository implements UserRepository {
 
     @Override
     public User save(User user) {
+        if (users.get(user.getId()) != null) {
+            users.put(user.getId(), user);
+            return user;
+        }
+
         User realUser = User.builder()
                 .id(autoIncrementId)
                 .authPlatform(user.getAuthPlatform())
@@ -23,7 +28,6 @@ public class FakeUserRepository implements UserRepository {
                 .build();
 
         users.put(autoIncrementId++, realUser);
-
         return realUser;
     }
 

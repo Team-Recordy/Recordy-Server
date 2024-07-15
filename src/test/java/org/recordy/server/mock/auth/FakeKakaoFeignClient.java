@@ -13,7 +13,7 @@ public class FakeKakaoFeignClient implements KakaoFeignClient {
 
     @Override
     public KakaoPlatformInfo getKakaoAccessTokenInfo(String accessToken) {
-        if (!accessToken.equals(DomainFixture.PLATFORM_TOKEN)) {
+        if (!accessToken.equals(DomainFixture.PLATFORM_TOKEN) && !accessToken.equals("root")) {
             throw new FeignException.Unauthorized("Unauthorized",
                     Request.create(
                             Request.HttpMethod.GET,

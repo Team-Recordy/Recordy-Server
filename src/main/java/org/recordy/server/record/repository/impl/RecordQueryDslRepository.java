@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.util.QueryDslUtils;
 import org.recordy.server.keyword.domain.KeywordEntity;
 import org.recordy.server.record.domain.RecordEntity;
+import org.recordy.server.subscribe.domain.QSubscribeEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.recordy.server.keyword.domain.QKeywordEntity.keywordEntity;
@@ -22,6 +24,7 @@ import static org.recordy.server.record.domain.QRecordEntity.recordEntity;
 import static org.recordy.server.record.domain.QUploadEntity.uploadEntity;
 import static org.recordy.server.record_stat.domain.QBookmarkEntity.bookmarkEntity;
 import static org.recordy.server.record_stat.domain.QViewEntity.viewEntity;
+import static org.recordy.server.subscribe.domain.QSubscribeEntity.subscribeEntity;
 import static org.recordy.server.user.domain.QUserEntity.userEntity;
 
 @RequiredArgsConstructor
@@ -30,34 +33,43 @@ public class RecordQueryDslRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    public List<RecordEntity> findAllOrderByPopularity(int limit) {
-        LocalDateTime sevenDaysAgo = LocalDateTime.now().minus(7, ChronoUnit.DAYS);
+    public Slice<RecordEntity> findAllOrderByPopularity(Pageable pageable) {
+        LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
 
-        return jpaQueryFactory
+        List<RecordEntity> recordEntities = jpaQueryFactory
                 .selectFrom(recordEntity)
                 .leftJoin(recordEntity.bookmarks, bookmarkEntity)
                 .leftJoin(recordEntity.views, viewEntity)
-                .where (
+                .where(
                         bookmarkEntity.createdAt.after(sevenDaysAgo)
                                 .or(viewEntity.createdAt.after(sevenDaysAgo))
                 )
                 .groupBy(recordEntity.id)
                 .orderBy(bookmarkEntity.count().multiply(2).add(viewEntity.count()).desc())
-                .limit(limit)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize() + 1)
                 .fetch();
+
+        return new SliceImpl<>(recordEntities, pageable, QueryDslUtils.hasNext(pageable, recordEntities));
     }
 
-    public Slice<RecordEntity> findAllByIdAfterOrderByIdDesc(long cursor, Pageable pageable) {
-        // TODO: 0을 여기서 대체하지 말고, 서비스나 컨트롤러에서 처리하도록 수정
-        if (cursor == 0)
-            cursor = Long.MAX_VALUE;
+    public Slice<RecordEntity> findAllByKeywordsOrderByPopularity(List<KeywordEntity> keywords, Pageable pageable) {
+        LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
 
         List<RecordEntity> recordEntities = jpaQueryFactory
                 .selectFrom(recordEntity)
+                .leftJoin(recordEntity.bookmarks, bookmarkEntity)
+                .leftJoin(recordEntity.views, viewEntity)
+                .join(recordEntity.uploads, uploadEntity)
+                .join(uploadEntity.keyword, keywordEntity)
                 .where(
-                        QueryDslUtils.ltCursorId(cursor, recordEntity.id)
+                        bookmarkEntity.createdAt.after(sevenDaysAgo)
+                                .or(viewEntity.createdAt.after(sevenDaysAgo)),
+                        keywordEntity.in(keywords)
                 )
-                .orderBy(recordEntity.id.desc())
+                .groupBy(recordEntity.id)
+                .orderBy(bookmarkEntity.count().multiply(2).add(viewEntity.count()).desc())
+                .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
 
@@ -65,6 +77,9 @@ public class RecordQueryDslRepository {
     }
 
     public Slice<RecordEntity> findAllByIdAfterAndKeywordsOrderByIdDesc(List<KeywordEntity> keywords, long cursor, Pageable pageable) {
+        cursor = QueryDslUtils.cursorIdCheck(cursor);
+
+
         List<RecordEntity> recordEntities = jpaQueryFactory
                 .selectFrom(recordEntity)
                 .join(recordEntity.uploads, uploadEntity)
@@ -80,7 +95,24 @@ public class RecordQueryDslRepository {
         return new SliceImpl<>(recordEntities, pageable, QueryDslUtils.hasNext(pageable, recordEntities));
     }
 
+    public Slice<RecordEntity> findAllByIdAfterOrderByIdDesc(long cursor, Pageable pageable) {
+        cursor = QueryDslUtils.cursorIdCheck(cursor);
+
+        List<RecordEntity> recordEntities = jpaQueryFactory
+                .selectFrom(recordEntity)
+                .where(
+                        QueryDslUtils.ltCursorId(cursor, recordEntity.id)
+                )
+                .orderBy(recordEntity.id.desc())
+                .limit(pageable.getPageSize() + 1)
+                .fetch();
+
+        return new SliceImpl<>(recordEntities, pageable, QueryDslUtils.hasNext(pageable, recordEntities));
+    }
+
     public Slice<RecordEntity> findAllByUserIdOrderByIdDesc(long userId, long cursor, Pageable pageable) {
+        cursor = QueryDslUtils.cursorIdCheck(cursor);
+
         List<RecordEntity> recordEntities = jpaQueryFactory
                 .selectFrom((recordEntity))
                 .join(recordEntity.user, userEntity)
@@ -139,4 +171,40 @@ public class RecordQueryDslRepository {
 
         return preference;
     }
+
+    public Slice<RecordEntity> findAllBySubscribingUserIdOrderByIdDesc(long userId, long cursor, Pageable pageable) {
+        cursor = QueryDslUtils.cursorIdCheck(cursor);
+
+        List<RecordEntity> recordEntities = jpaQueryFactory
+                .select(recordEntity)
+                .from(subscribeEntity)
+                .join(subscribeEntity.subscribedUser, userEntity)
+                .join(userEntity.records, recordEntity)
+                .where(
+                        QueryDslUtils.ltCursorId(cursor, recordEntity.id),
+                        subscribeEntity.subscribingUser.id.eq(userId)
+                )
+                .orderBy(recordEntity.id.desc())
+                .limit(pageable.getPageSize() + 1)
+                .fetch();
+
+        return new SliceImpl<>(recordEntities, pageable, QueryDslUtils.hasNext(pageable, recordEntities));
+    }
+
+    public long countAllByUserId(long userId) {
+        return jpaQueryFactory
+                .select(recordEntity.id.count())
+                .from(recordEntity)
+                .where(recordEntity.user.id.eq(userId))
+                .fetchOne();
+    }
+
+    public Optional<Long> findMaxId() {
+        return Optional.ofNullable(jpaQueryFactory
+                .select(recordEntity.id.max())
+                        .from(recordEntity)
+                        .fetchOne()
+        );
+    }
+
 }

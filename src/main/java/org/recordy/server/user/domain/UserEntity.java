@@ -4,9 +4,13 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.common.domain.JpaMetaInfoEntity;
+import org.recordy.server.record.domain.RecordEntity;
+import org.recordy.server.subscribe.domain.SubscribeEntity;
 import org.recordy.server.user.controller.dto.request.TermsAgreement;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -27,6 +31,15 @@ public class UserEntity extends JpaMetaInfoEntity {
     private boolean personalInfoTerm;
     private boolean ageTerm;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RecordEntity> records = new ArrayList<>();
+
+    @OneToMany(mappedBy = "subscribingUser", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SubscribeEntity> subscribings = new ArrayList<>();
+
+    @OneToMany(mappedBy = "subscribedUser", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SubscribeEntity> subscribers = new ArrayList<>();
+
     public UserEntity(Long id, String platformId, AuthPlatform.Type platformType, UserStatus status, String nickname, TermsAgreement termsAgreement, LocalDateTime createdAt) {
         this.id = id;
         this.platformId = platformId;
@@ -36,6 +49,7 @@ public class UserEntity extends JpaMetaInfoEntity {
         this.useTerm = termsAgreement.useTerm();
         this.personalInfoTerm = termsAgreement.personalInfoTerm();
         this.ageTerm = termsAgreement.ageTerm();
+        this.createdAt = createdAt;
     }
 
     public static UserEntity from(User user) {
@@ -59,5 +73,9 @@ public class UserEntity extends JpaMetaInfoEntity {
                 .termsAgreement(TermsAgreement.of(useTerm, personalInfoTerm, ageTerm))
                 .createdAt(createdAt)
                 .build();
+    }
+
+    public void addRecord(RecordEntity record) {
+        records.add(record);
     }
 }

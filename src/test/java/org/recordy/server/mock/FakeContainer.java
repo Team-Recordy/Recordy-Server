@@ -12,7 +12,8 @@ import org.recordy.server.auth.service.impl.token.AuthTokenGenerator;
 import org.recordy.server.auth.service.impl.token.AuthTokenParser;
 import org.recordy.server.auth.service.impl.token.AuthTokenServiceImpl;
 import org.recordy.server.auth.service.impl.token.AuthTokenSigningKeyProvider;
-import org.recordy.server.common.service.S3Service;
+import org.recordy.server.mock.subscribe.FakeSubscribeRepository;
+import org.recordy.server.record.service.S3Service;
 import org.recordy.server.keyword.repository.KeywordRepository;
 import org.recordy.server.keyword.service.KeywordService;
 import org.recordy.server.keyword.service.impl.KeywordServiceImpl;
@@ -27,14 +28,16 @@ import org.recordy.server.mock.record.FakeRecordRepository;
 import org.recordy.server.mock.user.FakeUserRepository;
 import org.recordy.server.mock.view.FakeViewRepository;
 import org.recordy.server.record.repository.RecordRepository;
-import org.recordy.server.record.service.FileService;
 import org.recordy.server.record.service.RecordService;
 import org.recordy.server.record.service.impl.RecordServiceImpl;
 import org.recordy.server.record_stat.repository.BookmarkRepository;
 import org.recordy.server.record_stat.repository.ViewRepository;
 import org.recordy.server.record_stat.service.RecordStatService;
 import org.recordy.server.record_stat.service.impl.RecordStatServiceImpl;
-import org.recordy.server.user.controller.UserController;
+import org.recordy.server.subscribe.repository.SubscribeRepository;
+import org.recordy.server.subscribe.service.SubscribeService;
+import org.recordy.server.subscribe.service.impl.SubscribeServiceImpl;
+import org.recordy.server.user.controller.UserAuthController;
 import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.user.service.UserService;
 import org.recordy.server.user.service.impl.UserServiceImpl;
@@ -43,6 +46,7 @@ import org.recordy.server.util.DomainFixture;
 import java.util.List;
 
 import static org.mockito.Mockito.mock;
+import static org.recordy.server.util.DomainFixture.ROOT_USER_ID;
 
 public class FakeContainer {
 
@@ -53,6 +57,7 @@ public class FakeContainer {
     public final KeywordRepository keywordRepository;
     public final BookmarkRepository bookmarkRepository;
     public final ViewRepository viewRepository;
+    public final SubscribeRepository subscribeRepository;
 
     // infrastructure
     public final AuthTokenSigningKeyProvider authTokenSigningKeyProvider;
@@ -67,18 +72,18 @@ public class FakeContainer {
     public final AuthTokenService authTokenService;
     public final AuthService authService;
     public final UserService userService;
-    public final FileService fileService;
     public final RecordService recordService;
     public final KeywordService keywordService;
     public final RecordStatService recordStatService;
     public final S3Service s3Service;
+    public final SubscribeService subscribeService;
 
     // security
     public final AuthFilterExceptionHandler authFilterExceptionHandler;
     public final TokenAuthenticationFilter tokenAuthenticationFilter;
 
     // controller
-    public final UserController userController;
+    public final UserAuthController userAuthController;
 
     public FakeContainer() {
         this.userRepository = new FakeUserRepository();
@@ -87,6 +92,7 @@ public class FakeContainer {
         this.keywordRepository = new FakeKeywordRepository();
         this.bookmarkRepository = new FakeBookmarkRepository();
         this.viewRepository = new FakeViewRepository();
+        this.subscribeRepository = new FakeSubscribeRepository();
 
         this.authTokenSigningKeyProvider = new AuthTokenSigningKeyProvider(DomainFixture.TOKEN_SECRET);
         this.authTokenGenerator = new AuthTokenGenerator(authTokenSigningKeyProvider);
@@ -110,12 +116,12 @@ public class FakeContainer {
                 authRepository
         );
         this.authService = new AuthServiceImpl(authRepository, authPlatformServiceFactory, authTokenService);
-        this.userService = new UserServiceImpl(userRepository, authService, authTokenService);
+        this.userService = new UserServiceImpl(ROOT_USER_ID, userRepository, subscribeRepository, recordRepository, authService, authTokenService);
         this.fileService = new FakeFileService();
-        this.recordService = new RecordServiceImpl(recordRepository, viewRepository, fileService, userService);
         this.keywordService = new KeywordServiceImpl(keywordRepository);
         this.recordStatService = new RecordStatServiceImpl(userRepository, recordRepository, bookmarkRepository);
-
+        this.recordService = new RecordServiceImpl(recordRepository, viewRepository, fileService, userService, recordStatService);
+        this.subscribeService = new SubscribeServiceImpl(subscribeRepository, userRepository);
         this.s3Service = mock(S3Service.class);  // S3Service mock 사용
 
         this.authFilterExceptionHandler = new AuthFilterExceptionHandler(new ObjectMapper());
@@ -126,6 +132,6 @@ public class FakeContainer {
                 authFilterExceptionHandler
         );
 
-        this.userController = new UserController(userService);
+        this.userAuthController = new UserAuthController(userService);
     }
 }

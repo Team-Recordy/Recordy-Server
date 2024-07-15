@@ -6,157 +6,93 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.recordy.server.auth.security.resolver.UserId;
-import org.recordy.server.user.controller.dto.request.UserSignInRequest;
-import org.recordy.server.user.controller.dto.request.UserSignUpRequest;
-import org.recordy.server.user.controller.dto.response.UserSignInResponse;
-import org.recordy.server.user.controller.dto.response.UserReissueTokenResponse;
-import org.springframework.http.HttpHeaders;
+import org.recordy.server.auth.security.UserId;
+import org.recordy.server.record_stat.domain.usecase.Preference;
+import org.recordy.server.user.controller.dto.response.UserInfoWithFollowing;
+import org.recordy.server.user.controller.dto.response.UserInfo;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@Tag(name = "유저 관련 API")
+@Tag(name = "구독 관련 API")
 public interface UserApi {
-
     @Operation(
-            summary = "유저 회원 가입 API",
-            description = "유저가 회원 가입하는 API입니다. ",
+            summary = "팔로우 API",
+            description = "특정 유저를 팔로우하는 API입니다. ",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "성공",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(
-                                            implementation = UserSignInResponse.class
-                                    )
-                            )
+                            description = "성공"
                     )
             }
     )
-    public ResponseEntity<UserSignInResponse> signIn(
-            @RequestHeader(HttpHeaders.AUTHORIZATION) String platformToken,
-            @RequestBody UserSignInRequest request
-    );
-
-    @Operation(
-            security = @SecurityRequirement(name = "Authorization"),
-            summary = "로그아웃 API",
-            description = "access token을 바탕으로 로그아웃을 진행하는 API입니다.",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "요청이 성공했습니다."
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "존재하지 않는 회원입니다.",
-                            content = @Content
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "인증 정보를 찾을 수 없습니다.",
-                            content = @Content
-                    )
-            }
-    )
-    public ResponseEntity signOut(
-            @UserId Long userId
-    );
-
-    @Operation(
-            security = @SecurityRequirement(name = "Authorization"),
-            summary = "유저 닉네임 중복체크 API",
-            description = "유저가 회원 가입할 때 닉네임을 중복체크해주는 API입니다.",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "성공",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(
-                                            implementation = void.class
-                                    )
-                            )
-                    )
-            }
-    )
-    public ResponseEntity<Void> checkDuplicateNickname(
-            @RequestParam String nickname
-    );
-
-    @Operation(
-            summary = "유저 회원 탈퇴 API",
-            description = "유저가 회원 탈퇴하는 API입니다.",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "성공",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(
-                                            implementation = void.class
-                                    )
-                            )
-                    )
-            }
-    )
-    public ResponseEntity<Void> delete(
-            @UserId Long userId
-    );
-
-    @Operation(
-            security = @SecurityRequirement(name = "Authorization"),
-            summary = "access token 재발급 API",
-            description = "refresh token을 바탕으로 access token을 재발급 받는 API입니다.",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "성공",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(
-                                            implementation = UserReissueTokenResponse.class
-                                    )
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "존재하지 않는 회원입니다.",
-                            content = @Content
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "인증 정보를 찾을 수 없습니다.",
-                            content = @Content
-                    )
-            }
-    )
-    public ResponseEntity<UserReissueTokenResponse> reissueToken(
-            @RequestHeader(HttpHeaders.AUTHORIZATION) String refreshToken
-    );
-
-    @Operation(
-            summary = "유저 회원 등록 API",
-            description = "유저 회원 등록하는 API입니다.",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "성공",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(
-                                            implementation = void.class
-                                    )
-                            )
-                    )
-            }
-    )
-    public ResponseEntity<Void> signUp(
+    public ResponseEntity<Void> subscribe(
             @UserId Long userId,
-            @RequestBody UserSignUpRequest request
+            @PathVariable Long subscribedUserId
     );
+
+    @Operation(
+            security = @SecurityRequirement(name = "Authorization"),
+            summary = "팔로우 취소 API",
+            description = "특정 유저에 대한 팔로우을 취소하는 API입니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "204",
+                            description = "요청이 성공했습니다."
+                    )
+            }
+    )
+    public ResponseEntity<Void> unsubscribe(
+            @UserId Long userId,
+            @PathVariable Long subscribedUserId
+    );
+
+    @Operation(
+            security = @SecurityRequirement(name = "Authorization"),
+            summary = "팔로잉 리스트 조회 API",
+            description = "사용자가 팔로우하고 있는 사람 리스트를 조회하는 API입니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "성공",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = Preference.class
+                                    )
+                            )
+                    )
+            }
+    )
+    public ResponseEntity<Slice<UserInfo>> getSubscribedUserInfos(
+            @UserId Long userId,
+            @RequestParam(required = false, defaultValue = "0L") long cursorId,
+            @RequestParam(required = false, defaultValue = "10") int size
+    );
+
+    @Operation(
+            security = @SecurityRequirement(name = "Authorization"),
+            summary = "팔로우 리스트 조회 API",
+            description = "사용자를 팔로우하고 있는 사람 리스트를 조회하는 API입니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "성공",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = Preference.class
+                                    )
+                            )
+                    )
+            }
+    )
+    public ResponseEntity<Slice<UserInfoWithFollowing>> getSubscribingUserInfos(
+            @UserId Long userId,
+            @RequestParam(required = false, defaultValue = "0L") long cursorId,
+            @RequestParam(required = false, defaultValue = "10") int size
+    );
+
 }

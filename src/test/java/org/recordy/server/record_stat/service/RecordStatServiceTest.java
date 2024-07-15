@@ -7,6 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.mock.FakeContainer;
+import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.record_stat.domain.Bookmark;
@@ -25,8 +26,8 @@ public class RecordStatServiceTest {
         UserRepository userRepository = fakeContainer.userRepository;
         RecordRepository recordRepository = fakeContainer.recordRepository;
 
-        userRepository.save(DomainFixture.createUser(UserStatus.ACTIVE));
-        userRepository.save(DomainFixture.createUser(UserStatus.ACTIVE));
+        userRepository.save(DomainFixture.createUser(1));
+        userRepository.save(DomainFixture.createUser(2));
         recordRepository.save(DomainFixture.createRecord());
         recordRepository.save(DomainFixture.createRecord());
         recordRepository.save(DomainFixture.createRecord());
@@ -43,6 +44,22 @@ public class RecordStatServiceTest {
                 () -> assertThat(bookmark).isNotNull(),
                 () -> assertThat(bookmark.getUser().getId()).isEqualTo(DomainFixture.USER_ID),
                 () -> assertThat(bookmark.getRecord().getId()).isEqualTo(DomainFixture.RECORD_ID)
+        );
+    }
+
+    @Test
+    void deleteBookmark를_통해_북마크를_삭제할_수_있다() {
+        // given
+        recordStatService.bookmark(1, 1);
+
+        // when
+        recordStatService.deleteBookmark(1,1);
+
+        // then
+        Slice<Record> result = recordStatService.getBookmarkedRecords(1, 7, 10);
+
+        assertAll(
+                () -> assertThat(result.getContent()).hasSize(0)
         );
     }
 
@@ -88,36 +105,4 @@ public class RecordStatServiceTest {
                 () -> assertThat(result.hasNext()).isFalse()
         );
     }
-
-    @Test
-    void getBookmarkCount를_통해_현재_기록의_북마크_수를_구할_수_있다() {
-        //given
-        recordStatService.bookmark(1, 1);
-        recordStatService.bookmark(2, 1);
-        recordStatService.bookmark(1, 2);
-        recordStatService.bookmark(2, 2);
-        recordStatService.bookmark(1, 3);
-        recordStatService.bookmark(2, 3);
-
-        // when
-        Long result = recordStatService.getBookmarkCount(1);
-
-        // then
-        assertAll(
-                () -> assertThat(result).isEqualTo(2)
-        );
-    }
-
-    @Test
-    void getBookmarkCount를_통해_북마크_수를_구할_때_북마크가_없으면_0을_리턴한다() {
-        //given
-        // when
-        Long result = recordStatService.getBookmarkCount(1);
-
-        // then
-        assertAll(
-                () -> assertThat(result).isEqualTo(0)
-        );
-    }
-
 }

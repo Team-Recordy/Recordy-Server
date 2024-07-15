@@ -10,7 +10,7 @@ services:
     restart: always
   blue:
     container_name: blue
-    image: recordy/recordy
+    image: recordy/recordy:latest
     expose:
       - 8080
     ports:
@@ -21,7 +21,7 @@ services:
       - redis
   green:
     container_name: green
-    image: recordy/recordy
+    image: recordy/recordy:latest
     expose:
       - 8080
     ports:
