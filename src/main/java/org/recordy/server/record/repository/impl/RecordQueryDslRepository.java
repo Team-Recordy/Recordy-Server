@@ -77,8 +77,9 @@ public class RecordQueryDslRepository {
     }
 
     public Slice<RecordEntity> findAllByIdAfterAndKeywordsOrderByIdDesc(List<KeywordEntity> keywords, long cursor, Pageable pageable) {
-        if (cursor == 0)
+        if (cursor == 0) {
             cursor = Long.MAX_VALUE;
+        }
 
         List<RecordEntity> recordEntities = jpaQueryFactory
                 .selectFrom(recordEntity)
@@ -96,9 +97,9 @@ public class RecordQueryDslRepository {
     }
 
     public Slice<RecordEntity> findAllByIdAfterOrderByIdDesc(long cursor, Pageable pageable) {
-        // TODO: 0을 여기서 대체하지 말고, 서비스나 컨트롤러에서 처리하도록 수정
-        if (cursor == 0)
+        if (cursor == 0) {
             cursor = Long.MAX_VALUE;
+        }
 
         List<RecordEntity> recordEntities = jpaQueryFactory
                 .selectFrom(recordEntity)
@@ -113,8 +114,9 @@ public class RecordQueryDslRepository {
     }
 
     public Slice<RecordEntity> findAllByUserIdOrderByIdDesc(long userId, long cursor, Pageable pageable) {
-        if (cursor == 0)
+        if (cursor == 0) {
             cursor = Long.MAX_VALUE;
+        }
 
         List<RecordEntity> recordEntities = jpaQueryFactory
                 .selectFrom((recordEntity))
@@ -176,8 +178,9 @@ public class RecordQueryDslRepository {
     }
 
     public Slice<RecordEntity> findAllBySubscribingUserIdOrderByIdDesc(long userId, long cursor, Pageable pageable) {
-        if (cursor == 0)
+        if (cursor == 0) {
             cursor = Long.MAX_VALUE;
+        }
 
         List<RecordEntity> recordEntities = jpaQueryFactory
                 .select(recordEntity)
