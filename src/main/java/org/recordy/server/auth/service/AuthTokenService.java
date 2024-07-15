@@ -12,4 +12,5 @@ public interface AuthTokenService {
     String getTokenFromRequest(HttpServletRequest request);
     long getUserIdFromToken(String token);
     String issueAccessToken(long userId);
+    String removePrefix(String value);
 }

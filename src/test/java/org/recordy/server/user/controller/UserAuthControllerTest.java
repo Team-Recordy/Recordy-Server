@@ -10,6 +10,7 @@ import org.recordy.server.user.controller.dto.request.UserSignInRequest;
 import org.recordy.server.user.controller.dto.response.UserReissueTokenResponse;
 import org.recordy.server.user.controller.dto.response.UserSignInResponse;
 import org.recordy.server.user.domain.User;
+import org.recordy.server.user.domain.usecase.UserSignIn;
 import org.recordy.server.user.exception.UserException;
 import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.user.service.UserService;
@@ -39,11 +40,11 @@ public class UserAuthControllerTest {
     @Test
     void signIn을_통해_사용자는_카카오_플랫폼_토큰을_통해_가입_이후_토큰을_반환받을_수_있다() {
         // given
-        String platformToken = "platform_token";
-        UserSignInRequest request = new UserSignInRequest(AuthPlatform.Type.KAKAO);
+        UserSignIn userSignIn = DomainFixture.createUserSignIn(AuthPlatform.Type.KAKAO);
+        UserSignInRequest userSignInRequest = new UserSignInRequest(AuthPlatform.Type.KAKAO);
 
         // when
-        ResponseEntity<UserSignInResponse> result = userAuthController.signIn(platformToken, request);
+        ResponseEntity<UserSignInResponse> result = userAuthController.signIn(userSignIn.platformToken(), userSignInRequest);
 
         // then
         assertAll(
@@ -57,11 +58,11 @@ public class UserAuthControllerTest {
     @Test
     void signIn을_통해_사용자는_애플_플랫폼_토큰을_통해_가입_이후_토큰을_반환받을_수_있다() {
         // given
-        String platformToken = "platform_token";
-        UserSignInRequest request = new UserSignInRequest(AuthPlatform.Type.APPLE);
+        UserSignIn userSignIn = DomainFixture.createUserSignIn(AuthPlatform.Type.APPLE);
+        UserSignInRequest userSignInRequest = new UserSignInRequest(AuthPlatform.Type.APPLE);
 
         // when
-        ResponseEntity<UserSignInResponse> result = userAuthController.signIn(platformToken, request);
+        ResponseEntity<UserSignInResponse> result = userAuthController.signIn(userSignIn.platformToken(), userSignInRequest);
 
         // then
         assertAll(

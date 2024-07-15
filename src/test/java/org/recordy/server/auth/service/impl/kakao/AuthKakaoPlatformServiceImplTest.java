@@ -4,6 +4,7 @@ import feign.FeignException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.auth.domain.AuthPlatform;
+import org.recordy.server.auth.service.AuthTokenService;
 import org.recordy.server.user.domain.usecase.UserSignIn;
 import org.recordy.server.auth.service.AuthPlatformService;
 import org.recordy.server.mock.FakeContainer;
@@ -16,19 +17,25 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 public class AuthKakaoPlatformServiceImplTest {
 
     private AuthPlatformService kakaoPlatformService;
+    private AuthTokenService authTokenService;
 
     @BeforeEach
     void init() {
         kakaoPlatformService = new FakeContainer().authKakaoPlatformService;
+        authTokenService = new FakeContainer().authTokenService;
     }
 
     @Test
     void getPlatform을_통해_카카오_플랫폼을_통한_사용자_정보를_조회한다() {
         // given
         UserSignIn userSignIn = DomainFixture.createUserSignIn(DomainFixture.KAKAO_PLATFORM_TYPE);
+        UserSignIn realUserSignIn = new UserSignIn(
+                authTokenService.removePrefix(userSignIn.platformToken()),
+                DomainFixture.KAKAO_PLATFORM_TYPE
+        );
 
         // when
-        AuthPlatform platform = kakaoPlatformService.getPlatform(userSignIn);
+        AuthPlatform platform = kakaoPlatformService.getPlatform(realUserSignIn);
 
         // then
         assertAll(

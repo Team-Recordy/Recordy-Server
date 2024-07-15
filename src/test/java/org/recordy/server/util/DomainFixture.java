@@ -107,7 +107,7 @@ public final class DomainFixture {
 
     public static UserSignIn createUserSignIn(AuthPlatform.Type platformType) {
         return new UserSignIn(
-                PLATFORM_TOKEN,
+                TOKEN_PREFIX + PLATFORM_TOKEN,
                 platformType
         );
     }
