@@ -119,7 +119,7 @@ public class FakeContainer {
         this.authService = new AuthServiceImpl(authRepository, authPlatformServiceFactory, authTokenService);
         this.userService = new UserServiceImpl(userRepository, authService, authTokenService);
         this.fileService = new FakeFileService();
-        this.recordService = new RecordServiceImpl(recordRepository, viewRepository, fileService, userService);
+        this.recordService = new RecordServiceImpl(recordRepository, viewRepository, userService);
         this.keywordService = new KeywordServiceImpl(keywordRepository);
         this.recordStatService = new RecordStatServiceImpl(userRepository, recordRepository, bookmarkRepository);
         this.subscribeService = new SubscribeServiceImpl(subscribeRepository, userRepository);

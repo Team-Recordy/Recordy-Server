@@ -8,7 +8,7 @@ public interface S3Service {
 
     // command
     String generatePresignedUrl(String directory);
-    String getPresignedUrl(String filename);
+    String getPresignUrl(String filename);
     void uploadFile(byte[] fileData, String fileName) throws IOException;
 
     // query

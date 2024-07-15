@@ -29,7 +29,6 @@ public class RecordServiceImpl implements RecordService {
 
     private final RecordRepository recordRepository;
     private final ViewRepository viewRepository;
-    private final FileService fileService;
     private final UserService userService;
 
     @Override
