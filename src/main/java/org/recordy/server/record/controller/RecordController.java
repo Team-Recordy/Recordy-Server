@@ -2,6 +2,7 @@ package org.recordy.server.record.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.security.UserId;
+import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.record.controller.dto.request.RecordCreateRequest;
 import org.recordy.server.record.domain.File;
 import org.recordy.server.record.domain.Record;
@@ -14,9 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.List;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/records")
@@ -58,11 +56,11 @@ public class RecordController implements RecordApi {
     @Override
     @GetMapping("/recent")
     public ResponseEntity<Slice<Record>> getRecentRecords(
-            @RequestParam(required = false) List<String> keywords,
+            @RequestParam(required = false) byte[] keywords,
             @RequestParam(required = false, defaultValue = "0") Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
-        Slice<Record> records = recordService.getRecentRecords(keywords, cursorId, size);
+        Slice<Record> records = recordService.getRecentRecords(Keyword.decode(keywords), cursorId, size);
 
         return ResponseEntity
                 .ok()
@@ -72,13 +70,13 @@ public class RecordController implements RecordApi {
     @Override
     @GetMapping("/famous")
     public ResponseEntity<Slice<Record>> getFamousRecords(
-            @RequestParam(required = false) List<String> keywords,
+            @RequestParam(required = false) byte[] keywords,
             @RequestParam(required = false, defaultValue = "0") int pageNumber,
             @RequestParam(required = false, defaultValue = "10") int pageSize
     ) {
         return ResponseEntity
                 .ok()
-                .body(recordService.getFamousRecords(keywords, pageNumber, pageSize));
+                .body(recordService.getFamousRecords(Keyword.decode(keywords), pageNumber, pageSize));
     }
 
     @Override

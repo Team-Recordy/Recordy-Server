@@ -17,6 +17,6 @@ public record RecordCreate(
                 uploaderId,
                 recordCreateRequest.location(),
                 recordCreateRequest.content(),
-                Keyword.from(recordCreateRequest.keywords()));
+                Keyword.decode(recordCreateRequest.keywords()));
     }
 }

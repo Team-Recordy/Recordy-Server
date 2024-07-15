@@ -245,7 +245,7 @@ public interface RecordApi {
             }
     )
     public ResponseEntity<Slice<Record>> getFamousRecords(
-            @RequestParam(required = false) List<String> keywords,
+            @RequestParam(required = false) byte[] keywords,
             @RequestParam(required = false, defaultValue = "0") int pageNumber,
             @RequestParam(required = false, defaultValue = "10") int pageSize
     ) ;
@@ -287,7 +287,7 @@ public interface RecordApi {
             }
     )
     public ResponseEntity<Slice<Record>> getRecentRecords(
-            @RequestParam(required = false) List<String> keywords,
+            @RequestParam(required = false) byte[] keywords,
             @RequestParam(required = false, defaultValue = "0") Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     );

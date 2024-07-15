@@ -70,10 +70,10 @@ public final class DomainFixture {
      * KEYWORD
      */
     public static final Long KEYWORD_ID = 1L;
-    public static final Keyword KEYWORD_1 = Keyword.EXOTIC;
-    public static final Keyword KEYWORD_2 = Keyword.QUITE;
-    public static final Keyword KEYWORD_3 = Keyword.TRENDY;
-    public static final List<Keyword> KEYWORDS = List.of(Keyword.EXOTIC, Keyword.QUITE, Keyword.TRENDY);
+    public static final Keyword KEYWORD_1 = Keyword.감각적인;
+    public static final Keyword KEYWORD_2 = Keyword.강렬한;
+    public static final Keyword KEYWORD_3 = Keyword.귀여운;
+    public static final List<Keyword> KEYWORDS = List.of(Keyword.감각적인, Keyword.강렬한, Keyword.귀여운);
 
     public static AuthPlatform createAuthPlatform() {
         return new AuthPlatform(PLATFORM_ID, KAKAO_PLATFORM_TYPE);
