@@ -18,7 +18,7 @@ public interface UserService {
     void delete(long userId);
 
     // query
-    UserProfile getProfile(long id);
+    UserProfile getProfile(long userId, long otherUserId);
     Optional<User> getByPlatformId(String platformId);
     Optional<User> getById(long id);
     void validateDuplicateNickname(String nickname);
