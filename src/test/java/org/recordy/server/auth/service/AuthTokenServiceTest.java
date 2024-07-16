@@ -191,7 +191,7 @@ public class AuthTokenServiceTest {
         //given
         AuthPlatform authPlatform = DomainFixture.createAuthPlatform();
         AuthToken authToken = authTokenService.issueToken(DomainFixture.USER_ID);
-        authRepository.save(new Auth(authPlatform, authToken, true));
+        authRepository.save(new Auth(DomainFixture.USER_ID, authPlatform, authToken, true));
 
         //when
         String refreshToken = "Bearer " + authToken.getRefreshToken();

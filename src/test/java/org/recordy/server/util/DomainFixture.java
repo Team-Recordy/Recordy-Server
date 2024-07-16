@@ -89,6 +89,7 @@ public final class DomainFixture {
 
     public static Auth createAuth(boolean isSignedUp) {
         return new Auth(
+                USER_ID,
                 createAuthPlatform(),
                 createAuthToken(),
                 isSignedUp
@@ -98,6 +99,7 @@ public final class DomainFixture {
     public static AuthEntity createAuthEntity(boolean isSignedUp) {
         return new AuthEntity(
                 PLATFORM_ID,
+                USER_ID,
                 KAKAO_PLATFORM_TYPE.name(),
                 ACCESS_TOKEN,
                 REFRESH_TOKEN,
