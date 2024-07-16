@@ -80,8 +80,9 @@ public class RecordController implements RecordApi {
         Slice<Record> records = recordService.getRecentRecords(keywords, cursorId, size);
         List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records.getContent());
 
-        return ResponseEntity.ok().body(CursorBasePaginatedResponse.of(RecordInfoWithBookmark.of(records, bookmarks),recordInfoWithBookmark -> recordInfoWithBookmark.recordInfo()
-                .id()));
+        return ResponseEntity
+                .ok().
+                body(CursorBasePaginatedResponse.of(RecordInfoWithBookmark.of(records, bookmarks),recordInfoWithBookmark -> recordInfoWithBookmark.recordInfo().id()));
     }
 
     @Override

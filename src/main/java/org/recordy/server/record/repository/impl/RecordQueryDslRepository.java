@@ -47,15 +47,7 @@ public class RecordQueryDslRepository {
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
 
-        return new SliceImpl<>(recordEntities, pageable, hasNext(pageable, recordEntities));
-    }
-
-    private boolean hasNext(Pageable pageable, List<RecordEntity> results) {
-        if (results.size() > pageable.getPageSize()) {
-            results.remove(pageable.getPageSize());
-            return true;
-        }
-        return false;
+        return new SliceImpl<>(recordEntities, pageable, QueryDslUtils.hasNext(pageable, recordEntities));
     }
 
 
