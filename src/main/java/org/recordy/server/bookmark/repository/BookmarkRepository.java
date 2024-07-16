@@ -1,11 +1,8 @@
-package org.recordy.server.record_stat.repository;
+package org.recordy.server.bookmark.repository;
 
-import org.recordy.server.record_stat.domain.Bookmark;
+import org.recordy.server.bookmark.domain.Bookmark;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.recordy.server.record.domain.Record;
-
-import java.util.List;
 
 public interface BookmarkRepository {
     // command

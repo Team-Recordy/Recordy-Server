@@ -1,4 +1,4 @@
-package org.recordy.server.record_stat.domain.usecase;
+package org.recordy.server.preference.domain.usecase;
 
 import org.recordy.server.keyword.domain.Keyword;
 

@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
 import static org.recordy.server.keyword.domain.QKeywordEntity.keywordEntity;
 import static org.recordy.server.record.domain.QRecordEntity.recordEntity;
 import static org.recordy.server.record.domain.QUploadEntity.uploadEntity;
-import static org.recordy.server.record_stat.domain.QBookmarkEntity.bookmarkEntity;
-import static org.recordy.server.record_stat.domain.QViewEntity.viewEntity;
+import static org.recordy.server.bookmark.domain.QBookmarkEntity.bookmarkEntity;
+import static org.recordy.server.view.domain.QViewEntity.viewEntity;
 import static org.recordy.server.subscribe.domain.QSubscribeEntity.subscribeEntity;
 import static org.recordy.server.user.domain.QUserEntity.userEntity;
 

@@ -371,4 +371,46 @@ public interface RecordApi {
             @UserId Long userId,
             @RequestParam(required = false, defaultValue = "10") int size
     );
+
+    @Operation(
+            summary = "북마크된 기록 리스트 조회 API",
+            description = "북마크된 기록 리스트를 조회하는 API입니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "요청이 성공적으로 처리되었습니다.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = Slice.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized - 인증이 필요합니다.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = ErrorMessage.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Internal Server Error - 서버 내부 오류입니다.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = ErrorMessage.class
+                                    )
+                            )
+                    )
+            }
+    )
+    public ResponseEntity<CursorBasePaginatedResponse<RecordInfoWithBookmark>> getBookmarkedRecords(
+            @UserId Long userId,
+            @RequestParam(required = false, defaultValue = "0L") long cursorId,
+            @RequestParam(required = false, defaultValue = "10") int size
+    );
 }
