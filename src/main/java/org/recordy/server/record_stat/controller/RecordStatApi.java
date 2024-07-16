@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.recordy.server.common.dto.response.CursorBasePaginatedResponse;
 import org.recordy.server.auth.security.resolver.UserId;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
@@ -168,7 +169,7 @@ public interface RecordStatApi {
                     )
             }
     )
-    public ResponseEntity<Slice<RecordInfoWithBookmark>> getBookmarkedRecords(
+    public ResponseEntity<CursorBasePaginatedResponse<RecordInfoWithBookmark>> getBookmarkedRecords(
             @UserId Long userId,
             @RequestParam(required = false, defaultValue = "0L") long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size

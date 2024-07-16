@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.recordy.server.common.dto.response.CursorBasePaginatedResponse;
 import org.recordy.server.auth.security.resolver.UserId;
 import org.recordy.server.record_stat.domain.usecase.Preference;
 import org.recordy.server.user.controller.dto.response.UserInfoWithFollowing;
@@ -67,7 +68,7 @@ public interface UserApi {
                     )
             }
     )
-    public ResponseEntity<Slice<UserInfo>> getSubscribedUserInfos(
+    public ResponseEntity<CursorBasePaginatedResponse<UserInfo>> getSubscribedUserInfos(
             @UserId Long userId,
             @RequestParam(required = false, defaultValue = "0L") long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
@@ -90,7 +91,7 @@ public interface UserApi {
                     )
             }
     )
-    public ResponseEntity<Slice<UserInfoWithFollowing>> getSubscribingUserInfos(
+    public ResponseEntity<CursorBasePaginatedResponse<UserInfoWithFollowing>> getSubscribingUserInfos(
             @UserId Long userId,
             @RequestParam(required = false, defaultValue = "0L") long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size

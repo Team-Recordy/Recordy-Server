@@ -2,6 +2,7 @@ package org.recordy.server.common.util;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.NumberPath;
+import org.recordy.server.record.domain.RecordEntity;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
