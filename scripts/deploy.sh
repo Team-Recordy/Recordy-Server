@@ -57,5 +57,5 @@ else
   sudo nginx -s reload
   echo ">>> down green container"
   docker compose stop green
-  docker image prune -fp
+  docker image prune -f
 fi
