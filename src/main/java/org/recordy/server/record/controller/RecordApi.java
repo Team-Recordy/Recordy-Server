@@ -164,6 +164,7 @@ public interface RecordApi {
     )
     ResponseEntity<CursorBasePaginatedResponse<RecordInfoWithBookmark>> getRecentRecordInfosWithBookmarksByUser(
             @UserId Long userId,
+            @PathVariable Long otherUserId,
             @RequestParam(required = false, defaultValue = "0") long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     );
