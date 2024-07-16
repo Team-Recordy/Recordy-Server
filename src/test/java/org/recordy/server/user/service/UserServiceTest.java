@@ -247,7 +247,7 @@ public class UserServiceTest {
         subscribeRepository.save(new Subscribe(2L, user2, user1));
 
         // when
-        UserProfile userProfile = userService.getProfile(1, DomainFixture.USER_ID);
+        UserProfile userProfile = userService.getProfile(2, DomainFixture.USER_ID);
 
         // then
         assertAll(
