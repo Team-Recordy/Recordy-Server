@@ -1,9 +1,9 @@
 package org.recordy.server.record.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.recordy.server.auth.security.UserId;
 import org.recordy.server.common.dto.response.CursorBasePaginatedResponse;
 import org.recordy.server.common.dto.response.PaginatedResponse;
+import org.recordy.server.auth.security.resolver.UserId;
 import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.record.controller.dto.request.RecordCreateRequest;
 import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/records")
 @RestController
@@ -34,12 +33,12 @@ public class RecordController implements RecordApi {
 
     @GetMapping("/presigned-url")
     public ResponseEntity<FileUrl> getPresignedUrls() {
-     return ResponseEntity
-             .status(HttpStatus.OK)
-             .body(new FileUrl(
-                     s3Service.generatePresignedUrl("videos/"),
-                     s3Service.generatePresignedUrl("thumbnails/")
-             ));
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new FileUrl(
+                        s3Service.generatePresignedUrl("videos/"),
+                        s3Service.generatePresignedUrl("thumbnails/")
+                ));
     }
 
     @Override
@@ -55,8 +54,7 @@ public class RecordController implements RecordApi {
                 .build();
     }
 
-
-    @Override    
+    @Override
     @DeleteMapping("/{recordId}")
     public ResponseEntity<Void> deleteRecord(
             @UserId Long uploaderId,
@@ -157,7 +155,6 @@ public class RecordController implements RecordApi {
 
         return ResponseEntity
                 .ok()
-                .body(RecordInfoWithBookmark.of(records, bookmarks));
+                .body(RecordInfoWithBookmark.of(records, bookmarks, userId));
     }
 }
-

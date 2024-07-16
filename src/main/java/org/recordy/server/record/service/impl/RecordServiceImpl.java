@@ -41,7 +41,6 @@ public class RecordServiceImpl implements RecordService {
     private final FileService fileService;
     private final RecordStatService recordStatService;
 
-
     @Override
     public Record create(RecordCreate recordCreate, File file) {
         FileUrl fileUrl = fileService.save(file);
@@ -57,11 +56,10 @@ public class RecordServiceImpl implements RecordService {
                 .build());
     }
 
-
     @Override
     public void delete(long userId, long recordId) {
         Record record = recordRepository.findById(recordId)
-                        .orElseThrow(() -> new RecordException(ErrorMessage.RECORD_NOT_FOUND));
+                .orElseThrow(() -> new RecordException(ErrorMessage.RECORD_NOT_FOUND));
         if (!record.isUploader(userId)) {
             throw new RecordException(ErrorMessage.FORBIDDEN_DELETE_RECORD);
         }

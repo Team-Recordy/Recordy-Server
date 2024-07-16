@@ -86,10 +86,10 @@ public class UserServiceImpl implements UserService {
         if (!user.getId().equals(rootUserId)) {
             userRepository.findById(rootUserId)
                     .ifPresent(rootUser ->
-                                subscribeRepository.save(Subscribe.builder()
-                                        .subscribingUser(user)
-                                        .subscribedUser(rootUser)
-                                        .build())
+                            subscribeRepository.save(Subscribe.builder()
+                                    .subscribingUser(user)
+                                    .subscribedUser(rootUser)
+                                    .build())
                     );
         }
     }
@@ -123,14 +123,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserProfile getProfile(long id) {
-        User user = userRepository.findById(id)
+    public UserProfile getProfile(long userId, long otherUserId) {
+        User user = userRepository.findById(otherUserId)
                 .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
         long records = recordRepository.countAllByUserId(user.getId());
         long followers = subscribeRepository.countSubscribingUsers(user.getId());
         long followings = subscribeRepository.countSubscribedUsers(user.getId());
+        boolean isFollowing = subscribeRepository.existsBySubscribingUserIdAndSubscribedUserId(userId, otherUserId);
 
-        return UserProfile.of(user, records, followers, followings);
+        return UserProfile.of(user, records, followers, followings, isFollowing);
     }
 
     @Override

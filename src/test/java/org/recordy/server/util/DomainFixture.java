@@ -205,6 +205,7 @@ public final class DomainFixture {
                 PLATFORM_ID,
                 KAKAO_PLATFORM_TYPE,
                 DEFAULT_USER_STATUS,
+                USER_PROFILE_IMAGE_URL,
                 USER_NICKNAME,
                 TermsAgreement.of(USE_TERM_AGREEMENT, PERSONAL_INFO_TERM_AGREEMENT, AGE_TERM_AGREEMENT),
                 LocalDateTime.now()

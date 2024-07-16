@@ -1,14 +1,19 @@
 package org.recordy.server.user.controller;
 
+import com.sun.security.auth.UserPrincipal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.security.UserId;
 import org.recordy.server.common.dto.response.CursorBasePaginatedResponse;
+import org.recordy.server.subscribe.repository.SubscribeRepository;
+import org.recordy.server.auth.security.resolver.UserId;
 import org.recordy.server.user.controller.dto.response.UserInfoWithFollowing;
 import org.recordy.server.subscribe.domain.usecase.SubscribeCreate;
 import org.recordy.server.subscribe.service.SubscribeService;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.controller.dto.response.UserInfo;
+import org.recordy.server.user.domain.usecase.UserProfile;
+import org.recordy.server.user.service.UserService;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +30,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserController implements UserApi {
     private final SubscribeService subscribeService;
+    private final UserService userService;
+    private final SubscribeRepository subscribeRepository;
 
     @Override
     @PostMapping("/follow/{followingId}")
@@ -77,4 +84,16 @@ public class UserController implements UserApi {
                 .status(HttpStatus.OK)
                 .body(CursorBasePaginatedResponse.of(UserInfoWithFollowing.of(users, following), userInfoWithFollowing -> userInfoWithFollowing.userInfo().id()));
         }
+    }
+
+    @Override
+    @GetMapping("/profile/{otherUserId}")
+    public ResponseEntity<UserProfile> getUserInfosWithFollowing(
+            @UserId Long userId,
+            @PathVariable Long otherUserId
+        ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(userService.getProfile(userId, otherUserId));
+    }
 }

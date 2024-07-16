@@ -2,7 +2,7 @@ package org.recordy.server.mock;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.recordy.server.auth.repository.AuthRepository;
-import org.recordy.server.auth.security.TokenAuthenticationFilter;
+import org.recordy.server.auth.security.filter.TokenAuthenticationFilter;
 import org.recordy.server.auth.security.handler.AuthFilterExceptionHandler;
 import org.recordy.server.auth.service.AuthPlatformService;
 import org.recordy.server.auth.service.impl.*;
@@ -117,7 +117,6 @@ public class FakeContainer {
         );
         this.authService = new AuthServiceImpl(authRepository, authPlatformServiceFactory, authTokenService);
         this.userService = new UserServiceImpl(ROOT_USER_ID, userRepository, subscribeRepository, recordRepository, authService, authTokenService);
-        this.fileService = new FakeFileService();
         this.keywordService = new KeywordServiceImpl(keywordRepository);
         this.recordStatService = new RecordStatServiceImpl(userRepository, recordRepository, bookmarkRepository);
         this.recordService = new RecordServiceImpl(recordRepository, viewRepository, fileService, userService, recordStatService);

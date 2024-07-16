@@ -26,6 +26,7 @@ public class UserEntity extends JpaMetaInfoEntity {
     private AuthPlatform.Type platformType;
     @Enumerated(EnumType.STRING)
     private UserStatus status;
+    private String profileImageUrl;
     private String nickname;
     private boolean useTerm;
     private boolean personalInfoTerm;
@@ -40,11 +41,12 @@ public class UserEntity extends JpaMetaInfoEntity {
     @OneToMany(mappedBy = "subscribedUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SubscribeEntity> subscribers = new ArrayList<>();
 
-    public UserEntity(Long id, String platformId, AuthPlatform.Type platformType, UserStatus status, String nickname, TermsAgreement termsAgreement, LocalDateTime createdAt) {
+    public UserEntity(Long id, String platformId, AuthPlatform.Type platformType, UserStatus status, String profileImageUrl, String nickname, TermsAgreement termsAgreement, LocalDateTime createdAt) {
         this.id = id;
         this.platformId = platformId;
         this.platformType = platformType;
         this.status = status;
+        this.profileImageUrl = profileImageUrl;
         this.nickname = nickname;
         this.useTerm = termsAgreement.useTerm();
         this.personalInfoTerm = termsAgreement.personalInfoTerm();
@@ -58,6 +60,7 @@ public class UserEntity extends JpaMetaInfoEntity {
                 user.getAuthPlatform().getId(),
                 user.getAuthPlatform().getType(),
                 user.getStatus(),
+                user.getProfileImageUrl(),
                 user.getNickname(),
                 user.getTermsAgreement(),
                 user.getCreatedAt()
@@ -69,6 +72,7 @@ public class UserEntity extends JpaMetaInfoEntity {
                 .id(id)
                 .authPlatform(new AuthPlatform(platformId, platformType))
                 .status(status)
+                .profileImageUrl(profileImageUrl)
                 .nickname(nickname)
                 .termsAgreement(TermsAgreement.of(useTerm, personalInfoTerm, ageTerm))
                 .createdAt(createdAt)
