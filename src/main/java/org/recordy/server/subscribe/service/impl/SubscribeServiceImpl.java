@@ -23,10 +23,10 @@ public class SubscribeServiceImpl implements SubscribeService {
     private final UserRepository userRepository;
 
     @Override
-    public void subscribe(SubscribeCreate subscribeCreate) {
+    public boolean subscribe(SubscribeCreate subscribeCreate) {
         if (subscribeRepository.existsBySubscribingUserIdAndSubscribedUserId(subscribeCreate.subscribingUserId(), subscribeCreate.subscribedUserId())) {
             subscribeRepository.delete(subscribeCreate.subscribingUserId(), subscribeCreate.subscribedUserId());
-            return;
+            return false;
         }
 
         User subscribingUser = userRepository.findById(subscribeCreate.subscribingUserId())
@@ -38,6 +38,8 @@ public class SubscribeServiceImpl implements SubscribeService {
                 .subscribingUser(subscribingUser)
                 .subscribedUser(subscribedUser)
                 .build());
+
+        return true;
     }
 
     @Override

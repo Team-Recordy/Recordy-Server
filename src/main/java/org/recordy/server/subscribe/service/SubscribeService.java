@@ -8,7 +8,7 @@ import org.springframework.data.domain.Slice;
 public interface SubscribeService {
 
     // command
-    void subscribe(SubscribeCreate subscribeCreate);
+    boolean subscribe(SubscribeCreate subscribeCreate);
 
     // query
     Slice<User> getSubscribedUsers(long subscribingUserId, long cursor, int size);

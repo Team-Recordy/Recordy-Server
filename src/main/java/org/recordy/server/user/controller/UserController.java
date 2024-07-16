@@ -1,6 +1,7 @@
 package org.recordy.server.user.controller;
 
 import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.security.UserId;
 import org.recordy.server.user.controller.dto.response.UserInfoWithFollowing;
@@ -11,7 +12,6 @@ import org.recordy.server.user.controller.dto.response.UserInfo;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,14 +28,13 @@ public class UserController implements UserApi {
 
     @Override
     @PostMapping("/follow/{followingId}")
-    public ResponseEntity<Void> subscribe(
+    public ResponseEntity<Boolean> subscribe(
             @UserId Long userId,
             @PathVariable Long followingId
     ) {
-        subscribeService.subscribe(new SubscribeCreate(userId, followingId));
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .build();
+                .body(subscribeService.subscribe(new SubscribeCreate(userId, followingId)));
     }
 
     @Override

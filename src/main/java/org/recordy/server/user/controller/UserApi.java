@@ -28,7 +28,7 @@ public interface UserApi {
                     )
             }
     )
-    public ResponseEntity<Void> subscribe(
+    public ResponseEntity<Boolean> subscribe(
             @UserId Long userId,
             @PathVariable Long subscribedUserId
     );
