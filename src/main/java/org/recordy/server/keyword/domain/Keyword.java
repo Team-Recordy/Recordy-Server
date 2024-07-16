@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public enum Keyword {
 
@@ -38,6 +39,6 @@ public enum Keyword {
 
         return Arrays.stream(keywords)
                 .map(Keyword::valueOf)
-                .toList();
+                .collect(Collectors.toList());
     }
 }

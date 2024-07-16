@@ -1,4 +1,4 @@
-package org.recordy.server.auth.security;
+package org.recordy.server.auth.security.resolver;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

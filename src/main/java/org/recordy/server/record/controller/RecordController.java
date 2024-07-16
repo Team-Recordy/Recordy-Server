@@ -1,7 +1,7 @@
 package org.recordy.server.record.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.recordy.server.auth.security.UserId;
+import org.recordy.server.auth.security.resolver.UserId;
 import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.record.controller.dto.request.RecordCreateRequest;
 import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
@@ -11,11 +11,12 @@ import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.usecase.RecordCreate;
 import org.recordy.server.record.service.RecordService;
 import org.recordy.server.record_stat.service.RecordStatService;
+import org.recordy.server.record.service.S3Service;
+import org.recordy.server.record.service.dto.FileUrl;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -26,24 +27,32 @@ public class RecordController implements RecordApi {
 
     private final RecordService recordService;
     private final RecordStatService recordStatService;
+    private final S3Service s3Service;
+
+    @GetMapping("/presigned-url")
+    public ResponseEntity<FileUrl> getPresignedUrls() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new FileUrl(
+                        s3Service.generatePresignedUrl("videos/"),
+                        s3Service.generatePresignedUrl("thumbnails/")
+                ));
+    }
 
     @Override
     @PostMapping
-    public ResponseEntity<Record> createRecord(
+    public ResponseEntity<Void> createRecord(
             @UserId Long uploaderId,
-            @RequestPart RecordCreateRequest request,
-            @RequestPart MultipartFile thumbnail,
-            @RequestPart MultipartFile video
-    ) {
+            @RequestBody RecordCreateRequest request) {
         RecordCreate recordCreate = RecordCreate.of(uploaderId, request);
-        Record record = recordService.create(recordCreate, File.of(video, thumbnail));
+        Record record = recordService.create(recordCreate, new File(request.fileUrl().videoUrl(), request.fileUrl().thumbnailUrl()));
 
         return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(record);
+                .ok()
+                .build();
     }
 
-    @Override    
+    @Override
     @DeleteMapping("/{recordId}")
     public ResponseEntity<Void> deleteRecord(
             @UserId Long uploaderId,
@@ -67,7 +76,7 @@ public class RecordController implements RecordApi {
         Slice<Record> records = recordService.getRecentRecords(Keyword.decode(keywords), cursorId, size);
         List<Boolean> bookmarks = recordStatService.findBookmarks(userId, records.getContent());
 
-        return ResponseEntity.ok().body(RecordInfoWithBookmark.of(records, bookmarks));
+        return ResponseEntity.ok().body(RecordInfoWithBookmark.of(records, bookmarks, userId));
     }
 
     @Override
@@ -83,7 +92,7 @@ public class RecordController implements RecordApi {
 
         return ResponseEntity
                 .ok()
-                .body(RecordInfoWithBookmark.of(records, bookmarks));
+                .body(RecordInfoWithBookmark.of(records, bookmarks, userId));
     }
 
     @Override
@@ -110,7 +119,7 @@ public class RecordController implements RecordApi {
 
         return ResponseEntity
                 .ok()
-                .body(RecordInfoWithBookmark.of(records, bookmarks));
+                .body(RecordInfoWithBookmark.of(records, bookmarks, userId));
     }
 
     @Override
@@ -125,7 +134,7 @@ public class RecordController implements RecordApi {
 
         return ResponseEntity
                 .ok()
-                .body(RecordInfoWithBookmark.of(records, bookmarks));
+                .body(RecordInfoWithBookmark.of(records, bookmarks, userId));
     }
 
     @Override
@@ -139,7 +148,6 @@ public class RecordController implements RecordApi {
 
         return ResponseEntity
                 .ok()
-                .body(RecordInfoWithBookmark.of(records, bookmarks));
+                .body(RecordInfoWithBookmark.of(records, bookmarks, userId));
     }
 }
-

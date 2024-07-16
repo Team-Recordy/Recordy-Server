@@ -86,10 +86,10 @@ public class UserServiceImpl implements UserService {
         if (!user.getId().equals(rootUserId)) {
             userRepository.findById(rootUserId)
                     .ifPresent(rootUser ->
-                                subscribeRepository.save(Subscribe.builder()
-                                        .subscribingUser(user)
-                                        .subscribedUser(rootUser)
-                                        .build())
+                            subscribeRepository.save(Subscribe.builder()
+                                    .subscribingUser(user)
+                                    .subscribedUser(rootUser)
+                                    .build())
                     );
         }
     }

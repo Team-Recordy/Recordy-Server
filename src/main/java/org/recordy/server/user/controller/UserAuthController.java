@@ -1,8 +1,7 @@
 package org.recordy.server.user.controller;
 
-
 import lombok.RequiredArgsConstructor;
-import org.recordy.server.auth.security.UserId;
+import org.recordy.server.auth.security.resolver.UserId;
 import org.recordy.server.user.controller.dto.request.UserSignUpRequest;
 import org.recordy.server.user.domain.usecase.UserSignIn;
 import org.recordy.server.user.controller.dto.request.UserSignInRequest;

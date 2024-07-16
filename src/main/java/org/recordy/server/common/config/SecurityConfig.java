@@ -1,7 +1,7 @@
 package org.recordy.server.common.config;
 
 import lombok.RequiredArgsConstructor;
-import org.recordy.server.auth.security.TokenAuthenticationFilter;
+import org.recordy.server.auth.security.filter.TokenAuthenticationFilter;
 import org.recordy.server.auth.security.handler.UndefinedAccessHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +14,6 @@ import org.springframework.security.config.annotation.web.configurers.FormLoginC
 import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
@@ -42,7 +41,7 @@ public class SecurityConfig {
 
     @Bean
     @Profile("dev")
-    public SecurityFilterChain stageHttpSecurity(HttpSecurity http) throws Exception {
+    public SecurityFilterChain devHttpSecurity(HttpSecurity http) throws Exception {
         permitDevelopApis(http);
         setHttp(http);
 
