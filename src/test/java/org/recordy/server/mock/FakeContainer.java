@@ -2,7 +2,7 @@ package org.recordy.server.mock;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.recordy.server.auth.repository.AuthRepository;
-import org.recordy.server.auth.security.TokenAuthenticationFilter;
+import org.recordy.server.auth.security.filter.TokenAuthenticationFilter;
 import org.recordy.server.auth.security.handler.AuthFilterExceptionHandler;
 import org.recordy.server.auth.service.AuthPlatformService;
 import org.recordy.server.auth.service.impl.*;
@@ -28,7 +28,6 @@ import org.recordy.server.mock.record.FakeRecordRepository;
 import org.recordy.server.mock.user.FakeUserRepository;
 import org.recordy.server.mock.view.FakeViewRepository;
 import org.recordy.server.record.repository.RecordRepository;
-import org.recordy.server.record.service.FileService;
 import org.recordy.server.record.service.RecordService;
 import org.recordy.server.record.service.impl.RecordServiceImpl;
 import org.recordy.server.record_stat.repository.BookmarkRepository;
@@ -73,7 +72,6 @@ public class FakeContainer {
     public final AuthTokenService authTokenService;
     public final AuthService authService;
     public final UserService userService;
-    public final FileService fileService;
     public final RecordService recordService;
     public final KeywordService keywordService;
     public final RecordStatService recordStatService;
@@ -119,7 +117,6 @@ public class FakeContainer {
         );
         this.authService = new AuthServiceImpl(authRepository, authPlatformServiceFactory, authTokenService);
         this.userService = new UserServiceImpl(ROOT_USER_ID, userRepository, subscribeRepository, recordRepository, authService, authTokenService);
-        this.fileService = new FakeFileService();
         this.keywordService = new KeywordServiceImpl(keywordRepository);
         this.recordStatService = new RecordStatServiceImpl(userRepository, recordRepository, bookmarkRepository);
         this.recordService = new RecordServiceImpl(recordRepository, viewRepository, fileService, userService, recordStatService);

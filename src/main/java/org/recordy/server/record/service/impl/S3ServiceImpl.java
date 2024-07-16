@@ -11,9 +11,12 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
+import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
+import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -48,14 +51,20 @@ public class S3ServiceImpl implements S3Service {
     }
 
     @Override
-    public String uploadFile(byte[] fileData, String fileName) throws IOException {
+    public String generatePresignedUrl(String directory) {
+        String fileName = directory + UUID.randomUUID().toString();
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucket)
                 .key(fileName)
                 .build();
 
-        s3Client.putObject(putObjectRequest, RequestBody.fromBytes(fileData));
+        PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
+                .signatureDuration(Duration.ofMinutes(10))
+                .putObjectRequest(putObjectRequest)
+                .build();
 
-        return getPresignUrl(fileName);
+        PresignedPutObjectRequest presignedRequest = presigner.presignPutObject(presignRequest);
+
+        return presignedRequest.url().toString();
     }
 }

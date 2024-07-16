@@ -50,8 +50,8 @@ public class AuthTokenServiceTest {
 
         // then
         assertAll(
-                () -> assertThat(authTokenService.validateToken(authToken.getAccessToken())).isEqualTo(VALID_JWT),
-                () -> assertThat(authTokenService.validateToken(authToken.getRefreshToken())).isEqualTo(VALID_JWT)
+                () -> assertThat(authTokenService.validateToken(authToken.getAccessToken())).isEqualTo(VALID_TOKEN),
+                () -> assertThat(authTokenService.validateToken(authToken.getRefreshToken())).isEqualTo(VALID_TOKEN)
         );
     }
 
@@ -61,7 +61,7 @@ public class AuthTokenServiceTest {
         String invalidToken = "invalidToken";
 
         // then
-        assertThat(authTokenService.validateToken(invalidToken)).isNotEqualTo(VALID_JWT);
+        assertThat(authTokenService.validateToken(invalidToken)).isNotEqualTo(VALID_TOKEN);
     }
 
     @Test
@@ -91,6 +91,20 @@ public class AuthTokenServiceTest {
 
         // then
         assertThat(result).isEqualTo(EMPTY_TOKEN);
+    }
+
+    @Test
+    void getTokenFromRequest을_통해_HttpRequest에서_토큰을_추출한다() {
+        // given
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        String token = "Bearer token";
+        request.addHeader(HttpHeaders.AUTHORIZATION, token);
+
+        // when
+        String result = authTokenService.getTokenFromRequest(request);
+
+        // then
+        assertThat(result).isEqualTo("token");
     }
 
     @Test
@@ -188,7 +202,6 @@ public class AuthTokenServiceTest {
 
     }
 
-    // TODO : fix
     @Test
     void 주어진_refreshToken으로부터_platformId를_반환하지_못하면_에러를_던진다() {
         //given
@@ -212,5 +225,4 @@ public class AuthTokenServiceTest {
         //then
         assertThat(userId).isEqualTo(authTokenService.getUserIdFromToken(accessToken));
     }
-
 }

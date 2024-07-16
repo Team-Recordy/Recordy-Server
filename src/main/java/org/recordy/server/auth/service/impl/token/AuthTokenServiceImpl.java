@@ -5,7 +5,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.recordy.server.auth.domain.AuthToken;
 import org.recordy.server.auth.exception.AuthException;
 import org.recordy.server.auth.repository.AuthRepository;
-import org.recordy.server.auth.security.UserAuthentication;
 import org.recordy.server.auth.service.AuthTokenService;
 import org.recordy.server.auth.service.dto.AuthTokenValidationResult;
 import org.recordy.server.common.message.ErrorMessage;
@@ -76,7 +75,7 @@ public class AuthTokenServiceImpl implements AuthTokenService {
         try {
             tokenParser.getBody(token);
 
-            return VALID_JWT;
+            return VALID_TOKEN;
         } catch (MalformedJwtException ex) {
             return INVALID_TOKEN;
         } catch (ExpiredJwtException ex) {

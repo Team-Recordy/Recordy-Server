@@ -5,16 +5,14 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.recordy.server.auth.security.UserId;
+import org.recordy.server.auth.security.resolver.UserId;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.record.controller.dto.request.RecordCreateRequest;
 import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
-import org.recordy.server.record.domain.Record;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -26,13 +24,10 @@ public interface RecordApi {
             description = "유저가 레코드를 생성하는 API입니다. 파일과 함께 레코드 정보를 전송합니다.",
             responses = {
                     @ApiResponse(
-                            responseCode = "201",
+                            responseCode = "200",
                             description = "레코드가 성공적으로 생성되었습니다.",
                             content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(
-                                            implementation = Record.class
-                                    )
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE
                             )
                     ),
                     @ApiResponse(
@@ -77,12 +72,9 @@ public interface RecordApi {
                     )
             }
     )
-    ResponseEntity<Record> createRecord(
+    public ResponseEntity<Void> createRecord(
             @UserId Long uploaderId,
-            @RequestPart RecordCreateRequest request,
-            @RequestPart MultipartFile thumbnail,
-            @RequestPart MultipartFile video
-    ) ;
+            @RequestBody RecordCreateRequest request);
 
     @Operation(
             summary = "레코드 삭제 API",

@@ -1,6 +1,5 @@
 package org.recordy.server.auth.repository.impl;
 
-import java.util.Optional;
 import org.recordy.server.auth.domain.AuthEntity;
 import org.springframework.data.repository.CrudRepository;
 

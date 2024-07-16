@@ -1,6 +1,8 @@
 package org.recordy.server.record.domain;
 
 import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
