@@ -1,12 +1,9 @@
-package org.recordy.server.record_stat.repository.impl;
+package org.recordy.server.bookmark.repository.impl;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.recordy.server.record.domain.Record;
-import org.recordy.server.record_stat.domain.Bookmark;
-import org.recordy.server.record_stat.domain.BookmarkEntity;
-import org.recordy.server.record_stat.repository.BookmarkRepository;
+import org.recordy.server.bookmark.domain.Bookmark;
+import org.recordy.server.bookmark.domain.BookmarkEntity;
+import org.recordy.server.bookmark.repository.BookmarkRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;

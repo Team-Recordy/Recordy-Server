@@ -2,8 +2,8 @@ package org.recordy.server.record_stat.repository.impl;
 
 import org.junit.jupiter.api.Test;
 import org.recordy.server.record.domain.Record;
-import org.recordy.server.record_stat.domain.View;
-import org.recordy.server.record_stat.repository.ViewRepository;
+import org.recordy.server.view.domain.View;
+import org.recordy.server.view.repository.ViewRepository;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.UserStatus;
 import org.recordy.server.util.DomainFixture;

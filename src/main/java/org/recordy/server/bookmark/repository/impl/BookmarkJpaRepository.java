@@ -1,6 +1,6 @@
-package org.recordy.server.record_stat.repository.impl;
+package org.recordy.server.bookmark.repository.impl;
 
-import org.recordy.server.record_stat.domain.BookmarkEntity;
+import org.recordy.server.bookmark.domain.BookmarkEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface BookmarkJpaRepository extends JpaRepository<BookmarkEntity, Long> {

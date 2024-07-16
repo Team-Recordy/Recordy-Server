@@ -13,6 +13,8 @@ import org.recordy.server.auth.service.impl.token.AuthTokenGenerator;
 import org.recordy.server.auth.service.impl.token.AuthTokenParser;
 import org.recordy.server.auth.service.impl.token.AuthTokenServiceImpl;
 import org.recordy.server.auth.service.impl.token.AuthTokenSigningKeyProvider;
+import org.recordy.server.bookmark.service.BookmarkService;
+import org.recordy.server.bookmark.service.impl.BookmarkServiceImpl;
 import org.recordy.server.mock.subscribe.FakeSubscribeRepository;
 import org.recordy.server.record.service.FileService;
 import org.recordy.server.record.service.S3Service;
@@ -32,8 +34,8 @@ import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.record.service.RecordService;
 import org.recordy.server.record.service.impl.FileServiceImpl;
 import org.recordy.server.record.service.impl.RecordServiceImpl;
-import org.recordy.server.record_stat.repository.BookmarkRepository;
-import org.recordy.server.record_stat.repository.ViewRepository;
+import org.recordy.server.bookmark.repository.BookmarkRepository;
+import org.recordy.server.view.repository.ViewRepository;
 import org.recordy.server.record_stat.service.RecordStatService;
 import org.recordy.server.record_stat.service.impl.RecordStatServiceImpl;
 import org.recordy.server.subscribe.repository.SubscribeRepository;
@@ -79,7 +81,7 @@ public class FakeContainer {
     public final FileService fileService;
     public final RecordService recordService;
     public final KeywordService keywordService;
-    public final RecordStatService recordStatService;
+    public final BookmarkService bookmarkService;
     public final S3Service s3Service;
     public final SubscribeService subscribeService;
 
@@ -126,8 +128,8 @@ public class FakeContainer {
 
         this.fileService = new FileServiceImpl(Mockito.mock(S3Client.class));
         this.keywordService = new KeywordServiceImpl(keywordRepository);
-        this.recordStatService = new RecordStatServiceImpl(userRepository, recordRepository, bookmarkRepository);
         this.recordService = new RecordServiceImpl(recordRepository, viewRepository, fileService, userRepository);
+        this.bookmarkService = new BookmarkServiceImpl(userRepository, recordRepository, bookmarkRepository);
         this.subscribeService = new SubscribeServiceImpl(subscribeRepository, userRepository);
         this.s3Service = mock(S3Service.class);  // S3Service mock 사용
 

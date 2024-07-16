@@ -4,9 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import org.junit.jupiter.api.Test;
+import org.recordy.server.bookmark.repository.BookmarkRepository;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.repository.RecordRepository;
-import org.recordy.server.record_stat.domain.Bookmark;
+import org.recordy.server.bookmark.domain.Bookmark;
 import org.recordy.server.util.DomainFixture;
 import org.recordy.server.util.db.IntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;

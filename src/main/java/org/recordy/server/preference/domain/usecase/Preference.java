@@ -1,4 +1,4 @@
-package org.recordy.server.record_stat.domain.usecase;
+package org.recordy.server.preference.domain.usecase;
 
 import org.recordy.server.keyword.domain.Keyword;
 
@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public record Preference(
         long userId,
-        List<List<Object>> preference
+        List<List<String>> preference
 ) {
 
     public static Preference of(long userId, Map<Keyword, Long> preference) {
@@ -43,12 +43,12 @@ public record Preference(
                 .sum();
     }
 
-    private static List<List<Object>> transform(Map<Keyword, Long> preference) {
+    private static List<List<String>> transform(Map<Keyword, Long> preference) {
         return preference.entrySet().stream()
                 .map(entry -> {
-                    List<Object> list = new ArrayList<>();
-                    list.add(entry.getKey());
-                    list.add(entry.getValue());
+                    List<String> list = new ArrayList<>();
+                    list.add(entry.getKey().name());
+                    list.add(String.valueOf(entry.getValue()));
                     return list;
                 })
                 .collect(Collectors.toList());

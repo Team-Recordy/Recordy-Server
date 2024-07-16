@@ -1,19 +1,10 @@
 package org.recordy.server.mock.view;
 
-import org.recordy.server.keyword.domain.Keyword;
-import org.recordy.server.keyword.domain.KeywordEntity;
-import org.recordy.server.record.domain.Record;
-import org.recordy.server.record.domain.RecordEntity;
-import org.recordy.server.record.domain.UploadEntity;
-import org.recordy.server.record_stat.domain.View;
-import org.recordy.server.record_stat.domain.ViewEntity;
-import org.recordy.server.record_stat.repository.ViewRepository;
-import org.recordy.server.user.domain.User;
-import org.recordy.server.user.domain.UserEntity;
+import org.recordy.server.view.domain.View;
+import org.recordy.server.view.repository.ViewRepository;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Stream;
 
 public class FakeViewRepository implements ViewRepository {
 
