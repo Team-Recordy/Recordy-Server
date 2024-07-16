@@ -31,6 +31,7 @@ public class AuthServiceImpl implements AuthService {
         AuthToken token = authTokenService.issueToken(user.getId());
 
         return authRepository.save(Auth.builder()
+                .userId(user.getId())
                 .platform(platform)
                 .token(token)
                 .isSignedUp(user.getStatus().equals(ACTIVE))

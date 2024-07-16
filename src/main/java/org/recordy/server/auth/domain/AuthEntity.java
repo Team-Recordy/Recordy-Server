@@ -16,6 +16,7 @@ public class AuthEntity {
 
     @Id
     private String platformId;
+    private Long userId;
     private String platformType;
     private String accessToken;
     @Indexed
@@ -25,6 +26,7 @@ public class AuthEntity {
     public static AuthEntity from(Auth auth) {
         return new AuthEntity(
                 auth.getPlatform().getId(),
+                auth.getUserId(),
                 auth.getPlatform().getType().name(),
                 auth.getToken().getAccessToken(),
                 auth.getToken().getRefreshToken(),
@@ -34,6 +36,7 @@ public class AuthEntity {
 
     public Auth toDomain() {
         return new Auth(
+                userId,
                 new AuthPlatform(platformId, AuthPlatform.Type.valueOf(platformType)),
                 new AuthToken(accessToken, refreshToken),
                 isSignedUp

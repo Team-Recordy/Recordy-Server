@@ -9,6 +9,7 @@ import lombok.Getter;
 @Getter
 public class Auth {
 
+    private Long userId;
     private AuthPlatform platform;
     private AuthToken token;
     private boolean isSignedUp;
