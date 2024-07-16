@@ -36,10 +36,8 @@ public class RecordServiceImpl implements RecordService {
 
     private final RecordRepository recordRepository;
     private final ViewRepository viewRepository;
-    private final UserService userService;
-    private final S3Service s3Service;
     private final FileService fileService;
-    private final RecordStatService recordStatService;
+    private final UserService userService;
 
     @Override
     public Record create(RecordCreate recordCreate, File file) {
