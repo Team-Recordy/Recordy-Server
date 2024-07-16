@@ -219,7 +219,8 @@ public final class DomainFixture {
                 USER_ID,
                 LOCATION,
                 CONTENT,
-                KEYWORDS
+                KEYWORDS,
+                new FileUrl(VIDEO_URL, THUMBNAIL_URL)
         );
     }
 
@@ -228,15 +229,13 @@ public final class DomainFixture {
                 2,
                 LOCATION,
                 CONTENT,
-                KEYWORDS
+                KEYWORDS,
+                new FileUrl(VIDEO_URL, THUMBNAIL_URL)
         );
     }
 
     public static File createFile() {
-        return new File(
-                new MockMultipartFile("file", "file.mp4", "video/mp4", new byte[0]),
-                new MockMultipartFile("thumbnail", "thumbnail.jpg", "image/jpeg", new byte[0])
-        );
+        return new File(VIDEO_URL, THUMBNAIL_URL);
     }
 
     public static Record createRecord() {
