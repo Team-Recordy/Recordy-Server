@@ -1,4 +1,4 @@
-package org.recordy.server.record_stat.domain;
+package org.recordy.server.bookmark.domain;
 
 import org.junit.jupiter.api.Test;
 import org.recordy.server.bookmark.domain.Bookmark;

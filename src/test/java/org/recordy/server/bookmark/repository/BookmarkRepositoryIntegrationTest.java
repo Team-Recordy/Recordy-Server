@@ -1,4 +1,4 @@
-package org.recordy.server.record_stat.repository;
+package org.recordy.server.bookmark.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;

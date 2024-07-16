@@ -36,8 +36,8 @@ import org.recordy.server.record.service.impl.FileServiceImpl;
 import org.recordy.server.record.service.impl.RecordServiceImpl;
 import org.recordy.server.bookmark.repository.BookmarkRepository;
 import org.recordy.server.view.repository.ViewRepository;
-import org.recordy.server.record_stat.service.RecordStatService;
-import org.recordy.server.record_stat.service.impl.RecordStatServiceImpl;
+import org.recordy.server.bookmark.service.BookmarkService;
+import org.recordy.server.bookmark.service.impl.BookmarkServiceImpl;
 import org.recordy.server.subscribe.repository.SubscribeRepository;
 import org.recordy.server.subscribe.service.SubscribeService;
 import org.recordy.server.subscribe.service.impl.SubscribeServiceImpl;
@@ -127,7 +127,7 @@ public class FakeContainer {
         this.fileService = new FileServiceImpl(Mockito.mock(S3Client.class));
         this.keywordService = new KeywordServiceImpl(keywordRepository);
         this.bookmarkService = new BookmarkServiceImpl(userRepository, recordRepository, bookmarkRepository);
-        this.recordService = new RecordServiceImpl(recordRepository, viewRepository, fileService, userService);
+        this.recordService = new RecordServiceImpl(recordRepository, viewRepository, bookmarkRepository,fileService, userService);
         this.subscribeService = new SubscribeServiceImpl(subscribeRepository, userRepository);
         this.s3Service = mock(S3Service.class);  // S3Service mock 사용
 

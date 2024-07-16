@@ -1,4 +1,4 @@
-package org.recordy.server.record_stat.service;
+package org.recordy.server.bookmark.service;
 
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.recordy.server.bookmark.service.BookmarkService;
 import org.recordy.server.mock.FakeContainer;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.repository.RecordRepository;
@@ -16,7 +15,7 @@ import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.util.DomainFixture;
 import org.springframework.data.domain.Slice;
 
-public class RecordStatServiceTest {
+public class BookmarkServiceTest {
 
     private RecordService recordService;
     private BookmarkService bookmarkService;
@@ -25,6 +24,7 @@ public class RecordStatServiceTest {
     @BeforeEach
     void init() {
         FakeContainer fakeContainer = new FakeContainer();
+        recordService = fakeContainer.recordService;
         bookmarkService = fakeContainer.bookmarkService;
         bookmarkRepository = fakeContainer.bookmarkRepository;
         UserRepository userRepository = fakeContainer.userRepository;
