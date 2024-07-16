@@ -24,14 +24,13 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class UserAuthControllerTest {
 
-    private FakeContainer fakeContainer;
     private UserAuthController userAuthController;
     private UserService userService;
     private UserRepository userRepository;
 
     @BeforeEach
     void init() {
-        fakeContainer = new FakeContainer();
+        FakeContainer fakeContainer = new FakeContainer();
         userAuthController = fakeContainer.userAuthController;
         userService = fakeContainer.userService;
         userRepository = fakeContainer.userRepository;
@@ -102,22 +101,28 @@ public class UserAuthControllerTest {
     }
 
     @Test
-    void delete를_통해_사용자를_삭제하는_데_성공하면_204_NO_CONTENT를_받는다() {
-        // given
-        userService.signIn(DomainFixture.createUserSignIn(AuthPlatform.Type.KAKAO));
+    void reissueToken을_통해_accessToken을_재발급_받을_수_있다() {
+        //given
+        Auth auth = userService.signIn(DomainFixture.createUserSignIn(AuthPlatform.Type.KAKAO));
+        String refreshToken = "Bearer " + auth.getToken().getRefreshToken();
 
-        // when
-        ResponseEntity<Void> result = userAuthController.delete(DomainFixture.USER_ID);
 
-        // then
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        //when
+        ResponseEntity<UserReissueTokenResponse> result = userAuthController.reissueToken(refreshToken);
+
+        //then
+        assertAll(
+                () -> assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK),
+                () -> assertThat(result.getBody().accessToken()).isNotNull()
+        );
     }
 
     @Test
-    void delete를_통해_존재하지_않는_사용자를_삭제하려고_하면_예외가_발생한다() {
-        // when
-        assertThatThrownBy(() -> userAuthController.delete(DomainFixture.USER_ID))
-                .isInstanceOf(UserException.class);
+    void reissueToken에서_refreshToken으로_인증정보를_찾을_수_없다면_에러가_발생한다() {
+
+        //when
+        assertThatThrownBy(() -> userAuthController.reissueToken(DomainFixture.REFRESH_TOKEN))
+                .isInstanceOf(AuthException.class);
     }
 
     @Test
@@ -141,29 +146,21 @@ public class UserAuthControllerTest {
     }
 
     @Test
-    void reissueToken을_통해_accessToken을_재발급_받을_수_있다() {
-        //given
-        Auth auth = userService.signIn(DomainFixture.createUserSignIn(AuthPlatform.Type.KAKAO));
-        String refreshToken = "Bearer " + auth.getToken().getRefreshToken();
+    void delete를_통해_사용자를_삭제하는_데_성공하면_204_NO_CONTENT를_받는다() {
+        // given
+        userService.signIn(DomainFixture.createUserSignIn(AuthPlatform.Type.KAKAO));
 
+        // when
+        ResponseEntity<Void> result = userAuthController.delete(DomainFixture.USER_ID);
 
-        //when
-       ResponseEntity<UserReissueTokenResponse> result = userAuthController.reissueToken(refreshToken);
-
-        //then
-        assertAll(
-                () -> assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK),
-                () -> assertThat(result.getBody().accessToken()).isNotNull()
-        );
+        // then
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }
 
-
-
     @Test
-    void reissueToken에서_refreshToken으로_인증정보를_찾을_수_없다면_에러가_발생한다() {
-
-        //when
-        assertThatThrownBy(() -> userAuthController.reissueToken(DomainFixture.REFRESH_TOKEN))
-                .isInstanceOf(AuthException.class);
+    void delete를_통해_존재하지_않는_사용자를_삭제하려고_하면_예외가_발생한다() {
+        // when
+        assertThatThrownBy(() -> userAuthController.delete(DomainFixture.USER_ID))
+                .isInstanceOf(UserException.class);
     }
 }

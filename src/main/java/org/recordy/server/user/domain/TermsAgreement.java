@@ -1,4 +1,4 @@
-package org.recordy.server.user.controller.dto.request;
+package org.recordy.server.user.domain;
 
 public record TermsAgreement(
         boolean useTerm,

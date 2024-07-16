@@ -1,7 +1,7 @@
 package org.recordy.server.user.repository;
 
 import org.junit.jupiter.api.Test;
-import org.recordy.server.user.controller.dto.request.TermsAgreement;
+import org.recordy.server.user.domain.TermsAgreement;
 import org.recordy.server.user.domain.UserStatus;
 import org.recordy.server.util.DomainFixture;
 import org.recordy.server.user.domain.User;
@@ -35,6 +35,7 @@ class UserRepositoryIntegrationTest extends IntegrationTest {
                 .id(USER_ID + 1)
                 .authPlatform(createAuthPlatform())
                 .status(UserStatus.PENDING)
+                .profileImageUrl(USER_PROFILE_IMAGE_URL)
                 .nickname(USER_NICKNAME)
                 .termsAgreement(TermsAgreement.of(USE_TERM_AGREEMENT, PERSONAL_INFO_TERM_AGREEMENT, AGE_TERM_AGREEMENT))
                 .build();
@@ -44,10 +45,13 @@ class UserRepositoryIntegrationTest extends IntegrationTest {
 
         // then
         assertAll(
-                () -> assertThat(result.getId()).isNotNull(),
+                () -> assertThat(result.getId()).isEqualTo(USER_ID + 1),
                 () -> assertThat(result.getAuthPlatform().getId()).isEqualTo(DomainFixture.PLATFORM_ID),
                 () -> assertThat(result.getAuthPlatform().getType()).isEqualTo(DomainFixture.KAKAO_PLATFORM_TYPE),
-                () -> assertThat(result.getStatus()).isEqualTo(UserStatus.PENDING)
+                () -> assertThat(result.getStatus()).isEqualTo(UserStatus.PENDING),
+                () -> assertThat(result.getProfileImageUrl()).isEqualTo(USER_PROFILE_IMAGE_URL),
+                () -> assertThat(result.getNickname()).isEqualTo(USER_NICKNAME),
+                () -> assertThat(result.getTermsAgreement()).isEqualTo(TermsAgreement.of(USE_TERM_AGREEMENT, PERSONAL_INFO_TERM_AGREEMENT, AGE_TERM_AGREEMENT))
         );
     }
 
@@ -62,6 +66,29 @@ class UserRepositoryIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(userRepository.findById(savedUser.getId())).isEmpty();
+    }
+
+    @Test
+    void findById를_통해_유저_ID로_유저_데이터를_조회할_수_있다() {
+        // when
+        User result = userRepository.findById(USER_ID).orElse(null);
+
+        // then
+        assertAll(
+                () -> assertThat(result.getId()).isEqualTo(USER_ID),
+                () -> assertThat(result.getAuthPlatform().getId()).isEqualTo(DomainFixture.PLATFORM_ID),
+                () -> assertThat(result.getAuthPlatform().getType()).isEqualTo(DomainFixture.KAKAO_PLATFORM_TYPE),
+                () -> assertThat(result.getStatus()).isEqualTo(DomainFixture.DEFAULT_USER_STATUS)
+        );
+    }
+
+    @Test
+    void findById를_통해_존재하지_않는_유저_ID로_유저_데이터를_조회하면_빈_값을_반환한다() {
+        // when
+        Optional<User> result = userRepository.findById(0);
+
+        // then
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -111,28 +138,5 @@ class UserRepositoryIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(result).isFalse();
-    }
-
-    @Test
-    void findById를_통해_유저_ID로_유저_데이터를_조회할_수_있다() {
-        // when
-        User result = userRepository.findById(USER_ID).orElse(null);
-
-        // then
-        assertAll(
-                () -> assertThat(result.getId()).isEqualTo(USER_ID),
-                () -> assertThat(result.getAuthPlatform().getId()).isEqualTo(DomainFixture.PLATFORM_ID),
-                () -> assertThat(result.getAuthPlatform().getType()).isEqualTo(DomainFixture.KAKAO_PLATFORM_TYPE),
-                () -> assertThat(result.getStatus()).isEqualTo(DomainFixture.DEFAULT_USER_STATUS)
-        );
-    }
-
-    @Test
-    void findById를_통해_존재하지_않는_유저_ID로_유저_데이터를_조회하면_빈_값을_반환한다() {
-        // when
-        Optional<User> result = userRepository.findById(0);
-
-        // then
-        assertThat(result).isEmpty();
     }
 }

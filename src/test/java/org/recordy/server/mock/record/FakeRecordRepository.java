@@ -12,14 +12,15 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class FakeRecordRepository implements RecordRepository {
 
     public long recordAutoIncrementId = 1L;
-    private final Map<Long, Record> records = new HashMap<>();
+    private final Map<Long, Record> records = new ConcurrentHashMap<>();
 
     public long uploadAutoIncrementId = 1L;
-    private final Map<Long, UploadEntity> uploads = new HashMap<>();
+    private final Map<Long, UploadEntity> uploads = new ConcurrentHashMap<>();
 
     @Override
     public Record save(Record record) {
@@ -48,6 +49,13 @@ public class FakeRecordRepository implements RecordRepository {
     @Override
     public void deleteById(long recordId) {
         records.remove(recordId);
+    }
+
+    @Override
+    public void deleteByUserId(long userId) {
+        records.values().stream()
+                .filter(record -> record.getUploader().getId().equals(userId))
+                .forEach(record -> records.remove(record.getId()));
     }
 
     @Override

@@ -1,7 +1,7 @@
 package org.recordy.server.user.domain;
 
 import org.junit.jupiter.api.Test;
-import org.recordy.server.user.controller.dto.request.TermsAgreement;
+import org.recordy.server.record.domain.RecordEntity;
 import org.recordy.server.util.DomainFixture;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -83,5 +83,18 @@ class UserEntityTest {
                 () -> assertThat(user.getTermsAgreement().personalInfoTerm()).isEqualTo(userEntity.isPersonalInfoTerm()),
                 () -> assertThat(user.getTermsAgreement().ageTerm()).isEqualTo(userEntity.isAgeTerm())
         );
+    }
+
+    @Test
+    void addRecord를_통해_사용자와_연관된_레코드를_추가할_수_있다() {
+        // given
+        UserEntity userEntity = DomainFixture.createUserEntity();
+        RecordEntity recordEntity = DomainFixture.createRecordEntity();
+
+        // when
+        userEntity.addRecord(recordEntity);
+
+        // then
+        assertThat(userEntity.getRecords()).contains(recordEntity);
     }
 }

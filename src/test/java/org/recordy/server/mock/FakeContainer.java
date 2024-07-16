@@ -40,6 +40,7 @@ import org.recordy.server.subscribe.repository.SubscribeRepository;
 import org.recordy.server.subscribe.service.SubscribeService;
 import org.recordy.server.subscribe.service.impl.SubscribeServiceImpl;
 import org.recordy.server.user.controller.UserAuthController;
+import org.recordy.server.user.controller.UserController;
 import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.user.service.UserService;
 import org.recordy.server.user.service.impl.UserServiceImpl;
@@ -88,6 +89,7 @@ public class FakeContainer {
 
     // controller
     public final UserAuthController userAuthController;
+    public final UserController userController;
 
     public FakeContainer() {
         this.userRepository = new FakeUserRepository();
@@ -125,7 +127,7 @@ public class FakeContainer {
         this.fileService = new FileServiceImpl(Mockito.mock(S3Client.class));
         this.keywordService = new KeywordServiceImpl(keywordRepository);
         this.recordStatService = new RecordStatServiceImpl(userRepository, recordRepository, bookmarkRepository);
-        this.recordService = new RecordServiceImpl(recordRepository, viewRepository, fileService, userService);
+        this.recordService = new RecordServiceImpl(recordRepository, viewRepository, fileService, userRepository);
         this.subscribeService = new SubscribeServiceImpl(subscribeRepository, userRepository);
         this.s3Service = mock(S3Service.class);  // S3Service mock 사용
 
@@ -138,5 +140,6 @@ public class FakeContainer {
         );
 
         this.userAuthController = new UserAuthController(userService);
+        this.userController = new UserController(subscribeService, userService);
     }
 }

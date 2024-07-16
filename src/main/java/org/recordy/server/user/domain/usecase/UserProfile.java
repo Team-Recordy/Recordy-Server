@@ -11,6 +11,7 @@ public record UserProfile(
         long followingCount,
         boolean isFollowing
 ) {
+
     public static UserProfile of(User user, long recordCount, long followerCount, long followingCount, boolean isFollowing) {
         return new UserProfile(
                 user.getId(),
