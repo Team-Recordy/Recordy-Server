@@ -38,26 +38,28 @@ public class RecordStatServiceTest {
     }
 
     @Test
-    void bookmark을_통해_북마크를_생성할_수_있다() {
+    void bookmark을_통해_북마크를_생성하고_true를_반환받을_수_있다() {
         // given, when
-        recordStatService.bookmark(DomainFixture.USER_ID, DomainFixture.RECORD_ID);
+        boolean result = recordStatService.bookmark(DomainFixture.USER_ID, DomainFixture.RECORD_ID);
 
         // then
         assertAll(
+                () -> assertThat(result).isTrue(),
                 () -> assertThat(bookmarkRepository.existsByUserIdAndRecordId(DomainFixture.USER_ID, DomainFixture.RECORD_ID)).isTrue()
         );
     }
 
     @Test
-    void bookmark을_통해_북마크를_해제할_수_있다() {
+    void bookmark을_통해_북마크를_해제하고_false를_반환받을_수_있다() {
         // given
         recordStatService.bookmark(DomainFixture.USER_ID, DomainFixture.RECORD_ID);
 
         // when
-        recordStatService.bookmark(DomainFixture.USER_ID, DomainFixture.RECORD_ID);
+        boolean result = recordStatService.bookmark(DomainFixture.USER_ID, DomainFixture.RECORD_ID);
 
         // then
         assertAll(
+                () -> assertThat(result).isFalse(),
                 () -> assertThat(bookmarkRepository.existsByUserIdAndRecordId(DomainFixture.USER_ID, DomainFixture.RECORD_ID)).isFalse()
         );
     }

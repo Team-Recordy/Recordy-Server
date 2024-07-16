@@ -9,7 +9,7 @@ import org.springframework.data.domain.Slice;
 public interface RecordStatService {
 
     // command
-    void bookmark(long userId, long recordId);
+    boolean bookmark(long userId, long recordId);
 
     // query
     Preference getPreference(long userId);

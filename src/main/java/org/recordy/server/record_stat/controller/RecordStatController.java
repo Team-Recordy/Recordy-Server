@@ -20,21 +20,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/records")
 @RestController
-public class RecordStatController implements RecordStatApi{
+public class RecordStatController implements RecordStatApi {
 
     private final RecordStatService recordStatService;
 
     @Override
     @PostMapping("/bookmark/{recordId}")
-    public ResponseEntity<Void> bookmark(
+    public ResponseEntity<Boolean> bookmark(
             @UserId Long userId,
             @PathVariable Long recordId
     ) {
-        recordStatService.bookmark(userId, recordId);
-
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .build();
+                .body(recordStatService.bookmark(userId, recordId));
     }
 
     @Override

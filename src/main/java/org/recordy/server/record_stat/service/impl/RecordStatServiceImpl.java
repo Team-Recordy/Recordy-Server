@@ -28,10 +28,10 @@ public class RecordStatServiceImpl implements RecordStatService {
     private final BookmarkRepository bookmarkRepository;
 
     @Override
-    public void bookmark(long userId, long recordId) {
+    public boolean bookmark(long userId, long recordId) {
         if (bookmarkRepository.existsByUserIdAndRecordId(userId, recordId)) {
             bookmarkRepository.delete(userId, recordId);
-            return;
+            return false;
         }
 
         User user = userRepository.findById(userId)
@@ -43,6 +43,8 @@ public class RecordStatServiceImpl implements RecordStatService {
                 .user(user)
                 .record(record)
                 .build());
+
+        return true;
     }
 
     @Override

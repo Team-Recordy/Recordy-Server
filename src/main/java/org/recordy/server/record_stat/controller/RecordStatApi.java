@@ -51,7 +51,7 @@ public interface RecordStatApi {
                     )
             }
     )
-    public ResponseEntity<Void> bookmark(
+    public ResponseEntity<Boolean> bookmark(
             @UserId Long userId,
             @PathVariable Long recordId
     );
