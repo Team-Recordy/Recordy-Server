@@ -71,7 +71,7 @@ public class RecordStatController implements RecordStatApi{
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(CursorBasePaginatedResponse.of(RecordInfoWithBookmark.of(records, bookmarks), recordInfoWithBookmark -> recordInfoWithBookmark.recordInfo()
+                .body(CursorBasePaginatedResponse.of(RecordInfoWithBookmark.of(records, bookmarks, userId), recordInfoWithBookmark -> recordInfoWithBookmark.recordInfo()
                         .id()));
     }
 }

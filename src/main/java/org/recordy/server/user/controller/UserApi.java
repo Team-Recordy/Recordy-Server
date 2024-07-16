@@ -104,13 +104,7 @@ public interface UserApi {
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "성공",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(
-                                            implementation = Preference.class
-                                    )
-                            )
+                            description = "성공"
                     )
             }
     )

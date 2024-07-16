@@ -80,7 +80,7 @@ public class RecordController implements RecordApi {
 
         return ResponseEntity
                 .ok().
-                body(CursorBasePaginatedResponse.of(RecordInfoWithBookmark.of(records, bookmarks),recordInfoWithBookmark -> recordInfoWithBookmark.recordInfo().id()));
+                body(CursorBasePaginatedResponse.of(RecordInfoWithBookmark.of(records, bookmarks, userId),recordInfoWithBookmark -> recordInfoWithBookmark.recordInfo().id()));
     }
 
     @Override
@@ -96,7 +96,7 @@ public class RecordController implements RecordApi {
 
         return ResponseEntity
                 .ok()
-                .body(PaginatedResponse.of(RecordInfoWithBookmark.of(records, bookmarks)));
+                .body(PaginatedResponse.of(RecordInfoWithBookmark.of(records, bookmarks, userId)));
     }
 
     @Override
@@ -124,7 +124,7 @@ public class RecordController implements RecordApi {
 
         return ResponseEntity
                 .ok()
-                .body(CursorBasePaginatedResponse.of(RecordInfoWithBookmark.of(records, bookmarks), recordInfoWithBookmark -> recordInfoWithBookmark.recordInfo()
+                .body(CursorBasePaginatedResponse.of(RecordInfoWithBookmark.of(records, bookmarks, userId), recordInfoWithBookmark -> recordInfoWithBookmark.recordInfo()
                         .id()));
     }
 
@@ -140,7 +140,7 @@ public class RecordController implements RecordApi {
 
         return ResponseEntity
                 .ok()
-                .body(CursorBasePaginatedResponse.of(RecordInfoWithBookmark.of(records, bookmarks), recordInfoWithBookmark -> recordInfoWithBookmark.recordInfo()
+                .body(CursorBasePaginatedResponse.of(RecordInfoWithBookmark.of(records, bookmarks, userId), recordInfoWithBookmark -> recordInfoWithBookmark.recordInfo()
                         .id()));
     }
 

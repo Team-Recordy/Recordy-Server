@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.recordy.server.auth.security.UserId;
 import org.recordy.server.common.dto.response.CursorBasePaginatedResponse;
 import org.recordy.server.common.dto.response.PaginatedResponse;
 import org.recordy.server.auth.security.resolver.UserId;

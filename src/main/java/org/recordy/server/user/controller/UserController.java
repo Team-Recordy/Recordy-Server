@@ -1,9 +1,7 @@
 package org.recordy.server.user.controller;
 
-import com.sun.security.auth.UserPrincipal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.recordy.server.auth.security.UserId;
 import org.recordy.server.common.dto.response.CursorBasePaginatedResponse;
 import org.recordy.server.subscribe.repository.SubscribeRepository;
 import org.recordy.server.auth.security.resolver.UserId;
@@ -84,7 +82,7 @@ public class UserController implements UserApi {
                 .status(HttpStatus.OK)
                 .body(CursorBasePaginatedResponse.of(UserInfoWithFollowing.of(users, following), userInfoWithFollowing -> userInfoWithFollowing.userInfo().id()));
         }
-    }
+
 
     @Override
     @GetMapping("/profile/{otherUserId}")
