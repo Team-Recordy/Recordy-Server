@@ -11,18 +11,22 @@ import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.record_stat.domain.Bookmark;
+import org.recordy.server.record_stat.repository.BookmarkRepository;
 import org.recordy.server.user.domain.UserStatus;
 import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.util.DomainFixture;
 import org.springframework.data.domain.Slice;
 
 public class RecordStatServiceTest {
+
     private RecordStatService recordStatService;
+    private BookmarkRepository bookmarkRepository;
 
     @BeforeEach
     void init() {
         FakeContainer fakeContainer = new FakeContainer();
         recordStatService = fakeContainer.recordStatService;
+        bookmarkRepository = fakeContainer.bookmarkRepository;
         UserRepository userRepository = fakeContainer.userRepository;
         RecordRepository recordRepository = fakeContainer.recordRepository;
 
@@ -34,32 +38,29 @@ public class RecordStatServiceTest {
     }
 
     @Test
-    void bookmark을_통해_북마크를_생성할_수_있다() {
-        //given
-        //when
-        Bookmark bookmark = recordStatService.bookmark(DomainFixture.USER_ID, DomainFixture.RECORD_ID);
+    void bookmark을_통해_북마크를_생성하고_true를_반환받을_수_있다() {
+        // given, when
+        boolean result = recordStatService.bookmark(DomainFixture.USER_ID, DomainFixture.RECORD_ID);
 
         // then
         assertAll(
-                () -> assertThat(bookmark).isNotNull(),
-                () -> assertThat(bookmark.getUser().getId()).isEqualTo(DomainFixture.USER_ID),
-                () -> assertThat(bookmark.getRecord().getId()).isEqualTo(DomainFixture.RECORD_ID)
+                () -> assertThat(result).isTrue(),
+                () -> assertThat(bookmarkRepository.existsByUserIdAndRecordId(DomainFixture.USER_ID, DomainFixture.RECORD_ID)).isTrue()
         );
     }
 
     @Test
-    void deleteBookmark를_통해_북마크를_삭제할_수_있다() {
+    void bookmark을_통해_북마크를_해제하고_false를_반환받을_수_있다() {
         // given
-        recordStatService.bookmark(1, 1);
+        recordStatService.bookmark(DomainFixture.USER_ID, DomainFixture.RECORD_ID);
 
         // when
-        recordStatService.deleteBookmark(1,1);
+        boolean result = recordStatService.bookmark(DomainFixture.USER_ID, DomainFixture.RECORD_ID);
 
         // then
-        Slice<Record> result = recordStatService.getBookmarkedRecords(1, 7, 10);
-
         assertAll(
-                () -> assertThat(result.getContent()).hasSize(0)
+                () -> assertThat(result).isFalse(),
+                () -> assertThat(bookmarkRepository.existsByUserIdAndRecordId(DomainFixture.USER_ID, DomainFixture.RECORD_ID)).isFalse()
         );
     }
 

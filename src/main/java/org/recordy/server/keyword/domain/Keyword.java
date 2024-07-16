@@ -22,16 +22,6 @@ public enum Keyword {
     트렌디한,
     ;
 
-    public static String encode() {
-        return Base64.getEncoder().encodeToString(
-                Arrays.stream(Keyword.values())
-                        .map(Enum::name)
-                        .reduce((a, b) -> a + "," + b)
-                        .orElseThrow()
-                        .getBytes(StandardCharsets.UTF_8)
-        );
-    }
-
     public static List<Keyword> decode(String utf8Bytes) {
         String[] keywords = new String(Base64.getDecoder().decode(utf8Bytes), StandardCharsets.UTF_8).split(",");
 

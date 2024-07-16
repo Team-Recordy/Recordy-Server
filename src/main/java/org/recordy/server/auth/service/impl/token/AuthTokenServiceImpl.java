@@ -108,6 +108,7 @@ public class AuthTokenServiceImpl implements AuthTokenService {
                 .getPlatform()
                 .getId();
     }
+
     @Override
     public String issueAccessToken(long userId) {
         return tokenGenerator.generate(
@@ -116,7 +117,8 @@ public class AuthTokenServiceImpl implements AuthTokenService {
         );
     }
 
-    private String removePrefix(String value) {
+    @Override
+    public String removePrefix(String value) {
         return Optional.ofNullable(value)
                 .filter(t -> t.startsWith(tokenPrefix))
                 .map(t -> t.substring(tokenPrefix.length()))

@@ -6,7 +6,6 @@ import org.recordy.server.mock.FakeContainer;
 import org.recordy.server.subscribe.domain.Subscribe;
 import org.recordy.server.subscribe.domain.usecase.SubscribeCreate;
 import org.recordy.server.subscribe.repository.SubscribeRepository;
-import org.recordy.server.user.controller.dto.response.UserInfo;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.util.DomainFixture;
@@ -31,34 +30,37 @@ class SubscribeServiceTest {
     }
 
     @Test
-    void subscribe를_통해_사용자_간_구독할_수_있다() {
+    void subscribe를_통해_사용자_간_구독할_수_있고_결과로_true를_반환한다() {
         // given
         userRepository.save(DomainFixture.createUser(1));
         userRepository.save(DomainFixture.createUser(2));
 
         // when
-        subscribeService.subscribe(new SubscribeCreate(1, 2));
-        Slice<Subscribe> result = subscribeRepository.findAllBySubscribingUserId(1, 20, PageRequest.ofSize(3));
+        boolean result = subscribeService.subscribe(new SubscribeCreate(1, 2));
+        Slice<Subscribe> subscribes = subscribeRepository.findAllBySubscribingUserId(1, 20, PageRequest.ofSize(3));
 
         // then
         assertAll(
-                () -> assertThat(result.getContent().size()).isEqualTo(1),
-                () -> assertThat(result.getContent().get(0).getSubscribedUser().getId()).isEqualTo(2)
+                () -> assertThat(result).isTrue(),
+                () -> assertThat(subscribes.getContent().size()).isEqualTo(1),
+                () -> assertThat(subscribes.getContent().get(0).getSubscribedUser().getId()).isEqualTo(2)
         );
     }
 
     @Test
-    void unsubscribe를_통해_사용자_간_구독을_취소할_수_있다() {
+    void subscribe를_통해_사용자_간_구독을_해지할_수_있고_결과로_false를_반환한다() {
         // given
         userRepository.save(DomainFixture.createUser(1));
         userRepository.save(DomainFixture.createUser(2));
+
         subscribeService.subscribe(new SubscribeCreate(1, 2));
 
         // when
-        subscribeService.unsubscribe(1, 2);
+        boolean result = subscribeService.subscribe(new SubscribeCreate(1, 2));
 
         // then
         assertAll(
+                () -> assertThat(result).isFalse(),
                 () -> assertThat(subscribeRepository.existsBySubscribingUserIdAndSubscribedUserId(1, 2)).isFalse()
         );
     }

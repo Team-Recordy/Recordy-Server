@@ -25,6 +25,7 @@ public class AuthServiceImpl implements AuthService {
     private final AuthRepository authRepository;
     private final AuthPlatformServiceFactory platformServiceFactory;
     private final AuthTokenService authTokenService;
+
     @Override
     public Auth create(User user, AuthPlatform platform) {
         AuthToken token = authTokenService.issueToken(user.getId());
@@ -46,8 +47,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthPlatform getPlatform(UserSignIn userSignIn) {
+        String platformToken = authTokenService.removePrefix(userSignIn.platformToken());
         AuthPlatformService platformService = platformServiceFactory.getPlatformServiceFrom(userSignIn.platformType());
 
-        return platformService.getPlatform(userSignIn);
+        return platformService.getPlatform(new UserSignIn(platformToken, userSignIn.platformType()));
     }
 }
