@@ -55,7 +55,7 @@
 <img src="https://github.com/user-attachments/assets/a1f90c12-4c08-4734-9d64-dac155cc6643" width="830" /> 
 </br>
 
-| <img src="https://github.com/Team-Recordy/Recordy-Server/assets/94737768/76b261b4-bc99-49ef-b221-abd32126db78" width="250" /> | <img src="https://github.com/Team-Recordy/Recordy-Server/assets/94737768/b38469c6-9239-4972-b821-ca5263f889be" width="250" /> | <img src="https://github.com/Team-Recordy/Recordy-Server/assets/94737768/e334819f-fbd4-4786-a7de-495603d0cfe7" width="250" /> |
+| <img src="https://github.com/user-attachments/assets/d0e48286-1069-4632-ae49-27b5ca5e4a6c" width="250" /> | <img src="https://github.com/user-attachments/assets/525c9171-d194-43c0-b54d-b3dd1e50bf2b" width="250" /> | <img src="https://github.com/user-attachments/assets/414c2872-d449-4025-bf4b-86e8df71f139" width="250" /> |
 |:---------:|:---------:|:---------:|
 |[@sebbbin](https://github.com/sebbbin)|[@elive7](https://github.com/elive7)|[@jinkonu](https://github.com/jinkonu)|
 | `나세빈` | `박수빈` | `👑 진건우` | 
