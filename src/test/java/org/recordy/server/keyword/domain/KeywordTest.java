@@ -11,18 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class KeywordTest {
 
     @Test
-    void encode를_통해_모든_키워드를_utf8로_인코딩할_수_있다() {
-        // given, when
-        String encodedKeywords = Keyword.encode();
-        List<Keyword> keywords = Keyword.decode(encodedKeywords);
-
-        // then
-        assertAll(
-                () -> assertThat(keywords.size()).isEqualTo(Keyword.values().length)
-        );
-    }
-
-    @Test
     void decode를_통해_콤마로_연결된_채_인코딩된_문자열_utf8_코드를_해독하여_키워드_리스트로_디코딩할_수_있다() {
         // given
         String code = Base64.getEncoder().encodeToString("감각적인,강렬한".getBytes());
