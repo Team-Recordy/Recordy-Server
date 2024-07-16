@@ -15,7 +15,7 @@ fi
 if [ -z "$IS_GREEN_EXIST" ];then
   echo "### BLUE -> GREEN ####"
   echo ">>> pull green image"
-  docker compose pull green
+  docker pull recordy/recordy:latest
   echo ">>> up green container"
   docker compose up -d green
   while [ 1 = 1 ]; do
@@ -39,7 +39,7 @@ if [ -z "$IS_GREEN_EXIST" ];then
 else
   echo "### GREEN -> BLUE ###"
   echo ">>> pull blue image"
-  docker compose pull blue
+  docker pull recordy/recordy:latest
   echo ">>> up blue container"
   docker compose up -d blue
   while [ 1 = 1 ]; do
