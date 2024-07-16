@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.recordy.server.record_stat.domain.Bookmark;
-import org.recordy.server.record_stat.repository.BookmarkRepository;
+import org.recordy.server.bookmark.domain.Bookmark;
+import org.recordy.server.bookmark.repository.BookmarkRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;

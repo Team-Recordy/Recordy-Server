@@ -20,5 +20,6 @@ public interface RecordService {
     Slice<Record> getRecentRecords(String keywords, Long cursorId, int size);
     Slice<Record> getRecentRecordsByUser(long userId, long cursorId, int size);
     Slice<Record> getSubscribingRecords(long userId, long cursorId, int size);
+    Slice<Record> getBookmarkedRecords(long userId, long cursorId, int size);
     List<Record> getTotalRecords(int size);
 }
