@@ -11,6 +11,7 @@ services:
   blue:
     container_name: blue
     image: recordy/recordy:latest
+    pull_policy: always
     expose:
       - 8080
     ports:
@@ -22,6 +23,7 @@ services:
   green:
     container_name: green
     image: recordy/recordy:latest
+    pull_policy: always
     expose:
       - 8080
     ports:
