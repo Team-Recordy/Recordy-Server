@@ -25,8 +25,6 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final Long rootUserId;
-
     private final UserRepository userRepository;
     private final SubscribeRepository subscribeRepository;
     private final RecordRepository recordRepository;
@@ -34,14 +32,12 @@ public class UserServiceImpl implements UserService {
     private final AuthTokenService authTokenService;
 
     public UserServiceImpl(
-            @Value("${user.root.id}") Long rootUserId,
             UserRepository userRepository,
             SubscribeRepository subscribeRepository,
             RecordRepository recordRepository,
             AuthService authService,
             AuthTokenService authTokenService
     ) {
-        this.rootUserId = rootUserId;
         this.userRepository = userRepository;
         this.subscribeRepository = subscribeRepository;
         this.recordRepository = recordRepository;
@@ -77,21 +73,8 @@ public class UserServiceImpl implements UserService {
         User pendingUser = userRepository.findById(userSignUp.userId())
                 .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
         User updatedUser = pendingUser.activate(userSignUp);
-        followRoot(updatedUser);
 
         return userRepository.save(updatedUser);
-    }
-
-    private void followRoot(User user) {
-        if (!user.getId().equals(rootUserId)) {
-            userRepository.findById(rootUserId)
-                    .ifPresent(rootUser ->
-                            subscribeRepository.save(Subscribe.builder()
-                                    .subscribingUser(user)
-                                    .subscribedUser(rootUser)
-                                    .build())
-                    );
-        }
     }
 
     @Override
