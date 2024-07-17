@@ -5,7 +5,6 @@ import org.recordy.server.bookmark.service.BookmarkService;
 import org.recordy.server.common.dto.response.CursorBasePaginatedResponse;
 import org.recordy.server.common.dto.response.PaginatedResponse;
 import org.recordy.server.auth.security.resolver.UserId;
-import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.record.controller.dto.request.RecordCreateRequest;
 import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
 import org.recordy.server.record.domain.File;
@@ -35,10 +34,7 @@ public class RecordController implements RecordApi {
     public ResponseEntity<FileUrl> getPresignedUrls() {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(new FileUrl(
-                        s3Service.generatePresignedUrl("videos/"),
-                        s3Service.generatePresignedUrl("thumbnails/")
-                ));
+                .body(s3Service.generatePresignedUrl());
     }
 
     @Override

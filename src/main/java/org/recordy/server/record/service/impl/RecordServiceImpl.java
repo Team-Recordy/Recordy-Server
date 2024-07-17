@@ -91,7 +91,6 @@ public class RecordServiceImpl implements RecordService {
     }
 
     private Slice<Record> getFamousRecordsWithKeywords(List<Keyword> keywords, int pageNumber, int size) {
-
         return recordRepository.findAllByKeywordsOrderByPopularity(keywords, PageRequest.of(pageNumber, size));
     }
 
