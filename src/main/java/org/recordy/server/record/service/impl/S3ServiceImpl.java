@@ -26,7 +26,7 @@ public class S3ServiceImpl implements S3Service {
     public FileUrl generatePresignedUrl() {
         return new FileUrl(
                 generatePresignedUrl("videos/", ".mp4"),
-                generatePresignedUrl("thumbnails/", ".jpg")
+                generatePresignedUrl("thumbnails/", "")
         );
     }
 
