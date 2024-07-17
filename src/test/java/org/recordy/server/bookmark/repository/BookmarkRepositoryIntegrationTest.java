@@ -8,6 +8,7 @@ import org.recordy.server.bookmark.repository.BookmarkRepository;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.bookmark.domain.Bookmark;
+import org.recordy.server.user.domain.User;
 import org.recordy.server.util.DomainFixture;
 import org.recordy.server.util.db.IntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +70,7 @@ public class BookmarkRepositoryIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    void deleteById를_통해_북마크를_삭제할_수_있다() {
+    void delete를_통해_북마크를_삭제할_수_있다() {
         // given, when
         bookmarkRepository.delete(1, 1);
         Slice<Bookmark> bookmarks = bookmarkRepository.findAllByBookmarksOrderByIdDesc(1L, 4L, PageRequest.ofSize(10));
@@ -106,12 +107,47 @@ public class BookmarkRepositoryIntegrationTest extends IntegrationTest {
         int size = 10;
 
         // when
-        var result = bookmarkRepository.findAllByBookmarksOrderByIdDesc(userId, cursor, PageRequest.ofSize(size));
+        Slice<Bookmark> result = bookmarkRepository.findAllByBookmarksOrderByIdDesc(userId, cursor, PageRequest.ofSize(size));
 
         // then
         assertAll(
                 () -> assertThat(result.getContent()).isEmpty(),
                 () -> assertThat(result.hasNext()).isFalse()
+        );
+    }
+
+    @Test
+    void existsByUserIdAndRecordId를_통해_주어진_userId와_recordId로_bookmark가_존재하면_true를_반환한다() {
+        //given
+        User user = DomainFixture.createUser(3) ;
+        Record record = DomainFixture.createRecord();
+        Bookmark bookmark = Bookmark.builder()
+                .user(user)
+                .record(record)
+                .build();
+        bookmarkRepository.save(bookmark);
+
+        //when
+        Boolean result = bookmarkRepository.existsByUserIdAndRecordId(user.getId(), record.getId());
+
+        //then
+        assertAll(
+                () -> assertThat(result).isTrue()
+        );
+    }
+
+    @Test
+    void existsByUserIdAndRecordId를_통해_주어진_userId와_recordId로_bookmark가_존재하지_않으면_false를_반환한다() {
+        //given
+        User user = DomainFixture.createUser(3) ;
+        Record record = DomainFixture.createRecord();
+
+        //when
+        Boolean result = bookmarkRepository.existsByUserIdAndRecordId(user.getId(), record.getId());
+
+        //then
+        assertAll(
+                () -> assertThat(result).isFalse()
         );
     }
 }

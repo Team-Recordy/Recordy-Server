@@ -4,6 +4,7 @@ package org.recordy.server.bookmark.service;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.mock.FakeContainer;
@@ -14,6 +15,7 @@ import org.recordy.server.record.service.RecordService;
 import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.util.DomainFixture;
 import org.springframework.data.domain.Slice;
+import org.springframework.test.context.TestExecutionListeners;
 
 public class BookmarkServiceTest {
 
@@ -32,9 +34,9 @@ public class BookmarkServiceTest {
 
         userRepository.save(DomainFixture.createUser(1));
         userRepository.save(DomainFixture.createUser(2));
-        recordRepository.save(DomainFixture.createRecord());
-        recordRepository.save(DomainFixture.createRecord());
-        recordRepository.save(DomainFixture.createRecord());
+        recordRepository.save(DomainFixture.createRecord(1));
+        recordRepository.save(DomainFixture.createRecord(2));
+        recordRepository.save(DomainFixture.createRecord(3));
     }
 
     @Test
@@ -65,45 +67,26 @@ public class BookmarkServiceTest {
     }
 
     @Test
-    void getBookmarkedRecords를_통해_커서_이후의_북마크된_레코드를_최신_순서로_읽을_수_있다() {
-        // given
-        bookmarkService.bookmark(1, 1);
-        bookmarkService.bookmark(2, 1);
-        bookmarkService.bookmark(1, 2);
-        bookmarkService.bookmark(2, 2);
-        bookmarkService.bookmark(1, 3);
-        bookmarkService.bookmark(2, 3);
-
-        // when
-        Slice<Record> result = recordService.getBookmarkedRecords(1, 7, 10);
-
-        // then
-        assertAll(
-                () -> assertThat(result.getContent()).hasSize(3),
-                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(3L),
-                () -> assertThat(result.getContent().get(1).getId()).isEqualTo(2L),
-                () -> assertThat(result.getContent().get(2).getId()).isEqualTo(1L),
-                () -> assertThat(result.hasNext()).isFalse()
+    void findBookmarks를_통해_주어진_레코드_리스트에_대한_북마크_여부예_대한_리스트를_반환받을_수_있다() {
+        //given
+        Long userId = 1L;
+        bookmarkService.bookmark(userId, 1);
+        bookmarkService.bookmark(userId, 3);
+        List<Record> records = List.of(
+                DomainFixture.createRecord(1),
+                DomainFixture.createRecord(2),
+                DomainFixture.createRecord(3)
         );
-    }
 
-    @Test
-    void getBookmarkedRecords를_통해_커서가_제일_오래된_값이라면_아무것도_반환되지_않는다() {
-        // given
-        bookmarkService.bookmark(1, 1);
-        bookmarkService.bookmark(2, 1);
-        bookmarkService.bookmark(1, 2);
-        bookmarkService.bookmark(2, 2);
-        bookmarkService.bookmark(1, 3);
-        bookmarkService.bookmark(2, 3);
+        //when
+        List<Boolean> result = bookmarkService.findBookmarks(userId, records);
 
-        // when
-        Slice<Record> result = recordService.getBookmarkedRecords(1, 1, 10);
-
-        // then
+        //then
         assertAll(
-                () -> assertThat(result.getContent()).hasSize(0),
-                () -> assertThat(result.hasNext()).isFalse()
+                () -> result.get(0).equals(true),
+                () -> result.get(1).equals(false),
+                () -> result.get(2).equals(true)
         );
+
     }
 }
