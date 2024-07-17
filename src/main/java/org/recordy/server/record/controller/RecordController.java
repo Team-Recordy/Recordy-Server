@@ -43,7 +43,7 @@ public class RecordController implements RecordApi {
             @UserId Long uploaderId,
             @RequestBody RecordCreateRequest request) {
         RecordCreate recordCreate = RecordCreate.of(uploaderId, request);
-        Record record = recordService.create(recordCreate, new File(request.fileUrl().videoUrl(), request.fileUrl().thumbnailUrl()));
+        Record record = recordService.create(recordCreate);
 
         return ResponseEntity
                 .ok()

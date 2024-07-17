@@ -4,12 +4,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.mock.FakeContainer;
-import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
 import org.recordy.server.record.domain.File;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.usecase.RecordCreate;
 import org.recordy.server.record.exception.RecordException;
-import org.recordy.server.user.domain.UserStatus;
+import org.recordy.server.record.service.dto.FileUrl;
 import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.util.DomainFixture;
 import org.springframework.data.domain.Slice;
@@ -36,10 +35,9 @@ class RecordServiceTest {
     void create을_통해_레코드를_생성할_수_있다() {
         // given
         RecordCreate recordCreate = DomainFixture.createRecordCreate();
-        File file = DomainFixture.createFile();
 
         // when
-        Record result = recordService.create(recordCreate, file);
+        Record result = recordService.create(recordCreate);
 
         // then
         assertAll(
@@ -55,8 +53,7 @@ class RecordServiceTest {
     void delete을_통해_레코드를_삭제할_수_있다() {
         // given
         RecordCreate recordCreate = DomainFixture.createRecordCreate();
-        File file = DomainFixture.createFile();
-        Record record = recordService.create(recordCreate, file);
+        Record record = recordService.create(recordCreate);
 
         // when
         recordService.delete(1, record.getId());
@@ -73,8 +70,7 @@ class RecordServiceTest {
     void 업로더가_아니면_delete을_통해_레코드를_삭제할_때_예외가_발생한다() {
         // given
         RecordCreate recordCreate = DomainFixture.createRecordCreate();
-        File file = DomainFixture.createFile();
-        Record record = recordService.create(recordCreate, file);
+        Record record = recordService.create(recordCreate);
 
         // when
         // then
@@ -86,11 +82,11 @@ class RecordServiceTest {
     @Test
     void getRecentRecordsByUser를_통해_userId를_기반으로_레코드_데이터를_조회할_수_있다() {
         //given
-        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
-        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
-        recordService.create(DomainFixture.createRecordCreateByOtherUser(), DomainFixture.createFile());
-        recordService.create(DomainFixture.createRecordCreateByOtherUser(), DomainFixture.createFile());
-        recordService.create(DomainFixture.createRecordCreateByOtherUser(), DomainFixture.createFile());
+        recordService.create(DomainFixture.createRecordCreate());
+        recordService.create(DomainFixture.createRecordCreate());
+        recordService.create(DomainFixture.createRecordCreateByOtherUser());
+        recordService.create(DomainFixture.createRecordCreateByOtherUser());
+        recordService.create(DomainFixture.createRecordCreateByOtherUser());
 
         //when
         Slice<Record> result = recordService.getRecentRecordsByUser(1, Long.MAX_VALUE, 10);
@@ -107,11 +103,11 @@ class RecordServiceTest {
     @Test
     void getRecentRecords를_통해_커서_이후의_레코드를_최신_순서로_읽을_수_있다() {
         // given
-        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
-        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
-        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
-        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
-        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
+        recordService.create(DomainFixture.createRecordCreate());
+        recordService.create(DomainFixture.createRecordCreate());
+        recordService.create(DomainFixture.createRecordCreate());
+        recordService.create(DomainFixture.createRecordCreate());
+        recordService.create(DomainFixture.createRecordCreate());
 
         // when
         Slice<Record> result = recordService.getRecentRecords(null, 6L, 10);
@@ -131,9 +127,9 @@ class RecordServiceTest {
     @Test
     void getRecentRecords를_통해_커서가_제일_오래된_값이라면_아무것도_반환되지_않는다() {
         // given
-        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
-        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
-        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
+        recordService.create(DomainFixture.createRecordCreate());
+        recordService.create(DomainFixture.createRecordCreate());
+        recordService.create(DomainFixture.createRecordCreate());
 
         // when
         Slice<Record> result = recordService.getRecentRecords(null, 1L, 3);

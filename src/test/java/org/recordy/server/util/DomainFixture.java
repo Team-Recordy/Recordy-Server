@@ -17,7 +17,6 @@ import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.UserEntity;
 import org.recordy.server.user.domain.UserStatus;
 import org.recordy.server.user.domain.usecase.UserSignUp;
-import org.springframework.mock.web.MockMultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -234,8 +233,8 @@ public final class DomainFixture {
         );
     }
 
-    public static File createFile() {
-        return new File(VIDEO_URL, THUMBNAIL_URL);
+    public static FileUrl createFileUrl() {
+        return new FileUrl(VIDEO_URL, THUMBNAIL_URL);
     }
 
     public static Record createRecord() {
