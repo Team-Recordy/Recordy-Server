@@ -130,4 +130,10 @@ public class RecordRepositoryImpl implements RecordRepository {
     public Long count() {
         return recordJpaRepository.count();
     }
+
+    @Override
+    public void deleteByUserId(long userId) {
+        uploadJpaRepository.deleteAllByRecordUserId(userId);
+        recordJpaRepository.deleteAllByUserId(userId);
+    }
 }

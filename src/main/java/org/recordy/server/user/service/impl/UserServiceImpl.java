@@ -4,6 +4,7 @@ import org.recordy.server.auth.domain.Auth;
 import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.auth.service.AuthService;
 import org.recordy.server.auth.service.AuthTokenService;
+import org.recordy.server.bookmark.repository.BookmarkRepository;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.subscribe.domain.Subscribe;
@@ -17,6 +18,7 @@ import org.recordy.server.user.domain.usecase.UserSignUp;
 import org.recordy.server.user.exception.UserException;
 import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.user.service.UserService;
+import org.recordy.server.view.repository.ViewRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -28,19 +30,26 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final SubscribeRepository subscribeRepository;
     private final RecordRepository recordRepository;
+    private final BookmarkRepository bookmarkRepository;
+    private final ViewRepository viewRepository;
     private final AuthService authService;
     private final AuthTokenService authTokenService;
+
 
     public UserServiceImpl(
             UserRepository userRepository,
             SubscribeRepository subscribeRepository,
             RecordRepository recordRepository,
+            BookmarkRepository bookmarkRepository,
+            ViewRepository viewRepository,
             AuthService authService,
             AuthTokenService authTokenService
     ) {
         this.userRepository = userRepository;
         this.subscribeRepository = subscribeRepository;
         this.recordRepository = recordRepository;
+        this.bookmarkRepository = bookmarkRepository;
+        this.viewRepository = viewRepository;
         this.authService = authService;
         this.authTokenService = authTokenService;
     }
@@ -101,6 +110,10 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
 
+        subscribeRepository.deleteByUserId(userId);
+        bookmarkRepository.deleteByUserId(userId);
+        viewRepository.deleteByUserId(userId);
+        recordRepository.deleteByUserId(userId);
         authService.signOut(user.getAuthPlatform().getId());
         userRepository.deleteById(userId);
     }

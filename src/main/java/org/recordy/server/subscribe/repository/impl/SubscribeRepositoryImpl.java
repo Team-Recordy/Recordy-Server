@@ -53,4 +53,9 @@ public class SubscribeRepositoryImpl implements SubscribeRepository {
     public boolean existsBySubscribingUserIdAndSubscribedUserId(long subscribingUserId, long subscribedUserId) {
         return subscribeQueryDslRepository.existsBySubscribingUserIdAndSubscribedUserId(subscribingUserId, subscribedUserId);
     }
+
+    @Override
+    public void deleteByUserId(long userId) {
+        subscribeJpaRepository.deleteAllBySubscribedUserIdOrSubscribingUserId(userId, userId);
+    }
 }

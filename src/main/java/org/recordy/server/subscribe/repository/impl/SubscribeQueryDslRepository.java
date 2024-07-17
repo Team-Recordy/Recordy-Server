@@ -77,4 +77,5 @@ public class SubscribeQueryDslRepository {
                 )
                 .fetchFirst() != null;
     }
+
 }

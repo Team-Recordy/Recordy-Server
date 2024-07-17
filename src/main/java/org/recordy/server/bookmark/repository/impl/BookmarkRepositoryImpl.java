@@ -38,4 +38,9 @@ public class BookmarkRepositoryImpl implements BookmarkRepository {
     public boolean existsByUserIdAndRecordId(Long userId, Long recordId) {
         return bookmarkJpaRepository.existsByUserIdAndRecordId(userId, recordId);
     }
+
+    @Override
+    public void deleteByUserId(long userId) {
+        bookmarkJpaRepository.deleteAllByUserId(userId);
+    }
 }

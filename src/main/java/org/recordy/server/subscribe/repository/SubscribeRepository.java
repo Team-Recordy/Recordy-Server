@@ -9,6 +9,7 @@ public interface SubscribeRepository {
     // command
     void save(Subscribe subscribe);
     void delete(long subscribingUserId, long subscribedUserId);
+    void deleteByUserId(long userId);
 
     // query
     Slice<Subscribe> findAllBySubscribingUserId(long subscribingUserId, long cursor, Pageable pageable);
