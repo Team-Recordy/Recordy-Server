@@ -44,6 +44,8 @@ public class AuthKakaoPlatformServiceImpl implements AuthPlatformService {
         try {
             return kakaoFeignClient.getKakaoAccessTokenInfo(accessTokenWithTokenType);
         } catch (FeignException e) {
+            System.out.println("-------------------");
+            System.out.println(accessTokenWithTokenType);
             log.error("Failed to get Kakao platform id", e);
             throw new AuthException(ErrorMessage.INVALID_KAKAO_ACCESS_TOKEN);
         }
