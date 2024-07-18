@@ -12,4 +12,5 @@ public interface BookmarkJpaRepository extends JpaRepository<BookmarkEntity, Lon
 
     // query
     boolean existsByUserIdAndRecordId(Long userId, Long recordId);
+    long countAllByUserId(Long userId);
 }

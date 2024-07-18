@@ -36,6 +36,7 @@ public class BookmarkController implements BookmarkApi {
     }
 
     @Override
+    @GetMapping
     public ResponseEntity<Long> getBookmarkCount(
             @UserId Long userId
     ) {
