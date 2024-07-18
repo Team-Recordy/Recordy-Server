@@ -112,9 +112,8 @@ public class RecordServiceImpl implements RecordService {
         return recordRepository.findAllByIdAfterAndKeywordsOrderByIdDesc(keywords, cursorId, PageRequest.ofSize(size));
     }
     @Override
-    public Slice<Record> getBookmarkedRecords(long userId, long cursorId, int size) {
-        return bookmarkRepository.findAllByBookmarksOrderByIdDesc(userId, cursorId, PageRequest.ofSize(size))
-                .map(Bookmark::getRecord);
+    public Slice<Bookmark> getBookmarkedRecords(long userId, long cursorId, int size) {
+        return bookmarkRepository.findAllByBookmarksOrderByIdDesc(userId, cursorId, PageRequest.ofSize(size));
     }
 
     @Override
