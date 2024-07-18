@@ -118,7 +118,7 @@ public class RecordController implements RecordApi {
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
         Slice<Record> records = recordService.getRecentRecordsByUser(otherUserId, cursorId, size);
-        List<Boolean> bookmarks = bookmarkService.findBookmarks(otherUserId, records.getContent());
+        List<Boolean> bookmarks = bookmarkService.findBookmarks(userId, records.getContent());
 
         return ResponseEntity
                 .ok()
