@@ -29,6 +29,11 @@ public class BookmarkRepositoryImpl implements BookmarkRepository {
     }
 
     @Override
+    public void deleteByUserId(long userId) {
+        bookmarkJpaRepository.deleteAllByUserId(userId);
+    }
+
+    @Override
     public Slice<Bookmark> findAllByBookmarksOrderByIdDesc(long userId, long cursor, Pageable pageable) {
         return bookmarkQueryDslRepository.findAllByUserOrderByIdDesc(userId, cursor, pageable)
                 .map(BookmarkEntity::toDomain);
@@ -40,7 +45,7 @@ public class BookmarkRepositoryImpl implements BookmarkRepository {
     }
 
     @Override
-    public void deleteByUserId(long userId) {
-        bookmarkJpaRepository.deleteAllByUserId(userId);
+    public long countByUserId(Long userId) {
+        return bookmarkJpaRepository.countAllByUserId(userId);
     }
 }

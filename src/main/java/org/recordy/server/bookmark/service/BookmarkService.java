@@ -11,4 +11,5 @@ public interface BookmarkService {
 
     // query
     List<Boolean> findBookmarks(long userId, List<Record> records);
+    Long countBookmarks(long userId);
 }

@@ -57,4 +57,17 @@ public class FakeBookmarkRepository implements BookmarkRepository {
                         bookmark.getUser().getId().equals(userId) && bookmark.getRecord().getId().equals(recordId)
                 );
     }
+
+    @Override
+    public void deleteByUserId(long userId) {
+        bookmarks.values()
+                .removeIf(bookmark -> bookmark.getUser().getId() == userId);
+    }
+
+    @Override
+    public long countByUserId(Long userId) {
+        return bookmarks.values().stream()
+                .filter(bookmark -> bookmark.getUser().getId() == userId)
+                .count();
+    }
 }

@@ -51,5 +51,10 @@ public class BookmarkServiceImpl implements BookmarkService {
                 .map(record -> bookmarkRepository.existsByUserIdAndRecordId(userId, record.getId()))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public Long countBookmarks(long userId) {
+        return bookmarkRepository.countByUserId(userId);
+    }
 }
 

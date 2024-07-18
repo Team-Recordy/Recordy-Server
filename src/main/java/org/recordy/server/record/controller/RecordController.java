@@ -1,11 +1,13 @@
 package org.recordy.server.record.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.recordy.server.bookmark.domain.Bookmark;
 import org.recordy.server.bookmark.service.BookmarkService;
 import org.recordy.server.common.dto.response.CursorBasePaginatedResponse;
 import org.recordy.server.common.dto.response.PaginatedResponse;
 import org.recordy.server.auth.security.resolver.UserId;
 import org.recordy.server.record.controller.dto.request.RecordCreateRequest;
+import org.recordy.server.record.controller.dto.response.BookmarkedRecord;
 import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
 import org.recordy.server.record.domain.File;
 import org.recordy.server.record.domain.Record;
@@ -156,17 +158,15 @@ public class RecordController implements RecordApi {
 
     @Override
     @GetMapping("/bookmarks")
-    public ResponseEntity<CursorBasePaginatedResponse<RecordInfoWithBookmark>> getBookmarkedRecords(
+    public ResponseEntity<CursorBasePaginatedResponse<BookmarkedRecord>> getBookmarkedRecords(
             @UserId Long userId,
             @RequestParam(required = false, defaultValue = "0") long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
-        Slice<Record> records = recordService.getBookmarkedRecords(userId, cursorId, size);
-        List<Boolean> bookmarks = bookmarkService.findBookmarks(userId, records.getContent());
+        Slice<Bookmark> bookmarks = recordService.getBookmarkedRecords(userId, cursorId, size);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(CursorBasePaginatedResponse.of(RecordInfoWithBookmark.of(records, bookmarks, userId), recordInfoWithBookmark -> recordInfoWithBookmark.recordInfo()
-                        .id()));
+                .body(CursorBasePaginatedResponse.of(BookmarkedRecord.of(bookmarks, userId), bookmarkedRecord -> bookmarkedRecord.bookmarkId()));
     }
 }
