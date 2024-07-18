@@ -13,4 +13,5 @@ public interface BookmarkRepository {
     // query
     Slice<Bookmark> findAllByBookmarksOrderByIdDesc(long userId, long cursor, Pageable pageable);
     boolean existsByUserIdAndRecordId(Long userId, Long recordId);
+    long countByUserId(Long userId);
 }

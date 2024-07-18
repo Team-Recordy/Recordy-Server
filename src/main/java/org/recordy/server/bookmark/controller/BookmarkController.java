@@ -34,4 +34,13 @@ public class BookmarkController implements BookmarkApi {
                 .status(HttpStatus.OK)
                 .body(bookmarkService.bookmark(userId, recordId));
     }
+
+    @Override
+    public ResponseEntity<Long> getBookmarkCount(
+            @UserId Long userId
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(bookmarkService.countBookmarks(userId));
+    }
 }
