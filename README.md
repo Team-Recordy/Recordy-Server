@@ -48,12 +48,11 @@
 4. **관심 있는 공간 저장하기:** 마음에 드는 공간 영상을 저장하고, 쉽게 보관할 수 있습니다.
 </br>
 
-
 ## 👤 팀원
 <img src="https://github.com/user-attachments/assets/a1f90c12-4c08-4734-9d64-dac155cc6643" width="830" /> 
 </br>
 
-| <img src="https://github.com/user-attachments/assets/d0e48286-1069-4632-ae49-27b5ca5e4a6c" width="250" /> | <img src="https://github.com/user-attachments/assets/525c9171-d194-43c0-b54d-b3dd1e50bf2b" width="250" /> | <img src="https://github.com/user-attachments/assets/414c2872-d449-4025-bf4b-86e8df71f139" width="250" /> |
+| <img src="https://github.com/user-attachments/assets/3928e264-bdf5-4194-a1db-a29797b8c822" width="250" /> | <img src="https://github.com/user-attachments/assets/bef830b8-2287-4176-9f95-4535866a6936" width="250" /> | <img src="https://github.com/user-attachments/assets/cd417a8a-dbb2-4503-8a6a-f473d9ac0b9a" width="250" /> |
 |:---------:|:---------:|:---------:|
 |[@sebbbin](https://github.com/sebbbin)|[@elive7](https://github.com/elive7)|[@jinkonu](https://github.com/jinkonu)|
 | `나세빈` | `박수빈` | `👑 진건우` | 
