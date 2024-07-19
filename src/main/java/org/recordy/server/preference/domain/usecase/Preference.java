@@ -41,12 +41,12 @@ public record Preference(
                 .sum();
     }
 
-    private static List<List<Object>> transform(Map<Keyword, Long> preference) {
+    private static List<List<String>> transform(Map<Keyword, Long> preference) {
         return preference.entrySet().stream()
                 .map(entry -> {
-                    List<Object> list = new ArrayList<>();
-                    list.add(entry.getKey());
-                    list.add(entry.getValue());
+                    List<String> list = new ArrayList<>();
+                    list.add(entry.getKey().name());
+                    list.add(String.valueOf(entry.getValue()));
                     return list;
                 })
                 .collect(Collectors.toList());

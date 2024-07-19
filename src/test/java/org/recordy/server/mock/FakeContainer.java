@@ -16,6 +16,8 @@ import org.recordy.server.auth.service.impl.token.AuthTokenSigningKeyProvider;
 import org.recordy.server.bookmark.service.BookmarkService;
 import org.recordy.server.bookmark.service.impl.BookmarkServiceImpl;
 import org.recordy.server.mock.subscribe.FakeSubscribeRepository;
+import org.recordy.server.preference.service.PreferenceService;
+import org.recordy.server.preference.service.impl.PreferenceServiceImpl;
 import org.recordy.server.record.service.FileService;
 import org.recordy.server.record.service.S3Service;
 import org.recordy.server.keyword.repository.KeywordRepository;
@@ -83,6 +85,7 @@ public class FakeContainer {
     public final BookmarkService bookmarkService;
     public final S3Service s3Service;
     public final SubscribeService subscribeService;
+    public final PreferenceService preferenceService;
 
     // security
     public final AuthFilterExceptionHandler authFilterExceptionHandler;
@@ -130,6 +133,7 @@ public class FakeContainer {
         this.recordService = new RecordServiceImpl(recordRepository, viewRepository, bookmarkRepository,fileService, userService);
         this.subscribeService = new SubscribeServiceImpl(subscribeRepository, userRepository);
         this.s3Service = mock(S3Service.class);  // S3Service mock 사용
+        this.preferenceService = new PreferenceServiceImpl(recordRepository);
 
         this.authFilterExceptionHandler = new AuthFilterExceptionHandler(new ObjectMapper());
         this.tokenAuthenticationFilter = new TokenAuthenticationFilter(
