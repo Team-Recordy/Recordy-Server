@@ -9,10 +9,12 @@ public record UserProfile(
         long recordCount,
         long followerCount,
         long followingCount,
+
+        long bookmarkCount,
         boolean isFollowing
 ) {
 
-    public static UserProfile of(User user, long recordCount, long followerCount, long followingCount, boolean isFollowing) {
+    public static UserProfile of(User user, long recordCount, long followerCount, long followingCount, long bookmarkCount, boolean isFollowing) {
         return new UserProfile(
                 user.getId(),
                 user.getNickname(),
@@ -20,6 +22,7 @@ public record UserProfile(
                 recordCount,
                 followerCount,
                 followingCount,
+                bookmarkCount,
                 isFollowing
         );
     }

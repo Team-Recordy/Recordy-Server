@@ -9,11 +9,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public record Preference(
-        long userId,
         List<List<String>> preference
 ) {
 
-    public static Preference of(long userId, Map<Keyword, Long> preference) {
+    public static Preference of(Map<Keyword, Long> preference) {
         Map<Keyword, Long> topPreference = preference.entrySet().stream()
                 .sorted(Map.Entry.<Keyword, Long>comparingByValue().reversed())
                 .limit(3)
@@ -23,11 +22,10 @@ public record Preference(
                         (a, b) -> a,
                         LinkedHashMap::new));
 
-        return new Preference(userId, transform(normalize(topPreference)));
+        return new Preference(transform(normalize(topPreference, sum(preference))));
     }
 
-    private static Map<Keyword, Long> normalize(Map<Keyword, Long> preference) {
-        long sum = sum(preference);
+    private static Map<Keyword, Long> normalize(Map<Keyword, Long> preference, Long sum) {
 
         return preference.entrySet().stream()
                 .collect(Collectors.toMap(

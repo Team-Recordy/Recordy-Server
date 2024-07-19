@@ -1,7 +1,6 @@
 package org.recordy.server.mock;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.mockito.Mockito;
 import org.recordy.server.auth.repository.AuthRepository;
 import org.recordy.server.auth.security.filter.TokenAuthenticationFilter;
 import org.recordy.server.auth.security.handler.AuthFilterExceptionHandler;
@@ -16,7 +15,6 @@ import org.recordy.server.auth.service.impl.token.AuthTokenSigningKeyProvider;
 import org.recordy.server.bookmark.service.BookmarkService;
 import org.recordy.server.bookmark.service.impl.BookmarkServiceImpl;
 import org.recordy.server.mock.subscribe.FakeSubscribeRepository;
-import org.recordy.server.record.service.FileService;
 import org.recordy.server.record.service.S3Service;
 import org.recordy.server.keyword.repository.KeywordRepository;
 import org.recordy.server.keyword.service.KeywordService;
@@ -32,12 +30,9 @@ import org.recordy.server.mock.user.FakeUserRepository;
 import org.recordy.server.mock.view.FakeViewRepository;
 import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.record.service.RecordService;
-import org.recordy.server.record.service.impl.FileServiceImpl;
 import org.recordy.server.record.service.impl.RecordServiceImpl;
 import org.recordy.server.bookmark.repository.BookmarkRepository;
 import org.recordy.server.view.repository.ViewRepository;
-import org.recordy.server.record_stat.service.RecordStatService;
-import org.recordy.server.record_stat.service.impl.RecordStatServiceImpl;
 import org.recordy.server.subscribe.repository.SubscribeRepository;
 import org.recordy.server.subscribe.service.SubscribeService;
 import org.recordy.server.subscribe.service.impl.SubscribeServiceImpl;
@@ -47,7 +42,6 @@ import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.user.service.UserService;
 import org.recordy.server.user.service.impl.UserServiceImpl;
 import org.recordy.server.util.DomainFixture;
-import software.amazon.awssdk.services.s3.S3Client;
 
 import java.util.List;
 
@@ -78,7 +72,6 @@ public class FakeContainer {
     public final AuthTokenService authTokenService;
     public final AuthService authService;
     public final UserService userService;
-    public final FileService fileService;
     public final RecordService recordService;
     public final KeywordService keywordService;
     public final BookmarkService bookmarkService;
@@ -124,12 +117,12 @@ public class FakeContainer {
                 authRepository
         );
         this.authService = new AuthServiceImpl(authRepository, authPlatformServiceFactory, authTokenService);
-        this.userService = new UserServiceImpl(ROOT_USER_ID, userRepository, subscribeRepository, recordRepository, authService, authTokenService);
+        this.userService = new UserServiceImpl(userRepository, subscribeRepository, recordRepository, bookmarkRepository,viewRepository, authService, authTokenService);
 
-        this.fileService = new FileServiceImpl(Mockito.mock(S3Client.class));
         this.keywordService = new KeywordServiceImpl(keywordRepository);
         this.recordService = new RecordServiceImpl(recordRepository, viewRepository, fileService, userRepository);
         this.bookmarkService = new BookmarkServiceImpl(userRepository, recordRepository, bookmarkRepository);
+        this.recordService = new RecordServiceImpl(recordRepository, viewRepository, bookmarkRepository, userService);
         this.subscribeService = new SubscribeServiceImpl(subscribeRepository, userRepository);
         this.s3Service = mock(S3Service.class);  // S3Service mock 사용
 

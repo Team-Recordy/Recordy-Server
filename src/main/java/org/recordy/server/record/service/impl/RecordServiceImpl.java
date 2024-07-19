@@ -10,12 +10,10 @@ import org.recordy.server.bookmark.domain.Bookmark;
 import org.recordy.server.bookmark.repository.BookmarkRepository;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.keyword.domain.Keyword;
-import org.recordy.server.record.domain.File;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.usecase.RecordCreate;
 import org.recordy.server.record.exception.RecordException;
 import org.recordy.server.record.repository.RecordRepository;
-import org.recordy.server.record.service.FileService;
 import org.recordy.server.record.service.RecordService;
 import org.recordy.server.record.service.dto.FileUrl;
 import org.recordy.server.view.domain.View;
@@ -47,7 +45,7 @@ public class RecordServiceImpl implements RecordService {
                 .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
 
         return recordRepository.save(Record.builder()
-                .fileUrl(fileUrl)
+                .fileUrl(recordCreate.fileUrl())
                 .location(recordCreate.location())
                 .content(recordCreate.content())
                 .uploader(user)
@@ -91,7 +89,6 @@ public class RecordServiceImpl implements RecordService {
     }
 
     private Slice<Record> getFamousRecordsWithKeywords(List<Keyword> keywords, int pageNumber, int size) {
-
         return recordRepository.findAllByKeywordsOrderByPopularity(keywords, PageRequest.of(pageNumber, size));
     }
 
@@ -117,9 +114,8 @@ public class RecordServiceImpl implements RecordService {
         return recordRepository.findAllByIdAfterAndKeywordsOrderByIdDesc(keywords, cursorId, PageRequest.ofSize(size));
     }
     @Override
-    public Slice<Record> getBookmarkedRecords(long userId, long cursorId, int size) {
-        return bookmarkRepository.findAllByBookmarksOrderByIdDesc(userId, cursorId, PageRequest.ofSize(size))
-                .map(Bookmark::getRecord);
+    public Slice<Bookmark> getBookmarkedRecords(long userId, long cursorId, int size) {
+        return bookmarkRepository.findAllByBookmarksOrderByIdDesc(userId, cursorId, PageRequest.ofSize(size));
     }
 
     @Override

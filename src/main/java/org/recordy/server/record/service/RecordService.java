@@ -1,7 +1,6 @@
 package org.recordy.server.record.service;
 
-import org.recordy.server.keyword.domain.Keyword;
-import org.recordy.server.record.domain.File;
+import org.recordy.server.bookmark.domain.Bookmark;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.usecase.RecordCreate;
 import org.springframework.data.domain.Slice;
@@ -11,7 +10,7 @@ import java.util.List;
 public interface RecordService {
 
     // command
-    Record create(RecordCreate recordCreate, File file);
+    Record create(RecordCreate recordCreate);
     void delete(long userId, long recordId);
 
     // query
@@ -20,6 +19,6 @@ public interface RecordService {
     Slice<Record> getRecentRecords(String keywords, Long cursorId, int size);
     Slice<Record> getRecentRecordsByUser(long userId, long cursorId, int size);
     Slice<Record> getSubscribingRecords(long userId, long cursorId, int size);
-    Slice<Record> getBookmarkedRecords(long userId, long cursorId, int size);
+    Slice<Bookmark> getBookmarkedRecords(long userId, long cursorId, int size);
     List<Record> getTotalRecords(int size);
 }

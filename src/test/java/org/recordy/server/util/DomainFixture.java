@@ -234,8 +234,8 @@ public final class DomainFixture {
         );
     }
 
-    public static File createFile() {
-        return new File(VIDEO_URL, THUMBNAIL_URL);
+    public static FileUrl createFileUrl() {
+        return new FileUrl(VIDEO_URL, THUMBNAIL_URL);
     }
 
     public static Record createRecord() {

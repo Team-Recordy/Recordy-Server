@@ -8,5 +8,9 @@ import java.util.List;
 
 public interface UploadJpaRepository extends JpaRepository<UploadEntity, Long> {
 
+    //command
+    void deleteAllByRecordUserId(long userId);
+
+    //query
     List<UploadEntity> findAllByRecord(RecordEntity record);
 }

@@ -15,13 +15,15 @@ fi
 if [ -z "$IS_GREEN_EXIST" ];then
   echo "### BLUE -> GREEN ####"
   echo ">>> pull green image"
-  docker compose pull green
+  docker pull recordy/recordy:latest
+  echo ">>> remove old green container"
+  docker compose rm -fs green
   echo ">>> up green container"
   docker compose up -d green
   while [ 1 = 1 ]; do
-  echo ">>> green health check ..."
-  sleep 3
-  REQUEST=$(curl http://127.0.0.1:8082/actuator/health)
+    echo ">>> green health check ..."
+    sleep 3
+    REQUEST=$(curl http://127.0.0.1:8082/actuator/health)
     if [ -n "$REQUEST" ]; then
       echo ">>> health check success !"
       break;
@@ -39,7 +41,9 @@ if [ -z "$IS_GREEN_EXIST" ];then
 else
   echo "### GREEN -> BLUE ###"
   echo ">>> pull blue image"
-  docker compose pull blue
+  docker pull recordy/recordy:latest
+  echo ">>> remove old blue container"
+  docker compose rm -fs blue
   echo ">>> up blue container"
   docker compose up -d blue
   while [ 1 = 1 ]; do
@@ -57,5 +61,5 @@ else
   sudo nginx -s reload
   echo ">>> down green container"
   docker compose stop green
-  docker image prune -fp
+  docker image prune -f
 fi

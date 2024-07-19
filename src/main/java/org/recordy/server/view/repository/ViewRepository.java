@@ -6,6 +6,7 @@ public interface ViewRepository {
 
     // command
     View save(View view);
+    void deleteByUserId(long userId);
 
     // query
 }

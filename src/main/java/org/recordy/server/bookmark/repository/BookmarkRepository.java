@@ -8,8 +8,10 @@ public interface BookmarkRepository {
     // command
     Bookmark save(Bookmark bookmark);
     void delete(long userId, long recordId);
+    void deleteByUserId(long userId);
 
     // query
     Slice<Bookmark> findAllByBookmarksOrderByIdDesc(long userId, long cursor, Pageable pageable);
     boolean existsByUserIdAndRecordId(Long userId, Long recordId);
+    long countByUserId(Long userId);
 }

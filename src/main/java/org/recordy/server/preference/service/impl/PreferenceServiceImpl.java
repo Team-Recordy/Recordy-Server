@@ -14,6 +14,6 @@ public class PreferenceServiceImpl implements PreferenceService {
 
     @Override
     public Preference getPreference(long userId) {
-        return Preference.of(userId, recordRepository.countAllByUserIdGroupByKeyword(userId));
+        return Preference.of(recordRepository.countAllByUserIdGroupByKeyword(userId));
     }
 }
