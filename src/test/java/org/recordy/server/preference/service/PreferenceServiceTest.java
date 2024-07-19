@@ -23,9 +23,10 @@ class PreferenceServiceTest {
 
     @BeforeEach
     void init() {
-        preferenceService = new FakeContainer().preferenceService;
-        userRepository = new FakeContainer().userRepository;
-        recordRepository = new FakeContainer().recordRepository;
+        FakeContainer fakeContainer = new FakeContainer();
+        preferenceService = fakeContainer.preferenceService;
+        userRepository = fakeContainer.userRepository;
+        recordRepository = fakeContainer.recordRepository;
     }
 
     @Test
@@ -77,11 +78,11 @@ class PreferenceServiceTest {
         assertAll(
                 () -> assertThat(result.preference().size()).isEqualTo(3),
                 () -> assertThat(result.preference().get(0).get(0)).isEqualTo("감각적인"),
-                () -> assertThat(result.preference().get(0).get(1)).isEqualTo("귀여운"),
-                () -> assertThat(result.preference().get(0).get(2)).isEqualTo("강렬한"),
-                () -> assertThat(result.preference().get(1).get(0)).isEqualTo("11"),
-                () -> assertThat(result.preference().get(1).get(1)).isEqualTo("22"),
-                () -> assertThat(result.preference().get(1).get(2)).isEqualTo("22")
+                () -> assertThat(result.preference().get(0).get(1)).isEqualTo("50"),
+                () -> assertThat(result.preference().get(1).get(0)).isEqualTo("귀여운"),
+                () -> assertThat(result.preference().get(1).get(1)).isEqualTo("33"),
+                () -> assertThat(result.preference().get(2).get(0)).isEqualTo("강렬한"),
+                () -> assertThat(result.preference().get(2).get(1)).isEqualTo("16")
         );
     }
 }

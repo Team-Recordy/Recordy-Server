@@ -34,7 +34,6 @@ public class FakeRecordRepository implements RecordRepository {
                 .build();
 
         records.put(recordAutoIncrementId++, realRecord);
-        System.out.println(records.size());
 
         record.getKeywords().stream()
                 .map(keyword -> UploadEntity.builder()
@@ -103,15 +102,12 @@ public class FakeRecordRepository implements RecordRepository {
     public Map<Keyword, Long> countAllByUserIdGroupByKeyword(long userId) {
         Map<Keyword, Long> keywordCountMap = new HashMap<>();
 
-        System.out.println("----------");
         System.out.println(records.size());
 
         for (Record record : records.values()) {
             if (record.getUploader().getId() == userId) {
                 for (Keyword keyword : record.getKeywords()) {
                     keywordCountMap.put(keyword, keywordCountMap.getOrDefault(keyword, 0L) + 1);
-                    System.out.println("-------------------------------------");
-                    System.out.println(keyword + " " + keywordCountMap.get(keyword));
                 }
             }
         }
