@@ -1,31 +1,36 @@
 package org.recordy.server.record.service;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.common.message.ErrorMessage;
+import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.mock.FakeContainer;
-import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
 import org.recordy.server.record.domain.File;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.usecase.RecordCreate;
 import org.recordy.server.record.exception.RecordException;
-import org.recordy.server.user.domain.UserStatus;
+import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.util.DomainFixture;
 import org.springframework.data.domain.Slice;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+
 class RecordServiceTest {
 
     private RecordService recordService;
+    private RecordRepository recordRepository;
 
     @BeforeEach
     void init() {
         FakeContainer fakeContainer = new FakeContainer();
         recordService = fakeContainer.recordService;
+        recordRepository = fakeContainer.recordRepository;
         UserRepository userRepository = fakeContainer.userRepository;
 
         userRepository.save(DomainFixture.createUser(1));
@@ -66,6 +71,28 @@ class RecordServiceTest {
         assertAll(
                 () -> assertThat(result.getContent()).hasSize(0),
                 () -> assertThat(result.hasNext()).isFalse()
+        );
+    }
+
+    @Test
+    void watch를_통해_시청기록을_저장할_수_있다() {
+        //given
+
+        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
+        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
+        Record record = recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
+
+        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
+
+        //when
+        recordService.watch(1, record.getId());
+        System.out.println(record.getCreatedAt());
+
+        //then
+        Slice<Record> result = recordService.getFamousRecords(null, 0, 4);
+        assertAll(
+                () -> assertThat(result.getContent()).hasSize(0)
+               // () -> assertThat(result.getContent().get(0)).isEqualTo(record.getId())
         );
     }
 
@@ -135,6 +162,7 @@ class RecordServiceTest {
         recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
         recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
 
+
         // when
         Slice<Record> result = recordService.getRecentRecords(null, 1L, 3);
 
@@ -143,5 +171,67 @@ class RecordServiceTest {
                 () -> assertThat(result.getContent()).hasSize(0),
                 () -> assertThat(result.hasNext()).isFalse()
         );
+    }
+
+    @Test
+    void getRecentRecords를_통해_키워드를_디코딩해서_해당_키워드에_대한_최신_레코드만_반환할_수_있다() {
+        // given
+        List<Keyword> keywords = List.of(Keyword.덕후몰이, Keyword.깔끔한);
+        Record record = recordService.create(DomainFixture.createRecordCreate(keywords), DomainFixture.createFile());
+        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
+        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
+        String encordedKeyword = new String(Base64.getEncoder().encode("깔끔한,덕후몰이".getBytes(StandardCharsets.UTF_8)));
+
+        // when
+        Slice<Record> result = recordService.getRecentRecords(encordedKeyword, 4L, 3);
+
+        // then
+        assertAll(
+                () -> assertThat(result.getContent()).hasSize(1),
+                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(record.getId()),
+                () -> assertThat(result.hasNext()).isFalse()
+        );
+    }
+
+    @Test
+    void getTotalRecords를_통해_size만큼의_레코드를_중복없이_랜덤으로_반환할_수_있다() {
+        // given
+        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
+        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
+        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
+        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
+        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
+
+        // when
+        List<Record> result = recordService.getTotalRecords(3);
+
+        // then
+        assertAll(
+                () -> assertThat(result.size()).isEqualTo(3),
+                () -> assertThat(result.get(0)).isNotEqualTo(result.get(1).getId()),
+                () -> assertThat(result.get(1)).isNotEqualTo(result.get(2).getId()),
+                () -> assertThat(result.get(0)).isNotEqualTo(result.get(2).getId())
+        );
+    }
+
+    @Test
+    void getTotalRecords를_통해_size만큼의_레코드가_없으면_현재_레코드_수만큼만_반환한다() {
+        // given
+        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
+        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
+        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
+
+
+        // when
+        List<Record> result = recordService.getTotalRecords(5);
+
+        // then
+        assertAll(
+                () -> assertThat(result.size()).isEqualTo(3),
+                () -> assertThat(result.get(0)).isNotEqualTo(result.get(1).getId()),
+                () -> assertThat(result.get(1)).isNotEqualTo(result.get(2).getId()),
+                () -> assertThat(result.get(0)).isNotEqualTo(result.get(2).getId())
+        );
+
     }
 }

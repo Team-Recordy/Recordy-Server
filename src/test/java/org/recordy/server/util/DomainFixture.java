@@ -224,6 +224,16 @@ public final class DomainFixture {
         );
     }
 
+    public static RecordCreate createRecordCreate(List<Keyword> keywords) {
+        return new RecordCreate(
+                USER_ID,
+                LOCATION,
+                CONTENT,
+                keywords,
+                new FileUrl(VIDEO_URL, THUMBNAIL_URL)
+        );
+    }
+
     public static RecordCreate createRecordCreateByOtherUser() {
         return new RecordCreate(
                 2,
