@@ -35,12 +35,10 @@ public class RecordServiceImpl implements RecordService {
     private final RecordRepository recordRepository;
     private final ViewRepository viewRepository;
     private final BookmarkRepository bookmarkRepository;
-    private final FileService fileService;
     private final UserRepository userRepository;
 
     @Override
-    public Record create(RecordCreate recordCreate, File file) {
-        FileUrl fileUrl = fileService.save(file);
+    public Record create(RecordCreate recordCreate) {
         User user = userRepository.findById(recordCreate.uploaderId())
                 .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
 

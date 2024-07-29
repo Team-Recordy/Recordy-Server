@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.recordy.server.bookmark.domain.Bookmark;
 import org.recordy.server.bookmark.service.BookmarkService;
 import org.recordy.server.mock.FakeContainer;
 import org.recordy.server.record.domain.Record;
@@ -75,7 +76,7 @@ public class RecordStatServiceTest {
         bookmarkService.bookmark(2, 3);
 
         // when
-        Slice<Record> result = recordService.getBookmarkedRecords(1, 7, 10);
+        Slice<Bookmark> result = recordService.getBookmarkedRecords(1, 7, 10);
 
         // then
         assertAll(
@@ -98,7 +99,7 @@ public class RecordStatServiceTest {
         bookmarkService.bookmark(2, 3);
 
         // when
-        Slice<Record> result = recordService.getBookmarkedRecords(1, 1, 10);
+        Slice<Bookmark> result = recordService.getBookmarkedRecords(1, 1, 10);
 
         // then
         assertAll(

@@ -120,9 +120,8 @@ public class FakeContainer {
         this.userService = new UserServiceImpl(userRepository, subscribeRepository, recordRepository, bookmarkRepository,viewRepository, authService, authTokenService);
 
         this.keywordService = new KeywordServiceImpl(keywordRepository);
-        this.recordService = new RecordServiceImpl(recordRepository, viewRepository, fileService, userRepository);
+        this.recordService = new RecordServiceImpl(recordRepository, viewRepository, bookmarkRepository, userRepository);
         this.bookmarkService = new BookmarkServiceImpl(userRepository, recordRepository, bookmarkRepository);
-        this.recordService = new RecordServiceImpl(recordRepository, viewRepository, bookmarkRepository, userService);
         this.subscribeService = new SubscribeServiceImpl(subscribeRepository, userRepository);
         this.s3Service = mock(S3Service.class);  // S3Service mock 사용
 
