@@ -20,7 +20,7 @@ import org.recordy.server.view.domain.View;
 import org.recordy.server.view.repository.ViewRepository;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.exception.UserException;
-import org.recordy.server.user.service.UserService;
+import org.recordy.server.user.repository.UserRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -35,11 +35,13 @@ public class RecordServiceImpl implements RecordService {
     private final RecordRepository recordRepository;
     private final ViewRepository viewRepository;
     private final BookmarkRepository bookmarkRepository;
-    private final UserService userService;
+    private final FileService fileService;
+    private final UserRepository userRepository;
 
     @Override
-    public Record create(RecordCreate recordCreate) {
-        User user = userService.getById(recordCreate.uploaderId())
+    public Record create(RecordCreate recordCreate, File file) {
+        FileUrl fileUrl = fileService.save(file);
+        User user = userRepository.findById(recordCreate.uploaderId())
                 .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
 
         return recordRepository.save(Record.builder()
@@ -63,7 +65,7 @@ public class RecordServiceImpl implements RecordService {
 
     @Override
     public void watch(long userId, long recordId) {
-        User user = userService.getById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
         Record record = recordRepository.findById(recordId)
                 .orElseThrow(() -> new RecordException(ErrorMessage.RECORD_NOT_FOUND));

@@ -24,6 +24,7 @@ public class UploadEntity {
 
     @Builder
     public UploadEntity(Long id, RecordEntity record, KeywordEntity keyword) {
+        this.id = id;
         this.record = record;
         this.keyword = keyword;
     }

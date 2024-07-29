@@ -41,17 +41,6 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Optional<User> findByPlatformId(String platformId) {
-        return userJpaRepository.findByPlatformId(platformId)
-                .map(UserEntity::toDomain);
-    }
-
-    @Override
-    public boolean existsByNickname(String nickname) {
-        return userJpaRepository.existsByNickname(nickname);
-    }
-
-    @Override
     public void deleteById(long userId) {
         userJpaRepository.deleteById(userId);
     }
@@ -60,5 +49,16 @@ public class UserRepositoryImpl implements UserRepository {
     public Optional<User> findById(long userId) {
         return userJpaRepository.findById(userId)
                 .map(UserEntity::toDomain);
+    }
+
+    @Override
+    public Optional<User> findByPlatformId(String platformId) {
+        return userJpaRepository.findByPlatformId(platformId)
+                .map(UserEntity::toDomain);
+    }
+
+    @Override
+    public boolean existsByNickname(String nickname) {
+        return userJpaRepository.existsByNickname(nickname);
     }
 }

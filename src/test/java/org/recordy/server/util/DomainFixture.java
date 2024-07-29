@@ -10,8 +10,8 @@ import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.RecordEntity;
 import org.recordy.server.record.domain.usecase.RecordCreate;
 import org.recordy.server.record.service.dto.FileUrl;
+import org.recordy.server.user.domain.TermsAgreement;
 import org.recordy.server.bookmark.domain.Bookmark;
-import org.recordy.server.user.controller.dto.request.TermsAgreement;
 import org.recordy.server.user.domain.usecase.UserSignIn;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.UserEntity;
@@ -34,6 +34,7 @@ public final class DomainFixture {
     public static final boolean USE_TERM_AGREEMENT = true;
     public static final boolean PERSONAL_INFO_TERM_AGREEMENT = true;
     public static final boolean AGE_TERM_AGREEMENT = true;
+    public static final LocalDateTime USER_CREATED_AT = LocalDateTime.of(2021, 1, 1, 0, 0);
 
     /**
      * AUTH

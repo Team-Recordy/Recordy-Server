@@ -55,6 +55,12 @@ public class RecordRepositoryImpl implements RecordRepository {
                 .ifPresent(recordJpaRepository::delete);
     }
 
+    @Transactional
+    @Override
+    public void deleteByUserId(long userId) {
+        recordJpaRepository.deleteAllByUserId(userId);
+    }
+
     @Override
     public Optional<Record> findById(long recordId) {
         return recordJpaRepository.findById(recordId)

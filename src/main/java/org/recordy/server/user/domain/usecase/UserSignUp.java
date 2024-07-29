@@ -1,6 +1,6 @@
 package org.recordy.server.user.domain.usecase;
 
-import org.recordy.server.user.controller.dto.request.TermsAgreement;
+import org.recordy.server.user.domain.TermsAgreement;
 
 public record UserSignUp(
         Long userId,

@@ -42,9 +42,9 @@ public class UserAuthController implements UserAuthApi {
     ) {
         userService.signUp(UserSignUp.of(userId, request.nickname(), request.termsAgreement()));
 
-        return ResponseEntity.
-                status(HttpStatus.CREATED).
-                build();
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .build();
     }
 
     @Override

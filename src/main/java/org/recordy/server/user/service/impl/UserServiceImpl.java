@@ -9,7 +9,7 @@ import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.subscribe.domain.Subscribe;
 import org.recordy.server.subscribe.repository.SubscribeRepository;
-import org.recordy.server.user.controller.dto.request.TermsAgreement;
+import org.recordy.server.user.domain.TermsAgreement;
 import org.recordy.server.user.domain.usecase.UserProfile;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.UserStatus;
@@ -21,8 +21,6 @@ import org.recordy.server.user.service.UserService;
 import org.recordy.server.view.repository.ViewRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -63,7 +61,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private User getOrCreateUser(AuthPlatform platform) {
-        return getByPlatformId(platform.getId())
+        return userRepository.findByPlatformId(platform.getId())
                 .orElseGet(() -> create(platform));
     }
 
@@ -89,11 +87,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public String reissueToken(String refreshToken) {
         String platformId = authTokenService.getPlatformIdFromRefreshToken(refreshToken);
-        Long userId = getByPlatformId(platformId)
-                .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND))
-                .getId();
+        User user = userRepository.findByPlatformId(platformId)
+                .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
 
-        return authTokenService.issueAccessToken(userId);
+        return authTokenService.issueAccessToken(user.getId());
     }
 
     @Override
@@ -116,6 +113,7 @@ public class UserServiceImpl implements UserService {
         recordRepository.deleteByUserId(userId);
         authService.signOut(user.getAuthPlatform().getId());
         userRepository.deleteById(userId);
+        recordRepository.deleteByUserId(userId);
     }
 
     @Override
@@ -129,16 +127,6 @@ public class UserServiceImpl implements UserService {
         boolean isFollowing = subscribeRepository.existsBySubscribingUserIdAndSubscribedUserId(userId, otherUserId);
 
         return UserProfile.of(user, records, followers, followings, bookmarks, isFollowing);
-    }
-
-    @Override
-    public Optional<User> getByPlatformId(String platformId) {
-        return userRepository.findByPlatformId(platformId);
-    }
-
-    @Override
-    public Optional<User> getById(long id) {
-        return userRepository.findById(id);
     }
 
     @Override

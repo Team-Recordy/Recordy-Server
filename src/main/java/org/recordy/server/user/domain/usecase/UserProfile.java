@@ -13,6 +13,7 @@ public record UserProfile(
         long bookmarkCount,
         boolean isFollowing
 ) {
+
     public static UserProfile of(User user, long recordCount, long followerCount, long followingCount, long bookmarkCount, boolean isFollowing) {
         return new UserProfile(
                 user.getId(),

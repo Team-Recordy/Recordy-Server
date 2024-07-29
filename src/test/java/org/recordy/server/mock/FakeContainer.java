@@ -37,6 +37,7 @@ import org.recordy.server.subscribe.repository.SubscribeRepository;
 import org.recordy.server.subscribe.service.SubscribeService;
 import org.recordy.server.subscribe.service.impl.SubscribeServiceImpl;
 import org.recordy.server.user.controller.UserAuthController;
+import org.recordy.server.user.controller.UserController;
 import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.user.service.UserService;
 import org.recordy.server.user.service.impl.UserServiceImpl;
@@ -83,6 +84,7 @@ public class FakeContainer {
 
     // controller
     public final UserAuthController userAuthController;
+    public final UserController userController;
 
     public FakeContainer() {
         this.userRepository = new FakeUserRepository();
@@ -118,6 +120,7 @@ public class FakeContainer {
         this.userService = new UserServiceImpl(userRepository, subscribeRepository, recordRepository, bookmarkRepository,viewRepository, authService, authTokenService);
 
         this.keywordService = new KeywordServiceImpl(keywordRepository);
+        this.recordService = new RecordServiceImpl(recordRepository, viewRepository, fileService, userRepository);
         this.bookmarkService = new BookmarkServiceImpl(userRepository, recordRepository, bookmarkRepository);
         this.recordService = new RecordServiceImpl(recordRepository, viewRepository, bookmarkRepository, userService);
         this.subscribeService = new SubscribeServiceImpl(subscribeRepository, userRepository);
@@ -132,5 +135,6 @@ public class FakeContainer {
         );
 
         this.userAuthController = new UserAuthController(userService);
+        this.userController = new UserController(subscribeService, userService);
     }
 }

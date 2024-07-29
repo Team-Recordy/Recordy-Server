@@ -6,8 +6,6 @@ import org.recordy.server.user.domain.usecase.UserSignIn;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.usecase.UserSignUp;
 
-import java.util.Optional;
-
 public interface UserService {
 
     // command
@@ -19,7 +17,5 @@ public interface UserService {
 
     // query
     UserProfile getProfile(long userId, long otherUserId);
-    Optional<User> getByPlatformId(String platformId);
-    Optional<User> getById(long id);
     void validateDuplicateNickname(String nickname);
 }
