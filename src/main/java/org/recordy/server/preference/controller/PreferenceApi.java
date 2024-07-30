@@ -8,12 +8,13 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.recordy.server.auth.security.resolver.UserId;
 import org.recordy.server.common.message.ErrorMessage;
-import org.recordy.server.preference.domain.usecase.Preference;
+import org.recordy.server.preference.controller.dto.response.PreferenceGetResponse;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 @Tag(name = "Preference Api")
 public interface PreferenceApi {
+
     @Operation(
             security = @SecurityRequirement(name = "Authorization"),
             summary = "유저 취향 키워드 Top 3 API",
@@ -25,7 +26,7 @@ public interface PreferenceApi {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(
-                                            implementation = Preference.class
+                                            implementation = PreferenceGetResponse.class
                                     )
                             )
                     ),
@@ -51,7 +52,7 @@ public interface PreferenceApi {
                     )
             }
     )
-    public ResponseEntity<Preference> getPreference(
+    public ResponseEntity<PreferenceGetResponse> getPreference(
             @UserId Long userId
     );
 }

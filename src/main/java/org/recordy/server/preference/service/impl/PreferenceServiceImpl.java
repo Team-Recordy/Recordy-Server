@@ -3,7 +3,7 @@ package org.recordy.server.preference.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.bookmark.repository.BookmarkRepository;
 import org.recordy.server.keyword.domain.Keyword;
-import org.recordy.server.preference.domain.usecase.Preference;
+import org.recordy.server.preference.domain.Preference;
 import org.recordy.server.preference.service.PreferenceService;
 import org.recordy.server.record.repository.UploadRepository;
 import org.recordy.server.view.repository.ViewRepository;
@@ -22,13 +22,13 @@ public class PreferenceServiceImpl implements PreferenceService {
 
     @Override
     public Preference getPreference(long userId) {
-        Map<Keyword, Long> totalKeywords = new HashMap<>();
+        Map<Keyword, Long> totalKeywordAndCounts = new HashMap<>();
 
-        addMap(totalKeywords, uploadRepository.countAllByUserIdGroupByKeyword(userId));
-        addMap(totalKeywords, viewRepository.countAllByUserIdGroupByKeyword(userId));
-        addMap(totalKeywords, bookmarkRepository.countAllByUserIdGroupByKeyword(userId));
+        addMap(totalKeywordAndCounts, uploadRepository.countAllByUserIdGroupByKeyword(userId));
+        addMap(totalKeywordAndCounts, viewRepository.countAllByUserIdGroupByKeyword(userId));
+        addMap(totalKeywordAndCounts, bookmarkRepository.countAllByUserIdGroupByKeyword(userId));
 
-        return Preference.of(totalKeywords);
+        return Preference.from(totalKeywordAndCounts);
     }
 
     private static void addMap(Map<Keyword, Long> totalKeywords, Map<Keyword, Long> keywords) {

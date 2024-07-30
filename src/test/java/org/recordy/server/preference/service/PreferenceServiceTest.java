@@ -9,10 +9,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.mock.FakeContainer;
-import org.recordy.server.preference.domain.usecase.Preference;
+import org.recordy.server.preference.domain.Preference;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.repository.RecordRepository;
-import org.recordy.server.record.service.dto.FileUrl;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.util.DomainFixture;
@@ -55,13 +54,11 @@ class PreferenceServiceTest {
 
         //then
         assertAll(
-                () -> assertThat(result.preference().size()).isEqualTo(3),
-                () -> assertThat(result.preference().get(0).get(0)).isEqualTo("감각적인"),
-                () -> assertThat(result.preference().get(0).get(1)).isEqualTo("50"),
-                () -> assertThat(result.preference().get(1).get(0)).isEqualTo("귀여운"),
-                () -> assertThat(result.preference().get(1).get(1)).isEqualTo("33"),
-                () -> assertThat(result.preference().get(2).get(0)).isEqualTo("강렬한"),
-                () -> assertThat(result.preference().get(2).get(1)).isEqualTo("16")
+                () -> assertThat(result.getKeywordAndCounts().size()).isEqualTo(3),
+                () -> assertThat(result.getSum()).isEqualTo(6L),
+                () -> assertThat(result.getKeywordAndCounts().get(Keyword.감각적인)).isEqualTo(3L),
+                () -> assertThat(result.getKeywordAndCounts().get(Keyword.강렬한)).isEqualTo(1L),
+                () -> assertThat(result.getKeywordAndCounts().get(Keyword.귀여운)).isEqualTo(2L)
         );
     }
 }

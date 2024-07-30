@@ -1,23 +1,20 @@
 package org.recordy.server.preference.domian.usercase;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.keyword.domain.Keyword;
-import org.recordy.server.preference.domain.usecase.Preference;
+import org.recordy.server.preference.domain.Preference;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 
 class PreferenceTest {
 
     @Test
-    void of를_통해_취향_정보를_가지고_상위_3개의_취향을_내림차순으로_정렬한_Preference형태로_리턴할_수_있다() {
-        //given
-        Long userId = 1L;
-        Map<Keyword, Long> preference = Map.of(
+    void from을_통해_Preference_객체를_생성할_수_있다() {
+        // given
+        Map<Keyword, Long> keywordAndCounts = Map.of(
                 Keyword.강렬한, 50L,
                 Keyword.감각적인 , 100L,
                 Keyword.깔끔한, 16L,
@@ -25,43 +22,37 @@ class PreferenceTest {
                 Keyword.귀여운, 20L
         );
 
-        //when
-        Preference result = Preference.of(preference);
+        // when
+        Preference preference = Preference.from(keywordAndCounts);
 
-        //then
+        // then
         assertAll(
-                () -> assertThat(result.preference().size()).isEqualTo(3),
-                () -> assertThat(result.preference().get(0).get(0)).isEqualTo("감각적인"),
-                () -> assertThat(result.preference().get(1).get(0)).isEqualTo("강렬한"),
-                () -> assertThat(result.preference().get(2).get(0)).isEqualTo("귀여운")
-
+                () -> assertThat(preference.getKeywordAndCounts()).isEqualTo(keywordAndCounts),
+                () -> assertThat(preference.getSum()).isEqualTo(200L)
         );
     }
 
     @Test
-    void of를_통해_얻은_Preference는_키워드에_대한_값을_백분율로_리턴한다() {
-        //given
-        Long userId = 1L;
-        Map<Keyword, Long> preference = Map.of(
+    void getNormalizedTopKeywords를_통해_상위_3개의_키워드를_백분율로_정렬할_수_있다() {
+        // given
+        Map<Keyword, Long> keywordAndCounts = Map.of(
                 Keyword.강렬한, 50L,
                 Keyword.감각적인 , 100L,
-                Keyword.귀여운, 20L,
                 Keyword.깔끔한, 16L,
-                Keyword.덕후몰이,14L
+                Keyword.덕후몰이,14L,
+                Keyword.귀여운, 20L
         );
+        Preference preference = Preference.from(keywordAndCounts);
 
-        //when
-        Preference result = Preference.of(preference);
+        // when
+        Map<Keyword, Long> result = preference.getNormalizedTopKeywords(3);
 
-        //then
+        // then
         assertAll(
-                () -> assertThat(result.preference().size()).isEqualTo(3),
-                () -> assertThat(result.preference().get(0).get(1)).isEqualTo("50"),
-                () -> assertThat(result.preference().get(1).get(1)).isEqualTo("25"),
-                () -> assertThat(result.preference().get(2).get(1)).isEqualTo("10")
-
+                () -> assertThat(result.size()).isEqualTo(3),
+                () -> assertThat(result.get(Keyword.감각적인)).isEqualTo(50L),
+                () -> assertThat(result.get(Keyword.강렬한)).isEqualTo(25L),
+                () -> assertThat(result.get(Keyword.귀여운)).isEqualTo(10L)
         );
-
     }
-
 }
