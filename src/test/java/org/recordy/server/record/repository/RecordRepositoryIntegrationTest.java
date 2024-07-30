@@ -8,9 +8,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.record.domain.Record;
-import org.recordy.server.record.domain.RecordEntity;
 import org.recordy.server.record.domain.UploadEntity;
-import org.recordy.server.record.repository.impl.UploadJpaRepository;
 import org.recordy.server.record.service.dto.FileUrl;
 import org.recordy.server.bookmark.domain.Bookmark;
 import org.recordy.server.bookmark.domain.BookmarkEntity;
@@ -53,7 +51,7 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
     private RecordRepository recordRepository;
 
     @Autowired
-    private UploadJpaRepository uploadRepository;
+    private UploadRepository uploadRepository;
 
     @Autowired
     private BookmarkRepository bookmarkRepository;
@@ -103,7 +101,7 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
         Record record = recordRepository.save(createRecord(6));
 
         // when
-        List<UploadEntity> uploads = uploadRepository.findAllByRecord(RecordEntity.from(record));
+        List<UploadEntity> uploads = uploadRepository.findAllByRecordId(record.getId());
 
         // then
         assertAll(
@@ -120,7 +118,7 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
         Record savedRecord = recordRepository.save(DomainFixture.createRecord(6));
 
         // when
-        List<UploadEntity> uploads = uploadRepository.findAllByRecord(RecordEntity.from(savedRecord));
+        List<UploadEntity> uploads = uploadRepository.findAllByRecordId(savedRecord.getId());
 
         // then
         assertAll(
