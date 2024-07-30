@@ -21,7 +21,7 @@ public class ViewQueryDslRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     public Map<KeywordEntity, Long> countAllByUserIdGroupByKeyword(long userId) {
-        List<Tuple> viewResults = jpaQueryFactory
+        List<Tuple> result = jpaQueryFactory
                 .select(uploadEntity.keyword, viewEntity.count())
                 .from(viewEntity)
                 .join(viewEntity.record, recordEntity)
@@ -30,7 +30,7 @@ public class ViewQueryDslRepository {
                 .groupBy(uploadEntity.keyword)
                 .fetch();
 
-        return viewResults.stream()
+        return result.stream()
                 .collect(Collectors.toMap(
                         tuple -> tuple.get(uploadEntity.keyword),
                         tuple -> tuple.get(viewEntity.count())));
