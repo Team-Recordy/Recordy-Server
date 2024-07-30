@@ -38,3 +38,4 @@ out/
 
 ### configuration ###
 src/main/resources/*.yml
+src/main/generated/
