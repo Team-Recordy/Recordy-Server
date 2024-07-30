@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.recordy.server.bookmark.domain.Bookmark;
 import org.recordy.server.bookmark.repository.BookmarkRepository;
+import org.recordy.server.keyword.domain.Keyword;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -69,5 +70,10 @@ public class FakeBookmarkRepository implements BookmarkRepository {
         return bookmarks.values().stream()
                 .filter(bookmark -> bookmark.getUser().getId() == userId)
                 .count();
+    }
+
+    @Override
+    public Map<Keyword, Long> countAllByUserIdGroupByKeyword(long userId) {
+        return Map.of();
     }
 }
