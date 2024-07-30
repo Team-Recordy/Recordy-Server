@@ -163,7 +163,7 @@ public class RecordController implements RecordApi {
             @RequestParam(required = false, defaultValue = "0") long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
-        Slice<Bookmark> bookmarks = recordService.getBookmarkedRecords(userId, cursorId, size);
+        Slice<Bookmark> bookmarks = bookmarkService.getBookmarks(userId, cursorId, size);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

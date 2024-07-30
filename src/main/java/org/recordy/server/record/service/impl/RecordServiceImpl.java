@@ -111,10 +111,6 @@ public class RecordServiceImpl implements RecordService {
     private Slice<Record> getRecentRecordsWithKeywords(List<Keyword> keywords, long cursorId, int size) {
         return recordRepository.findAllByIdAfterAndKeywordsOrderByIdDesc(keywords, cursorId, PageRequest.ofSize(size));
     }
-    @Override
-    public Slice<Bookmark> getBookmarkedRecords(long userId, long cursorId, int size) {
-        return bookmarkRepository.findAllByBookmarksOrderByIdDesc(userId, cursorId, PageRequest.ofSize(size));
-    }
 
     @Override
     public Slice<Record> getSubscribingRecords(long userId, long cursorId, int size) {

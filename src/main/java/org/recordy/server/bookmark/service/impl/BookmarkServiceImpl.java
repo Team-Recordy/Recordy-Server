@@ -56,5 +56,10 @@ public class BookmarkServiceImpl implements BookmarkService {
     public Long countBookmarks(long userId) {
         return bookmarkRepository.countByUserId(userId);
     }
+
+    @Override
+    public Slice<Bookmark> getBookmarks(long userId, long cursorId, int size) {
+        return bookmarkRepository.findAllByBookmarksOrderByIdDesc(userId, cursorId, PageRequest.ofSize(size));
+    }
 }
 
