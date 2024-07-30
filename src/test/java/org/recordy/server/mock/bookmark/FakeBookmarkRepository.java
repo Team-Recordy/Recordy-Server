@@ -1,9 +1,6 @@
 package org.recordy.server.mock.bookmark;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.recordy.server.bookmark.domain.Bookmark;
 import org.recordy.server.bookmark.repository.BookmarkRepository;
@@ -74,6 +71,21 @@ public class FakeBookmarkRepository implements BookmarkRepository {
 
     @Override
     public Map<Keyword, Long> countAllByUserIdGroupByKeyword(long userId) {
+        Map<Keyword, Long> totalKeywords = new HashMap<>();
+
+        bookmarks.values().stream()
+                .filter(bookmark -> bookmark.getUser().getId() == userId)
+                .map(Bookmark::getRecord)
+                .forEach(
+                        record -> record.getKeywords()
+                                .forEach(keyword -> {
+                                    if (totalKeywords.containsKey(keyword))
+                                        totalKeywords.put(keyword, totalKeywords.get(keyword) + 1);
+                                    else
+                                        totalKeywords.put(keyword, 1L);
+                                })
+                );
+
         return Map.of();
     }
 }
