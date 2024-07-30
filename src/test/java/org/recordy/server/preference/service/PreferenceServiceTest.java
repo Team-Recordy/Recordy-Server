@@ -11,7 +11,6 @@ import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.mock.FakeContainer;
 import org.recordy.server.preference.domain.Preference;
 import org.recordy.server.record.domain.Record;
-import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.util.DomainFixture;
@@ -22,7 +21,6 @@ class PreferenceServiceTest {
 
     private PreferenceService preferenceService;
     private UserRepository userRepository;
-    private RecordRepository recordRepository;
     private ViewRepository viewRepository;
 
     @BeforeEach
@@ -30,7 +28,6 @@ class PreferenceServiceTest {
         FakeContainer fakeContainer = new FakeContainer();
         preferenceService = fakeContainer.preferenceService;
         userRepository = fakeContainer.userRepository;
-        recordRepository = fakeContainer.recordRepository;
         viewRepository = fakeContainer.viewRepository;
     }
 
