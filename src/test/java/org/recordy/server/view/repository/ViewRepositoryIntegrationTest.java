@@ -1,4 +1,4 @@
-package org.recordy.server.record_stat.repository.impl;
+package org.recordy.server.view.repository;
 
 import org.junit.jupiter.api.Test;
 import org.recordy.server.record.domain.Record;

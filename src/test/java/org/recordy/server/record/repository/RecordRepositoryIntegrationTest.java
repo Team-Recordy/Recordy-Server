@@ -3,6 +3,7 @@ package org.recordy.server.record.repository;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.keyword.domain.Keyword;
@@ -140,6 +141,31 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
         assertAll(
                 () -> assertThat(result.getContent()).hasSize(0),
                 () -> assertThat(result.hasNext()).isFalse()
+        );
+    }
+
+    @Test
+    void findById를_통해_id에_해당하는_record_엔티티를_조회할_수_있다() {
+        //given
+        //when
+        Optional<Record>  record = recordRepository.findById(6);
+
+        //then
+        assertAll(
+                () -> assertThat(record.isPresent()),
+                () -> assertThat(record.get().getId()).isEqualTo(6)
+        );
+    }
+
+    @Test
+    void findById를_통해_id에_해당하는_record_엔티티를_찾을_수_없으면_empty를_리턴한다() {
+        //given
+        //when
+        Optional<Record>  record = recordRepository.findById(7);
+
+        //then
+        assertAll(
+                () -> assertThat(record.isEmpty())
         );
     }
 
@@ -476,6 +502,43 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
                 () -> assertThat(result.getContent().get(1).getId()).isEqualTo(4L),
                 () -> assertThat(result.getContent().get(2).getId()).isEqualTo(3L),
                 () -> assertThat((result.hasNext())).isFalse()
+        );
+    }
+
+    @Test
+    void countAllByUserId를_통해_특정_사용자가_올린_레코드_데이터의_수를_구할_수_있다() {
+        //given
+        //when
+        long result = recordRepository.countAllByUserId(1L);
+
+        //then
+        assertAll(
+                () -> assertThat(result).isEqualTo(3)
+        );
+    }
+
+    @Test
+    void findMaxId를_통해_현재_모든_레코드_데이터_중_가장_큰_id값을_구할_수_있다() {
+        //given
+        //when
+        Optional<Long> result = recordRepository.findMaxId();
+
+        //then
+        assertAll(
+                () -> assertThat(result.isPresent()),
+                () -> assertThat(result.get()).isEqualTo(6)
+        );
+    }
+
+    @Test
+    void count를_통해_현재_모든_레코드_데이터의_개수를_구할_수_있다() {
+        //given
+        //when
+        Long result = recordRepository.count();
+
+        //then
+        assertAll(
+                () -> assertThat(result).isEqualTo(6)
         );
     }
 }

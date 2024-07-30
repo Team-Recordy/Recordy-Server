@@ -77,6 +77,7 @@ public class FakeContainer {
     public final BookmarkService bookmarkService;
     public final S3Service s3Service;
     public final SubscribeService subscribeService;
+    public final PreferenceService preferenceService;
 
     // security
     public final AuthFilterExceptionHandler authFilterExceptionHandler;
@@ -122,8 +123,10 @@ public class FakeContainer {
         this.keywordService = new KeywordServiceImpl(keywordRepository);
         this.recordService = new RecordServiceImpl(recordRepository, viewRepository, bookmarkRepository, userRepository);
         this.bookmarkService = new BookmarkServiceImpl(userRepository, recordRepository, bookmarkRepository);
+        this.recordService = new RecordServiceImpl(recordRepository, viewRepository, bookmarkRepository,fileService, userService);
         this.subscribeService = new SubscribeServiceImpl(subscribeRepository, userRepository);
         this.s3Service = mock(S3Service.class);  // S3Service mock 사용
+        this.preferenceService = new PreferenceServiceImpl(recordRepository);
 
         this.authFilterExceptionHandler = new AuthFilterExceptionHandler(new ObjectMapper());
         this.tokenAuthenticationFilter = new TokenAuthenticationFilter(

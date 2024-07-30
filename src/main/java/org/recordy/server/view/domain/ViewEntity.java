@@ -30,12 +30,14 @@ public class ViewEntity extends JpaMetaInfoEntity {
         this.id = id;
         this.record = record;
         this.user = user;
+        this.createdAt = createdAt;
     }
 
     public static ViewEntity of(RecordEntity record, UserEntity user) {
         ViewEntity view = ViewEntity.builder()
                 .record(record)
                 .user(user)
+                .createdAt(LocalDateTime.now())
                 .build();
         record.addView(view);
 
