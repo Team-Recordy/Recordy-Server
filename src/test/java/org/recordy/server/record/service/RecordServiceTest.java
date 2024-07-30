@@ -77,11 +77,11 @@ class RecordServiceTest {
     void watch를_통해_시청기록을_저장할_수_있다() {
         //given
 
-        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
-        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
-        Record record = recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
+        recordService.create(DomainFixture.createRecordCreate());
+        recordService.create(DomainFixture.createRecordCreate());
+        Record record = recordService.create(DomainFixture.createRecordCreate());
 
-        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
+        recordService.create(DomainFixture.createRecordCreate());
 
         //when
         recordService.watch(1, record.getId());
@@ -175,9 +175,9 @@ class RecordServiceTest {
     void getRecentRecords를_통해_키워드를_디코딩해서_해당_키워드에_대한_최신_레코드만_반환할_수_있다() {
         // given
         List<Keyword> keywords = List.of(Keyword.덕후몰이, Keyword.깔끔한);
-        Record record = recordService.create(DomainFixture.createRecordCreate(keywords), DomainFixture.createFile());
-        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
-        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
+        Record record = recordService.create(DomainFixture.createRecordCreate(keywords));
+        recordService.create(DomainFixture.createRecordCreate());
+        recordService.create(DomainFixture.createRecordCreate());
         String encordedKeyword = new String(Base64.getEncoder().encode("깔끔한,덕후몰이".getBytes(StandardCharsets.UTF_8)));
 
         // when
@@ -194,11 +194,11 @@ class RecordServiceTest {
     @Test
     void getTotalRecords를_통해_size만큼의_레코드를_중복없이_랜덤으로_반환할_수_있다() {
         // given
-        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
-        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
-        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
-        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
-        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
+        recordService.create(DomainFixture.createRecordCreate());
+        recordService.create(DomainFixture.createRecordCreate());
+        recordService.create(DomainFixture.createRecordCreate());
+        recordService.create(DomainFixture.createRecordCreate());
+        recordService.create(DomainFixture.createRecordCreate());
 
         // when
         List<Record> result = recordService.getTotalRecords(3);
@@ -215,9 +215,9 @@ class RecordServiceTest {
     @Test
     void getTotalRecords를_통해_size만큼의_레코드가_없으면_현재_레코드_수만큼만_반환한다() {
         // given
-        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
-        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
-        recordService.create(DomainFixture.createRecordCreate(), DomainFixture.createFile());
+        recordService.create(DomainFixture.createRecordCreate());
+        recordService.create(DomainFixture.createRecordCreate());
+        recordService.create(DomainFixture.createRecordCreate());
 
 
         // when
