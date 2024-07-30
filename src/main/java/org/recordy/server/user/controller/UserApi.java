@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.recordy.server.common.dto.response.CursorBasePaginatedResponse;
 import org.recordy.server.auth.security.resolver.UserId;
-import org.recordy.server.preference.domain.usecase.Preference;
 import org.recordy.server.user.controller.dto.response.UserInfoWithFollowing;
 import org.recordy.server.user.controller.dto.response.UserInfo;
 import org.recordy.server.user.domain.usecase.UserProfile;
@@ -45,7 +44,7 @@ public interface UserApi {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(
-                                            implementation = Preference.class
+                                            implementation = UserInfo.class
                                     )
                             )
                     )
@@ -68,7 +67,7 @@ public interface UserApi {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(
-                                            implementation = Preference.class
+                                            implementation = UserInfo.class
                                     )
                             )
                     )
@@ -95,6 +94,4 @@ public interface UserApi {
             @UserId Long userId,
             @PathVariable Long otherUserId
     );
-
-
 }
