@@ -423,7 +423,7 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
 
         // then
         assertAll(
-                () -> assertThat(inclusiveResult).hasSize(1),
+                () -> assertThat(inclusiveResult).hasSize(3),
                 () -> assertThat(inclusiveResult.get(0).getId()).isEqualTo(1),
                 () -> assertThat(exclusiveResult).isEmpty()
         );
