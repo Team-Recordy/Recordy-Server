@@ -14,7 +14,7 @@ class UploadEntityTest {
     void of를_통해_RecordEntity와_KeywordEntity를_토대로_UploadEntity를_생성할_수_있다() {
         // given
         RecordEntity recordEntity = DomainFixture.createRecordEntity();
-        KeywordEntity keywordEntity = new KeywordEntity(Keyword.감각적인);
+        KeywordEntity keywordEntity = KeywordEntity.from(Keyword.감각적인);
 
         // when
         UploadEntity uploadEntity = UploadEntity.of(recordEntity, keywordEntity);

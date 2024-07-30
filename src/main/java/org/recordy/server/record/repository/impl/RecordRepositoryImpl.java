@@ -8,7 +8,6 @@ import org.recordy.server.keyword.domain.KeywordEntity;
 import org.recordy.server.keyword.repository.impl.KeywordJpaRepository;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.RecordEntity;
-import org.recordy.server.record.domain.UploadEntity;
 import org.recordy.server.record.repository.RecordRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -27,25 +26,12 @@ public class RecordRepositoryImpl implements RecordRepository {
     private final RecordJpaRepository recordJpaRepository;
     private final RecordQueryDslRepository recordQueryDslRepository;
     private final KeywordJpaRepository keywordJpaRepository;
-    private final UploadJpaRepository uploadJpaRepository;
 
     @Transactional
     @Override
     public Record save(Record record) {
-        RecordEntity recordEntity = recordJpaRepository.save(RecordEntity.from(record));
-        saveUploads(recordEntity, record.getKeywords());
-
-        return recordEntity.toDomain();
-    }
-
-    private void saveUploads(RecordEntity recordEntity, List<Keyword> keywords) {
-        List<KeywordEntity> keywordEntities = keywordJpaRepository.findAll();
-        List<UploadEntity> uploadEntities = keywordEntities.stream()
-                .filter(keyword -> keywords.contains(keyword.toDomain()))
-                .map(keyword -> UploadEntity.of(recordEntity, keyword))
-                .toList();
-
-        uploadJpaRepository.saveAll(uploadEntities);
+        return recordJpaRepository.save(RecordEntity.from(record))
+                .toDomain();
     }
 
     @Transactional
