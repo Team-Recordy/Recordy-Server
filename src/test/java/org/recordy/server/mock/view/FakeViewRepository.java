@@ -1,5 +1,6 @@
 package org.recordy.server.mock.view;
 
+import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.view.domain.View;
 import org.recordy.server.view.repository.ViewRepository;
 
@@ -27,5 +28,10 @@ public class FakeViewRepository implements ViewRepository {
     public void deleteByUserId(long userId) {
         viewEntities.values()
                 .removeIf(view -> view.getUser().getId() == userId);
+    }
+
+    @Override
+    public Map<Keyword, Long> countAllByUserIdGroupByKeyword(long userId) {
+        return Map.of();
     }
 }
