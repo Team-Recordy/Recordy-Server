@@ -20,12 +20,13 @@ public class KeywordEntity extends JpaMetaInfoEntity {
     @Enumerated(EnumType.STRING)
     private Keyword keyword;
 
-    public KeywordEntity(Keyword keyword) {
+    public KeywordEntity(Long id, Keyword keyword) {
+        this.id = id;
         this.keyword = keyword;
     }
 
     public static KeywordEntity from(Keyword keyword) {
-        return new KeywordEntity(keyword);
+        return new KeywordEntity(keyword.getId(), keyword);
     }
 
     public Keyword toDomain() {
