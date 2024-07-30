@@ -36,6 +36,15 @@ public class FakeSubscribeRepository implements SubscribeRepository {
     }
 
     @Override
+    public void deleteByUserId(long userId) {
+        subscribes.values()
+                .removeIf(subscribe ->
+                        subscribe.getSubscribingUser().getId() == userId ||
+                                subscribe.getSubscribedUser().getId() == userId
+                );
+    }
+
+    @Override
     public Slice<Subscribe> findAllBySubscribingUserId(long subscribingUserId, long cursor, Pageable pageable) {
         List<Subscribe> content = subscribes.values().stream()
                 .filter(subscribe ->

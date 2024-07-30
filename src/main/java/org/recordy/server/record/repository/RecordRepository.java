@@ -14,6 +14,7 @@ public interface RecordRepository {
     // command
     Record save(Record record);
     void deleteById(long recordId);
+    void deleteByUserId(long userId);
 
     // query
     Optional<Record> findById(long id);

@@ -10,6 +10,7 @@ public record UserInfo(
         String nickname,
         String profileImageUrl
 ){
+
     public static UserInfo from(User user) {
         return new UserInfo(
                 user.getId(),
@@ -18,7 +19,7 @@ public record UserInfo(
         );
     }
 
-    public static Slice<UserInfo> of (Slice<User> users) {
+    public static Slice<UserInfo> from(Slice<User> users) {
         return new SliceImpl<>(
                 users.getContent().stream()
                         .map(UserInfo::from)

@@ -10,6 +10,7 @@ import org.recordy.server.common.dto.response.PaginatedResponse;
 import org.recordy.server.auth.security.resolver.UserId;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.record.controller.dto.request.RecordCreateRequest;
+import org.recordy.server.record.controller.dto.response.BookmarkedRecord;
 import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.MediaType;
@@ -408,7 +409,7 @@ public interface RecordApi {
                     )
             }
     )
-    public ResponseEntity<CursorBasePaginatedResponse<RecordInfoWithBookmark>> getBookmarkedRecords(
+    public ResponseEntity<CursorBasePaginatedResponse<BookmarkedRecord>> getBookmarkedRecords(
             @UserId Long userId,
             @RequestParam(required = false, defaultValue = "0L") long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size

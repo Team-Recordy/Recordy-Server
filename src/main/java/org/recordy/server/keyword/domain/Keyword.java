@@ -25,8 +25,6 @@ public enum Keyword {
     public static List<Keyword> decode(String utf8Bytes) {
         String[] keywords = new String(Base64.getDecoder().decode(utf8Bytes), StandardCharsets.UTF_8).split(",");
 
-        System.out.println(Arrays.toString(keywords));
-
         return Arrays.stream(keywords)
                 .map(Keyword::valueOf)
                 .collect(Collectors.toList());

@@ -22,4 +22,10 @@ public class FakeViewRepository implements ViewRepository {
         viewEntities.put(autoIncrementId++, realView);
         return view;
     }
+
+    @Override
+    public void deleteByUserId(long userId) {
+        viewEntities.values()
+                .removeIf(view -> view.getUser().getId() == userId);
+    }
 }

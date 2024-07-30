@@ -18,4 +18,9 @@ public class ViewRepositoryImpl implements ViewRepository {
         return viewJpaRepository.save(ViewEntity.from(view))
                 .toDomain();
     }
+
+    @Override
+    public void deleteByUserId(long userId) {
+        viewJpaRepository.deleteAllByUserId(userId);
+    }
 }

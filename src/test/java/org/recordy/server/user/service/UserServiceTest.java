@@ -9,7 +9,7 @@ import org.recordy.server.mock.FakeContainer;
 import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.subscribe.domain.Subscribe;
 import org.recordy.server.subscribe.repository.SubscribeRepository;
-import org.recordy.server.user.controller.dto.request.TermsAgreement;
+import org.recordy.server.user.domain.TermsAgreement;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.UserStatus;
 import org.recordy.server.user.domain.usecase.UserProfile;
@@ -53,6 +53,7 @@ public class UserServiceTest {
 
         // then
         assertAll(
+                () -> assertThat(result.getUserId()).isEqualTo(DomainFixture.USER_ID),
                 () -> assertThat(result.getPlatform().getId()).isEqualTo(DomainFixture.PLATFORM_ID),
                 () -> assertThat(result.getPlatform().getType()).isEqualTo(platform.getType()),
                 () -> assertThat(result.getToken().getAccessToken()).isNotEmpty(),
@@ -84,13 +85,13 @@ public class UserServiceTest {
 
         // when
         userService.signIn(userSignIn);
-        Optional<User> user = userRepository.findByPlatformId(DomainFixture.PLATFORM_ID);
+        Optional<User> result = userRepository.findByPlatformId(DomainFixture.PLATFORM_ID);
 
         // then
         assertAll(
-                () -> assertThat(user).isNotEmpty(),
-                () -> assertThat(user.get().getAuthPlatform().getId()).isEqualTo(DomainFixture.PLATFORM_ID),
-                () -> assertThat(user.get().getAuthPlatform().getType()).isEqualTo(platform.getType())
+                () -> assertThat(result).isNotEmpty(),
+                () -> assertThat(result.get().getAuthPlatform().getId()).isEqualTo(DomainFixture.PLATFORM_ID),
+                () -> assertThat(result.get().getAuthPlatform().getType()).isEqualTo(platform.getType())
         );
     }
 
@@ -108,6 +109,23 @@ public class UserServiceTest {
         assertAll(
                 () -> assertThat(user).isNotEmpty(),
                 () -> assertThat(user.get().getStatus()).isEqualTo(UserStatus.PENDING)
+        );
+    }
+
+    @Test
+    void signIn을_통해_처음_가입된_사용자의_약관동의_상태는_기본값이다() {
+        // given
+        AuthPlatform platform = DomainFixture.createAuthPlatform();
+        UserSignIn userSignIn = DomainFixture.createUserSignIn(platform.getType());
+
+        // when
+        userService.signIn(userSignIn);
+        Optional<User> user = userRepository.findByPlatformId(DomainFixture.PLATFORM_ID);
+
+        // then
+        assertAll(
+                () -> assertThat(user).isNotEmpty(),
+                () -> assertThat(user.get().getTermsAgreement()).isEqualTo(TermsAgreement.defaultAgreement())
         );
     }
 
@@ -166,6 +184,47 @@ public class UserServiceTest {
     }
 
     @Test
+    void signUp을_통해_사용자의_닉네임과_이미지_약관동의를_추가할_수_있다() {
+        // given
+        AuthPlatform platform = DomainFixture.createAuthPlatform();
+        UserSignIn userSignIn = DomainFixture.createUserSignIn(platform.getType());
+        userService.signIn(userSignIn);
+
+        UserSignUp userSignUp = DomainFixture.createUserSignUp();
+
+        // when
+        User result = userService.signUp(userSignUp);
+
+        // then
+        assertAll(
+                () -> assertThat(result.getNickname()).isEqualTo(DomainFixture.USER_NICKNAME),
+                () -> assertThat(result.getProfileImageUrl()).contains("https://recordy-bucket.s3.ap-northeast-2.amazonaws.com/profile_"),
+                () -> assertThat(result.getTermsAgreement()).isEqualTo(TermsAgreement.of(true, true, true))
+        );
+    }
+
+    @Test
+    void signUp을_통해_사용자를_가입시키면_루트_사용자를_팔로우한다() {
+        // given
+        Auth rootAuth = userService.signIn(UserSignIn.of("Bearer root", AuthPlatform.Type.KAKAO));
+        User rootUser = userService.signUp(UserSignUp.of(rootAuth.getUserId(), "루트", TermsAgreement.of(true, true, true)));
+
+        AuthPlatform platform = DomainFixture.createAuthPlatform();
+        UserSignIn userSignIn = DomainFixture.createUserSignIn(platform.getType());
+        Auth auth = userService.signIn(userSignIn);
+
+        // when
+        User result = userService.signUp(DomainFixture.createUserSignUp(2L));
+
+        // then
+        assertAll(
+                () -> assertThat(subscribeRepository.existsBySubscribingUserIdAndSubscribedUserId(result.getId(), DomainFixture.ROOT_USER_ID)).isTrue(),
+                () -> assertThat(subscribeRepository.countSubscribingUsers(rootUser.getId())).isEqualTo(1),
+                () -> assertThat(subscribeRepository.countSubscribedUsers(result.getId())).isEqualTo(1)
+        );
+    }
+
+    @Test
     void reissueToken을_통해_accessToken을_재발급_받을_수_있다() {
         //given
         AuthPlatform platform = DomainFixture.createAuthPlatform();
@@ -173,12 +232,11 @@ public class UserServiceTest {
         Auth auth = userService.signIn(userSignIn);
 
         //when
-        String refreshToken = "Bearer " + auth.getToken().getRefreshToken();
+        String refreshToken = DomainFixture.TOKEN_PREFIX + auth.getToken().getRefreshToken();
         String accessToken = userService.reissueToken(refreshToken);
 
         //then
         assertThat(accessToken).isNotEmpty();
-
     }
 
     @Test
@@ -209,6 +267,24 @@ public class UserServiceTest {
 
         // then
         assertThat(result).isEmpty();
+    }
+
+    @Test
+    void delete를_통해_사용자를_삭제할_때_관련된_Record_객체도_삭제된다() {
+        // given
+        AuthPlatform platform = DomainFixture.createAuthPlatform();
+        UserSignIn userSignIn = DomainFixture.createUserSignIn(platform.getType());
+        Auth auth = userService.signIn(userSignIn);
+
+        // when
+        recordRepository.save(DomainFixture.createRecord());
+        userService.delete(auth.getUserId());
+
+        // then
+        assertAll(
+                () -> assertThat(userRepository.findById(DomainFixture.USER_ID)).isEmpty(),
+                () -> assertThat(recordRepository.count()).isZero()
+        );
     }
 
     @Test
@@ -257,61 +333,6 @@ public class UserServiceTest {
                 () -> assertThat(userProfile.followerCount()).isEqualTo(1),
                 () -> assertThat(userProfile.followingCount()).isEqualTo(1)
         );
-    }
-
-    @Test
-    void getByPlatformId를_통해_플랫폼_id로부터_사용자를_조회할_수_있다() {
-        // given
-        userRepository.save(DomainFixture.createUser(UserStatus.ACTIVE));
-
-        // when
-        Optional<User> result = userService.getByPlatformId(DomainFixture.PLATFORM_ID);
-
-        // then
-        assertAll(
-                () -> assertThat(result).isNotEmpty(),
-                () -> assertThat(result.get().getAuthPlatform().getId()).isEqualTo(DomainFixture.PLATFORM_ID)
-        );
-    }
-
-    @Test
-    void getByPlatformId를_통해_존재하지_않는_플랫폼_id로_검색할_경우_빈_값을_반환한다() {
-        // given
-        userRepository.save(DomainFixture.createUser(UserStatus.ACTIVE));
-
-        // when
-        Optional<User> result = userService.getByPlatformId("invalid_platform_id");
-
-        // then
-        assertThat(result).isEmpty();
-    }
-
-    @Test
-    void getById를_통해_플랫폼_id로부터_사용자를_조회할_수_있다() {
-        // given
-        userRepository.save(DomainFixture.createUser(UserStatus.ACTIVE));
-
-        // when
-        Optional<User> result = userService.getById(DomainFixture.USER_ID);
-
-        // then
-        assertAll(
-                () -> assertThat(result).isNotEmpty(),
-                () -> assertThat(result.get().getId()).isEqualTo(DomainFixture.USER_ID)
-        );
-    }
-
-    @Test
-    void getById를_통해_존재하지_않는_플랫폼_id로_검색할_경우_빈_값을_반환한다() {
-        // given
-        long invalidUserId = 99L;
-        userRepository.save(DomainFixture.createUser(UserStatus.ACTIVE));
-
-        // when
-        Optional<User> result = userService.getById(invalidUserId);
-
-        // then
-        assertThat(result).isEmpty();
     }
 
     @Test

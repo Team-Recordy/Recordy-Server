@@ -5,6 +5,7 @@ import org.recordy.server.user.repository.UserRepository;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 public class FakeUserRepository implements UserRepository {
@@ -14,7 +15,7 @@ public class FakeUserRepository implements UserRepository {
 
     @Override
     public User save(User user) {
-        if (users.get(user.getId()) != null) {
+        if (users.containsKey(user.getId())) {
             users.put(user.getId(), user);
             return user;
         }
@@ -32,6 +33,16 @@ public class FakeUserRepository implements UserRepository {
     }
 
     @Override
+    public void deleteById(long userId) {
+        users.remove(userId);
+    }
+
+    @Override
+    public Optional<User> findById(long userId) {
+        return Optional.ofNullable(users.get(userId));
+    }
+
+    @Override
     public Optional<User> findByPlatformId(String platformId) {
         return users.values().stream()
                 .filter(user -> user.getAuthPlatform().getId().equals(platformId))
@@ -39,24 +50,13 @@ public class FakeUserRepository implements UserRepository {
     }
 
     @Override
-    public void deleteById(long userId) {
-        users.remove(userId);
-    }
-
-    @Override
     public boolean existsByNickname(String nickname) {
         return users.values().stream()
                 .anyMatch(user -> {
-                    if (user.getNickname() != null) {
+                    if (!Objects.isNull(user.getNickname()))
                         return user.getNickname().equals(nickname);
-                    }
 
                     return false;
                 });
-    }
-
-    @Override
-    public Optional<User> findById(long userId) {
-        return Optional.ofNullable(users.get(userId));
     }
 }

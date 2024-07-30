@@ -4,11 +4,12 @@ import org.recordy.server.auth.domain.Auth;
 import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.auth.service.AuthService;
 import org.recordy.server.auth.service.AuthTokenService;
+import org.recordy.server.bookmark.repository.BookmarkRepository;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.subscribe.domain.Subscribe;
 import org.recordy.server.subscribe.repository.SubscribeRepository;
-import org.recordy.server.user.controller.dto.request.TermsAgreement;
+import org.recordy.server.user.domain.TermsAgreement;
 import org.recordy.server.user.domain.usecase.UserProfile;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.UserStatus;
@@ -17,34 +18,36 @@ import org.recordy.server.user.domain.usecase.UserSignUp;
 import org.recordy.server.user.exception.UserException;
 import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.user.service.UserService;
+import org.recordy.server.view.repository.ViewRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final Long rootUserId;
-
     private final UserRepository userRepository;
     private final SubscribeRepository subscribeRepository;
     private final RecordRepository recordRepository;
+    private final BookmarkRepository bookmarkRepository;
+    private final ViewRepository viewRepository;
     private final AuthService authService;
     private final AuthTokenService authTokenService;
 
+
     public UserServiceImpl(
-            @Value("${user.root.id}") Long rootUserId,
             UserRepository userRepository,
             SubscribeRepository subscribeRepository,
             RecordRepository recordRepository,
+            BookmarkRepository bookmarkRepository,
+            ViewRepository viewRepository,
             AuthService authService,
             AuthTokenService authTokenService
     ) {
-        this.rootUserId = rootUserId;
         this.userRepository = userRepository;
         this.subscribeRepository = subscribeRepository;
         this.recordRepository = recordRepository;
+        this.bookmarkRepository = bookmarkRepository;
+        this.viewRepository = viewRepository;
         this.authService = authService;
         this.authTokenService = authTokenService;
     }
@@ -58,7 +61,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private User getOrCreateUser(AuthPlatform platform) {
-        return getByPlatformId(platform.getId())
+        return userRepository.findByPlatformId(platform.getId())
                 .orElseGet(() -> create(platform));
     }
 
@@ -77,31 +80,17 @@ public class UserServiceImpl implements UserService {
         User pendingUser = userRepository.findById(userSignUp.userId())
                 .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
         User updatedUser = pendingUser.activate(userSignUp);
-        followRoot(updatedUser);
 
         return userRepository.save(updatedUser);
-    }
-
-    private void followRoot(User user) {
-        if (!user.getId().equals(rootUserId)) {
-            userRepository.findById(rootUserId)
-                    .ifPresent(rootUser ->
-                            subscribeRepository.save(Subscribe.builder()
-                                    .subscribingUser(user)
-                                    .subscribedUser(rootUser)
-                                    .build())
-                    );
-        }
     }
 
     @Override
     public String reissueToken(String refreshToken) {
         String platformId = authTokenService.getPlatformIdFromRefreshToken(refreshToken);
-        Long userId = getByPlatformId(platformId)
-                .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND))
-                .getId();
+        User user = userRepository.findByPlatformId(platformId)
+                .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
 
-        return authTokenService.issueAccessToken(userId);
+        return authTokenService.issueAccessToken(user.getId());
     }
 
     @Override
@@ -118,8 +107,13 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
 
+        subscribeRepository.deleteByUserId(userId);
+        bookmarkRepository.deleteByUserId(userId);
+        viewRepository.deleteByUserId(userId);
+        recordRepository.deleteByUserId(userId);
         authService.signOut(user.getAuthPlatform().getId());
         userRepository.deleteById(userId);
+        recordRepository.deleteByUserId(userId);
     }
 
     @Override
@@ -129,19 +123,10 @@ public class UserServiceImpl implements UserService {
         long records = recordRepository.countAllByUserId(user.getId());
         long followers = subscribeRepository.countSubscribingUsers(user.getId());
         long followings = subscribeRepository.countSubscribedUsers(user.getId());
+        long bookmarks = bookmarkRepository.countByUserId(userId);
         boolean isFollowing = subscribeRepository.existsBySubscribingUserIdAndSubscribedUserId(userId, otherUserId);
 
-        return UserProfile.of(user, records, followers, followings, isFollowing);
-    }
-
-    @Override
-    public Optional<User> getByPlatformId(String platformId) {
-        return userRepository.findByPlatformId(platformId);
-    }
-
-    @Override
-    public Optional<User> getById(long id) {
-        return userRepository.findById(id);
+        return UserProfile.of(user, records, followers, followings, bookmarks, isFollowing);
     }
 
     @Override

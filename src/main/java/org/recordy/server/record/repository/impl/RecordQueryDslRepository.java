@@ -56,15 +56,11 @@ public Slice<RecordEntity> findAllByKeywordsOrderByPopularity(List<KeywordEntity
 
         List<RecordEntity> recordEntities = jpaQueryFactory
                 .selectFrom(recordEntity)
-                .leftJoin(recordEntity.bookmarks, bookmarkEntity)
-                .leftJoin(recordEntity.views, viewEntity)
+                .leftJoin(recordEntity.bookmarks, bookmarkEntity).on(bookmarkEntity.createdAt.after(sevenDaysAgo))
+                .leftJoin(recordEntity.views, viewEntity).on(viewEntity.createdAt.after(sevenDaysAgo))
                 .join(recordEntity.uploads, uploadEntity)
                 .join(uploadEntity.keyword, keywordEntity)
-                .where(
-                        bookmarkEntity.createdAt.after(sevenDaysAgo)
-                                .or(viewEntity.createdAt.after(sevenDaysAgo)),
-                        keywordEntity.in(keywords)
-                )
+                .where(keywordEntity.in(keywords))
                 .groupBy(recordEntity.id)
                 .orderBy(bookmarkEntity.count().multiply(2).add(viewEntity.count()).desc())
                 .offset(pageable.getOffset())

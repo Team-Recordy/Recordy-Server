@@ -7,6 +7,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.recordy.server.bookmark.domain.Bookmark;
+import org.recordy.server.bookmark.service.BookmarkService;
 import org.recordy.server.mock.FakeContainer;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.repository.RecordRepository;
@@ -66,7 +68,7 @@ public class BookmarkServiceTest {
         );
     }
 
-    @Test
+        @Test
     void findBookmarks를_통해_주어진_레코드_리스트에_대한_북마크_여부예_대한_리스트를_반환받을_수_있다() {
         //given
         Long userId = 1L;

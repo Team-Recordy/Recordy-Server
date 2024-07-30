@@ -83,7 +83,6 @@ jobs:
           key: ${{ secrets.SERVER_KEY }}
           script: |
             sudo docker login -u ${{ secrets.DOCKER_LOGIN_USERNAME }} -p ${{ secrets.DOCKER_LOGIN_ACCESSTOKEN }}
-            sudo docker pull ${{ secrets.DOCKER_LOGIN_USERNAME }}/recordy
             sudo chmod 777 /home/ubuntu/scripts/deploy.sh
             /home/ubuntu/scripts/deploy.sh
             docker image prune -f

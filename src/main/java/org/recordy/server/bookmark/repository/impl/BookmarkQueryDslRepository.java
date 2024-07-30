@@ -38,4 +38,13 @@ public class BookmarkQueryDslRepository {
 
         return new SliceImpl<>(bookmarkEntities, pageable, QueryDslUtils.hasNext(pageable, bookmarkEntities));
     }
+
+    public long countByUserId(long userId) {
+        return jpaQueryFactory
+                .select(bookmarkEntity.id.count())
+                .from(bookmarkEntity)
+                .join(bookmarkEntity.user, QUserEntity.userEntity)
+                .where(QUserEntity.userEntity.id.eq(userId))
+                .fetchOne();
+    }
 }

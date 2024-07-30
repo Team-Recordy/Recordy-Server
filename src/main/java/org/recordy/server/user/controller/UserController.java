@@ -4,7 +4,6 @@ import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.dto.response.CursorBasePaginatedResponse;
-import org.recordy.server.subscribe.repository.SubscribeRepository;
 import org.recordy.server.auth.security.resolver.UserId;
 import org.recordy.server.user.controller.dto.response.UserInfoWithFollowing;
 import org.recordy.server.subscribe.domain.usecase.SubscribeCreate;
@@ -30,7 +29,6 @@ public class UserController implements UserApi {
 
     private final SubscribeService subscribeService;
     private final UserService userService;
-    private final SubscribeRepository subscribeRepository;
 
     @Override
     @PostMapping("/follow/{followingId}")
@@ -53,7 +51,10 @@ public class UserController implements UserApi {
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(CursorBasePaginatedResponse.of(UserInfo.of(subscribeService.getSubscribedUsers(userId, cursorId, size)), userInfo -> userInfo.id()));
+                .body(CursorBasePaginatedResponse.of(
+                        UserInfo.from(subscribeService.getSubscribedUsers(userId, cursorId, size)),
+                        UserInfo::id
+                ));
     }
 
     @Override
@@ -68,8 +69,11 @@ public class UserController implements UserApi {
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(CursorBasePaginatedResponse.of(UserInfoWithFollowing.of(users, following), userInfoWithFollowing -> userInfoWithFollowing.userInfo().id()));
-        }
+                .body(CursorBasePaginatedResponse.of(
+                        UserInfoWithFollowing.of(users, following),
+                        userInfoWithFollowing -> userInfoWithFollowing.userInfo().id()
+                ));
+    }
 
 
     @Override
@@ -77,7 +81,7 @@ public class UserController implements UserApi {
     public ResponseEntity<UserProfile> getUserInfosWithFollowing(
             @UserId Long userId,
             @PathVariable Long otherUserId
-        ) {
+    ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(userService.getProfile(userId, otherUserId));
