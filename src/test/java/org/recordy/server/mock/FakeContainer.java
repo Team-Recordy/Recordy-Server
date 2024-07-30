@@ -14,7 +14,11 @@ import org.recordy.server.auth.service.impl.token.AuthTokenServiceImpl;
 import org.recordy.server.auth.service.impl.token.AuthTokenSigningKeyProvider;
 import org.recordy.server.bookmark.service.BookmarkService;
 import org.recordy.server.bookmark.service.impl.BookmarkServiceImpl;
+import org.recordy.server.mock.record.FakeUploadRepository;
 import org.recordy.server.mock.subscribe.FakeSubscribeRepository;
+import org.recordy.server.preference.service.PreferenceService;
+import org.recordy.server.preference.service.impl.PreferenceServiceImpl;
+import org.recordy.server.record.repository.UploadRepository;
 import org.recordy.server.record.service.S3Service;
 import org.recordy.server.keyword.repository.KeywordRepository;
 import org.recordy.server.keyword.service.KeywordService;
@@ -46,7 +50,6 @@ import org.recordy.server.util.DomainFixture;
 import java.util.List;
 
 import static org.mockito.Mockito.mock;
-import static org.recordy.server.util.DomainFixture.ROOT_USER_ID;
 
 public class FakeContainer {
 
@@ -55,6 +58,7 @@ public class FakeContainer {
     public final AuthRepository authRepository;
     public final RecordRepository recordRepository;
     public final KeywordRepository keywordRepository;
+    public final UploadRepository uploadRepository;
     public final BookmarkRepository bookmarkRepository;
     public final ViewRepository viewRepository;
     public final SubscribeRepository subscribeRepository;
@@ -92,6 +96,7 @@ public class FakeContainer {
         this.authRepository = new FakeAuthRepository();
         this.recordRepository = new FakeRecordRepository();
         this.keywordRepository = new FakeKeywordRepository();
+        this.uploadRepository = new FakeUploadRepository();
         this.bookmarkRepository = new FakeBookmarkRepository();
         this.viewRepository = new FakeViewRepository();
         this.subscribeRepository = new FakeSubscribeRepository();
@@ -123,10 +128,9 @@ public class FakeContainer {
         this.keywordService = new KeywordServiceImpl(keywordRepository);
         this.recordService = new RecordServiceImpl(recordRepository, viewRepository, bookmarkRepository, userRepository);
         this.bookmarkService = new BookmarkServiceImpl(userRepository, recordRepository, bookmarkRepository);
-        this.recordService = new RecordServiceImpl(recordRepository, viewRepository, bookmarkRepository,fileService, userService);
         this.subscribeService = new SubscribeServiceImpl(subscribeRepository, userRepository);
         this.s3Service = mock(S3Service.class);  // S3Service mock 사용
-        this.preferenceService = new PreferenceServiceImpl(recordRepository);
+        this.preferenceService = new PreferenceServiceImpl(uploadRepository, viewRepository, bookmarkRepository);
 
         this.authFilterExceptionHandler = new AuthFilterExceptionHandler(new ObjectMapper());
         this.tokenAuthenticationFilter = new TokenAuthenticationFilter(

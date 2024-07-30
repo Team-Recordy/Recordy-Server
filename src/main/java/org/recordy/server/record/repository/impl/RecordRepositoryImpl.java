@@ -15,8 +15,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -95,17 +93,6 @@ public class RecordRepositoryImpl implements RecordRepository {
     public Slice<Record> findAllBySubscribingUserIdOrderByIdDesc(long userId, long cursor, Pageable pageable) {
         return recordQueryDslRepository.findAllBySubscribingUserIdOrderByIdDesc(userId, cursor, pageable)
                 .map(RecordEntity::toDomain);
-    }
-
-    @Override
-    public Map<Keyword, Long> countAllByUserIdGroupByKeyword(long userId) {
-        Map<KeywordEntity, Long> preference = recordQueryDslRepository.countAllByUserIdGroupByKeyword(userId);
-
-        return preference.entrySet().stream()
-                .collect(Collectors.toMap(
-                        entry -> entry.getKey().toDomain(),
-                        Map.Entry::getValue
-                ));
     }
 
     @Override

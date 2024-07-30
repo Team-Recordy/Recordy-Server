@@ -107,31 +107,6 @@ public class FakeRecordRepository implements RecordRepository {
     }
 
     @Override
-    public Map<Keyword, Long> countAllByUserIdGroupByKeyword(long userId) {
-        Map<Keyword, Long> keywordCountMap = new HashMap<>();
-
-        System.out.println(records.size());
-
-        for (Record record : records.values()) {
-            if (record.getUploader().getId() == userId) {
-                for (Keyword keyword : record.getKeywords()) {
-                    keywordCountMap.put(keyword, keywordCountMap.getOrDefault(keyword, 0L) + 1);
-                }
-            }
-        }
-
-        return keywordCountMap.entrySet().stream()
-                .sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue()))
-                .limit(3)
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        (e1, e2) -> e1,
-                        LinkedHashMap::new
-                ));
-    }
-
-    @Override
     public Slice<Record> findAllBySubscribingUserIdOrderByIdDesc(long userId, long cursor, Pageable pageable) {
         return null;
     }

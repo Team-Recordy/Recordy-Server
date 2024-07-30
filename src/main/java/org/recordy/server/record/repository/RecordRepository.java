@@ -6,7 +6,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public interface RecordRepository {
@@ -24,7 +23,6 @@ public interface RecordRepository {
     Slice<Record> findAllByIdAfterAndKeywordsOrderByIdDesc(List<Keyword> keywords, long cursor, Pageable pageable);
     Slice<Record> findAllByUserIdOrderByIdDesc(long userId, long cursor, Pageable pageable);
     Slice<Record> findAllBySubscribingUserIdOrderByIdDesc(long userId, long cursor, Pageable pageable);
-    Map<Keyword, Long> countAllByUserIdGroupByKeyword(long userId);
     long countAllByUserId(long userId);
     Optional<Long> findMaxId();
     Long count();
