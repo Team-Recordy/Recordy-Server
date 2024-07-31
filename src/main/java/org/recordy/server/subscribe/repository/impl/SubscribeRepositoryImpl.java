@@ -10,12 +10,14 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Repository
 public class SubscribeRepositoryImpl implements SubscribeRepository {
 
     private final SubscribeJpaRepository subscribeJpaRepository;
     private final SubscribeQueryDslRepository subscribeQueryDslRepository;
 
+    @Transactional
     @Override
     public void save(Subscribe subscribe) {
         subscribeJpaRepository.save(SubscribeEntity.from(subscribe));
@@ -25,6 +27,12 @@ public class SubscribeRepositoryImpl implements SubscribeRepository {
     @Override
     public void delete(long subscribingUserId, long subscribedUserId) {
         subscribeJpaRepository.deleteAllBySubscribingUserIdAndSubscribedUserId(subscribingUserId, subscribedUserId);
+    }
+
+    @Transactional
+    @Override
+    public void deleteByUserId(long userId) {
+        subscribeJpaRepository.deleteAllBySubscribedUserIdOrSubscribingUserId(userId, userId);
     }
 
     @Override
@@ -40,6 +48,11 @@ public class SubscribeRepositoryImpl implements SubscribeRepository {
     }
 
     @Override
+    public boolean existsBySubscribingUserIdAndSubscribedUserId(long subscribingUserId, long subscribedUserId) {
+        return subscribeQueryDslRepository.existsBySubscribingUserIdAndSubscribedUserId(subscribingUserId, subscribedUserId);
+    }
+
+    @Override
     public long countSubscribingUsers(long subscribedUserId) {
         return subscribeQueryDslRepository.countSubscribingUsers(subscribedUserId);
     }
@@ -47,15 +60,5 @@ public class SubscribeRepositoryImpl implements SubscribeRepository {
     @Override
     public long countSubscribedUsers(long subscribingUserId) {
         return subscribeQueryDslRepository.countSubscribedUsers(subscribingUserId);
-    }
-
-    @Override
-    public boolean existsBySubscribingUserIdAndSubscribedUserId(long subscribingUserId, long subscribedUserId) {
-        return subscribeQueryDslRepository.existsBySubscribingUserIdAndSubscribedUserId(subscribingUserId, subscribedUserId);
-    }
-
-    @Override
-    public void deleteByUserId(long userId) {
-        subscribeJpaRepository.deleteAllBySubscribedUserIdOrSubscribingUserId(userId, userId);
     }
 }

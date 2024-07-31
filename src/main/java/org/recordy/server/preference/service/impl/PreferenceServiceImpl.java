@@ -8,11 +8,13 @@ import org.recordy.server.preference.service.PreferenceService;
 import org.recordy.server.record.repository.UploadRepository;
 import org.recordy.server.view.repository.ViewRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Service
 public class PreferenceServiceImpl implements PreferenceService {
 

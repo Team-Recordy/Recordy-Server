@@ -123,7 +123,7 @@ public class FakeContainer {
                 authRepository
         );
         this.authService = new AuthServiceImpl(authRepository, authPlatformServiceFactory, authTokenService);
-        this.userService = new UserServiceImpl(userRepository, subscribeRepository, recordRepository, bookmarkRepository,viewRepository, authService, authTokenService);
+        this.userService = new UserServiceImpl(DomainFixture.ROOT_USER_ID, userRepository, subscribeRepository, recordRepository, bookmarkRepository,viewRepository, authService, authTokenService);
 
         this.keywordService = new KeywordServiceImpl(keywordRepository);
         this.recordService = new RecordServiceImpl(recordRepository, viewRepository, userRepository);

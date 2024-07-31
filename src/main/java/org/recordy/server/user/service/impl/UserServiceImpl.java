@@ -7,7 +7,6 @@ import org.recordy.server.auth.service.AuthTokenService;
 import org.recordy.server.bookmark.repository.BookmarkRepository;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.record.repository.RecordRepository;
-import org.recordy.server.subscribe.domain.Subscribe;
 import org.recordy.server.subscribe.repository.SubscribeRepository;
 import org.recordy.server.user.domain.TermsAgreement;
 import org.recordy.server.user.domain.usecase.UserProfile;
@@ -21,10 +20,13 @@ import org.recordy.server.user.service.UserService;
 import org.recordy.server.view.repository.ViewRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional(readOnly = true)
 @Service
 public class UserServiceImpl implements UserService {
 
+    private final long rootUserId;
     private final UserRepository userRepository;
     private final SubscribeRepository subscribeRepository;
     private final RecordRepository recordRepository;
@@ -33,16 +35,16 @@ public class UserServiceImpl implements UserService {
     private final AuthService authService;
     private final AuthTokenService authTokenService;
 
-
     public UserServiceImpl(
+            @Value("${user.root.id}") long rootUserId,
             UserRepository userRepository,
             SubscribeRepository subscribeRepository,
             RecordRepository recordRepository,
             BookmarkRepository bookmarkRepository,
             ViewRepository viewRepository,
             AuthService authService,
-            AuthTokenService authTokenService
-    ) {
+            AuthTokenService authTokenService) {
+        this.rootUserId = rootUserId;
         this.userRepository = userRepository;
         this.subscribeRepository = subscribeRepository;
         this.recordRepository = recordRepository;
@@ -52,6 +54,7 @@ public class UserServiceImpl implements UserService {
         this.authTokenService = authTokenService;
     }
 
+    @Transactional
     @Override
     public Auth signIn(UserSignIn userSignIn) {
         AuthPlatform platform = authService.getPlatform(userSignIn);
@@ -73,6 +76,7 @@ public class UserServiceImpl implements UserService {
                 .build());
     }
 
+    @Transactional
     @Override
     public User signUp(UserSignUp userSignUp) {
         validateDuplicateNickname(userSignUp.nickname());
@@ -101,7 +105,7 @@ public class UserServiceImpl implements UserService {
         authService.signOut(user.getAuthPlatform().getId());
     }
 
-    // TODO: 영상 도메인 추가되면 관련된 영상 및 시청기록도 삭제
+    @Transactional
     @Override
     public void delete(long userId) {
         User user = userRepository.findById(userId)

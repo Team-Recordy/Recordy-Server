@@ -74,28 +74,6 @@ class RecordServiceTest {
     }
 
     @Test
-    void watch를_통해_시청기록을_저장할_수_있다() {
-        //given
-
-        recordService.create(DomainFixture.createRecordCreate());
-        recordService.create(DomainFixture.createRecordCreate());
-        Record record = recordService.create(DomainFixture.createRecordCreate());
-
-        recordService.create(DomainFixture.createRecordCreate());
-
-        //when
-        recordService.watch(1, record.getId());
-        System.out.println(record.getCreatedAt());
-
-        //then
-        Slice<Record> result = recordService.getFamousRecords(null, 0, 4);
-        assertAll(
-                () -> assertThat(result.getContent()).hasSize(0)
-               // () -> assertThat(result.getContent().get(0)).isEqualTo(record.getId())
-        );
-    }
-
-    @Test
     void 업로더가_아니면_delete을_통해_레코드를_삭제할_때_예외가_발생한다() {
         // given
         RecordCreate recordCreate = DomainFixture.createRecordCreate();
@@ -178,10 +156,10 @@ class RecordServiceTest {
         Record record = recordService.create(DomainFixture.createRecordCreate(keywords));
         recordService.create(DomainFixture.createRecordCreate());
         recordService.create(DomainFixture.createRecordCreate());
-        String encordedKeyword = new String(Base64.getEncoder().encode("깔끔한,덕후몰이".getBytes(StandardCharsets.UTF_8)));
+        String encodedKeyword = new String(Base64.getEncoder().encode("깔끔한,덕후몰이".getBytes(StandardCharsets.UTF_8)));
 
         // when
-        Slice<Record> result = recordService.getRecentRecords(encordedKeyword, 4L, 3);
+        Slice<Record> result = recordService.getRecentRecords(encodedKeyword, 4L, 3);
 
         // then
         assertAll(

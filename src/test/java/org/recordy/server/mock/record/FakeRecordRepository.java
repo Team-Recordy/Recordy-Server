@@ -90,7 +90,17 @@ public class FakeRecordRepository implements RecordRepository {
 
     @Override
     public Slice<Record> findAllByIdAfterAndKeywordsOrderByIdDesc(List<Keyword> keywords, long cursor, Pageable pageable) {
-        return null;
+        List<Record> content = records.entrySet().stream()
+                .filter(entry -> entry.getKey() < cursor)
+                .filter(entry -> entry.getValue().getKeywords().stream().anyMatch(keywords::contains))
+                .map(Map.Entry::getValue)
+                .sorted(Comparator.comparing(Record::getId).reversed())
+                .toList();
+
+        if (content.size() < pageable.getPageSize())
+            return new SliceImpl<>(content, pageable, false);
+
+        return new SliceImpl<>(content.subList(0, pageable.getPageSize()), pageable, true);
     }
 
     @Override
