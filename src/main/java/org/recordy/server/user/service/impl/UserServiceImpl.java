@@ -7,6 +7,7 @@ import org.recordy.server.auth.service.AuthTokenService;
 import org.recordy.server.bookmark.repository.BookmarkRepository;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.record.repository.RecordRepository;
+import org.recordy.server.subscribe.domain.Subscribe;
 import org.recordy.server.subscribe.repository.SubscribeRepository;
 import org.recordy.server.user.domain.TermsAgreement;
 import org.recordy.server.user.domain.usecase.UserProfile;
@@ -26,7 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final long rootUserId;
+    private final Long rootUserId;
     private final UserRepository userRepository;
     private final SubscribeRepository subscribeRepository;
     private final RecordRepository recordRepository;
@@ -85,7 +86,17 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
         User updatedUser = pendingUser.activate(userSignUp);
 
+        followRootUser(updatedUser);
         return userRepository.save(updatedUser);
+    }
+
+    private void followRootUser(User user) {
+        if (!user.getId().equals(rootUserId))
+            userRepository.findById(rootUserId)
+                    .ifPresent(rootUser -> subscribeRepository.save(Subscribe.builder()
+                            .subscribingUser(user)
+                            .subscribedUser(rootUser)
+                            .build()));
     }
 
     @Override
