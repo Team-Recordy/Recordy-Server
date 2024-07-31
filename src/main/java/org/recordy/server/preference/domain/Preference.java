@@ -29,11 +29,11 @@ public class Preference {
                 .sorted(Map.Entry.<Keyword, Long>comparingByValue().reversed())
                 .limit(size)
                 .collect(LinkedHashMap::new,
-                        (map, entry) -> map.put(entry.getKey(), normalize(entry.getValue(), sum)),
+                        (map, entry) -> map.put(entry.getKey(), normalize(entry.getValue())),
                         Map::putAll);
     }
 
-    private static long normalize(long value, long sum) {
+    private long normalize(long value) {
         return value * 100 / sum;
     }
 }
