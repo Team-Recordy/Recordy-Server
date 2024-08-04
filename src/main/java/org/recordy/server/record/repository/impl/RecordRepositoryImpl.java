@@ -68,13 +68,13 @@ public class RecordRepositoryImpl implements RecordRepository {
     }
 
     @Override
-    public Slice<Record> findAllByIdAfterOrderByIdDesc(long cursor, Pageable pageable) {
+    public Slice<Record> findAllByIdAfterOrderByIdDesc(Long cursor, Pageable pageable) {
         return recordQueryDslRepository.findAllByIdAfterOrderByIdDesc(cursor, pageable)
                 .map(RecordEntity::toDomain);
     }
 
     @Override
-    public Slice<Record> findAllByIdAfterAndKeywordsOrderByIdDesc(List<Keyword> keywords, long cursor, Pageable pageable) {
+    public Slice<Record> findAllByIdAfterAndKeywordsOrderByIdDesc(List<Keyword> keywords, Long cursor, Pageable pageable) {
         List<KeywordEntity> keywordEntities = keywordJpaRepository.findAll().stream()
                 .filter(keyword -> keywords.contains(keyword.toDomain()))
                 .toList();
@@ -84,13 +84,13 @@ public class RecordRepositoryImpl implements RecordRepository {
     }
 
     @Override
-    public Slice<Record> findAllByUserIdOrderByIdDesc(long userId, long cursor, Pageable pageable) {
+    public Slice<Record> findAllByUserIdOrderByIdDesc(long userId, Long cursor, Pageable pageable) {
         return recordQueryDslRepository.findAllByUserIdOrderByIdDesc(userId, cursor, pageable)
                 .map(RecordEntity::toDomain);
     }
 
     @Override
-    public Slice<Record> findAllBySubscribingUserIdOrderByIdDesc(long userId, long cursor, Pageable pageable) {
+    public Slice<Record> findAllBySubscribingUserIdOrderByIdDesc(long userId, Long cursor, Pageable pageable) {
         return recordQueryDslRepository.findAllBySubscribingUserIdOrderByIdDesc(userId, cursor, pageable)
                 .map(RecordEntity::toDomain);
     }

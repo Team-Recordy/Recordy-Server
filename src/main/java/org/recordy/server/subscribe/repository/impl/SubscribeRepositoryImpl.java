@@ -35,14 +35,15 @@ public class SubscribeRepositoryImpl implements SubscribeRepository {
         subscribeJpaRepository.deleteAllBySubscribedUserIdOrSubscribingUserId(userId, userId);
     }
 
+
     @Override
-    public Slice<Subscribe> findAllBySubscribingUserId(long subscribingUserId, long cursor, Pageable pageable) {
+    public Slice<Subscribe> findAllBySubscribingUserId(long subscribingUserId, Long cursor, Pageable pageable) {
         return subscribeQueryDslRepository.findAllBySubscribingUserId(subscribingUserId, cursor, pageable)
                 .map(SubscribeEntity::toDomain);
     }
 
     @Override
-    public Slice<Subscribe> findAllBySubscribedUserId(long subscribedUserId, long cursor, Pageable pageable) {
+    public Slice<Subscribe> findAllBySubscribedUserId(long subscribedUserId, Long cursor, Pageable pageable) {
         return subscribeQueryDslRepository.findAllBySubscribedUserId(subscribedUserId, cursor, pageable)
                 .map(SubscribeEntity::toDomain);
     }

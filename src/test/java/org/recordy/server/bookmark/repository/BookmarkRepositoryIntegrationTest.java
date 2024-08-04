@@ -62,7 +62,7 @@ public class BookmarkRepositoryIntegrationTest extends IntegrationTest {
         // userId 2 <-> recordId 1
 
         // when
-        Slice<Record> result = recordRepository.findAllByIdAfterOrderByIdDesc(0, PageRequest.ofSize(4));
+        Slice<Record> result = recordRepository.findAllByIdAfterOrderByIdDesc(null, PageRequest.ofSize(4));
 
         // then
         assertAll(
@@ -76,7 +76,7 @@ public class BookmarkRepositoryIntegrationTest extends IntegrationTest {
     void delete를_통해_북마크를_삭제할_수_있다() {
         // given, when
         bookmarkRepository.delete(1, 1);
-        Slice<Bookmark> bookmarks = bookmarkRepository.findAllByBookmarksOrderByIdDesc(1L, 4L, PageRequest.ofSize(10));
+        Slice<Bookmark> bookmarks = bookmarkRepository.findAllByBookmarksOrderByIdDesc(1L, null, PageRequest.ofSize(10));
 
         // then
         assertAll(

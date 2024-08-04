@@ -38,7 +38,7 @@ public class BookmarkRepositoryImpl implements BookmarkRepository {
     }
 
     @Override
-    public Slice<Bookmark> findAllByBookmarksOrderByIdDesc(long userId, long cursor, Pageable pageable) {
+    public Slice<Bookmark> findAllByBookmarksOrderByIdDesc(long userId, Long cursor, Pageable pageable) {
         return bookmarkQueryDslRepository.findAllByUserOrderByIdDesc(userId, cursor, pageable)
                 .map(BookmarkEntity::toDomain);
     }

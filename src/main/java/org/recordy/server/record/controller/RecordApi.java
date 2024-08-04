@@ -164,7 +164,7 @@ public interface RecordApi {
     ResponseEntity<CursorBasePaginatedResponse<RecordInfoWithBookmark>> getRecentRecordInfosWithBookmarksByUser(
             @UserId Long userId,
             @PathVariable Long otherUserId,
-            @RequestParam(required = false, defaultValue = "0") long cursorId,
+            @RequestParam(required = false) Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     );
 
@@ -286,7 +286,7 @@ public interface RecordApi {
     ResponseEntity<CursorBasePaginatedResponse<RecordInfoWithBookmark>> getRecentRecordInfosWithBookmarks(
             @UserId Long userId,
             @RequestParam(required = false) String keywords,
-            @RequestParam(required = false, defaultValue = "0") Long cursorId,
+            @RequestParam(required = false) Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     );
 
@@ -328,7 +328,7 @@ public interface RecordApi {
     )
     ResponseEntity<CursorBasePaginatedResponse<RecordInfoWithBookmark>> getSubscribingRecordInfosWithBookmarks(
             @UserId Long userId,
-            @RequestParam(required = false, defaultValue = "0") long cursorId,
+            @RequestParam(required = false) Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     );
 
@@ -411,7 +411,7 @@ public interface RecordApi {
     )
     public ResponseEntity<CursorBasePaginatedResponse<BookmarkedRecord>> getBookmarkedRecords(
             @UserId Long userId,
-            @RequestParam(required = false, defaultValue = "0L") long cursorId,
+            @RequestParam(required = false) Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     );
 }

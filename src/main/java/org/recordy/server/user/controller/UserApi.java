@@ -52,7 +52,7 @@ public interface UserApi {
     )
     public ResponseEntity<CursorBasePaginatedResponse<UserInfo>> getSubscribedUserInfos(
             @UserId Long userId,
-            @RequestParam(required = false, defaultValue = "0L") long cursorId,
+            @RequestParam(required = false) Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     );
 
@@ -75,7 +75,7 @@ public interface UserApi {
     )
     public ResponseEntity<CursorBasePaginatedResponse<UserInfoWithFollowing>> getSubscribingUserInfos(
             @UserId Long userId,
-            @RequestParam(required = false, defaultValue = "0L") long cursorId,
+            @RequestParam(required = false) Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     );
 

@@ -45,11 +45,11 @@ public class FakeSubscribeRepository implements SubscribeRepository {
     }
 
     @Override
-    public Slice<Subscribe> findAllBySubscribingUserId(long subscribingUserId, long cursor, Pageable pageable) {
+    public Slice<Subscribe> findAllBySubscribingUserId(long subscribingUserId, Long cursor, Pageable pageable) {
         List<Subscribe> content = subscribes.values().stream()
                 .filter(subscribe ->
                         subscribe.getSubscribingUser().getId() == subscribingUserId &&
-                                subscribe.getSubscribedUser().getId() < cursor
+                                subscribe.getSubscribedUser().getId() < checkCursor(cursor)
                 )
                 .sorted(Comparator.comparing(Subscribe::getId).reversed())
                 .toList();
@@ -62,11 +62,11 @@ public class FakeSubscribeRepository implements SubscribeRepository {
     }
 
     @Override
-    public Slice<Subscribe> findAllBySubscribedUserId(long subscribedUserId, long cursor, Pageable pageable) {
+    public Slice<Subscribe> findAllBySubscribedUserId(long subscribedUserId, Long cursor, Pageable pageable) {
         List<Subscribe> content = subscribes.values().stream()
                 .filter(subscribe ->
                         subscribe.getSubscribingUser().getId() == subscribedUserId &&
-                                subscribe.getSubscribedUser().getId() < cursor
+                                subscribe.getSubscribedUser().getId() < checkCursor(cursor)
                 )
                 .sorted(Comparator.comparing(Subscribe::getId).reversed())
                 .toList();
@@ -99,5 +99,12 @@ public class FakeSubscribeRepository implements SubscribeRepository {
         return subscribes.values().stream()
                 .filter(subscribe -> subscribe.getSubscribingUser().getId() == subscribingUserId)
                 .count();
+    }
+
+    private Long checkCursor(Long cursor){
+        if (cursor != null) {
+            return cursor;
+        }
+        return Long.MAX_VALUE;
     }
 }

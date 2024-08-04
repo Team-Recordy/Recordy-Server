@@ -75,9 +75,9 @@ public class FakeRecordRepository implements RecordRepository {
     }
 
     @Override
-    public Slice<Record> findAllByIdAfterOrderByIdDesc(long cursor, Pageable pageable) {
+    public Slice<Record> findAllByIdAfterOrderByIdDesc(Long cursor, Pageable pageable) {
         List<Record> content = records.keySet().stream()
-                .filter(key -> key < cursor)
+                .filter(key -> key < checkCursor(cursor))
                 .map(records::get)
                 .sorted(Comparator.comparing(Record::getId).reversed())
                 .toList();
@@ -89,9 +89,9 @@ public class FakeRecordRepository implements RecordRepository {
     }
 
     @Override
-    public Slice<Record> findAllByIdAfterAndKeywordsOrderByIdDesc(List<Keyword> keywords, long cursor, Pageable pageable) {
+    public Slice<Record> findAllByIdAfterAndKeywordsOrderByIdDesc(List<Keyword> keywords, Long cursor, Pageable pageable) {
         List<Record> content = records.entrySet().stream()
-                .filter(entry -> entry.getKey() < cursor)
+                .filter(entry -> entry.getKey() < checkCursor(cursor))
                 .filter(entry -> entry.getValue().getKeywords().stream().anyMatch(keywords::contains))
                 .map(Map.Entry::getValue)
                 .sorted(Comparator.comparing(Record::getId).reversed())
@@ -104,9 +104,9 @@ public class FakeRecordRepository implements RecordRepository {
     }
 
     @Override
-    public Slice<Record> findAllByUserIdOrderByIdDesc(long userId, long cursor, Pageable pageable) {
+    public Slice<Record> findAllByUserIdOrderByIdDesc(long userId, Long cursor, Pageable pageable) {
         List<Record> content = records.values().stream()
-                .filter(record -> record.getId() < cursor && record.getUploader().getId() == userId)
+                .filter(record -> record.getId() < checkCursor(cursor) && record.getUploader().getId() == userId)
                 .sorted(Comparator.comparing(Record::getId).reversed())
                 .toList();
 
@@ -117,7 +117,7 @@ public class FakeRecordRepository implements RecordRepository {
     }
 
     @Override
-    public Slice<Record> findAllBySubscribingUserIdOrderByIdDesc(long userId, long cursor, Pageable pageable) {
+    public Slice<Record> findAllBySubscribingUserIdOrderByIdDesc(long userId, Long cursor, Pageable pageable) {
         return null;
     }
 
@@ -137,5 +137,12 @@ public class FakeRecordRepository implements RecordRepository {
     @Override
     public Long count() {
         return (long) records.size();
+    }
+
+    private Long checkCursor(Long cursor){
+        if (cursor != null) {
+            return cursor;
+        }
+        return Long.MAX_VALUE;
     }
 }

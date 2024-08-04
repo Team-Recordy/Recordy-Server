@@ -133,7 +133,7 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
     void deleteById를_통해_레코드를_삭제할_수_있다() {
         // when
         recordRepository.deleteById(1);
-        Slice<Record> result = recordRepository.findAllByIdAfterOrderByIdDesc(2, PageRequest.ofSize(1));
+        Slice<Record> result = recordRepository.findAllByIdAfterOrderByIdDesc(2L, PageRequest.ofSize(1));
 
         //then
         assertAll(

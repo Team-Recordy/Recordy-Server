@@ -14,7 +14,7 @@ public interface BookmarkRepository {
     void deleteByUserId(long userId);
 
     // query
-    Slice<Bookmark> findAllByBookmarksOrderByIdDesc(long userId, long cursor, Pageable pageable);
+    Slice<Bookmark> findAllByBookmarksOrderByIdDesc(long userId, Long cursor, Pageable pageable);
     boolean existsByUserIdAndRecordId(Long userId, Long recordId);
     long countByUserId(Long userId);
     Map<Keyword, Long> countAllByUserIdGroupByKeyword(long userId);

@@ -65,10 +65,7 @@ public Slice<RecordEntity> findAllByKeywordsOrderByPopularity(List<KeywordEntity
         return new SliceImpl<>(recordEntities, pageable, QueryDslUtils.hasNext(pageable, recordEntities));
     }
 
-    public Slice<RecordEntity> findAllByIdAfterAndKeywordsOrderByIdDesc(List<KeywordEntity> keywords, long cursor, Pageable pageable) {
-        cursor = QueryDslUtils.cursorIdCheck(cursor);
-
-
+    public Slice<RecordEntity> findAllByIdAfterAndKeywordsOrderByIdDesc(List<KeywordEntity> keywords, Long cursor, Pageable pageable) {
         List<RecordEntity> recordEntities = jpaQueryFactory
                 .selectFrom(recordEntity)
                 .join(recordEntity.uploads, uploadEntity)
@@ -84,9 +81,7 @@ public Slice<RecordEntity> findAllByKeywordsOrderByPopularity(List<KeywordEntity
         return new SliceImpl<>(recordEntities, pageable, QueryDslUtils.hasNext(pageable, recordEntities));
     }
 
-    public Slice<RecordEntity> findAllByIdAfterOrderByIdDesc(long cursor, Pageable pageable) {
-        cursor = QueryDslUtils.cursorIdCheck(cursor);
-
+    public Slice<RecordEntity> findAllByIdAfterOrderByIdDesc(Long cursor, Pageable pageable) {
         List<RecordEntity> recordEntities = jpaQueryFactory
                 .selectFrom(recordEntity)
                 .where(
@@ -99,9 +94,7 @@ public Slice<RecordEntity> findAllByKeywordsOrderByPopularity(List<KeywordEntity
         return new SliceImpl<>(recordEntities, pageable, QueryDslUtils.hasNext(pageable, recordEntities));
     }
 
-    public Slice<RecordEntity> findAllByUserIdOrderByIdDesc(long userId, long cursor, Pageable pageable) {
-        cursor = QueryDslUtils.cursorIdCheck(cursor);
-
+    public Slice<RecordEntity> findAllByUserIdOrderByIdDesc(long userId, Long cursor, Pageable pageable) {
         List<RecordEntity> recordEntities = jpaQueryFactory
                 .selectFrom((recordEntity))
                 .join(recordEntity.user, userEntity)
@@ -116,9 +109,7 @@ public Slice<RecordEntity> findAllByKeywordsOrderByPopularity(List<KeywordEntity
         return new SliceImpl<>(recordEntities, pageable, QueryDslUtils.hasNext(pageable, recordEntities));
     }
 
-    public Slice<RecordEntity> findAllBySubscribingUserIdOrderByIdDesc(long userId, long cursor, Pageable pageable) {
-        cursor = QueryDslUtils.cursorIdCheck(cursor);
-
+    public Slice<RecordEntity> findAllBySubscribingUserIdOrderByIdDesc(long userId, Long cursor, Pageable pageable) {
         List<RecordEntity> recordEntities = jpaQueryFactory
                 .select(recordEntity)
                 .from(subscribeEntity)

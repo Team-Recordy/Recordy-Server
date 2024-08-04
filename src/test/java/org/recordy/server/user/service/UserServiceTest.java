@@ -321,8 +321,8 @@ public class UserServiceTest {
 
         // when
         userService.delete(DomainFixture.USER_ID);
-        Slice<Subscribe> subscribedresult = subscribeRepository.findAllBySubscribedUserId(DomainFixture.USER_ID, 0, Pageable.ofSize(10));
-        Slice<Subscribe> SubscribingResult = subscribeRepository.findAllBySubscribingUserId(DomainFixture.USER_ID, 0, Pageable.ofSize(10));
+        Slice<Subscribe> subscribedresult = subscribeRepository.findAllBySubscribedUserId(DomainFixture.USER_ID, null, Pageable.ofSize(10));
+        Slice<Subscribe> SubscribingResult = subscribeRepository.findAllBySubscribingUserId(DomainFixture.USER_ID, null, Pageable.ofSize(10));
 
         // then
         assertAll(

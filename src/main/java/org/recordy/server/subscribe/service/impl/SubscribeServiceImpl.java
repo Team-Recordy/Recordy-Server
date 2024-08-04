@@ -46,13 +46,13 @@ public class SubscribeServiceImpl implements SubscribeService {
     }
 
     @Override
-    public Slice<User> getSubscribedUsers(long subscribingUserId, long cursor, int size) {
+    public Slice<User> getSubscribedUsers(long subscribingUserId, Long cursor, int size) {
         return subscribeRepository.findAllBySubscribingUserId(subscribingUserId, cursor, PageRequest.ofSize(size))
                 .map(Subscribe::getSubscribedUser);
     }
 
     @Override
-    public Slice<User> getSubscribingUsers(long subscribedUserId, long cursor, int size) {
+    public Slice<User> getSubscribingUsers(long subscribedUserId, Long cursor, int size) {
         return subscribeRepository.findAllBySubscribedUserId(subscribedUserId, cursor, PageRequest.ofSize(size))
                 .map(Subscribe::getSubscribingUser);
     }

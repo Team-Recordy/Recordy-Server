@@ -70,7 +70,7 @@ public class RecordController implements RecordApi {
     public ResponseEntity<CursorBasePaginatedResponse<RecordInfoWithBookmark>> getRecentRecordInfosWithBookmarks(
             @UserId Long userId,
             @RequestParam(required = false) String keywords,
-            @RequestParam(required = false, defaultValue = "0") Long cursorId,
+            @RequestParam(required = false) Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
         Slice<Record> records = recordService.getRecentRecords(keywords, cursorId, size);
@@ -114,7 +114,7 @@ public class RecordController implements RecordApi {
     public ResponseEntity<CursorBasePaginatedResponse<RecordInfoWithBookmark>> getRecentRecordInfosWithBookmarksByUser(
             @UserId Long userId,
             @PathVariable Long otherUserId,
-            @RequestParam(required = false, defaultValue = "0") long cursorId,
+            @RequestParam(required = false) Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
         Slice<Record> records = recordService.getRecentRecordsByUser(otherUserId, cursorId, size);
@@ -130,7 +130,7 @@ public class RecordController implements RecordApi {
     @GetMapping("/follow")
     public ResponseEntity<CursorBasePaginatedResponse<RecordInfoWithBookmark>> getSubscribingRecordInfosWithBookmarks(
             @UserId Long userId,
-            @RequestParam(required = false, defaultValue = "0") long cursorId,
+            @RequestParam(required = false) Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
         Slice<Record> records = recordService.getSubscribingRecords(userId, cursorId, size);
@@ -160,7 +160,7 @@ public class RecordController implements RecordApi {
     @GetMapping("/bookmarks")
     public ResponseEntity<CursorBasePaginatedResponse<BookmarkedRecord>> getBookmarkedRecords(
             @UserId Long userId,
-            @RequestParam(required = false, defaultValue = "0") long cursorId,
+            @RequestParam(required = false) Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
         Slice<Bookmark> bookmarks = bookmarkService.getBookmarks(userId, cursorId, size);

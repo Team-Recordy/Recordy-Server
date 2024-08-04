@@ -12,8 +12,8 @@ public interface SubscribeRepository {
     void deleteByUserId(long userId);
 
     // query
-    Slice<Subscribe> findAllBySubscribingUserId(long subscribingUserId, long cursor, Pageable pageable);
-    Slice<Subscribe> findAllBySubscribedUserId(long subscribedUserId, long cursor, Pageable pageable);
+    Slice<Subscribe> findAllBySubscribingUserId(long subscribingUserId, Long cursor, Pageable pageable);
+    Slice<Subscribe> findAllBySubscribedUserId(long subscribedUserId, Long cursor, Pageable pageable);
     boolean existsBySubscribingUserIdAndSubscribedUserId(long subscribingUserId, long subscribedUserId);
     long countSubscribingUsers(long subscribedUserId);
     long countSubscribedUsers(long subscribingUserId);

@@ -61,7 +61,7 @@ public class BookmarkServiceImpl implements BookmarkService {
     }
 
     @Override
-    public Slice<Bookmark> getBookmarks(long userId, long cursorId, int size) {
+    public Slice<Bookmark> getBookmarks(long userId, Long cursorId, int size) {
         return bookmarkRepository.findAllByBookmarksOrderByIdDesc(userId, cursorId, PageRequest.ofSize(size));
     }
 }

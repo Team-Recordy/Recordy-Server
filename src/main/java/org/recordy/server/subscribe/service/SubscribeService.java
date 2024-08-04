@@ -11,7 +11,7 @@ public interface SubscribeService {
     boolean subscribe(SubscribeCreate subscribeCreate);
 
     // query
-    Slice<User> getSubscribedUsers(long subscribingUserId, long cursor, int size);
-    Slice<User> getSubscribingUsers(long subscribedUserId, long cursor, int size);
+    Slice<User> getSubscribedUsers(long subscribingUserId, Long cursor, int size);
+    Slice<User> getSubscribingUsers(long subscribedUserId, Long cursor, int size);
     List<Boolean> findSubscribes(long userId, Slice<User> subscribingUsers);
 }
