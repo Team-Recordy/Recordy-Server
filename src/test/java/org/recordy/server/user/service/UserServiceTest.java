@@ -1,10 +1,13 @@
 package org.recordy.server.user.service;
 
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.auth.domain.Auth;
 import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.auth.repository.AuthRepository;
+import org.recordy.server.bookmark.repository.BookmarkRepository;
+import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.mock.FakeContainer;
 import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.subscribe.domain.Subscribe;
@@ -20,6 +23,9 @@ import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.util.DomainFixture;
 
 import java.util.Optional;
+import org.recordy.server.view.repository.ViewRepository;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -31,6 +37,8 @@ public class UserServiceTest {
     private AuthRepository authRepository;
     private RecordRepository recordRepository;
     private SubscribeRepository subscribeRepository;
+    private BookmarkRepository bookmarkRepository;
+    private ViewRepository viewRepository;
 
     @BeforeEach
     void init() {
@@ -40,6 +48,8 @@ public class UserServiceTest {
         authRepository = fakeContainer.authRepository;
         recordRepository = fakeContainer.recordRepository;
         subscribeRepository = fakeContainer.subscribeRepository;
+        bookmarkRepository = fakeContainer.bookmarkRepository;
+        viewRepository = fakeContainer.viewRepository;
     }
 
     @Test
@@ -300,6 +310,55 @@ public class UserServiceTest {
 
         // then
         assertThat(result).isEmpty();
+    }
+
+    @Test
+    void delete를_통해_사용자를_삭제할_때_관련된_Subscribe_객체도_삭제된다() {
+        // given
+        AuthPlatform platform = DomainFixture.createAuthPlatform();
+        UserSignIn userSignIn = DomainFixture.createUserSignIn(platform.getType());
+        userService.signIn(userSignIn);
+
+        // when
+        userService.delete(DomainFixture.USER_ID);
+        Slice<Subscribe> subscribedresult = subscribeRepository.findAllBySubscribedUserId(DomainFixture.USER_ID, 0, Pageable.ofSize(10));
+        Slice<Subscribe> SubscribingResult = subscribeRepository.findAllBySubscribingUserId(DomainFixture.USER_ID, 0, Pageable.ofSize(10));
+
+        // then
+        assertAll(
+                () ->  assertThat(subscribedresult).isEmpty(),
+                () -> assertThat(SubscribingResult).isEmpty()
+        );
+    }
+
+    @Test
+    void delete를_통해_사용자를_삭제할_때_관련된_Bookmark_객체도_삭제된다() {
+        // given
+        AuthPlatform platform = DomainFixture.createAuthPlatform();
+        UserSignIn userSignIn = DomainFixture.createUserSignIn(platform.getType());
+        userService.signIn(userSignIn);
+
+        // when
+        userService.delete(DomainFixture.USER_ID);
+        Long result = bookmarkRepository.countByUserId(DomainFixture.USER_ID);
+
+        // then
+        assertThat(result).isEqualTo(0);
+    }
+
+    @Test
+    void delete를_통해_사용자를_삭제할_때_관련된_View_객체도_삭제된다() {
+        // given
+        AuthPlatform platform = DomainFixture.createAuthPlatform();
+        UserSignIn userSignIn = DomainFixture.createUserSignIn(platform.getType());
+        userService.signIn(userSignIn);
+
+        // when
+        userService.delete(DomainFixture.USER_ID);
+        Map<Keyword,Long> result = viewRepository.countAllByUserIdGroupByKeyword(DomainFixture.USER_ID);
+
+        // then
+        assertThat(result.size()).isEqualTo(0);
     }
 
     @Test
