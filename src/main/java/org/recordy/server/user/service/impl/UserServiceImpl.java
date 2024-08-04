@@ -128,7 +128,6 @@ public class UserServiceImpl implements UserService {
         recordRepository.deleteByUserId(userId);
         authService.signOut(user.getAuthPlatform().getId());
         userRepository.deleteById(userId);
-        recordRepository.deleteByUserId(userId);
     }
 
     @Override
