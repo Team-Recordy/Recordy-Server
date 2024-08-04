@@ -42,13 +42,31 @@ public class RecordServiceImpl implements RecordService {
         User user = userRepository.findById(recordCreate.uploaderId())
                 .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
 
+        String s3VideoUrl = recordCreate.fileUrl().videoUrl();
+        String s3ThumbnailUrl = recordCreate.fileUrl().thumbnailUrl();
+
+        String cloudFrontVideoUrl = convertToCloudFrontUrl(s3VideoUrl);
+        String cloudFrontThumbnailUrl = convertToCloudFrontUrl(s3ThumbnailUrl);
+
+        FileUrl fileUrl = FileUrl.of(cloudFrontVideoUrl, cloudFrontThumbnailUrl);
+
         return recordRepository.save(Record.builder()
-                .fileUrl(recordCreate.fileUrl())
+                .fileUrl(fileUrl)
                 .location(recordCreate.location())
                 .content(recordCreate.content())
                 .uploader(user)
                 .keywords(recordCreate.keywords())
                 .build());
+    }
+
+    private String convertToCloudFrontUrl(String s3Url) {
+        // CloudFront 배포 도메인 이름
+        String cloudFrontDomain = "d2p19guzt9trnp.cloudfront.net";
+
+        // S3 버킷 도메인 부분을 CloudFront 도메인으로 대체
+        String cloudFrontUrl = s3Url.replace("recordy-bucket.s3.ap-northeast-2.amazonaws.com", cloudFrontDomain);
+
+        return cloudFrontUrl;
     }
 
     @Override
