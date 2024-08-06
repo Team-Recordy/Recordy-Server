@@ -189,13 +189,12 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    void findAllByIdAfterOrderByIdDesc를_통해_cursor_값이_0일_경우_최신순으로_레코드_데이터를_조회할_수_있다() {
+    void findAllByIdAfterOrderByIdDesc를_통해_cursor_값이_null일_경우_최신순으로_레코드_데이터를_조회할_수_있다() {
         // given
-        long cursor = 0L;
         int size = 10;
 
         // when
-        Slice<Record> result = recordRepository.findAllByIdAfterOrderByIdDesc(cursor, PageRequest.ofSize(size));
+        Slice<Record> result = recordRepository.findAllByIdAfterOrderByIdDesc(null, PageRequest.ofSize(size));
 
         // then
         assertAll(
@@ -480,7 +479,6 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
         // user 1의 레코드 : {1, 2, 5}
         // user 2의 레코드 : {3, 4, 6}
         long userId = 1;
-        long cursor = 0;
         int size = 3;
 
         // user 1 -> user 2 구독
@@ -491,7 +489,7 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
         );
 
         // when
-        Slice<Record> result = recordRepository.findAllBySubscribingUserIdOrderByIdDesc(userId, cursor, PageRequest.ofSize(size));
+        Slice<Record> result = recordRepository.findAllBySubscribingUserIdOrderByIdDesc(userId, null, PageRequest.ofSize(size));
 
         // then
         assertAll(
