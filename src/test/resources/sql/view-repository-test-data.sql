@@ -10,6 +10,9 @@ values (1, '감각적인');
 insert into `keywords` (`id`, `keyword`)
 values (2, '강렬한');
 
+insert into `keywords` (`id`, `keyword`)
+values (3, '귀여운');
+
 insert into `records` (`id`, `user_id`, `content`, `location`,`thumbnail_url`, `video_url`)
 values (1, 1, 'content', 'location', 'thumbnail_url', 'video_url');
 
@@ -23,4 +26,7 @@ insert into `uploads` (`id`, `record_id`, `keyword_id`)
 values(2, 1, 2);
 
 insert into `uploads` (`id`, `record_id`, `keyword_id`)
-values(3, 2, 1);
+values(3, 1, 3);
+
+insert into `uploads` (`id`, `record_id`, `keyword_id`)
+values(4, 2, 1);

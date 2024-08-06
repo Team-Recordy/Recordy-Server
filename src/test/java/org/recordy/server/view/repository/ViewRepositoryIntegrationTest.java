@@ -79,7 +79,8 @@ class ViewRepositoryIntegrationTest extends IntegrationTest {
         assertAll(
                 () -> assertThat(result).isNotEmpty(),
                 () -> assertThat(result.get(Keyword.감각적인)).isEqualTo(1),
-                () -> assertThat(result.get(Keyword.강렬한)).isEqualTo(1)
+                () -> assertThat(result.get(Keyword.강렬한)).isEqualTo(1),
+                () -> assertThat(result.get(Keyword.귀여운)).isEqualTo(1)
         );
     }
 }

@@ -32,7 +32,7 @@ class PreferenceServiceTest {
     }
 
     @Test
-    void getPreference를_통해_사용자의_취향_키워드_상위_3개의_이름과_점수를_계산할_수_있다() {
+    void getPreference를_통해_사용자의_취향_키워드별_갯수를_계산할_수_있다() {
         // given
         User user = userRepository.save(DomainFixture.createUser(1));
 
