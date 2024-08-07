@@ -21,6 +21,7 @@ import org.recordy.server.view.repository.ViewRepository;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.exception.UserException;
 import org.recordy.server.user.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -37,19 +38,36 @@ public class RecordServiceImpl implements RecordService {
     private final BookmarkRepository bookmarkRepository;
     private final UserRepository userRepository;
 
+    @Value("${aws-property.cloudfront-domain-name}")
+    private String cloudFrontDomain;
+
+    @Value("${aws-property.s3-domain}")
+    private String s3Domain;
+
     @Override
     public Record create(RecordCreate recordCreate) {
         User user = userRepository.findById(recordCreate.uploaderId())
                 .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
 
+        FileUrl fileUrl = convertToCloudFrontUrl(recordCreate.fileUrl());
+
         return recordRepository.save(Record.builder()
-                .fileUrl(recordCreate.fileUrl())
+                .fileUrl(fileUrl)
                 .location(recordCreate.location())
                 .content(recordCreate.content())
                 .uploader(user)
                 .keywords(recordCreate.keywords())
                 .build());
     }
+
+
+    private FileUrl convertToCloudFrontUrl(FileUrl fileUrl) {
+        String cloudFrontVideoUrl = fileUrl.videoUrl().replace(s3Domain, cloudFrontDomain);
+        String cloudFrontThumbnailUrl = fileUrl.thumbnailUrl().replace(s3Domain, cloudFrontDomain);
+
+        return FileUrl.of(cloudFrontVideoUrl, cloudFrontThumbnailUrl);
+    }
+
 
     @Override
     public void delete(long userId, long recordId) {
