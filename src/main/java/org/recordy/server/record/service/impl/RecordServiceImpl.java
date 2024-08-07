@@ -21,6 +21,7 @@ import org.recordy.server.view.repository.ViewRepository;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.exception.UserException;
 import org.recordy.server.user.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,12 @@ public class RecordServiceImpl implements RecordService {
     private final ViewRepository viewRepository;
     private final BookmarkRepository bookmarkRepository;
     private final UserRepository userRepository;
+
+    @Value("${aws-property.cloudfront-domain-name}")
+    private String cloudFrontDomain;
+
+    @Value("${aws-property.s3-domain}")
+    private String s3Domain;
 
     @Override
     public Record create(RecordCreate recordCreate) {
@@ -55,9 +62,6 @@ public class RecordServiceImpl implements RecordService {
 
 
     private FileUrl convertToCloudFrontUrl(FileUrl fileUrl) {
-        String cloudFrontDomain = "d2p19guzt9trnp.cloudfront.net";
-        String s3Domain = "recordy-bucket.s3.ap-northeast-2.amazonaws.com";
-
         String cloudFrontVideoUrl = fileUrl.videoUrl().replace(s3Domain, cloudFrontDomain);
         String cloudFrontThumbnailUrl = fileUrl.thumbnailUrl().replace(s3Domain, cloudFrontDomain);
 
