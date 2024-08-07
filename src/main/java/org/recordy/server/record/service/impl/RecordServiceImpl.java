@@ -13,6 +13,7 @@ import org.recordy.server.record.domain.usecase.RecordCreate;
 import org.recordy.server.record.exception.RecordException;
 import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.record.service.RecordService;
+import org.recordy.server.record.service.dto.FileUrl;
 import org.recordy.server.view.domain.View;
 import org.recordy.server.view.repository.ViewRepository;
 import org.recordy.server.user.domain.User;
@@ -36,14 +37,13 @@ public class RecordServiceImpl implements RecordService {
     private final ViewRepository viewRepository;
     private final UserRepository userRepository;
 
-
-    @Transactional
     @Value("${aws-property.cloudfront-domain-name}")
     private String cloudFrontDomain;
 
     @Value("${aws-property.s3-domain}")
     private String s3Domain;
 
+    @Transactional
     @Override
     public Record create(RecordCreate recordCreate) {
         User user = userRepository.findById(recordCreate.uploaderId())
