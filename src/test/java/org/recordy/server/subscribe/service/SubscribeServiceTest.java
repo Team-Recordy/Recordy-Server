@@ -37,7 +37,7 @@ class SubscribeServiceTest {
 
         // when
         boolean result = subscribeService.subscribe(new SubscribeCreate(1, 2));
-        Slice<Subscribe> subscribes = subscribeRepository.findAllBySubscribingUserId(1, 20, PageRequest.ofSize(3));
+        Slice<Subscribe> subscribes = subscribeRepository.findAllBySubscribingUserId(1, null, PageRequest.ofSize(3));
 
         // then
         assertAll(
@@ -76,7 +76,7 @@ class SubscribeServiceTest {
         subscribeService.subscribe(new SubscribeCreate(1, 3));
 
         // when
-        Slice<User> result = subscribeService.getSubscribedUsers(1, 20, 3);
+        Slice<User> result = subscribeService.getSubscribedUsers(1, null, 3);
 
         // then
         assertAll(

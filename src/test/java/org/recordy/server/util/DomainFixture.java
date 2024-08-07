@@ -270,6 +270,17 @@ public final class DomainFixture {
                 .build();
     }
 
+    public static Record createRecord(long id, List<Keyword> keywords) {
+        return Record.builder()
+                .id(id)
+                .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
+                .location(LOCATION)
+                .content(CONTENT)
+                .keywords(keywords)
+                .uploader(createUser(UserStatus.ACTIVE))
+                .build();
+    }
+
     public static RecordEntity createRecordEntity() {
         return RecordEntity.builder()
                 .id(RECORD_ID)

@@ -9,7 +9,7 @@ public record RecordInfoWithBookmark (
         RecordInfo recordInfo,
         Boolean isBookmark
 ){
-    public static Slice<RecordInfoWithBookmark> of (Slice<Record> records, List<Boolean> bookmarks, Long currentUserId) {
+    public static Slice<RecordInfoWithBookmark> of(Slice<Record> records, List<Boolean> bookmarks, Long currentUserId) {
         return records.map(record -> {
             int index = records.getContent().indexOf(record);
             Boolean isBookmarked = bookmarks.get(index);
@@ -18,7 +18,7 @@ public record RecordInfoWithBookmark (
         });
     }
 
-    public static List<RecordInfoWithBookmark> of (List<Record> records, List<Boolean> bookmarks, Long currentUserId) {
+    public static List<RecordInfoWithBookmark> of(List<Record> records, List<Boolean> bookmarks, Long currentUserId) {
         return records.stream()
                 .map(record -> {
                     int index = records.indexOf(record);

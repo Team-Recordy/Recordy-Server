@@ -1,9 +1,8 @@
 package org.recordy.server.preference.controller;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.security.resolver.UserId;
-import org.recordy.server.preference.domain.usecase.Preference;
+import org.recordy.server.preference.controller.dto.response.PreferenceGetResponse;
 import org.recordy.server.preference.service.PreferenceService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +19,12 @@ public class PreferenceController implements PreferenceApi {
 
     @Override
     @GetMapping
-    public ResponseEntity<Preference> getPreference(
+    public ResponseEntity<PreferenceGetResponse> getPreference(
             @UserId Long userId
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(preferenceService.getPreference(userId));
+                .body(PreferenceGetResponse.from(preferenceService.getPreference(userId)));
     }
 }
 

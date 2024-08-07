@@ -45,7 +45,7 @@ public class UserController implements UserApi {
     @GetMapping("/following")
     public ResponseEntity<CursorBasePaginatedResponse<UserInfo>> getSubscribedUserInfos(
             @UserId Long userId,
-            @RequestParam(required = false, defaultValue = "0") long cursorId,
+            @RequestParam(required = false) Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
 
@@ -61,7 +61,7 @@ public class UserController implements UserApi {
     @GetMapping("/follower")
     public ResponseEntity<CursorBasePaginatedResponse<UserInfoWithFollowing>> getSubscribingUserInfos(
             @UserId Long userId,
-            @RequestParam(required = false, defaultValue = "0") long cursorId,
+            @RequestParam(required = false) Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
         Slice<User> users = subscribeService.getSubscribingUsers(userId, cursorId, size);

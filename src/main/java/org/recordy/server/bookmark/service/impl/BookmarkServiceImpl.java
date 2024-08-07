@@ -16,8 +16,10 @@ import org.recordy.server.user.repository.UserRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Service
 public class BookmarkServiceImpl implements BookmarkService {
 
@@ -25,6 +27,7 @@ public class BookmarkServiceImpl implements BookmarkService {
     private final RecordRepository recordRepository;
     private final BookmarkRepository bookmarkRepository;
 
+    @Transactional
     @Override
     public boolean bookmark(long userId, long recordId) {
         if (bookmarkRepository.existsByUserIdAndRecordId(userId, recordId)) {
@@ -58,7 +61,7 @@ public class BookmarkServiceImpl implements BookmarkService {
     }
 
     @Override
-    public Slice<Bookmark> getBookmarks(long userId, long cursorId, int size) {
+    public Slice<Bookmark> getBookmarks(long userId, Long cursorId, int size) {
         return bookmarkRepository.findAllByBookmarksOrderByIdDesc(userId, cursorId, PageRequest.ofSize(size));
     }
 }

@@ -14,14 +14,17 @@ import org.recordy.server.user.repository.UserRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Service
 public class SubscribeServiceImpl implements SubscribeService {
 
     private final SubscribeRepository subscribeRepository;
     private final UserRepository userRepository;
 
+    @Transactional
     @Override
     public boolean subscribe(SubscribeCreate subscribeCreate) {
         if (subscribeRepository.existsBySubscribingUserIdAndSubscribedUserId(subscribeCreate.subscribingUserId(), subscribeCreate.subscribedUserId())) {
@@ -43,13 +46,13 @@ public class SubscribeServiceImpl implements SubscribeService {
     }
 
     @Override
-    public Slice<User> getSubscribedUsers(long subscribingUserId, long cursor, int size) {
+    public Slice<User> getSubscribedUsers(long subscribingUserId, Long cursor, int size) {
         return subscribeRepository.findAllBySubscribingUserId(subscribingUserId, cursor, PageRequest.ofSize(size))
                 .map(Subscribe::getSubscribedUser);
     }
 
     @Override
-    public Slice<User> getSubscribingUsers(long subscribedUserId, long cursor, int size) {
+    public Slice<User> getSubscribingUsers(long subscribedUserId, Long cursor, int size) {
         return subscribeRepository.findAllBySubscribedUserId(subscribedUserId, cursor, PageRequest.ofSize(size))
                 .map(Subscribe::getSubscribingUser);
     }

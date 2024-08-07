@@ -1,9 +1,9 @@
 package org.recordy.server.view.repository;
 
 import org.junit.jupiter.api.Test;
+import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.view.domain.View;
-import org.recordy.server.view.repository.ViewRepository;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.UserStatus;
 import org.recordy.server.util.DomainFixture;
@@ -11,6 +11,8 @@ import org.recordy.server.util.db.IntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
+
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -42,6 +44,43 @@ class ViewRepositoryIntegrationTest extends IntegrationTest {
                 () -> assertThat(view).isNotNull(),
                 () -> assertThat(view.getUser().getId()).isEqualTo(user.getId()),
                 () -> assertThat(view.getRecord().getId()).isEqualTo(record.getId())
+        );
+    }
+
+    @Test
+    void deleteByUserId를_통해_특정_사용자의_조회_데이터를_삭제할_수_있다() {
+        // given
+        long userId = 1L;
+        viewRepository.save(View.builder()
+                .record(DomainFixture.createRecord())
+                .user(DomainFixture.createUser(userId))
+                .build());
+
+        // when
+        viewRepository.deleteByUserId(userId);
+
+        // then
+        assertThat(viewRepository.countAllByUserIdGroupByKeyword(userId)).isEmpty();
+    }
+
+    @Test
+    void countAllByUserIdGroupByKeyword를_통해_특정_사용자의_키워드별_조회_데이터_수를_조회할_수_있다() {
+        // given
+        long userId = 1L;
+        viewRepository.save(View.builder()
+                .record(DomainFixture.createRecord(1))
+                .user(DomainFixture.createUser(userId))
+                .build());
+
+        // when
+        Map<Keyword, Long> result = viewRepository.countAllByUserIdGroupByKeyword(userId);
+
+        // then
+        assertAll(
+                () -> assertThat(result).isNotEmpty(),
+                () -> assertThat(result.get(Keyword.감각적인)).isEqualTo(1),
+                () -> assertThat(result.get(Keyword.강렬한)).isEqualTo(1),
+                () -> assertThat(result.get(Keyword.귀여운)).isEqualTo(1)
         );
     }
 }

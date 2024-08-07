@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.recordy.server.common.domain.JpaMetaInfoEntity;
+import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.keyword.domain.KeywordEntity;
 import org.recordy.server.record.service.dto.FileUrl;
 import org.recordy.server.bookmark.domain.BookmarkEntity;
@@ -66,8 +67,15 @@ public class RecordEntity extends JpaMetaInfoEntity {
                 record.getCreatedAt()
         );
         recordEntity.user.addRecord(recordEntity);
+        recordEntity.createAndAddUploads(record.getKeywords());
 
         return recordEntity;
+    }
+
+    private void createAndAddUploads(List<Keyword> keywords) {
+        keywords.stream()
+                .map(keyword -> UploadEntity.of(this, KeywordEntity.from(keyword)))
+                .forEach(this::addUpload);
     }
 
     public Record toDomain() {

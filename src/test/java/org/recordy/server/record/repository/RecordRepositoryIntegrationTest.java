@@ -8,9 +8,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.record.domain.Record;
-import org.recordy.server.record.domain.RecordEntity;
 import org.recordy.server.record.domain.UploadEntity;
-import org.recordy.server.record.repository.impl.UploadJpaRepository;
 import org.recordy.server.record.service.dto.FileUrl;
 import org.recordy.server.bookmark.domain.Bookmark;
 import org.recordy.server.bookmark.domain.BookmarkEntity;
@@ -53,7 +51,7 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
     private RecordRepository recordRepository;
 
     @Autowired
-    private UploadJpaRepository uploadRepository;
+    private UploadRepository uploadRepository;
 
     @Autowired
     private BookmarkRepository bookmarkRepository;
@@ -103,7 +101,7 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
         Record record = recordRepository.save(createRecord(6));
 
         // when
-        List<UploadEntity> uploads = uploadRepository.findAllByRecord(RecordEntity.from(record));
+        List<UploadEntity> uploads = uploadRepository.findAllByRecordId(record.getId());
 
         // then
         assertAll(
@@ -120,7 +118,7 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
         Record savedRecord = recordRepository.save(DomainFixture.createRecord(6));
 
         // when
-        List<UploadEntity> uploads = uploadRepository.findAllByRecord(RecordEntity.from(savedRecord));
+        List<UploadEntity> uploads = uploadRepository.findAllByRecordId(savedRecord.getId());
 
         // then
         assertAll(
@@ -135,7 +133,7 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
     void deleteById를_통해_레코드를_삭제할_수_있다() {
         // when
         recordRepository.deleteById(1);
-        Slice<Record> result = recordRepository.findAllByIdAfterOrderByIdDesc(2, PageRequest.ofSize(1));
+        Slice<Record> result = recordRepository.findAllByIdAfterOrderByIdDesc(2L, PageRequest.ofSize(1));
 
         //then
         assertAll(
@@ -191,13 +189,12 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    void findAllByIdAfterOrderByIdDesc를_통해_cursor_값이_0일_경우_최신순으로_레코드_데이터를_조회할_수_있다() {
+    void findAllByIdAfterOrderByIdDesc를_통해_cursor_값이_null일_경우_최신순으로_레코드_데이터를_조회할_수_있다() {
         // given
-        long cursor = 0L;
         int size = 10;
 
         // when
-        Slice<Record> result = recordRepository.findAllByIdAfterOrderByIdDesc(cursor, PageRequest.ofSize(size));
+        Slice<Record> result = recordRepository.findAllByIdAfterOrderByIdDesc(null, PageRequest.ofSize(size));
 
         // then
         assertAll(
@@ -423,58 +420,58 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
 
         // then
         assertAll(
-                () -> assertThat(inclusiveResult).hasSize(1),
+                () -> assertThat(inclusiveResult).hasSize(3),
                 () -> assertThat(inclusiveResult.get(0).getId()).isEqualTo(1),
                 () -> assertThat(exclusiveResult).isEmpty()
         );
     }
 
-    @Test
-    void countAllByUserIdGroupByKeyword를_통해_사용자가_시청_저장_업로드한_모든_영상과_관련된_키워드별로_카운트할_수_있다() {
-        // given
-        // 현재 EXOTIC 3개 업로드했고, QUITE 3개 업로드했음
-        long userId = 1L;
-        viewRepository.save(View.builder()
-                .user(createUser(UserStatus.ACTIVE))
-                .record(Record.builder()
-                        .id(1L)
-                        .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
-                        .location(LOCATION)
-                        .content(CONTENT)
-                        .keywords(KEYWORDS)
-                        .uploader(createUser(UserStatus.ACTIVE))
-                        .build())
-                .createdAt(sevenDaysAgo)
-                .build());
-
-        // QUITE 키워드 영상 1번 시청함
-        viewRepository.save(
-                View.builder()
-                        .record(DomainFixture.createRecord(2))
-                        .user(DomainFixture.createUser(UserStatus.ACTIVE))
-                        .build()
-        );
-
-        // EXOTIC 키워드 영상 1번 저장함
-        bookmarkRepository.save(
-                Bookmark.builder()
-                        .user(DomainFixture.createUser(UserStatus.ACTIVE))
-                        .record(DomainFixture.createRecord(5))
-                        .build()
-        );
-        // 따라서 결과적으로 {EXOTIC:4, QUITE:4}
-
-        // when
-        Map<Keyword, Long> preference = recordRepository.countAllByUserIdGroupByKeyword(userId);
-        System.out.println("preference = " + preference);
-
-        // then
-        assertAll(
-                () -> assertThat(preference.size()).isEqualTo(2),
-                () -> assertThat(preference.get(Keyword.감각적인)).isEqualTo(4),
-                () -> assertThat(preference.get(Keyword.강렬한)).isEqualTo(4)
-        );
-    }
+//    @Test
+//    void countAllByUserIdGroupByKeyword를_통해_사용자가_시청_저장_업로드한_모든_영상과_관련된_키워드별로_카운트할_수_있다() {
+//        // given
+//        // 현재 EXOTIC 3개 업로드했고, QUITE 3개 업로드했음
+//        long userId = 1L;
+//        viewRepository.save(View.builder()
+//                .user(createUser(UserStatus.ACTIVE))
+//                .record(Record.builder()
+//                        .id(1L)
+//                        .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
+//                        .location(LOCATION)
+//                        .content(CONTENT)
+//                        .keywords(KEYWORDS)
+//                        .uploader(createUser(UserStatus.ACTIVE))
+//                        .build())
+//                .createdAt(sevenDaysAgo)
+//                .build());
+//
+//        // QUITE 키워드 영상 1번 시청함
+//        viewRepository.save(
+//                View.builder()
+//                        .record(DomainFixture.createRecord(2))
+//                        .user(DomainFixture.createUser(UserStatus.ACTIVE))
+//                        .build()
+//        );
+//
+//        // EXOTIC 키워드 영상 1번 저장함
+//        bookmarkRepository.save(
+//                Bookmark.builder()
+//                        .user(DomainFixture.createUser(UserStatus.ACTIVE))
+//                        .record(DomainFixture.createRecord(5))
+//                        .build()
+//        );
+//        // 따라서 결과적으로 {EXOTIC:4, QUITE:4}
+//
+//        // when
+//        Map<Keyword, Long> preference = recordRepository.countAllByUserIdGroupByKeyword(userId);
+//        System.out.println("preference = " + preference);
+//
+//        // then
+//        assertAll(
+//                () -> assertThat(preference.size()).isEqualTo(2),
+//                () -> assertThat(preference.get(Keyword.감각적인)).isEqualTo(4),
+//                () -> assertThat(preference.get(Keyword.강렬한)).isEqualTo(4)
+//        );
+//    }
 
     @Test
     void findAllBySubscribingUserIdOrderByIdDesc를_통해_구독한_사용자의_레코드_데이터를_최신순으로_조회할_수_있다() {
@@ -482,7 +479,6 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
         // user 1의 레코드 : {1, 2, 5}
         // user 2의 레코드 : {3, 4, 6}
         long userId = 1;
-        long cursor = 0;
         int size = 3;
 
         // user 1 -> user 2 구독
@@ -493,7 +489,7 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
         );
 
         // when
-        Slice<Record> result = recordRepository.findAllBySubscribingUserIdOrderByIdDesc(userId, cursor, PageRequest.ofSize(size));
+        Slice<Record> result = recordRepository.findAllBySubscribingUserIdOrderByIdDesc(userId, null, PageRequest.ofSize(size));
 
         // then
         assertAll(

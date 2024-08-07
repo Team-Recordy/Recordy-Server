@@ -1,12 +1,11 @@
 package org.recordy.server.mock.bookmark;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import org.apache.commons.lang3.ObjectUtils.Null;
 import org.recordy.server.bookmark.domain.Bookmark;
 import org.recordy.server.bookmark.repository.BookmarkRepository;
+import org.recordy.server.keyword.domain.Keyword;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -37,9 +36,9 @@ public class FakeBookmarkRepository implements BookmarkRepository {
     }
 
     @Override
-    public Slice<Bookmark> findAllByBookmarksOrderByIdDesc(long userId, long cursor, Pageable pageable) {
+    public Slice<Bookmark> findAllByBookmarksOrderByIdDesc(long userId, Long cursor, Pageable pageable) {
         List<Bookmark> content = bookmarks.keySet().stream()
-                .filter(key -> bookmarks.get(key).getUser().getId() == userId && key < cursor)
+                .filter(key -> bookmarks.get(key).getUser().getId() == userId && key < checkCursor(cursor))
                 .map(bookmarks::get)
                 .sorted(Comparator.comparing(Bookmark::getId).reversed())
                 .toList();
@@ -69,5 +68,31 @@ public class FakeBookmarkRepository implements BookmarkRepository {
         return bookmarks.values().stream()
                 .filter(bookmark -> bookmark.getUser().getId() == userId)
                 .count();
+    }
+
+    @Override
+    public Map<Keyword, Long> countAllByUserIdGroupByKeyword(long userId) {
+        Map<Keyword, Long> totalKeywords = new HashMap<>();
+
+        bookmarks.values().stream()
+                .filter(bookmark -> bookmark.getUser().getId() == userId)
+                .map(Bookmark::getRecord)
+                .forEach(
+                        record -> record.getKeywords()
+                                .forEach(keyword -> {
+                                    if (totalKeywords.containsKey(keyword))
+                                        totalKeywords.put(keyword, totalKeywords.get(keyword) + 1);
+                                    else
+                                        totalKeywords.put(keyword, 1L);
+                                })
+                );
+
+        return Map.of();
+    }
+    private Long checkCursor(Long cursor){
+        if (cursor != null) {
+            return cursor;
+        }
+        return Long.MAX_VALUE;
     }
 }

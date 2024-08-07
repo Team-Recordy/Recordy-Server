@@ -17,7 +17,7 @@ public interface RecordService {
     void watch(long userId, long recordId);
     Slice<Record> getFamousRecords(String keywords, int pageNumber, int size);
     Slice<Record> getRecentRecords(String keywords, Long cursorId, int size);
-    Slice<Record> getRecentRecordsByUser(long userId, long cursorId, int size);
-    Slice<Record> getSubscribingRecords(long userId, long cursorId, int size);
+    Slice<Record> getRecentRecordsByUser(long userId, Long cursorId, int size);
+    Slice<Record> getSubscribingRecords(long userId, Long cursorId, int size);
     List<Record> getTotalRecords(int size);
 }

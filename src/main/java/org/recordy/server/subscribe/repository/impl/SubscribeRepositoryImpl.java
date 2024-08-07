@@ -10,12 +10,14 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Repository
 public class SubscribeRepositoryImpl implements SubscribeRepository {
 
     private final SubscribeJpaRepository subscribeJpaRepository;
     private final SubscribeQueryDslRepository subscribeQueryDslRepository;
 
+    @Transactional
     @Override
     public void save(Subscribe subscribe) {
         subscribeJpaRepository.save(SubscribeEntity.from(subscribe));
@@ -27,16 +29,28 @@ public class SubscribeRepositoryImpl implements SubscribeRepository {
         subscribeJpaRepository.deleteAllBySubscribingUserIdAndSubscribedUserId(subscribingUserId, subscribedUserId);
     }
 
+    @Transactional
     @Override
-    public Slice<Subscribe> findAllBySubscribingUserId(long subscribingUserId, long cursor, Pageable pageable) {
+    public void deleteByUserId(long userId) {
+        subscribeJpaRepository.deleteAllBySubscribedUserIdOrSubscribingUserId(userId, userId);
+    }
+
+
+    @Override
+    public Slice<Subscribe> findAllBySubscribingUserId(long subscribingUserId, Long cursor, Pageable pageable) {
         return subscribeQueryDslRepository.findAllBySubscribingUserId(subscribingUserId, cursor, pageable)
                 .map(SubscribeEntity::toDomain);
     }
 
     @Override
-    public Slice<Subscribe> findAllBySubscribedUserId(long subscribedUserId, long cursor, Pageable pageable) {
+    public Slice<Subscribe> findAllBySubscribedUserId(long subscribedUserId, Long cursor, Pageable pageable) {
         return subscribeQueryDslRepository.findAllBySubscribedUserId(subscribedUserId, cursor, pageable)
                 .map(SubscribeEntity::toDomain);
+    }
+
+    @Override
+    public boolean existsBySubscribingUserIdAndSubscribedUserId(long subscribingUserId, long subscribedUserId) {
+        return subscribeQueryDslRepository.existsBySubscribingUserIdAndSubscribedUserId(subscribingUserId, subscribedUserId);
     }
 
     @Override
@@ -47,15 +61,5 @@ public class SubscribeRepositoryImpl implements SubscribeRepository {
     @Override
     public long countSubscribedUsers(long subscribingUserId) {
         return subscribeQueryDslRepository.countSubscribedUsers(subscribingUserId);
-    }
-
-    @Override
-    public boolean existsBySubscribingUserIdAndSubscribedUserId(long subscribingUserId, long subscribedUserId) {
-        return subscribeQueryDslRepository.existsBySubscribingUserIdAndSubscribedUserId(subscribingUserId, subscribedUserId);
-    }
-
-    @Override
-    public void deleteByUserId(long userId) {
-        subscribeJpaRepository.deleteAllBySubscribedUserIdOrSubscribingUserId(userId, userId);
     }
 }

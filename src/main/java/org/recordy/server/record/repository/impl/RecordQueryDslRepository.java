@@ -1,23 +1,18 @@
 package org.recordy.server.record.repository.impl;
 
-import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.util.QueryDslUtils;
 import org.recordy.server.keyword.domain.KeywordEntity;
 import org.recordy.server.record.domain.RecordEntity;
-import org.recordy.server.subscribe.domain.QSubscribeEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.recordy.server.keyword.domain.QKeywordEntity.keywordEntity;
 import static org.recordy.server.record.domain.QRecordEntity.recordEntity;
@@ -70,10 +65,7 @@ public Slice<RecordEntity> findAllByKeywordsOrderByPopularity(List<KeywordEntity
         return new SliceImpl<>(recordEntities, pageable, QueryDslUtils.hasNext(pageable, recordEntities));
     }
 
-    public Slice<RecordEntity> findAllByIdAfterAndKeywordsOrderByIdDesc(List<KeywordEntity> keywords, long cursor, Pageable pageable) {
-        cursor = QueryDslUtils.cursorIdCheck(cursor);
-
-
+    public Slice<RecordEntity> findAllByIdAfterAndKeywordsOrderByIdDesc(List<KeywordEntity> keywords, Long cursor, Pageable pageable) {
         List<RecordEntity> recordEntities = jpaQueryFactory
                 .selectFrom(recordEntity)
                 .join(recordEntity.uploads, uploadEntity)
@@ -89,9 +81,7 @@ public Slice<RecordEntity> findAllByKeywordsOrderByPopularity(List<KeywordEntity
         return new SliceImpl<>(recordEntities, pageable, QueryDslUtils.hasNext(pageable, recordEntities));
     }
 
-    public Slice<RecordEntity> findAllByIdAfterOrderByIdDesc(long cursor, Pageable pageable) {
-        cursor = QueryDslUtils.cursorIdCheck(cursor);
-
+    public Slice<RecordEntity> findAllByIdAfterOrderByIdDesc(Long cursor, Pageable pageable) {
         List<RecordEntity> recordEntities = jpaQueryFactory
                 .selectFrom(recordEntity)
                 .where(
@@ -104,9 +94,7 @@ public Slice<RecordEntity> findAllByKeywordsOrderByPopularity(List<KeywordEntity
         return new SliceImpl<>(recordEntities, pageable, QueryDslUtils.hasNext(pageable, recordEntities));
     }
 
-    public Slice<RecordEntity> findAllByUserIdOrderByIdDesc(long userId, long cursor, Pageable pageable) {
-        cursor = QueryDslUtils.cursorIdCheck(cursor);
-
+    public Slice<RecordEntity> findAllByUserIdOrderByIdDesc(long userId, Long cursor, Pageable pageable) {
         List<RecordEntity> recordEntities = jpaQueryFactory
                 .selectFrom((recordEntity))
                 .join(recordEntity.user, userEntity)
@@ -121,54 +109,7 @@ public Slice<RecordEntity> findAllByKeywordsOrderByPopularity(List<KeywordEntity
         return new SliceImpl<>(recordEntities, pageable, QueryDslUtils.hasNext(pageable, recordEntities));
     }
 
-    public Map<KeywordEntity, Long> countAllByUserIdGroupByKeyword(long userId) {
-        List<Tuple> uploadResults = jpaQueryFactory
-                .select(uploadEntity.keyword, uploadEntity.count())
-                .from(uploadEntity)
-                .join(uploadEntity.record, recordEntity)
-                .where(recordEntity.user.id.eq(userId))
-                .groupBy(uploadEntity.keyword)
-                .fetch();
-
-        List<Tuple> viewResults = jpaQueryFactory
-                .select(uploadEntity.keyword, viewEntity.count())
-                .from(viewEntity)
-                .join(viewEntity.record, recordEntity)
-                .join(recordEntity.uploads, uploadEntity)
-                .where(viewEntity.user.id.eq(userId))
-                .groupBy(uploadEntity.keyword)
-                .fetch();
-
-        List<Tuple> bookmarkResults = jpaQueryFactory
-                .select(uploadEntity.keyword, bookmarkEntity.count())
-                .from(bookmarkEntity)
-                .join(bookmarkEntity.record, recordEntity)
-                .join(recordEntity.uploads, uploadEntity)
-                .where(bookmarkEntity.user.id.eq(userId))
-                .groupBy(uploadEntity.keyword)
-                .fetch();
-
-        Map<KeywordEntity, Long> preference = uploadResults.stream()
-                .collect(Collectors.toMap(
-                        tuple -> tuple.get(uploadEntity.keyword),
-                        tuple -> tuple.get(uploadEntity.count())));
-
-        viewResults.forEach(tuple -> preference.merge(
-                tuple.get(uploadEntity.keyword),
-                tuple.get(viewEntity.count()),
-                Long::sum));
-
-        bookmarkResults.forEach(tuple -> preference.merge(
-                tuple.get(uploadEntity.keyword),
-                tuple.get(bookmarkEntity.count()),
-                Long::sum));
-
-        return preference;
-    }
-
-    public Slice<RecordEntity> findAllBySubscribingUserIdOrderByIdDesc(long userId, long cursor, Pageable pageable) {
-        cursor = QueryDslUtils.cursorIdCheck(cursor);
-
+    public Slice<RecordEntity> findAllBySubscribingUserIdOrderByIdDesc(long userId, Long cursor, Pageable pageable) {
         List<RecordEntity> recordEntities = jpaQueryFactory
                 .select(recordEntity)
                 .from(subscribeEntity)
