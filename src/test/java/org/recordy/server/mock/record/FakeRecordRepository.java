@@ -59,8 +59,8 @@ public class FakeRecordRepository implements RecordRepository {
     }
 
     @Override
-    public Optional<Record> findById(long recordId) {
-        return Optional.ofNullable(records.get(recordId));
+    public Record findById(long recordId) {
+        return records.get(recordId);
     }
 
     @Override

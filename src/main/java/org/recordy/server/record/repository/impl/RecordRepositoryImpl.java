@@ -3,11 +3,13 @@ package org.recordy.server.record.repository.impl;
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
+import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.keyword.domain.KeywordEntity;
 import org.recordy.server.keyword.repository.impl.KeywordJpaRepository;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.RecordEntity;
+import org.recordy.server.record.exception.RecordException;
 import org.recordy.server.record.repository.RecordRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -46,9 +48,10 @@ public class RecordRepositoryImpl implements RecordRepository {
     }
 
     @Override
-    public Optional<Record> findById(long recordId) {
+    public Record findById(long recordId) {
         return recordJpaRepository.findById(recordId)
-                .map(RecordEntity::toDomain);
+                .map(RecordEntity::toDomain)
+                .orElseThrow(() -> new RecordException(ErrorMessage.RECORD_NOT_FOUND));
     }
 
     @Override

@@ -56,11 +56,12 @@ public class RecordServiceImpl implements RecordService {
     @Transactional
     @Override
     public void delete(long userId, long recordId) {
-        Record record = recordRepository.findById(recordId)
-                .orElseThrow(() -> new RecordException(ErrorMessage.RECORD_NOT_FOUND));
+        Record record = recordRepository.findById(recordId);
+
         if (!record.isUploader(userId)) {
             throw new RecordException(ErrorMessage.FORBIDDEN_DELETE_RECORD);
         }
+
         recordRepository.deleteById(recordId);
     }
 
@@ -68,8 +69,8 @@ public class RecordServiceImpl implements RecordService {
     @Override
     public void watch(long userId, long recordId) {
         User user = userRepository.findById(userId);
-        Record record = recordRepository.findById(recordId)
-                .orElseThrow(() -> new RecordException(ErrorMessage.RECORD_NOT_FOUND));
+        Record record = recordRepository.findById(recordId);
+
         viewRepository.save(View.builder()
                 .record(record)
                 .user(user)
@@ -135,8 +136,7 @@ public class RecordServiceImpl implements RecordService {
             if (!selectedIds.contains(randomId)) {
                 selectedIds.add(randomId);
 
-                Optional<Record> findRecord = recordRepository.findById(randomId);
-                findRecord.ifPresent(records::add);
+                records.add(recordRepository.findById(randomId));
             }
         }
 

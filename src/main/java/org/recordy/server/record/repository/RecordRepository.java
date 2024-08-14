@@ -6,7 +6,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface RecordRepository {
 
@@ -16,7 +15,7 @@ public interface RecordRepository {
     void deleteByUserId(long userId);
 
     // query
-    Optional<Record> findById(long id);
+    Record findById(long id);
     Slice<Record> findAllOrderByPopularity(Pageable pageable);
     Slice<Record> findAllByKeywordsOrderByPopularity(List<Keyword> keywords, Pageable pageable);
     Slice<Record> findAllByIdAfterOrderByIdDesc(Long cursor, Pageable pageable);

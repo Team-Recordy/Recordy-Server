@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.UploadEntity;
+import org.recordy.server.record.exception.RecordException;
 import org.recordy.server.record.service.dto.FileUrl;
 import org.recordy.server.bookmark.domain.Bookmark;
 import org.recordy.server.bookmark.domain.BookmarkEntity;
@@ -34,6 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.recordy.server.util.DomainFixture.*;
 
@@ -143,27 +145,18 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
 
     @Test
     void findById를_통해_id에_해당하는_record_엔티티를_조회할_수_있다() {
-        //given
-        //when
-        Optional<Record>  record = recordRepository.findById(6);
+        // when
+        Record record = recordRepository.findById(6);
 
         //then
-        assertAll(
-                () -> assertThat(record.isPresent()),
-                () -> assertThat(record.get().getId()).isEqualTo(6)
-        );
+        assertThat(record.getId()).isEqualTo(6);
     }
 
     @Test
-    void findById를_통해_id에_해당하는_record_엔티티를_찾을_수_없으면_empty를_리턴한다() {
-        //given
-        //when
-        Optional<Record>  record = recordRepository.findById(7);
-
-        //then
-        assertAll(
-                () -> assertThat(record.isEmpty())
-        );
+    void findById를_통해_id에_해당하는_record_엔티티를_찾을_수_없으면_예외를_일으킨다() {
+        // when, then
+        assertThatThrownBy(() -> recordRepository.findById(99L))
+                .isInstanceOf(RecordException.class);
     }
 
     @Test

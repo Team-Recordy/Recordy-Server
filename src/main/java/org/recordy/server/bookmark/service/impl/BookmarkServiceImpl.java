@@ -35,8 +35,7 @@ public class BookmarkServiceImpl implements BookmarkService {
         }
 
         User user = userRepository.findById(userId);
-        Record record = recordRepository.findById(recordId)
-                .orElseThrow(() -> new RecordException(ErrorMessage.RECORD_NOT_FOUND));
+        Record record = recordRepository.findById(recordId);
 
         bookmarkRepository.save(Bookmark.builder()
                 .user(user)
