@@ -1,7 +1,6 @@
 package org.recordy.server.mock.record;
 
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.keyword.domain.KeywordEntity;
 import org.recordy.server.record.domain.Record;
@@ -130,8 +129,10 @@ public class FakeRecordRepository implements RecordRepository {
     }
 
     @Override
-    public Optional<Long> findMaxId() {
-        return records.keySet().stream().max(Long::compareTo);
+    public Long findMaxId() {
+        return records.keySet().stream()
+                .max(Long::compareTo)
+                .orElse(0L);
     }
 
     @Override

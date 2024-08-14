@@ -3,13 +3,11 @@ package org.recordy.server.subscribe.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.subscribe.domain.Subscribe;
 import org.recordy.server.subscribe.domain.usecase.SubscribeCreate;
 import org.recordy.server.subscribe.repository.SubscribeRepository;
 import org.recordy.server.subscribe.service.SubscribeService;
 import org.recordy.server.user.domain.User;
-import org.recordy.server.user.exception.UserException;
 import org.recordy.server.user.repository.UserRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
@@ -32,10 +30,8 @@ public class SubscribeServiceImpl implements SubscribeService {
             return false;
         }
 
-        User subscribingUser = userRepository.findById(subscribeCreate.subscribingUserId())
-                .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
-        User subscribedUser = userRepository.findById(subscribeCreate.subscribedUserId())
-                .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
+        User subscribingUser = userRepository.findById(subscribeCreate.subscribingUserId());
+        User subscribedUser = userRepository.findById(subscribeCreate.subscribedUserId());
 
         subscribeRepository.save(Subscribe.builder()
                 .subscribingUser(subscribingUser)

@@ -38,8 +38,8 @@ public class FakeUserRepository implements UserRepository {
     }
 
     @Override
-    public Optional<User> findById(long userId) {
-        return Optional.ofNullable(users.get(userId));
+    public User findById(long userId) {
+        return users.get(userId);
     }
 
     @Override

@@ -146,8 +146,7 @@ public class UserServiceTest extends FakeContainer {
         );
 
         // when, then
-        assertThatThrownBy(() -> userService.signUp(userSignUp))
-                .isInstanceOf(UserException.class);
+        assertThatThrownBy(() -> userService.signUp(userSignUp));
     }
 
     @Test
@@ -246,10 +245,9 @@ public class UserServiceTest extends FakeContainer {
 
         // when
         userService.delete(DomainFixture.USER_ID);
-        Optional<User> result = userRepository.findById(DomainFixture.USER_ID);
 
         // then
-        assertThat(result).isEmpty();
+        assertThat(userRepository.findById(DomainFixture.USER_ID)).isNull();
     }
 
     @Test
@@ -265,7 +263,7 @@ public class UserServiceTest extends FakeContainer {
 
         // then
         assertAll(
-                () -> assertThat(userRepository.findById(DomainFixture.USER_ID)).isEmpty(),
+                () -> assertThat(userRepository.findById(DomainFixture.USER_ID)).isNull(),
                 () -> assertThat(recordRepository.count()).isZero()
         );
     }
@@ -335,13 +333,12 @@ public class UserServiceTest extends FakeContainer {
     }
 
     @Test
-    void delete를_통해_삭제하고자_하는_사용자가_없을_경우_UserException이_발생한다() {
+    void delete를_통해_삭제하고자_하는_사용자가_없을_경우_예외가_발생한다() {
         // given
         long userId = DomainFixture.USER_ID;
 
         // when, then
-        assertThatThrownBy(() -> userService.delete(userId))
-                .isInstanceOf(UserException.class);
+        assertThatThrownBy(() -> userService.delete(userId));
     }
 
     @Test

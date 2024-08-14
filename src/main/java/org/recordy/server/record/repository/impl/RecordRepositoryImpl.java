@@ -101,8 +101,9 @@ public class RecordRepositoryImpl implements RecordRepository {
     }
 
     @Override
-    public Optional<Long> findMaxId() {
-        return recordQueryDslRepository.findMaxId();
+    public Long findMaxId() {
+        return recordQueryDslRepository.findMaxId()
+                .orElse(0L);
     }
 
     @Override

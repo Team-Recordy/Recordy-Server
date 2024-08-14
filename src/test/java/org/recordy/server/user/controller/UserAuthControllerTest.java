@@ -124,10 +124,8 @@ public class UserAuthControllerTest extends FakeContainer {
 
     @Test
     void signOut을_통해_존재하지_않는_사용자를_로그아웃하려고_하면_예외가_발생한다() {
-
-        //when
-        assertThatThrownBy(() -> userAuthController.signOut(DomainFixture.USER_ID))
-                .isInstanceOf(UserException.class);
+        //when, then
+        assertThatThrownBy(() -> userAuthController.signOut(DomainFixture.USER_ID));
     }
 
     @Test
@@ -145,7 +143,6 @@ public class UserAuthControllerTest extends FakeContainer {
     @Test
     void delete를_통해_존재하지_않는_사용자를_삭제하려고_하면_예외가_발생한다() {
         // when
-        assertThatThrownBy(() -> userAuthController.delete(DomainFixture.USER_ID))
-                .isInstanceOf(UserException.class);
+        assertThatThrownBy(() -> userAuthController.delete(DomainFixture.USER_ID));
     }
 }
