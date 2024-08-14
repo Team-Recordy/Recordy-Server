@@ -1,16 +1,12 @@
 package org.recordy.server.auth.service;
 
 import io.jsonwebtoken.Jwts;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.auth.domain.Auth;
 import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.auth.domain.AuthToken;
 import org.recordy.server.auth.exception.AuthException;
-import org.recordy.server.auth.repository.AuthRepository;
 import org.recordy.server.auth.service.dto.AuthTokenValidationResult;
-import org.recordy.server.auth.service.impl.token.AuthTokenGenerator;
-import org.recordy.server.auth.service.impl.token.AuthTokenSigningKeyProvider;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.mock.FakeContainer;
 import org.recordy.server.util.DomainFixture;
@@ -24,21 +20,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.recordy.server.auth.service.dto.AuthTokenValidationResult.*;
 
-public class AuthTokenServiceTest {
-
-    private AuthTokenService authTokenService;
-    private AuthTokenSigningKeyProvider signingKeyProvider;
-    private AuthTokenGenerator authTokenGenerator;
-    private AuthRepository authRepository;
-
-    @BeforeEach
-    void init() {
-        FakeContainer fakeContainer = new FakeContainer();
-        authTokenService = fakeContainer.authTokenService;
-        signingKeyProvider = fakeContainer.authTokenSigningKeyProvider;
-        authTokenGenerator = fakeContainer.authTokenGenerator;
-        authRepository = fakeContainer.authRepository;
-    }
+public class AuthTokenServiceTest extends FakeContainer {
 
     @Test
     void userId로부터_valid한_AuthToken_객체를_생성해서_반환한다() {
@@ -46,12 +28,12 @@ public class AuthTokenServiceTest {
         long userId = DomainFixture.USER_ID;
 
         // when
-        AuthToken authToken = authTokenService.issueToken(userId);
+        AuthToken authToken = tokenService.issueToken(userId);
 
         // then
         assertAll(
-                () -> assertThat(authTokenService.validateToken(authToken.getAccessToken())).isEqualTo(VALID_TOKEN),
-                () -> assertThat(authTokenService.validateToken(authToken.getRefreshToken())).isEqualTo(VALID_TOKEN)
+                () -> assertThat(tokenService.validateToken(authToken.getAccessToken())).isEqualTo(VALID_TOKEN),
+                () -> assertThat(tokenService.validateToken(authToken.getRefreshToken())).isEqualTo(VALID_TOKEN)
         );
     }
 
@@ -61,7 +43,7 @@ public class AuthTokenServiceTest {
         String invalidToken = "invalidToken";
 
         // then
-        assertThat(authTokenService.validateToken(invalidToken)).isNotEqualTo(VALID_TOKEN);
+        assertThat(tokenService.validateToken(invalidToken)).isNotEqualTo(VALID_TOKEN);
     }
 
     @Test
@@ -75,7 +57,7 @@ public class AuthTokenServiceTest {
                 .compact();
 
         // when
-        AuthTokenValidationResult result = authTokenService.validateToken(expiredToken);
+        AuthTokenValidationResult result = tokenService.validateToken(expiredToken);
 
         // then
         assertThat(result).isEqualTo(EXPIRED_TOKEN);
@@ -87,7 +69,7 @@ public class AuthTokenServiceTest {
         String emptyToken = "";
 
         // when
-        AuthTokenValidationResult result = authTokenService.validateToken(emptyToken);
+        AuthTokenValidationResult result = tokenService.validateToken(emptyToken);
 
         // then
         assertThat(result).isEqualTo(EMPTY_TOKEN);
@@ -101,7 +83,7 @@ public class AuthTokenServiceTest {
         request.addHeader(HttpHeaders.AUTHORIZATION, token);
 
         // when
-        String result = authTokenService.getTokenFromRequest(request);
+        String result = tokenService.getTokenFromRequest(request);
 
         // then
         assertThat(result).isEqualTo("token");
@@ -115,7 +97,7 @@ public class AuthTokenServiceTest {
         request.addHeader(HttpHeaders.AUTHORIZATION, token);
 
         // when
-        String result = authTokenService.getTokenFromRequest(request);
+        String result = tokenService.getTokenFromRequest(request);
 
         // then
         assertThat(result).isEqualTo("token");
@@ -129,7 +111,7 @@ public class AuthTokenServiceTest {
         request.addHeader(HttpHeaders.AUTHORIZATION, token);
 
         // when, then
-        assertThatThrownBy(() -> authTokenService.getTokenFromRequest(request))
+        assertThatThrownBy(() -> tokenService.getTokenFromRequest(request))
                 .isInstanceOf(AuthException.class)
                 .hasMessageContaining(ErrorMessage.INVALID_TOKEN.getMessage());
     }
@@ -143,7 +125,7 @@ public class AuthTokenServiceTest {
         request.addHeader(HttpHeaders.AUTHORIZATION, token);
 
         // when
-        String result = authTokenService.getTokenFromRequest(request);
+        String result = tokenService.getTokenFromRequest(request);
 
         // then
         assertThat(result).isEqualTo("abcde");
@@ -158,7 +140,7 @@ public class AuthTokenServiceTest {
         request.addHeader(HttpHeaders.AUTHORIZATION, token);
 
         // when, then
-        assertThatThrownBy(() -> authTokenService.getTokenFromRequest(request))
+        assertThatThrownBy(() -> tokenService.getTokenFromRequest(request))
                 .isInstanceOf(AuthException.class)
                 .hasMessageContaining(ErrorMessage.INVALID_TOKEN.getMessage());
     }
@@ -167,10 +149,10 @@ public class AuthTokenServiceTest {
     void 토큰에서_사용자_ID를_추출한다() {
         // given
         long userId = DomainFixture.USER_ID;
-        AuthToken authToken = authTokenService.issueToken(userId);
+        AuthToken authToken = tokenService.issueToken(userId);
 
         // when
-        long result = authTokenService.getUserIdFromToken(authToken.getAccessToken());
+        long result = tokenService.getUserIdFromToken(authToken.getAccessToken());
 
         // then
         assertThat(result).isEqualTo(userId);
@@ -179,10 +161,10 @@ public class AuthTokenServiceTest {
     @Test
     void 토큰에_사용자_ID가_없을_경우_null_예외를_던진다() {
         // given
-        String token = authTokenGenerator.generate(null, 1000L);
+        String token = tokenGenerator.generate(null, 1000L);
 
         // when, then
-        assertThatThrownBy(() -> authTokenService.getUserIdFromToken(token))
+        assertThatThrownBy(() -> tokenService.getUserIdFromToken(token))
                 .isInstanceOf(NullPointerException.class);
     }
 
@@ -190,12 +172,12 @@ public class AuthTokenServiceTest {
     void refreshToken으로부터_platformId를_반환한다() {
         //given
         AuthPlatform authPlatform = DomainFixture.createAuthPlatform();
-        AuthToken authToken = authTokenService.issueToken(DomainFixture.USER_ID);
+        AuthToken authToken = tokenService.issueToken(DomainFixture.USER_ID);
         authRepository.save(new Auth(DomainFixture.USER_ID, authPlatform, authToken, true));
 
         //when
         String refreshToken = "Bearer " + authToken.getRefreshToken();
-        String platformId = authTokenService.getPlatformIdFromRefreshToken(refreshToken);
+        String platformId = tokenService.getPlatformIdFromRefreshToken(refreshToken);
 
         //then
         assertThat(platformId).isEqualTo(authPlatform.getId());
@@ -205,11 +187,11 @@ public class AuthTokenServiceTest {
     @Test
     void 주어진_refreshToken으로부터_platformId를_반환하지_못하면_에러를_던진다() {
         //given
-        AuthToken authToken = authTokenService.issueToken(DomainFixture.USER_ID);
+        AuthToken authToken = tokenService.issueToken(DomainFixture.USER_ID);
 
         // when, then
         String refreshToken = "Bearer " + authToken.getRefreshToken();
-        assertThatThrownBy(() -> authTokenService.getPlatformIdFromRefreshToken(refreshToken))
+        assertThatThrownBy(() -> tokenService.getPlatformIdFromRefreshToken(refreshToken))
                 .isInstanceOf(AuthException.class)
                 .hasMessageContaining(ErrorMessage.AUTH_NOT_FOUND.getMessage());
     }
@@ -220,9 +202,9 @@ public class AuthTokenServiceTest {
         long userId = DomainFixture.USER_ID;
 
         //when
-        String accessToken = authTokenService.issueAccessToken(userId);
+        String accessToken = tokenService.issueAccessToken(userId);
 
         //then
-        assertThat(userId).isEqualTo(authTokenService.getUserIdFromToken(accessToken));
+        assertThat(userId).isEqualTo(tokenService.getUserIdFromToken(accessToken));
     }
 }

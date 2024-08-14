@@ -1,11 +1,9 @@
 package org.recordy.server.auth.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.auth.domain.Auth;
 import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.auth.exception.AuthException;
-import org.recordy.server.auth.repository.AuthRepository;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.user.domain.usecase.UserSignIn;
 import org.recordy.server.mock.FakeContainer;
@@ -17,19 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-public class AuthServiceTest {
-
-    private FakeContainer fakeContainer;
-
-    private AuthService authService;
-    private AuthRepository authRepository;
-
-    @BeforeEach
-    void init() {
-        fakeContainer = new FakeContainer();
-        authService = fakeContainer.authService;
-        authRepository = fakeContainer.authRepository;
-    }
+public class AuthServiceTest extends FakeContainer {
 
     @Test
     void create를_통해_Auth_객체를_얻을_수_있다() {

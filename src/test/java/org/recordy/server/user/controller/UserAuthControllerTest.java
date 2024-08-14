@@ -1,6 +1,5 @@
 package org.recordy.server.user.controller;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.auth.domain.Auth;
 import org.recordy.server.auth.domain.AuthPlatform;
@@ -12,8 +11,6 @@ import org.recordy.server.user.controller.dto.response.UserSignInResponse;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.usecase.UserSignIn;
 import org.recordy.server.user.exception.UserException;
-import org.recordy.server.user.repository.UserRepository;
-import org.recordy.server.user.service.UserService;
 import org.recordy.server.util.DomainFixture;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,19 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-public class UserAuthControllerTest {
-
-    private UserAuthController userAuthController;
-    private UserService userService;
-    private UserRepository userRepository;
-
-    @BeforeEach
-    void init() {
-        FakeContainer fakeContainer = new FakeContainer();
-        userAuthController = fakeContainer.userAuthController;
-        userService = fakeContainer.userService;
-        userRepository = fakeContainer.userRepository;
-    }
+public class UserAuthControllerTest extends FakeContainer {
 
     @Test
     void signIn을_통해_사용자는_카카오_플랫폼_토큰을_통해_가입_이후_토큰을_반환받을_수_있다() {

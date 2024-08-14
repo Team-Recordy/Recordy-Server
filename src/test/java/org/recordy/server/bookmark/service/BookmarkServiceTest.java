@@ -7,33 +7,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.recordy.server.bookmark.domain.Bookmark;
-import org.recordy.server.bookmark.service.BookmarkService;
 import org.recordy.server.mock.FakeContainer;
 import org.recordy.server.record.domain.Record;
-import org.recordy.server.record.repository.RecordRepository;
-import org.recordy.server.bookmark.repository.BookmarkRepository;
-import org.recordy.server.record.service.RecordService;
-import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.util.DomainFixture;
-import org.springframework.data.domain.Slice;
-import org.springframework.test.context.TestExecutionListeners;
 
-public class BookmarkServiceTest {
-
-    private RecordService recordService;
-    private BookmarkService bookmarkService;
-    private BookmarkRepository bookmarkRepository;
+public class BookmarkServiceTest extends FakeContainer {
 
     @BeforeEach
     void init() {
-        FakeContainer fakeContainer = new FakeContainer();
-        recordService = fakeContainer.recordService;
-        bookmarkService = fakeContainer.bookmarkService;
-        bookmarkRepository = fakeContainer.bookmarkRepository;
-        UserRepository userRepository = fakeContainer.userRepository;
-        RecordRepository recordRepository = fakeContainer.recordRepository;
-
         userRepository.save(DomainFixture.createUser(1));
         userRepository.save(DomainFixture.createUser(2));
         recordRepository.save(DomainFixture.createRecord(1));

@@ -1,17 +1,12 @@
 package org.recordy.server.user.service;
 
 import java.util.Map;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.auth.domain.Auth;
 import org.recordy.server.auth.domain.AuthPlatform;
-import org.recordy.server.auth.repository.AuthRepository;
-import org.recordy.server.bookmark.repository.BookmarkRepository;
 import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.mock.FakeContainer;
-import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.subscribe.domain.Subscribe;
-import org.recordy.server.subscribe.repository.SubscribeRepository;
 import org.recordy.server.user.domain.TermsAgreement;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.UserStatus;
@@ -19,38 +14,16 @@ import org.recordy.server.user.domain.usecase.UserProfile;
 import org.recordy.server.user.domain.usecase.UserSignIn;
 import org.recordy.server.user.domain.usecase.UserSignUp;
 import org.recordy.server.user.exception.UserException;
-import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.util.DomainFixture;
 
 import java.util.Optional;
-import org.recordy.server.view.repository.ViewRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-public class UserServiceTest {
-
-    private UserService userService;
-    private UserRepository userRepository;
-    private AuthRepository authRepository;
-    private RecordRepository recordRepository;
-    private SubscribeRepository subscribeRepository;
-    private BookmarkRepository bookmarkRepository;
-    private ViewRepository viewRepository;
-
-    @BeforeEach
-    void init() {
-        FakeContainer fakeContainer = new FakeContainer();
-        userService = fakeContainer.userService;
-        userRepository = fakeContainer.userRepository;
-        authRepository = fakeContainer.authRepository;
-        recordRepository = fakeContainer.recordRepository;
-        subscribeRepository = fakeContainer.subscribeRepository;
-        bookmarkRepository = fakeContainer.bookmarkRepository;
-        viewRepository = fakeContainer.viewRepository;
-    }
+public class UserServiceTest extends FakeContainer {
 
     @Test
     void signIn을_통해_Auth_객체를_얻을_수_있다() {
