@@ -28,7 +28,6 @@ public class RecordQueryDslRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-
     public Slice<RecordEntity> findAllOrderByPopularity(Pageable pageable) {
         LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
 
@@ -46,7 +45,7 @@ public class RecordQueryDslRepository {
     }
 
 
-public Slice<RecordEntity> findAllByKeywordsOrderByPopularity(List<KeywordEntity> keywords, Pageable pageable) {
+    public Slice<RecordEntity> findAllByKeywordsOrderByPopularity(List<KeywordEntity> keywords, Pageable pageable) {
         LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
 
         List<RecordEntity> recordEntities = jpaQueryFactory
@@ -141,5 +140,4 @@ public Slice<RecordEntity> findAllByKeywordsOrderByPopularity(List<KeywordEntity
                         .fetchOne()
         );
     }
-
 }
