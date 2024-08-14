@@ -1,12 +1,13 @@
 package org.recordy.server.mock.user;
 
+import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.user.domain.User;
+import org.recordy.server.user.exception.UserException;
 import org.recordy.server.user.repository.UserRepository;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 public class FakeUserRepository implements UserRepository {
 
@@ -43,10 +44,11 @@ public class FakeUserRepository implements UserRepository {
     }
 
     @Override
-    public Optional<User> findByPlatformId(String platformId) {
+    public User findByPlatformId(String platformId) {
         return users.values().stream()
                 .filter(user -> user.getAuthPlatform().getId().equals(platformId))
-                .findFirst();
+                .findFirst()
+                .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
     }
 
     @Override

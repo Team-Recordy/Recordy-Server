@@ -68,13 +68,12 @@ public class UserServiceTest extends FakeContainer {
 
         // when
         userService.signIn(userSignIn);
-        Optional<User> result = userRepository.findByPlatformId(DomainFixture.PLATFORM_ID);
+        User result = userRepository.findByPlatformId(DomainFixture.PLATFORM_ID);
 
         // then
         assertAll(
-                () -> assertThat(result).isNotEmpty(),
-                () -> assertThat(result.get().getAuthPlatform().getId()).isEqualTo(DomainFixture.PLATFORM_ID),
-                () -> assertThat(result.get().getAuthPlatform().getType()).isEqualTo(platform.getType())
+                () -> assertThat(result.getAuthPlatform().getId()).isEqualTo(DomainFixture.PLATFORM_ID),
+                () -> assertThat(result.getAuthPlatform().getType()).isEqualTo(platform.getType())
         );
     }
 
@@ -86,13 +85,10 @@ public class UserServiceTest extends FakeContainer {
 
         // when
         userService.signIn(userSignIn);
-        Optional<User> user = userRepository.findByPlatformId(DomainFixture.PLATFORM_ID);
+        User user = userRepository.findByPlatformId(DomainFixture.PLATFORM_ID);
 
         // then
-        assertAll(
-                () -> assertThat(user).isNotEmpty(),
-                () -> assertThat(user.get().getStatus()).isEqualTo(UserStatus.PENDING)
-        );
+        assertThat(user.getStatus()).isEqualTo(UserStatus.PENDING);
     }
 
     @Test
@@ -103,13 +99,10 @@ public class UserServiceTest extends FakeContainer {
 
         // when
         userService.signIn(userSignIn);
-        Optional<User> user = userRepository.findByPlatformId(DomainFixture.PLATFORM_ID);
+        User user = userRepository.findByPlatformId(DomainFixture.PLATFORM_ID);
 
         // then
-        assertAll(
-                () -> assertThat(user).isNotEmpty(),
-                () -> assertThat(user.get().getTermsAgreement()).isEqualTo(TermsAgreement.defaultAgreement())
-        );
+        assertThat(user.getTermsAgreement()).isEqualTo(TermsAgreement.defaultAgreement());
     }
 
     @Test

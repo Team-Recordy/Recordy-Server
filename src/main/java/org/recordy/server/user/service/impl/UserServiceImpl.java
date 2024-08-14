@@ -65,8 +65,11 @@ public class UserServiceImpl implements UserService {
     }
 
     private User getOrCreateUser(AuthPlatform platform) {
-        return userRepository.findByPlatformId(platform.getId())
-                .orElseGet(() -> create(platform));
+        try {
+            return userRepository.findByPlatformId(platform.getId());
+        } catch (UserException e) {
+            return create(platform);
+        }
     }
 
     private User create(AuthPlatform platform) {
@@ -102,8 +105,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public String reissueToken(String refreshToken) {
         String platformId = authTokenService.getPlatformIdFromRefreshToken(refreshToken);
-        User user = userRepository.findByPlatformId(platformId)
-                .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
+        User user = userRepository.findByPlatformId(platformId);
 
         return authTokenService.issueAccessToken(user.getId());
     }

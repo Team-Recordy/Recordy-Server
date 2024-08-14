@@ -95,7 +95,7 @@ class UserRepositoryIntegrationTest extends IntegrationTest {
     @Test
     void findByPlatformId를_통해_플랫폼_ID로_유저_데이터를_조회할_수_있다() {
         // when
-        User result = userRepository.findByPlatformId(DomainFixture.PLATFORM_ID).orElse(null);
+        User result = userRepository.findByPlatformId(DomainFixture.PLATFORM_ID);
 
         // then
         assertAll(
@@ -107,12 +107,10 @@ class UserRepositoryIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    void findByPlatformId를_통해_존재하지_않는_플랫폼_ID로_유저_데이터를_조회하면_빈_값을_반환한다() {
-        // when
-        Optional<User> result = userRepository.findByPlatformId("non-exist-platform-id");
-
-        // then
-        assertThat(result).isEmpty();
+    void findByPlatformId를_통해_존재하지_않는_플랫폼_ID로_유저_데이터를_조회하면_예외를_던진다() {
+        // when, then
+        assertThatThrownBy(() -> userRepository.findByPlatformId("non-exist-platform-id"))
+                .isInstanceOf(UserException.class);
     }
 
     @Test

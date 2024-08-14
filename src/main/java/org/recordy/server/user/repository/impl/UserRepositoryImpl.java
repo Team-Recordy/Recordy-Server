@@ -55,9 +55,10 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Optional<User> findByPlatformId(String platformId) {
+    public User findByPlatformId(String platformId) {
         return userJpaRepository.findByPlatformId(platformId)
-                .map(UserEntity::toDomain);
+                .map(UserEntity::toDomain)
+                .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
     }
 
     @Override
