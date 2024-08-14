@@ -1,6 +1,5 @@
 package org.recordy.server.record.service.impl;
 
-import lombok.RequiredArgsConstructor;
 import org.recordy.server.record.service.S3Service;
 import org.recordy.server.record.service.dto.FileUrl;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,13 +13,24 @@ import java.time.Duration;
 import java.util.UUID;
 
 @Component
-@RequiredArgsConstructor
 public class S3ServiceImpl implements S3Service {
 
-    @Value("${aws-property.s3-bucket-name}")
-    private String bucket;
-
+    private final String bucket;
+    private final String cloudFrontDomain;
+    private final String s3Domain;
     private final S3Presigner presigner;
+
+    public S3ServiceImpl(
+            S3Presigner presigner,
+            @Value("${aws-property.s3-bucket-name}") String s3Domain,
+            @Value("${aws-property.cloudfront-domain-name}") String cloudFrontDomain,
+            @Value("${aws-property.s3-domain}") String bucket
+    ) {
+        this.presigner = presigner;
+        this.s3Domain = s3Domain;
+        this.cloudFrontDomain = cloudFrontDomain;
+        this.bucket = bucket;
+    }
 
     @Override
     public FileUrl generatePresignedUrl() {
@@ -46,5 +56,13 @@ public class S3ServiceImpl implements S3Service {
         PresignedPutObjectRequest presignedRequest = presigner.presignPutObject(presignRequest);
 
         return presignedRequest.url().toString();
+    }
+
+    @Override
+    public FileUrl convertToCloudFrontUrl(FileUrl fileUrl) {
+        String cloudFrontVideoUrl = fileUrl.videoUrl().replace(s3Domain, cloudFrontDomain);
+        String cloudFrontThumbnailUrl = fileUrl.thumbnailUrl().replace(s3Domain, cloudFrontDomain);
+
+        return FileUrl.of(cloudFrontVideoUrl, cloudFrontThumbnailUrl);
     }
 }

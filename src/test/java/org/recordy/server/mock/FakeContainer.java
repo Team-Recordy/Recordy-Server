@@ -14,6 +14,7 @@ import org.recordy.server.auth.service.impl.token.AuthTokenServiceImpl;
 import org.recordy.server.auth.service.impl.token.AuthTokenSigningKeyProvider;
 import org.recordy.server.bookmark.service.BookmarkService;
 import org.recordy.server.bookmark.service.impl.BookmarkServiceImpl;
+import org.recordy.server.mock.record.FakeS3Service;
 import org.recordy.server.mock.record.FakeUploadRepository;
 import org.recordy.server.mock.subscribe.FakeSubscribeRepository;
 import org.recordy.server.preference.service.PreferenceService;
@@ -76,10 +77,10 @@ public class FakeContainer {
     public final AuthTokenService authTokenService;
     public final AuthService authService;
     public final UserService userService;
+    public final S3Service s3Service;
     public final RecordService recordService;
     public final KeywordService keywordService;
     public final BookmarkService bookmarkService;
-    public final S3Service s3Service;
     public final SubscribeService subscribeService;
     public final PreferenceService preferenceService;
 
@@ -126,10 +127,10 @@ public class FakeContainer {
         this.userService = new UserServiceImpl(DomainFixture.ROOT_USER_ID, userRepository, subscribeRepository, recordRepository, bookmarkRepository,viewRepository, authService, authTokenService);
 
         this.keywordService = new KeywordServiceImpl(keywordRepository);
-        this.recordService = new RecordServiceImpl(recordRepository, viewRepository, userRepository);
+        this.s3Service = new FakeS3Service();
+        this.recordService = new RecordServiceImpl(s3Service, recordRepository, viewRepository, userRepository);
         this.bookmarkService = new BookmarkServiceImpl(userRepository, recordRepository, bookmarkRepository);
         this.subscribeService = new SubscribeServiceImpl(subscribeRepository, userRepository);
-        this.s3Service = mock(S3Service.class);  // S3Service mock 사용
         this.preferenceService = new PreferenceServiceImpl(uploadRepository, viewRepository, bookmarkRepository);
 
         this.authFilterExceptionHandler = new AuthFilterExceptionHandler(new ObjectMapper());

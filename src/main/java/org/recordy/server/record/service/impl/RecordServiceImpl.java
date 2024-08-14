@@ -13,6 +13,7 @@ import org.recordy.server.record.domain.usecase.RecordCreate;
 import org.recordy.server.record.exception.RecordException;
 import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.record.service.RecordService;
+import org.recordy.server.record.service.S3Service;
 import org.recordy.server.record.service.dto.FileUrl;
 import org.recordy.server.view.domain.View;
 import org.recordy.server.view.repository.ViewRepository;
@@ -33,15 +34,10 @@ import java.util.Objects;
 @Service
 public class RecordServiceImpl implements RecordService {
 
+    private final S3Service s3Service;
     private final RecordRepository recordRepository;
     private final ViewRepository viewRepository;
     private final UserRepository userRepository;
-
-    @Value("${aws-property.cloudfront-domain-name}")
-    private String cloudFrontDomain;
-
-    @Value("${aws-property.s3-domain}")
-    private String s3Domain;
 
     @Transactional
     @Override
@@ -49,7 +45,7 @@ public class RecordServiceImpl implements RecordService {
         User user = userRepository.findById(recordCreate.uploaderId())
                 .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
 
-        FileUrl fileUrl = convertToCloudFrontUrl(recordCreate.fileUrl());
+        FileUrl fileUrl = s3Service.convertToCloudFrontUrl(recordCreate.fileUrl());
 
         return recordRepository.save(Record.builder()
                 .fileUrl(fileUrl)
@@ -59,15 +55,6 @@ public class RecordServiceImpl implements RecordService {
                 .keywords(recordCreate.keywords())
                 .build());
     }
-
-
-    private FileUrl convertToCloudFrontUrl(FileUrl fileUrl) {
-        String cloudFrontVideoUrl = fileUrl.videoUrl().replace(s3Domain, cloudFrontDomain);
-        String cloudFrontThumbnailUrl = fileUrl.thumbnailUrl().replace(s3Domain, cloudFrontDomain);
-
-        return FileUrl.of(cloudFrontVideoUrl, cloudFrontThumbnailUrl);
-    }
-
 
     @Transactional
     @Override
