@@ -26,4 +26,5 @@ public interface RecordRepository {
     long countAllByUserId(long userId);
     Optional<Long> findMaxId();
     Long count();
+    List<Record> findAll();
 }

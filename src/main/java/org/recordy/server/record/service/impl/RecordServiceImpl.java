@@ -60,6 +60,10 @@ public class RecordServiceImpl implements RecordService {
                 .build());
     }
 
+    @Override
+    public List<Record> getAllRecords() {
+        return recordRepository.findAll();
+    }
 
     private FileUrl convertToCloudFrontUrl(FileUrl fileUrl) {
         String cloudFrontVideoUrl = fileUrl.videoUrl().replace(s3Domain, cloudFrontDomain);

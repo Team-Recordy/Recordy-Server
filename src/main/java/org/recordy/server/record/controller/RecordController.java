@@ -39,6 +39,12 @@ public class RecordController implements RecordApi {
                 .body(s3Service.generatePresignedUrl());
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<Record>> getAllRecords() {
+        List<Record> records = recordService.getAllRecords();
+        return ResponseEntity.ok(records);
+    }
+
     @Override
     @PostMapping
     public ResponseEntity<Void> createRecord(
