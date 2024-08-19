@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class CloudfrontVsS3Test {
+public class CloudfrontVsS3ConcurrentTest {
 
     private RestTemplate restTemplate;
     private static final String S3_DOMAIN = "recordy-bucket.s3.ap-northeast-2.amazonaws.com";
@@ -31,12 +31,11 @@ public class CloudfrontVsS3Test {
             "https://{domain}/thumbnails/07036dcf-c580-4493-93ad-01a4bf4a6395.jpeg"
     };
 
-    int numberOfConcurrentUsers = 3;
+    int numberOfConcurrentUsers = 10;
     ExecutorService executorService;
 
     AtomicLong latency;
     AtomicInteger cacheHits;
-
 
     @BeforeEach
     void setUp() {
