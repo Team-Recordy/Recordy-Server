@@ -1,6 +1,5 @@
 package org.recordy.server.keyword.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.mock.FakeContainer;
@@ -11,14 +10,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-class KeywordServiceTest {
-
-    private KeywordService keywordService;
-
-    @BeforeEach
-    void init() {
-        keywordService = new FakeContainer().keywordService;
-    }
+class KeywordServiceTest extends FakeContainer {
 
     @Test
     void getAll을_통해_현존하는_모든_키워드_데이터_리스트를_조회할_수_있다() {

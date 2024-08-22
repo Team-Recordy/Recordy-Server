@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.UploadEntity;
+import org.recordy.server.record.exception.RecordException;
 import org.recordy.server.record.service.dto.FileUrl;
 import org.recordy.server.bookmark.domain.Bookmark;
 import org.recordy.server.bookmark.domain.BookmarkEntity;
@@ -32,9 +33,9 @@ import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.recordy.server.util.DomainFixture.*;
 
@@ -144,27 +145,18 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
 
     @Test
     void findById를_통해_id에_해당하는_record_엔티티를_조회할_수_있다() {
-        //given
-        //when
-        Optional<Record>  record = recordRepository.findById(6);
+        // when
+        Record record = recordRepository.findById(6);
 
         //then
-        assertAll(
-                () -> assertThat(record.isPresent()),
-                () -> assertThat(record.get().getId()).isEqualTo(6)
-        );
+        assertThat(record.getId()).isEqualTo(6);
     }
 
     @Test
-    void findById를_통해_id에_해당하는_record_엔티티를_찾을_수_없으면_empty를_리턴한다() {
-        //given
-        //when
-        Optional<Record>  record = recordRepository.findById(7);
-
-        //then
-        assertAll(
-                () -> assertThat(record.isEmpty())
-        );
+    void findById를_통해_id에_해당하는_record_엔티티를_찾을_수_없으면_예외를_일으킨다() {
+        // when, then
+        assertThatThrownBy(() -> recordRepository.findById(99L))
+                .isInstanceOf(RecordException.class);
     }
 
     @Test
@@ -426,53 +418,6 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
         );
     }
 
-//    @Test
-//    void countAllByUserIdGroupByKeyword를_통해_사용자가_시청_저장_업로드한_모든_영상과_관련된_키워드별로_카운트할_수_있다() {
-//        // given
-//        // 현재 EXOTIC 3개 업로드했고, QUITE 3개 업로드했음
-//        long userId = 1L;
-//        viewRepository.save(View.builder()
-//                .user(createUser(UserStatus.ACTIVE))
-//                .record(Record.builder()
-//                        .id(1L)
-//                        .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
-//                        .location(LOCATION)
-//                        .content(CONTENT)
-//                        .keywords(KEYWORDS)
-//                        .uploader(createUser(UserStatus.ACTIVE))
-//                        .build())
-//                .createdAt(sevenDaysAgo)
-//                .build());
-//
-//        // QUITE 키워드 영상 1번 시청함
-//        viewRepository.save(
-//                View.builder()
-//                        .record(DomainFixture.createRecord(2))
-//                        .user(DomainFixture.createUser(UserStatus.ACTIVE))
-//                        .build()
-//        );
-//
-//        // EXOTIC 키워드 영상 1번 저장함
-//        bookmarkRepository.save(
-//                Bookmark.builder()
-//                        .user(DomainFixture.createUser(UserStatus.ACTIVE))
-//                        .record(DomainFixture.createRecord(5))
-//                        .build()
-//        );
-//        // 따라서 결과적으로 {EXOTIC:4, QUITE:4}
-//
-//        // when
-//        Map<Keyword, Long> preference = recordRepository.countAllByUserIdGroupByKeyword(userId);
-//        System.out.println("preference = " + preference);
-//
-//        // then
-//        assertAll(
-//                () -> assertThat(preference.size()).isEqualTo(2),
-//                () -> assertThat(preference.get(Keyword.감각적인)).isEqualTo(4),
-//                () -> assertThat(preference.get(Keyword.강렬한)).isEqualTo(4)
-//        );
-//    }
-
     @Test
     void findAllBySubscribingUserIdOrderByIdDesc를_통해_구독한_사용자의_레코드_데이터를_최신순으로_조회할_수_있다() {
         // given
@@ -517,13 +462,10 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
     void findMaxId를_통해_현재_모든_레코드_데이터_중_가장_큰_id값을_구할_수_있다() {
         //given
         //when
-        Optional<Long> result = recordRepository.findMaxId();
+        Long maxId = recordRepository.findMaxId();
 
         //then
-        assertAll(
-                () -> assertThat(result.isPresent()),
-                () -> assertThat(result.get()).isEqualTo(6)
-        );
+        assertThat(maxId).isEqualTo(6);
     }
 
     @Test

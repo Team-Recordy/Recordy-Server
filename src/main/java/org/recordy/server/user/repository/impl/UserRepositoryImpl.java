@@ -1,10 +1,12 @@
 package org.recordy.server.user.repository.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.subscribe.domain.SubscribeEntity;
 import org.recordy.server.subscribe.repository.impl.SubscribeJpaRepository;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.UserEntity;
+import org.recordy.server.user.exception.UserException;
 import org.recordy.server.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -46,15 +48,17 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Optional<User> findById(long userId) {
+    public User findById(long userId) {
         return userJpaRepository.findById(userId)
-                .map(UserEntity::toDomain);
+                .map(UserEntity::toDomain)
+                .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
     }
 
     @Override
-    public Optional<User> findByPlatformId(String platformId) {
+    public User findByPlatformId(String platformId) {
         return userJpaRepository.findByPlatformId(platformId)
-                .map(UserEntity::toDomain);
+                .map(UserEntity::toDomain)
+                .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
     }
 
     @Override

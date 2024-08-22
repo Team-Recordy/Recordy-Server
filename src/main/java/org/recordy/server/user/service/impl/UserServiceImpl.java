@@ -65,8 +65,11 @@ public class UserServiceImpl implements UserService {
     }
 
     private User getOrCreateUser(AuthPlatform platform) {
-        return userRepository.findByPlatformId(platform.getId())
-                .orElseGet(() -> create(platform));
+        try {
+            return userRepository.findByPlatformId(platform.getId());
+        } catch (UserException e) {
+            return create(platform);
+        }
     }
 
     private User create(AuthPlatform platform) {
@@ -82,8 +85,7 @@ public class UserServiceImpl implements UserService {
     public User signUp(UserSignUp userSignUp) {
         validateDuplicateNickname(userSignUp.nickname());
 
-        User pendingUser = userRepository.findById(userSignUp.userId())
-                .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
+        User pendingUser = userRepository.findById(userSignUp.userId());
         User updatedUser = pendingUser.activate(userSignUp);
 
         followRootUser(updatedUser);
@@ -91,27 +93,26 @@ public class UserServiceImpl implements UserService {
     }
 
     private void followRootUser(User user) {
-        if (!user.getId().equals(rootUserId))
-            userRepository.findById(rootUserId)
-                    .ifPresent(rootUser -> subscribeRepository.save(Subscribe.builder()
-                            .subscribingUser(user)
-                            .subscribedUser(rootUser)
-                            .build()));
+        if (!user.getId().equals(rootUserId)) {
+            User rootUser = userRepository.findById(rootUserId);
+            subscribeRepository.save(Subscribe.builder()
+                    .subscribingUser(user)
+                    .subscribedUser(rootUser)
+                    .build());
+        }
     }
 
     @Override
     public String reissueToken(String refreshToken) {
         String platformId = authTokenService.getPlatformIdFromRefreshToken(refreshToken);
-        User user = userRepository.findByPlatformId(platformId)
-                .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
+        User user = userRepository.findByPlatformId(platformId);
 
         return authTokenService.issueAccessToken(user.getId());
     }
 
     @Override
     public void signOut(long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
+        User user = userRepository.findById(userId);
 
         authService.signOut(user.getAuthPlatform().getId());
     }
@@ -119,8 +120,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void delete(long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
+        User user = userRepository.findById(userId);
 
         subscribeRepository.deleteByUserId(userId);
         bookmarkRepository.deleteByUserId(userId);
@@ -132,8 +132,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserProfile getProfile(long userId, long otherUserId) {
-        User user = userRepository.findById(otherUserId)
-                .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
+        User user = userRepository.findById(otherUserId);
         long records = recordRepository.countAllByUserId(user.getId());
         long followers = subscribeRepository.countSubscribingUsers(user.getId());
         long followings = subscribeRepository.countSubscribedUsers(user.getId());

@@ -1,26 +1,15 @@
 package org.recordy.server.auth.service.impl.apple;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.user.domain.usecase.UserSignIn;
-import org.recordy.server.auth.service.AuthPlatformService;
 import org.recordy.server.mock.FakeContainer;
 import org.recordy.server.util.DomainFixture;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-public class AuthApplePlatformServiceImplTest {
-
-    private FakeContainer fakeContainer;
-    private AuthPlatformService applePlatformService;
-
-    @BeforeEach
-    void init() {
-        fakeContainer = new FakeContainer();
-        applePlatformService = fakeContainer.authApplePlatformService;
-    }
+public class AuthApplePlatformServiceImplTest extends FakeContainer {
 
     @Test
     void getPlatform을_통해_애플_플랫폼을_통한_사용자_정보를_조회한다() {

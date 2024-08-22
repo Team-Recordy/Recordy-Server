@@ -2,7 +2,7 @@ package org.recordy.server.auth.service.impl.token;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.recordy.server.mock.FakeContainer;
+import org.recordy.server.util.DomainFixture;
 
 import javax.crypto.SecretKey;
 
@@ -13,8 +13,8 @@ class AuthTokenSigningKeyProviderTest {
     private AuthTokenSigningKeyProvider signingKeyProvider;
 
     @BeforeEach
-    void init() {
-        signingKeyProvider = new FakeContainer().authTokenSigningKeyProvider;
+    void setUp() {
+        signingKeyProvider = new AuthTokenSigningKeyProvider(DomainFixture.TOKEN_SECRET);
     }
 
     @Test

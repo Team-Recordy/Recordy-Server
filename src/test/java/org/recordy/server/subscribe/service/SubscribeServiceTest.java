@@ -1,13 +1,10 @@
 package org.recordy.server.subscribe.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.mock.FakeContainer;
 import org.recordy.server.subscribe.domain.Subscribe;
 import org.recordy.server.subscribe.domain.usecase.SubscribeCreate;
-import org.recordy.server.subscribe.repository.SubscribeRepository;
 import org.recordy.server.user.domain.User;
-import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.util.DomainFixture;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
@@ -15,19 +12,7 @@ import org.springframework.data.domain.Slice;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-class SubscribeServiceTest {
-
-    private SubscribeService subscribeService;
-    private SubscribeRepository subscribeRepository;
-    private UserRepository userRepository;
-
-    @BeforeEach
-    void init() {
-        FakeContainer fakeContainer = new FakeContainer();
-        subscribeService = fakeContainer.subscribeService;
-        subscribeRepository = fakeContainer.subscribeRepository;
-        userRepository = fakeContainer.userRepository;
-    }
+class SubscribeServiceTest extends FakeContainer {
 
     @Test
     void subscribe를_통해_사용자_간_구독할_수_있고_결과로_true를_반환한다() {

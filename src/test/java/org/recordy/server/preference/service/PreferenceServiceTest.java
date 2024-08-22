@@ -5,31 +5,16 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.mock.FakeContainer;
 import org.recordy.server.preference.domain.Preference;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.user.domain.User;
-import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.util.DomainFixture;
 import org.recordy.server.view.domain.View;
-import org.recordy.server.view.repository.ViewRepository;
 
-class PreferenceServiceTest {
-
-    private PreferenceService preferenceService;
-    private UserRepository userRepository;
-    private ViewRepository viewRepository;
-
-    @BeforeEach
-    void init() {
-        FakeContainer fakeContainer = new FakeContainer();
-        preferenceService = fakeContainer.preferenceService;
-        userRepository = fakeContainer.userRepository;
-        viewRepository = fakeContainer.viewRepository;
-    }
+class PreferenceServiceTest extends FakeContainer {
 
     @Test
     void getPreference를_통해_사용자의_취향_키워드별_갯수를_계산할_수_있다() {

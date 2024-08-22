@@ -3,6 +3,7 @@ package org.recordy.server.user.repository;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.user.domain.TermsAgreement;
 import org.recordy.server.user.domain.UserStatus;
+import org.recordy.server.user.exception.UserException;
 import org.recordy.server.util.DomainFixture;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.util.db.IntegrationTest;
@@ -14,6 +15,7 @@ import org.springframework.test.context.jdbc.SqlGroup;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.recordy.server.util.DomainFixture.*;
 
@@ -65,13 +67,14 @@ class UserRepositoryIntegrationTest extends IntegrationTest {
         userRepository.deleteById(savedUser.getId());
 
         // then
-        assertThat(userRepository.findById(savedUser.getId())).isEmpty();
+        assertThatThrownBy(() -> userRepository.findById(savedUser.getId()))
+                .isInstanceOf(UserException.class);
     }
 
     @Test
     void findById를_통해_유저_ID로_유저_데이터를_조회할_수_있다() {
         // when
-        User result = userRepository.findById(USER_ID).orElse(null);
+        User result = userRepository.findById(USER_ID);
 
         // then
         assertAll(
@@ -83,18 +86,16 @@ class UserRepositoryIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    void findById를_통해_존재하지_않는_유저_ID로_유저_데이터를_조회하면_빈_값을_반환한다() {
-        // when
-        Optional<User> result = userRepository.findById(0);
-
-        // then
-        assertThat(result).isEmpty();
+    void findById를_통해_존재하지_않는_유저_ID로_유저_데이터를_조회하면_예외가_발생한다() {
+        // when, then
+        assertThatThrownBy(() -> userRepository.findById(0))
+                .isInstanceOf(UserException.class);
     }
 
     @Test
     void findByPlatformId를_통해_플랫폼_ID로_유저_데이터를_조회할_수_있다() {
         // when
-        User result = userRepository.findByPlatformId(DomainFixture.PLATFORM_ID).orElse(null);
+        User result = userRepository.findByPlatformId(DomainFixture.PLATFORM_ID);
 
         // then
         assertAll(
@@ -106,12 +107,10 @@ class UserRepositoryIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    void findByPlatformId를_통해_존재하지_않는_플랫폼_ID로_유저_데이터를_조회하면_빈_값을_반환한다() {
-        // when
-        Optional<User> result = userRepository.findByPlatformId("non-exist-platform-id");
-
-        // then
-        assertThat(result).isEmpty();
+    void findByPlatformId를_통해_존재하지_않는_플랫폼_ID로_유저_데이터를_조회하면_예외를_던진다() {
+        // when, then
+        assertThatThrownBy(() -> userRepository.findByPlatformId("non-exist-platform-id"))
+                .isInstanceOf(UserException.class);
     }
 
     @Test

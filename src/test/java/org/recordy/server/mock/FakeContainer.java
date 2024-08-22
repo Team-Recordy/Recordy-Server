@@ -14,6 +14,7 @@ import org.recordy.server.auth.service.impl.token.AuthTokenServiceImpl;
 import org.recordy.server.auth.service.impl.token.AuthTokenSigningKeyProvider;
 import org.recordy.server.bookmark.service.BookmarkService;
 import org.recordy.server.bookmark.service.impl.BookmarkServiceImpl;
+import org.recordy.server.mock.record.FakeS3Service;
 import org.recordy.server.mock.record.FakeUploadRepository;
 import org.recordy.server.mock.subscribe.FakeSubscribeRepository;
 import org.recordy.server.preference.service.PreferenceService;
@@ -49,8 +50,6 @@ import org.recordy.server.util.DomainFixture;
 
 import java.util.List;
 
-import static org.mockito.Mockito.mock;
-
 public class FakeContainer {
 
     // repository
@@ -64,22 +63,22 @@ public class FakeContainer {
     public final SubscribeRepository subscribeRepository;
 
     // infrastructure
-    public final AuthTokenSigningKeyProvider authTokenSigningKeyProvider;
-    public final AuthTokenGenerator authTokenGenerator;
-    public final AuthTokenParser authTokenParser;
+    public final AuthTokenSigningKeyProvider signingKeyProvider;
+    public final AuthTokenGenerator tokenGenerator;
+    public final AuthTokenParser tokenParser;
     public final FakeKakaoFeignClient fakeKakaoFeignClient;
 
     // service
-    public final AuthPlatformService authKakaoPlatformService;
-    public final AuthPlatformService authApplePlatformService;
-    public final AuthPlatformServiceFactory authPlatformServiceFactory;
-    public final AuthTokenService authTokenService;
+    public final AuthPlatformService kakaoPlatformService;
+    public final AuthPlatformService applePlatformService;
+    public final AuthPlatformServiceFactory platformServiceFactory;
+    public final AuthTokenService tokenService;
     public final AuthService authService;
     public final UserService userService;
+    public final S3Service s3Service;
     public final RecordService recordService;
     public final KeywordService keywordService;
     public final BookmarkService bookmarkService;
-    public final S3Service s3Service;
     public final SubscribeService subscribeService;
     public final PreferenceService preferenceService;
 
@@ -101,16 +100,16 @@ public class FakeContainer {
         this.viewRepository = new FakeViewRepository();
         this.subscribeRepository = new FakeSubscribeRepository();
 
-        this.authTokenSigningKeyProvider = new AuthTokenSigningKeyProvider(DomainFixture.TOKEN_SECRET);
-        this.authTokenGenerator = new AuthTokenGenerator(authTokenSigningKeyProvider);
-        this.authTokenParser = new AuthTokenParser(authTokenSigningKeyProvider);
+        this.signingKeyProvider = new AuthTokenSigningKeyProvider(DomainFixture.TOKEN_SECRET);
+        this.tokenGenerator = new AuthTokenGenerator(signingKeyProvider);
+        this.tokenParser = new AuthTokenParser(signingKeyProvider);
 
         this.fakeKakaoFeignClient = new FakeKakaoFeignClient();
 
-        this.authKakaoPlatformService = new FakeAuthKakaoPlatformServiceImpl(fakeKakaoFeignClient);
-        this.authApplePlatformService = new FakeAuthApplePlatformServiceImpl();
-        this.authPlatformServiceFactory = new AuthPlatformServiceFactory(List.of(authKakaoPlatformService, authApplePlatformService));
-        this.authTokenService = new AuthTokenServiceImpl(
+        this.kakaoPlatformService = new FakeAuthKakaoPlatformServiceImpl(fakeKakaoFeignClient);
+        this.applePlatformService = new FakeAuthApplePlatformServiceImpl();
+        this.platformServiceFactory = new AuthPlatformServiceFactory(List.of(kakaoPlatformService, applePlatformService));
+        this.tokenService = new AuthTokenServiceImpl(
                 DomainFixture.TOKEN_PREFIX,
                 DomainFixture.ACCESS_TOKEN_EXPIRATION,
                 DomainFixture.REFRESH_TOKEN_EXPIRATION,
@@ -118,25 +117,25 @@ public class FakeContainer {
                 DomainFixture.REFRESH_TOKEN_TYPE,
                 DomainFixture.USER_ID_KEY,
                 DomainFixture.TOKEN_TYPE_KEY,
-                authTokenGenerator,
-                authTokenParser,
+                tokenGenerator,
+                tokenParser,
                 authRepository
         );
-        this.authService = new AuthServiceImpl(authRepository, authPlatformServiceFactory, authTokenService);
-        this.userService = new UserServiceImpl(DomainFixture.ROOT_USER_ID, userRepository, subscribeRepository, recordRepository, bookmarkRepository,viewRepository, authService, authTokenService);
+        this.authService = new AuthServiceImpl(authRepository, platformServiceFactory, tokenService);
+        this.userService = new UserServiceImpl(DomainFixture.ROOT_USER_ID, userRepository, subscribeRepository, recordRepository, bookmarkRepository,viewRepository, authService, tokenService);
 
         this.keywordService = new KeywordServiceImpl(keywordRepository);
-        this.recordService = new RecordServiceImpl(recordRepository, viewRepository, userRepository);
+        this.s3Service = new FakeS3Service();
+        this.recordService = new RecordServiceImpl(s3Service, recordRepository, viewRepository, userRepository);
         this.bookmarkService = new BookmarkServiceImpl(userRepository, recordRepository, bookmarkRepository);
         this.subscribeService = new SubscribeServiceImpl(subscribeRepository, userRepository);
-        this.s3Service = mock(S3Service.class);  // S3Service mock 사용
         this.preferenceService = new PreferenceServiceImpl(uploadRepository, viewRepository, bookmarkRepository);
 
         this.authFilterExceptionHandler = new AuthFilterExceptionHandler(new ObjectMapper());
         this.tokenAuthenticationFilter = new TokenAuthenticationFilter(
                 DomainFixture.AUTH_FREE_APIS,
                 DomainFixture.AUTH_DEV_APIS,
-                authTokenService,
+                tokenService,
                 authFilterExceptionHandler
         );
 

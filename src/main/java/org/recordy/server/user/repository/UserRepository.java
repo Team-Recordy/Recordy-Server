@@ -11,7 +11,7 @@ public interface UserRepository {
     void deleteById(long userId);
 
     // query
-    Optional<User> findById(long userId);
-    Optional<User> findByPlatformId(String platformId);
+    User findById(long userId);
+    User findByPlatformId(String platformId);
     boolean existsByNickname(String nickname);
 }

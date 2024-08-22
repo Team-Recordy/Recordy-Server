@@ -8,13 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.mock.FakeContainer;
-import org.recordy.server.record.domain.File;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.usecase.RecordCreate;
 import org.recordy.server.record.exception.RecordException;
-import org.recordy.server.record.repository.RecordRepository;
-import org.recordy.server.record.service.dto.FileUrl;
-import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.util.DomainFixture;
 import org.springframework.data.domain.Slice;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,18 +18,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 
-class RecordServiceTest {
-
-    private RecordService recordService;
-    private RecordRepository recordRepository;
+class RecordServiceTest extends FakeContainer {
 
     @BeforeEach
     void init() {
-        FakeContainer fakeContainer = new FakeContainer();
-        recordService = fakeContainer.recordService;
-        recordRepository = fakeContainer.recordRepository;
-        UserRepository userRepository = fakeContainer.userRepository;
-
         userRepository.save(DomainFixture.createUser(1));
         userRepository.save(DomainFixture.createUser(2));
     }

@@ -1,21 +1,21 @@
 package org.recordy.server.auth.security.handler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.auth.exception.AuthException;
 import org.recordy.server.common.message.ErrorMessage;
-import org.recordy.server.mock.FakeContainer;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AuthFilterExceptionHandlerTest {
 
-    private AuthFilterExceptionHandler authFilterExceptionHandler;
+    AuthFilterExceptionHandler authFilterExceptionHandler;
 
     @BeforeEach
-    void init() {
-        authFilterExceptionHandler = new FakeContainer().authFilterExceptionHandler;
+    void setUp() {
+        authFilterExceptionHandler = new AuthFilterExceptionHandler(new ObjectMapper());
     }
 
     @Test

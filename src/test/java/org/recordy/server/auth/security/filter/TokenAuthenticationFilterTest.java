@@ -14,15 +14,13 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class TokenAuthenticationFilterTest {
+class TokenAuthenticationFilterTest extends FakeContainer {
 
-    private TokenAuthenticationFilter tokenAuthenticationFilter;
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
 
     @BeforeEach
     void init() {
-        tokenAuthenticationFilter = new FakeContainer().tokenAuthenticationFilter;
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
     }
