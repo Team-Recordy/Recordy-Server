@@ -95,7 +95,7 @@ public class RecordQueryDslRepository {
 
     public Slice<RecordEntity> findAllByUserIdOrderByIdDesc(long userId, Long cursor, Pageable pageable) {
         List<RecordEntity> recordEntities = jpaQueryFactory
-                .selectFrom((recordEntity))
+                .selectFrom(recordEntity)
                 .join(recordEntity.user, userEntity)
                 .where(
                         QueryDslUtils.ltCursorId(cursor, recordEntity.id),
