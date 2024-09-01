@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class ExhibitionRepositoryTest extends IntegrationTest {
 
@@ -61,6 +62,7 @@ class ExhibitionRepositoryTest extends IntegrationTest {
         Exhibition exhibition = exhibitionRepository.save(ExhibitionFixture.create(id));
 
         ExhibitionUpdate update = new ExhibitionUpdate(
+                id,
                 "수정된 전시",
                 LocalDate.now(),
                 LocalDate.now()
@@ -87,6 +89,7 @@ class ExhibitionRepositoryTest extends IntegrationTest {
         Exhibition exhibition = exhibitionRepository.save(ExhibitionFixture.create(id));
 
         ExhibitionUpdate update = new ExhibitionUpdate(
+                id,
                 "수정된 전시",
                 LocalDate.now(),
                 LocalDate.now()
@@ -111,6 +114,46 @@ class ExhibitionRepositoryTest extends IntegrationTest {
 
         // then
         assertThatThrownBy(() -> exhibitionRepository.findById(id))
+                .isInstanceOf(ExhibitionException.class)
+                .hasMessage(ErrorMessage.EXHIBITION_NOT_FOUND.getMessage());
+    }
+
+    @Test
+    void 존재하지_않는_전시_객체를_삭제할_경우_아무일도_일어나지_않는다() {
+        // given
+        long id = 1;
+        exhibitionRepository.save(ExhibitionFixture.create(id));
+
+        // when, then
+        assertDoesNotThrow(() -> exhibitionRepository.deleteById(100));
+    }
+
+    @Test
+    void 전시_id로부터_전시_객체를_조회할_수_있다() {
+        // given
+        long id = 1;
+        Exhibition exhibition = exhibitionRepository.save(ExhibitionFixture.create(id));
+
+        // when
+        Exhibition result = exhibitionRepository.findById(id);
+
+        // then
+        assertAll(
+                () -> assertThat(result.getId()).isEqualTo(exhibition.getId()),
+                () -> assertThat(result.getName()).isEqualTo(exhibition.getName()),
+                () -> assertThat(result.getStartDate()).isEqualTo(exhibition.getStartDate()),
+                () -> assertThat(result.getEndDate()).isEqualTo(exhibition.getEndDate())
+        );
+    }
+
+    @Test
+    void 존재하지_않는_전시_객체의_id로_조회할_경우_예외가_발생한다() {
+        // given
+        long id = 1;
+        exhibitionRepository.save(ExhibitionFixture.create(id));
+
+        // when, then
+        assertThatThrownBy(() -> exhibitionRepository.findById(100))
                 .isInstanceOf(ExhibitionException.class)
                 .hasMessage(ErrorMessage.EXHIBITION_NOT_FOUND.getMessage());
     }

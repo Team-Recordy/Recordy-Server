@@ -17,11 +17,14 @@ public class ExhibitionRepositoryImpl implements ExhibitionRepository {
     private final ExhibitionJpaRepository exhibitionJpaRepository;
     private final ExhibitionQueryDslRepository exhibitionQueryDslRepository;
 
+    @Override
     public Exhibition save(Exhibition exhibition) {
         ExhibitionEntity entity = exhibitionJpaRepository.save(ExhibitionEntity.from(exhibition));
+
         return Exhibition.from(entity);
     }
 
+    @Override
     public void deleteById(long id) {
         exhibitionJpaRepository.deleteById(id);
     }
