@@ -8,6 +8,7 @@ import org.recordy.server.exhibition.domain.usecase.ExhibitionUpdate;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
@@ -46,9 +47,9 @@ public class Exhibition {
     public Exhibition update(ExhibitionUpdate update) {
         return new Exhibition(
                 this.id,
-                update.name(),
-                update.startDate(),
-                update.endDate(),
+                Objects.isNull(update.name()) || update.name().isEmpty() ? this.name : update.name(),
+                Objects.isNull(update.startDate()) ? this.startDate : update.startDate(),
+                Objects.isNull(update.endDate()) ? this.endDate :update.endDate(),
                 this.createdAt,
                 null
         );

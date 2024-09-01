@@ -1,5 +1,7 @@
 package org.recordy.server.exhibition.domain.usecase;
 
+import org.recordy.server.exhibition.controller.dto.request.ExhibitionUpdateRequest;
+
 import java.time.LocalDate;
 
 public record ExhibitionUpdate(
@@ -8,5 +10,12 @@ public record ExhibitionUpdate(
         LocalDate startDate,
         LocalDate endDate
 ) {
-    // TODO: request에 대한 validation 로직 추가
+    public static ExhibitionUpdate from(ExhibitionUpdateRequest request) {
+        return new ExhibitionUpdate(
+                request.id(),
+                request.name(),
+                request.startDate(),
+                request.endDate()
+        );
+    }
 }
