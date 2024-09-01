@@ -242,7 +242,6 @@ public interface RecordApi {
     )
     ResponseEntity<PaginatedResponse<RecordInfoWithBookmark>> getFamousRecordInfoWithBookmarks(
             @UserId Long userId,
-            @RequestParam(required = false) String keywords,
             @RequestParam(required = false, defaultValue = "0") int pageNumber,
             @RequestParam(required = false, defaultValue = "10") int pageSize
     ) ;
@@ -285,7 +284,6 @@ public interface RecordApi {
     )
     ResponseEntity<CursorBasePaginatedResponse<RecordInfoWithBookmark>> getRecentRecordInfosWithBookmarks(
             @UserId Long userId,
-            @RequestParam(required = false) String keywords,
             @RequestParam(required = false) Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     );

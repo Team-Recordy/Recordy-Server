@@ -3,10 +3,8 @@ package org.recordy.server.record.repository;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.UploadEntity;
 import org.recordy.server.record.exception.RecordException;
@@ -93,23 +91,6 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
                 () -> assertThat(result.getFileUrl().thumbnailUrl()).isEqualTo(DomainFixture.THUMBNAIL_URL),
                 () -> assertThat(result.getLocation()).isEqualTo(DomainFixture.LOCATION),
                 () -> assertThat(result.getContent()).isEqualTo(CONTENT)
-        );
-    }
-
-    @Test
-    void save를_통해_레코드와_관련한_키워드로부터_업로드_데이터를_저장할_수_있다() {
-        // given
-        Record record = recordRepository.save(createRecord(6));
-
-        // when
-        List<UploadEntity> uploads = uploadRepository.findAllByRecordId(record.getId());
-
-        // then
-        assertAll(
-                () -> assertThat(uploads).hasSize(3),
-                () -> assertThat(uploads.get(0).getKeyword().toDomain()).isEqualTo(KEYWORD_1),
-                () -> assertThat(uploads.get(1).getKeyword().toDomain()).isEqualTo(KEYWORD_2),
-                () -> assertThat(uploads.get(2).getKeyword().toDomain()).isEqualTo(KEYWORD_3)
         );
     }
 
@@ -231,25 +212,6 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
         // then
         assertAll(
                 () -> assertThat(result.getContent()).isEmpty(),
-                () -> assertThat(result.hasNext()).isFalse()
-        );
-    }
-
-    @Test
-    void findAllByIdAfterAndKeywordsOrderByIdDesc를_통해_키워드로_필터링된_레코드_데이터를_최신순으로_조회할_수_있다() {
-        // given
-        List<Keyword> keywords = List.of(DomainFixture.KEYWORD_1, DomainFixture.KEYWORD_2);
-        long cursor = 3L;
-        int size = 2;
-
-        // when
-        Slice<Record> result = recordRepository.findAllByIdAfterAndKeywordsOrderByIdDesc(keywords, cursor, PageRequest.ofSize(size));
-
-        // then
-        assertAll(
-                () -> assertThat(result.getContent()).hasSize(2),
-                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(2L),
-                () -> assertThat(result.getContent().get(1).getId()).isEqualTo(1L),
                 () -> assertThat(result.hasNext()).isFalse()
         );
     }
@@ -391,30 +353,6 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
                 () -> assertThat(result.get(1).getId()).isIn(3L, 4L),
                 () -> assertThat(result.get(2).getId()).isIn(3L, 4L),
                 () -> assertThat(result.get(3).getId()).isEqualTo(2)
-        );
-    }
-
-    @Test
-    void findAllByKeywordsOrderByPopularity를_통해_조회한_레코드는_키워드_필터링이_적용된다() {
-        // given
-        viewRepository.save(View.builder()
-                .record(createRecord(1))
-                .user(createUser(UserStatus.ACTIVE))
-                .createdAt(sevenDaysAgo)
-                .build()
-        );
-
-        // when
-        List<Record> inclusiveResult = recordRepository.findAllByKeywordsOrderByPopularity(List.of(Keyword.감각적인), PageRequest.of(0, 4))
-                .getContent();
-        List<Record> exclusiveResult = recordRepository.findAllByKeywordsOrderByPopularity(List.of(Keyword.아늑한), PageRequest.of(0, 4))
-                .getContent();
-
-        // then
-        assertAll(
-                () -> assertThat(inclusiveResult).hasSize(3),
-                () -> assertThat(inclusiveResult.get(0).getId()).isEqualTo(1),
-                () -> assertThat(exclusiveResult).isEmpty()
         );
     }
 

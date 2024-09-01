@@ -1,12 +1,9 @@
 package org.recordy.server.record.service;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.common.message.ErrorMessage;
-import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.mock.FakeContainer;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.usecase.RecordCreate;
@@ -16,7 +13,6 @@ import org.springframework.data.domain.Slice;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-
 
 class RecordServiceTest extends FakeContainer {
 
@@ -54,7 +50,7 @@ class RecordServiceTest extends FakeContainer {
         recordService.delete(1, record.getId());
 
         // then
-        Slice<Record> result = recordService.getRecentRecords(null, 0L, 1);
+        Slice<Record> result = recordService.getRecentRecords(0L, 1);
         assertAll(
                 () -> assertThat(result.getContent()).hasSize(0),
                 () -> assertThat(result.hasNext()).isFalse()
@@ -105,7 +101,7 @@ class RecordServiceTest extends FakeContainer {
         recordService.create(DomainFixture.createRecordCreate());
 
         // when
-        Slice<Record> result = recordService.getRecentRecords(null, 6L, 10);
+        Slice<Record> result = recordService.getRecentRecords(6L, 10);
 
         // then
         assertAll(
@@ -128,31 +124,11 @@ class RecordServiceTest extends FakeContainer {
 
 
         // when
-        Slice<Record> result = recordService.getRecentRecords(null, 1L, 3);
+        Slice<Record> result = recordService.getRecentRecords(1L, 3);
 
         // then
         assertAll(
                 () -> assertThat(result.getContent()).hasSize(0),
-                () -> assertThat(result.hasNext()).isFalse()
-        );
-    }
-
-    @Test
-    void getRecentRecords를_통해_키워드를_디코딩해서_해당_키워드에_대한_최신_레코드만_반환할_수_있다() {
-        // given
-        List<Keyword> keywords = List.of(Keyword.덕후몰이, Keyword.깔끔한);
-        Record record = recordService.create(DomainFixture.createRecordCreate(keywords));
-        recordService.create(DomainFixture.createRecordCreate());
-        recordService.create(DomainFixture.createRecordCreate());
-        String encodedKeyword = new String(Base64.getEncoder().encode("깔끔한,덕후몰이".getBytes(StandardCharsets.UTF_8)));
-
-        // when
-        Slice<Record> result = recordService.getRecentRecords(encodedKeyword, 4L, 3);
-
-        // then
-        assertAll(
-                () -> assertThat(result.getContent()).hasSize(1),
-                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(record.getId()),
                 () -> assertThat(result.hasNext()).isFalse()
         );
     }

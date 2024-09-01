@@ -4,7 +4,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.util.QueryDslUtils;
-import org.recordy.server.keyword.domain.KeywordEntity;
 import org.recordy.server.record.domain.RecordEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -14,9 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-import static org.recordy.server.keyword.domain.QKeywordEntity.keywordEntity;
 import static org.recordy.server.record.domain.QRecordEntity.recordEntity;
-import static org.recordy.server.record.domain.QUploadEntity.uploadEntity;
 import static org.recordy.server.bookmark.domain.QBookmarkEntity.bookmarkEntity;
 import static org.recordy.server.view.domain.QViewEntity.viewEntity;
 import static org.recordy.server.subscribe.domain.QSubscribeEntity.subscribeEntity;
@@ -38,42 +35,6 @@ public class RecordQueryDslRepository {
                 .groupBy(recordEntity.id)
                 .orderBy(bookmarkEntity.count().multiply(2).add(viewEntity.count()).desc())
                 .offset(pageable.getOffset())
-                .limit(pageable.getPageSize() + 1)
-                .fetch();
-
-        return new SliceImpl<>(recordEntities, pageable, QueryDslUtils.hasNext(pageable, recordEntities));
-    }
-
-
-    public Slice<RecordEntity> findAllByKeywordsOrderByPopularity(List<KeywordEntity> keywords, Pageable pageable) {
-        LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
-
-        List<RecordEntity> recordEntities = jpaQueryFactory
-                .selectFrom(recordEntity)
-                .leftJoin(recordEntity.bookmarks, bookmarkEntity).on(bookmarkEntity.createdAt.after(sevenDaysAgo))
-                .leftJoin(recordEntity.views, viewEntity).on(viewEntity.createdAt.after(sevenDaysAgo))
-                .join(recordEntity.uploads, uploadEntity)
-                .join(uploadEntity.keyword, keywordEntity)
-                .where(keywordEntity.in(keywords))
-                .groupBy(recordEntity.id)
-                .orderBy(bookmarkEntity.count().multiply(2).add(viewEntity.count()).desc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize() + 1)
-                .fetch();
-
-        return new SliceImpl<>(recordEntities, pageable, QueryDslUtils.hasNext(pageable, recordEntities));
-    }
-
-    public Slice<RecordEntity> findAllByIdAfterAndKeywordsOrderByIdDesc(List<KeywordEntity> keywords, Long cursor, Pageable pageable) {
-        List<RecordEntity> recordEntities = jpaQueryFactory
-                .selectFrom(recordEntity)
-                .join(recordEntity.uploads, uploadEntity)
-                .join(uploadEntity.keyword, keywordEntity)
-                .where(
-                        QueryDslUtils.ltCursorId(cursor, recordEntity.id),
-                        keywordEntity.in(keywords)
-                )
-                .orderBy(recordEntity.id.desc())
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
 

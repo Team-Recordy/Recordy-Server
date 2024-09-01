@@ -1,7 +1,5 @@
 package org.recordy.server.mock.record;
 
-import java.util.Optional;
-import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.keyword.domain.KeywordEntity;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.RecordEntity;
@@ -69,30 +67,10 @@ public class FakeRecordRepository implements RecordRepository {
     }
 
     @Override
-    public Slice<Record> findAllByKeywordsOrderByPopularity(List<Keyword> keywords, Pageable pageable) {
-        return null;
-    }
-
-    @Override
     public Slice<Record> findAllByIdAfterOrderByIdDesc(Long cursor, Pageable pageable) {
         List<Record> content = records.keySet().stream()
                 .filter(key -> key < checkCursor(cursor))
                 .map(records::get)
-                .sorted(Comparator.comparing(Record::getId).reversed())
-                .toList();
-
-        if (content.size() < pageable.getPageSize())
-            return new SliceImpl<>(content, pageable, false);
-
-        return new SliceImpl<>(content.subList(0, pageable.getPageSize()), pageable, true);
-    }
-
-    @Override
-    public Slice<Record> findAllByIdAfterAndKeywordsOrderByIdDesc(List<Keyword> keywords, Long cursor, Pageable pageable) {
-        List<Record> content = records.entrySet().stream()
-                .filter(entry -> entry.getKey() < checkCursor(cursor))
-                .filter(entry -> entry.getValue().getKeywords().stream().anyMatch(keywords::contains))
-                .map(Map.Entry::getValue)
                 .sorted(Comparator.comparing(Record::getId).reversed())
                 .toList();
 

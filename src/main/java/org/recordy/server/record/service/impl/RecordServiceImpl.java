@@ -2,12 +2,10 @@ package org.recordy.server.record.service.impl;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.message.ErrorMessage;
-import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.usecase.RecordCreate;
 import org.recordy.server.record.exception.RecordException;
@@ -25,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -78,20 +75,8 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public Slice<Record> getFamousRecords(String keywords, int pageNumber, int size) {
-        if (Objects.isNull(keywords) || keywords.isEmpty()) {
-            return getFamousRecords(pageNumber, size);
-        }
-
-        return getFamousRecordsWithKeywords(Keyword.decode(keywords), pageNumber, size);
-    }
-
-    private Slice<Record> getFamousRecords(int pageNumber, int size) {
+    public Slice<Record> getFamousRecords(int pageNumber, int size) {
         return recordRepository.findAllOrderByPopularity(PageRequest.of(pageNumber, size));
-    }
-
-    private Slice<Record> getFamousRecordsWithKeywords(List<Keyword> keywords, int pageNumber, int size) {
-        return recordRepository.findAllByKeywordsOrderByPopularity(keywords, PageRequest.of(pageNumber, size));
     }
 
     @Override
@@ -100,20 +85,8 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public Slice<Record> getRecentRecords(String keywords, Long cursorId, int size) {
-        if (Objects.isNull(keywords)) {
-            return getRecentRecords(cursorId, size);
-        }
-
-        return getRecentRecordsWithKeywords(Keyword.decode(keywords), cursorId, size);
-    }
-
-    private Slice<Record> getRecentRecords(Long cursorId, int size) {
+    public Slice<Record> getRecentRecords(Long cursorId, int size) {
         return recordRepository.findAllByIdAfterOrderByIdDesc(cursorId, PageRequest.ofSize(size));
-    }
-
-    private Slice<Record> getRecentRecordsWithKeywords(List<Keyword> keywords, Long cursorId, int size) {
-        return recordRepository.findAllByIdAfterAndKeywordsOrderByIdDesc(keywords, cursorId, PageRequest.ofSize(size));
     }
 
     @Override

@@ -9,7 +9,6 @@ import org.recordy.server.auth.security.resolver.UserId;
 import org.recordy.server.record.controller.dto.request.RecordCreateRequest;
 import org.recordy.server.record.controller.dto.response.BookmarkedRecord;
 import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
-import org.recordy.server.record.domain.File;
 import org.recordy.server.record.domain.Record;
 
 import org.recordy.server.record.domain.usecase.RecordCreate;
@@ -44,8 +43,7 @@ public class RecordController implements RecordApi {
     public ResponseEntity<Void> createRecord(
             @UserId Long uploaderId,
             @RequestBody RecordCreateRequest request) {
-        RecordCreate recordCreate = RecordCreate.of(uploaderId, request);
-        Record record = recordService.create(recordCreate);
+        recordService.create(RecordCreate.of(uploaderId, request));
 
         return ResponseEntity
                 .ok()
@@ -69,11 +67,10 @@ public class RecordController implements RecordApi {
     @GetMapping("/recent")
     public ResponseEntity<CursorBasePaginatedResponse<RecordInfoWithBookmark>> getRecentRecordInfosWithBookmarks(
             @UserId Long userId,
-            @RequestParam(required = false) String keywords,
             @RequestParam(required = false) Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
-        Slice<Record> records = recordService.getRecentRecords(keywords, cursorId, size);
+        Slice<Record> records = recordService.getRecentRecords(cursorId, size);
         List<Boolean> bookmarks = bookmarkService.findBookmarks(userId, records.getContent());
 
         return ResponseEntity
@@ -85,11 +82,10 @@ public class RecordController implements RecordApi {
     @GetMapping("/famous")
     public ResponseEntity<PaginatedResponse<RecordInfoWithBookmark>> getFamousRecordInfoWithBookmarks(
             @UserId Long userId,
-            @RequestParam(required = false) String keywords,
             @RequestParam(required = false, defaultValue = "0") int pageNumber,
             @RequestParam(required = false, defaultValue = "10") int pageSize
     ){
-        Slice<Record> records = recordService.getFamousRecords(keywords, pageNumber, pageSize);
+        Slice<Record> records = recordService.getFamousRecords(pageNumber, pageSize);
         List<Boolean> bookmarks = bookmarkService.findBookmarks(userId, records.getContent());
 
         return ResponseEntity
@@ -167,6 +163,6 @@ public class RecordController implements RecordApi {
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(CursorBasePaginatedResponse.of(BookmarkedRecord.of(bookmarks, userId), bookmarkedRecord -> bookmarkedRecord.bookmarkId()));
+                .body(CursorBasePaginatedResponse.of(BookmarkedRecord.of(bookmarks, userId), BookmarkedRecord::bookmarkId));
     }
 }
