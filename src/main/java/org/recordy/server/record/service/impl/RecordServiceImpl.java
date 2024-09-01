@@ -46,7 +46,6 @@ public class RecordServiceImpl implements RecordService {
                 .location(recordCreate.location())
                 .content(recordCreate.content())
                 .uploader(user)
-                .keywords(recordCreate.keywords())
                 .build());
     }
 

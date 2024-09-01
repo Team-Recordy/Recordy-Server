@@ -2,8 +2,6 @@ package org.recordy.server.record.domain;
 
 import org.junit.jupiter.api.Test;
 import org.recordy.server.bookmark.domain.BookmarkEntity;
-import org.recordy.server.keyword.domain.Keyword;
-import org.recordy.server.keyword.domain.KeywordEntity;
 import org.recordy.server.record.service.dto.FileUrl;
 import org.recordy.server.user.domain.UserEntity;
 import org.recordy.server.user.domain.UserStatus;
@@ -26,7 +24,6 @@ class RecordEntityTest {
                 ))
                 .location(DomainFixture.LOCATION)
                 .content(DomainFixture.CONTENT)
-                .keywords(DomainFixture.KEYWORDS)
                 .uploader(DomainFixture.createUser(UserStatus.ACTIVE))
                 .build();
 
@@ -42,31 +39,6 @@ class RecordEntityTest {
                 () -> assertThat(recordEntity.getContent()).isEqualTo(record.getContent()),
                 () -> assertThat(recordEntity.getUser().getId()).isEqualTo(UserEntity.from(record.getUploader()).getId())
         );
-    }
-
-    @Test
-    void from을_통해_Record_객체와_관련한_키워드를_토대로_UploadEntity를_생성할_수_있다() {
-        // given
-        Record record = Record.builder()
-                .id(1L)
-                .fileUrl(new FileUrl(
-                        DomainFixture.VIDEO_URL,
-                        DomainFixture.THUMBNAIL_URL
-                ))
-                .location(DomainFixture.LOCATION)
-                .content(DomainFixture.CONTENT)
-                .keywords(DomainFixture.KEYWORDS)
-                .uploader(DomainFixture.createUser(UserStatus.ACTIVE))
-                .build();
-
-        // when
-        RecordEntity recordEntity = RecordEntity.from(record);
-
-        // then
-        recordEntity.getUploads()
-                .forEach(uploadEntity -> assertThat(uploadEntity.getRecord()).isEqualTo(recordEntity));
-        recordEntity.getUploads()
-                .forEach(uploadEntity -> assertThat(DomainFixture.KEYWORDS).contains(uploadEntity.getKeyword().toDomain()));
     }
 
     @Test
@@ -110,33 +82,6 @@ class RecordEntityTest {
         assertAll(
                 () -> assertThat(recordEntity.toDomain().isUploader(DomainFixture.createUserEntity().getId())).isTrue(),
                 () -> assertThat(recordEntity.toDomain().isUploader(100)).isFalse()
-        );
-    }
-
-    @Test
-    void addUpload를_통해_업로드_엔티티를_uploads_리스트에_추가할_수_있다() {
-        //given
-        RecordEntity recordEntity = RecordEntity.builder()
-                .videoUrl(DomainFixture.VIDEO_URL)
-                .thumbnailUrl(DomainFixture.THUMBNAIL_URL)
-                .location(DomainFixture.LOCATION)
-                .content(DomainFixture.CONTENT)
-                .user(DomainFixture.createUserEntity())
-                .build();
-
-        UploadEntity uploadEntity = UploadEntity.builder()
-                .record(recordEntity)
-                .keyword(KeywordEntity.from(Keyword.감각적인))
-                .build();
-
-        //when
-        recordEntity.addUpload(uploadEntity);
-
-        //then
-        assertAll(
-                () -> assertThat(recordEntity.getUploads().size()).isEqualTo(1),
-                () -> assertThat(recordEntity.getUploads().get(0).getRecord().getId()).isEqualTo(recordEntity.getId()),
-                () -> assertThat(recordEntity.getUploads().get(0).getKeyword().getKeyword()).isEqualTo(Keyword.감각적인)
         );
     }
 

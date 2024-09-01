@@ -7,8 +7,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.recordy.server.common.domain.JpaMetaInfoEntity;
-import org.recordy.server.keyword.domain.Keyword;
-import org.recordy.server.keyword.domain.KeywordEntity;
 import org.recordy.server.record.service.dto.FileUrl;
 import org.recordy.server.bookmark.domain.BookmarkEntity;
 import org.recordy.server.view.domain.ViewEntity;
@@ -37,13 +35,13 @@ public class RecordEntity extends JpaMetaInfoEntity {
     private UserEntity user;
 
     @OneToMany(mappedBy = "record", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UploadEntity> uploads = new ArrayList<>();
+    private final List<UploadEntity> uploads = new ArrayList<>();
 
     @OneToMany(mappedBy = "record", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ViewEntity> views = new ArrayList<>();
+    private final List<ViewEntity> views = new ArrayList<>();
 
     @OneToMany(mappedBy = "record", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<BookmarkEntity> bookmarks = new ArrayList<>();
+    private final List<BookmarkEntity> bookmarks = new ArrayList<>();
 
     @Builder
     public RecordEntity(Long id, String videoUrl, String thumbnailUrl, String location, String content, UserEntity user, LocalDateTime createdAt) {
@@ -67,15 +65,8 @@ public class RecordEntity extends JpaMetaInfoEntity {
                 record.getCreatedAt()
         );
         recordEntity.user.addRecord(recordEntity);
-        recordEntity.createAndAddUploads(record.getKeywords());
 
         return recordEntity;
-    }
-
-    private void createAndAddUploads(List<Keyword> keywords) {
-        keywords.stream()
-                .map(keyword -> UploadEntity.of(this, KeywordEntity.from(keyword)))
-                .forEach(this::addUpload);
     }
 
     public Record toDomain() {
@@ -87,10 +78,6 @@ public class RecordEntity extends JpaMetaInfoEntity {
                 ))
                 .location(location)
                 .content(content)
-                .keywords(uploads.stream()
-                        .map(UploadEntity::getKeyword)
-                        .map(KeywordEntity::toDomain)
-                        .toList())
                 .uploader(user.toDomain())
                 .bookmarkCount(bookmarks.size())
                 .createdAt(createdAt)

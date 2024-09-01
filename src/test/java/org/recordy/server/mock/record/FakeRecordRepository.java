@@ -1,9 +1,6 @@
 package org.recordy.server.mock.record;
 
-import org.recordy.server.keyword.domain.KeywordEntity;
 import org.recordy.server.record.domain.Record;
-import org.recordy.server.record.domain.RecordEntity;
-import org.recordy.server.record.domain.UploadEntity;
 import org.recordy.server.record.repository.RecordRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -17,9 +14,6 @@ public class FakeRecordRepository implements RecordRepository {
     public long recordAutoIncrementId = 1L;
     private final Map<Long, Record> records = new ConcurrentHashMap<>();
 
-    public long uploadAutoIncrementId = 1L;
-    private final Map<Long, UploadEntity> uploads = new ConcurrentHashMap<>();
-
     @Override
     public Record save(Record record) {
         Record realRecord = Record.builder()
@@ -27,19 +21,10 @@ public class FakeRecordRepository implements RecordRepository {
                 .fileUrl(record.getFileUrl())
                 .location(record.getLocation())
                 .content(record.getContent())
-                .keywords(record.getKeywords())
                 .uploader(record.getUploader())
                 .build();
 
         records.put(recordAutoIncrementId++, realRecord);
-
-        record.getKeywords().stream()
-                .map(keyword -> UploadEntity.builder()
-                        .id(uploadAutoIncrementId++)
-                        .record(RecordEntity.from(record))
-                        .keyword(KeywordEntity.from(keyword))
-                        .build())
-                .forEach(upload -> uploads.put(upload.getId(), upload));
 
         return realRecord;
     }
