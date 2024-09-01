@@ -60,9 +60,13 @@ public enum ErrorMessage {
     /**
      * RECORD
      */
-
     FORBIDDEN_DELETE_RECORD(HttpStatus.FORBIDDEN, "삭제가 불가능한 기록입니다."),
     RECORD_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 레코드입니다."),
+
+    /**
+     * EXHIBITION
+     */
+    EXHIBITION_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 전시회입니다."),
     ;
 
     private final HttpStatus httpStatus;
