@@ -6,7 +6,6 @@ import java.time.temporal.ChronoUnit;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.record.domain.Record;
-import org.recordy.server.record.domain.UploadEntity;
 import org.recordy.server.record.exception.RecordException;
 import org.recordy.server.record.service.dto.FileUrl;
 import org.recordy.server.bookmark.domain.Bookmark;
@@ -50,9 +49,6 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
     private RecordRepository recordRepository;
 
     @Autowired
-    private UploadRepository uploadRepository;
-
-    @Autowired
     private BookmarkRepository bookmarkRepository;
     @Autowired
     private BookmarkJpaRepository bookmarkJpaRepository;
@@ -91,23 +87,6 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
                 () -> assertThat(result.getFileUrl().thumbnailUrl()).isEqualTo(DomainFixture.THUMBNAIL_URL),
                 () -> assertThat(result.getLocation()).isEqualTo(DomainFixture.LOCATION),
                 () -> assertThat(result.getContent()).isEqualTo(CONTENT)
-        );
-    }
-
-    @Test
-    void save를_통해_저장한_업로드는_관련된_레코드를_참조할_수_있다() {
-        // given
-        Record savedRecord = recordRepository.save(DomainFixture.createRecord(6));
-
-        // when
-        List<UploadEntity> uploads = uploadRepository.findAllByRecordId(savedRecord.getId());
-
-        // then
-        assertAll(
-                () -> assertThat(uploads).hasSize(3),
-                () -> assertThat(uploads.get(0).getRecord().getId()).isEqualTo(savedRecord.getId()),
-                () -> assertThat(uploads.get(1).getRecord().getId()).isEqualTo(savedRecord.getId()),
-                () -> assertThat(uploads.get(2).getRecord().getId()).isEqualTo(savedRecord.getId())
         );
     }
 

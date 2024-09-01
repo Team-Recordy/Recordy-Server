@@ -35,9 +35,6 @@ public class RecordEntity extends JpaMetaInfoEntity {
     private UserEntity user;
 
     @OneToMany(mappedBy = "record", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<UploadEntity> uploads = new ArrayList<>();
-
-    @OneToMany(mappedBy = "record", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<ViewEntity> views = new ArrayList<>();
 
     @OneToMany(mappedBy = "record", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -82,10 +79,6 @@ public class RecordEntity extends JpaMetaInfoEntity {
                 .bookmarkCount(bookmarks.size())
                 .createdAt(createdAt)
                 .build();
-    }
-
-    public void addUpload(UploadEntity upload) {
-        uploads.add(upload);
     }
 
     public void addView(ViewEntity view) {

@@ -15,9 +15,7 @@ import org.recordy.server.auth.service.impl.token.AuthTokenSigningKeyProvider;
 import org.recordy.server.bookmark.service.BookmarkService;
 import org.recordy.server.bookmark.service.impl.BookmarkServiceImpl;
 import org.recordy.server.mock.record.FakeS3Service;
-import org.recordy.server.mock.record.FakeUploadRepository;
 import org.recordy.server.mock.subscribe.FakeSubscribeRepository;
-import org.recordy.server.record.repository.UploadRepository;
 import org.recordy.server.record.service.S3Service;
 import org.recordy.server.mock.auth.FakeAuthApplePlatformServiceImpl;
 import org.recordy.server.mock.auth.FakeAuthKakaoPlatformServiceImpl;
@@ -50,7 +48,6 @@ public class FakeContainer {
     public final UserRepository userRepository;
     public final AuthRepository authRepository;
     public final RecordRepository recordRepository;
-    public final UploadRepository uploadRepository;
     public final BookmarkRepository bookmarkRepository;
     public final ViewRepository viewRepository;
     public final SubscribeRepository subscribeRepository;
@@ -85,7 +82,6 @@ public class FakeContainer {
         this.userRepository = new FakeUserRepository();
         this.authRepository = new FakeAuthRepository();
         this.recordRepository = new FakeRecordRepository();
-        this.uploadRepository = new FakeUploadRepository();
         this.bookmarkRepository = new FakeBookmarkRepository();
         this.viewRepository = new FakeViewRepository();
         this.subscribeRepository = new FakeSubscribeRepository();

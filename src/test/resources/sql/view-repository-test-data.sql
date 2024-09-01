@@ -18,15 +18,3 @@ values (1, 1, 'content', 'location', 'thumbnail_url', 'video_url');
 
 insert into `records` (`id`, `user_id`, `content`, `location`,`thumbnail_url`, `video_url`)
 values (2, 1, 'content', 'location', 'thumbnail_url', 'video_url');
-
-insert into `uploads` (`id`, `record_id`, `keyword_id`)
-values(1, 1, 1);
-
-insert into `uploads` (`id`, `record_id`, `keyword_id`)
-values(2, 1, 2);
-
-insert into `uploads` (`id`, `record_id`, `keyword_id`)
-values(3, 1, 3);
-
-insert into `uploads` (`id`, `record_id`, `keyword_id`)
-values(4, 2, 1);
