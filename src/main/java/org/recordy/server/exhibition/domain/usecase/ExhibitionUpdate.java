@@ -3,6 +3,7 @@ package org.recordy.server.exhibition.domain.usecase;
 import java.time.LocalDate;
 
 public record ExhibitionUpdate(
+        Long id,
         String name,
         LocalDate startDate,
         LocalDate endDate

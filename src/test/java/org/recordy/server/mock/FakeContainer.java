@@ -14,6 +14,10 @@ import org.recordy.server.auth.service.impl.token.AuthTokenServiceImpl;
 import org.recordy.server.auth.service.impl.token.AuthTokenSigningKeyProvider;
 import org.recordy.server.bookmark.service.BookmarkService;
 import org.recordy.server.bookmark.service.impl.BookmarkServiceImpl;
+import org.recordy.server.exhibition.repository.ExhibitionRepository;
+import org.recordy.server.exhibition.service.ExhibitionService;
+import org.recordy.server.exhibition.service.impl.ExhibitionServiceImpl;
+import org.recordy.server.mock.exhibition.FakeExhibitionRepository;
 import org.recordy.server.mock.record.FakeS3Service;
 import org.recordy.server.mock.subscribe.FakeSubscribeRepository;
 import org.recordy.server.record.service.S3Service;
@@ -51,6 +55,7 @@ public class FakeContainer {
     public final BookmarkRepository bookmarkRepository;
     public final ViewRepository viewRepository;
     public final SubscribeRepository subscribeRepository;
+    public final ExhibitionRepository exhibitionRepository;
 
     // infrastructure
     public final AuthTokenSigningKeyProvider signingKeyProvider;
@@ -69,6 +74,7 @@ public class FakeContainer {
     public final RecordService recordService;
     public final BookmarkService bookmarkService;
     public final SubscribeService subscribeService;
+    public final ExhibitionService exhibitionService;
 
     // security
     public final AuthFilterExceptionHandler authFilterExceptionHandler;
@@ -85,11 +91,11 @@ public class FakeContainer {
         this.bookmarkRepository = new FakeBookmarkRepository();
         this.viewRepository = new FakeViewRepository();
         this.subscribeRepository = new FakeSubscribeRepository();
+        this.exhibitionRepository = new FakeExhibitionRepository();
 
         this.signingKeyProvider = new AuthTokenSigningKeyProvider(DomainFixture.TOKEN_SECRET);
         this.tokenGenerator = new AuthTokenGenerator(signingKeyProvider);
         this.tokenParser = new AuthTokenParser(signingKeyProvider);
-
         this.fakeKakaoFeignClient = new FakeKakaoFeignClient();
 
         this.kakaoPlatformService = new FakeAuthKakaoPlatformServiceImpl(fakeKakaoFeignClient);
@@ -109,11 +115,11 @@ public class FakeContainer {
         );
         this.authService = new AuthServiceImpl(authRepository, platformServiceFactory, tokenService);
         this.userService = new UserServiceImpl(DomainFixture.ROOT_USER_ID, userRepository, subscribeRepository, recordRepository, bookmarkRepository,viewRepository, authService, tokenService);
-
         this.s3Service = new FakeS3Service();
         this.recordService = new RecordServiceImpl(s3Service, recordRepository, viewRepository, userRepository);
         this.bookmarkService = new BookmarkServiceImpl(userRepository, recordRepository, bookmarkRepository);
         this.subscribeService = new SubscribeServiceImpl(subscribeRepository, userRepository);
+        this.exhibitionService = new ExhibitionServiceImpl(exhibitionRepository);
 
         this.authFilterExceptionHandler = new AuthFilterExceptionHandler(new ObjectMapper());
         this.tokenAuthenticationFilter = new TokenAuthenticationFilter(
