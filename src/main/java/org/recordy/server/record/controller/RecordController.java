@@ -14,7 +14,7 @@ import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.usecase.RecordCreate;
 import org.recordy.server.record.service.RecordService;
 import org.recordy.server.record.service.S3Service;
-import org.recordy.server.record.service.dto.FileUrl;
+import org.recordy.server.record.domain.FileUrl;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -7,7 +7,7 @@ import org.recordy.server.auth.domain.AuthToken;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.RecordEntity;
 import org.recordy.server.record.domain.usecase.RecordCreate;
-import org.recordy.server.record.service.dto.FileUrl;
+import org.recordy.server.record.domain.FileUrl;
 import org.recordy.server.user.domain.TermsAgreement;
 import org.recordy.server.bookmark.domain.Bookmark;
 import org.recordy.server.user.domain.usecase.UserSignIn;

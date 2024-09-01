@@ -1,7 +1,7 @@
 package org.recordy.server.record.domain.usecase;
 
 import org.recordy.server.record.controller.dto.request.RecordCreateRequest;
-import org.recordy.server.record.service.dto.FileUrl;
+import org.recordy.server.record.domain.FileUrl;
 
 public record RecordCreate(
         long uploaderId,

@@ -1,7 +1,7 @@
 package org.recordy.server.record.service;
 
 import org.junit.jupiter.api.Test;
-import org.recordy.server.record.service.dto.FileUrl;
+import org.recordy.server.record.domain.FileUrl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;

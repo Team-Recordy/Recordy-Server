@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.recordy.server.common.domain.JpaMetaInfoEntity;
-import org.recordy.server.record.service.dto.FileUrl;
 import org.recordy.server.bookmark.domain.BookmarkEntity;
 import org.recordy.server.view.domain.ViewEntity;
 import org.recordy.server.user.domain.UserEntity;

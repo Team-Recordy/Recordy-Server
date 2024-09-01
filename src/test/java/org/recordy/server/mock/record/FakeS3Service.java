@@ -1,7 +1,7 @@
 package org.recordy.server.mock.record;
 
 import org.recordy.server.record.service.S3Service;
-import org.recordy.server.record.service.dto.FileUrl;
+import org.recordy.server.record.domain.FileUrl;
 import org.recordy.server.util.DomainFixture;
 
 public class FakeS3Service implements S3Service {

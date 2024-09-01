@@ -12,7 +12,7 @@ import org.recordy.server.record.exception.RecordException;
 import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.record.service.RecordService;
 import org.recordy.server.record.service.S3Service;
-import org.recordy.server.record.service.dto.FileUrl;
+import org.recordy.server.record.domain.FileUrl;
 import org.recordy.server.view.domain.View;
 import org.recordy.server.view.repository.ViewRepository;
 import org.recordy.server.user.domain.User;

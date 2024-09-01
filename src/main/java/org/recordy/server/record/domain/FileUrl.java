@@ -1,4 +1,4 @@
-package org.recordy.server.record.service.dto;
+package org.recordy.server.record.domain;
 
 public record FileUrl(
         String videoUrl,
