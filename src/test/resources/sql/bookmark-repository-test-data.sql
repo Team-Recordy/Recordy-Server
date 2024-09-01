@@ -7,12 +7,6 @@ values (2, 'abcdefgh', 'KAKAO', 'ACTIVE', true, true, true, 'subin');
 insert into `users` (`id`, `platform_id`, `platform_type`, `status`, `age_term`, `personal_info_term`, `use_term`, `nickname`)
 values (3, 'abcdefghi', 'KAKAO', 'ACTIVE', true, true, true, 'sebin');
 
-insert into `keywords` (`id`, `keyword`)
-values (1, '감각적인');
-
-insert into `keywords` (`id`, `keyword`)
-values (2, '강렬한');
-
 insert into `records` (`id`, `user_id`, `content`, `location`,`thumbnail_url`, `video_url`)
 values (1, 1, 'content', 'location', 'thumbnail_url', 'video_url');
 
