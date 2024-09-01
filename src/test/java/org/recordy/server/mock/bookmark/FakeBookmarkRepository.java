@@ -2,10 +2,8 @@ package org.recordy.server.mock.bookmark;
 
 import java.util.*;
 
-import org.apache.commons.lang3.ObjectUtils.Null;
 import org.recordy.server.bookmark.domain.Bookmark;
 import org.recordy.server.bookmark.repository.BookmarkRepository;
-import org.recordy.server.keyword.domain.Keyword;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -49,6 +47,14 @@ public class FakeBookmarkRepository implements BookmarkRepository {
         return new SliceImpl<>(content.subList(0, pageable.getPageSize()), pageable, true);
     }
 
+    private Long checkCursor(Long cursor) {
+        if (cursor != null) {
+            return cursor;
+        }
+
+        return Long.MAX_VALUE;
+    }
+
     @Override
     public boolean existsByUserIdAndRecordId(Long userId, Long recordId) {
         return bookmarks.values().stream()
@@ -68,31 +74,5 @@ public class FakeBookmarkRepository implements BookmarkRepository {
         return bookmarks.values().stream()
                 .filter(bookmark -> bookmark.getUser().getId() == userId)
                 .count();
-    }
-
-    @Override
-    public Map<Keyword, Long> countAllByUserIdGroupByKeyword(long userId) {
-        Map<Keyword, Long> totalKeywords = new HashMap<>();
-
-        bookmarks.values().stream()
-                .filter(bookmark -> bookmark.getUser().getId() == userId)
-                .map(Bookmark::getRecord)
-                .forEach(
-                        record -> record.getKeywords()
-                                .forEach(keyword -> {
-                                    if (totalKeywords.containsKey(keyword))
-                                        totalKeywords.put(keyword, totalKeywords.get(keyword) + 1);
-                                    else
-                                        totalKeywords.put(keyword, 1L);
-                                })
-                );
-
-        return Map.of();
-    }
-    private Long checkCursor(Long cursor){
-        if (cursor != null) {
-            return cursor;
-        }
-        return Long.MAX_VALUE;
     }
 }

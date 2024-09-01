@@ -4,8 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import org.junit.jupiter.api.Test;
-import org.recordy.server.bookmark.repository.BookmarkRepository;
-import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.bookmark.domain.Bookmark;
@@ -19,8 +17,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Map;
 
 @SqlGroup({
         @Sql(value = "/sql/clean-database.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS),
@@ -165,22 +161,6 @@ public class BookmarkRepositoryIntegrationTest extends IntegrationTest {
         // then
         assertAll(
                 () -> assertThat(result).isEqualTo(2)
-        );
-    }
-
-    @Test
-    void countAllByUserIdGroupByKeyword를_통해_특정_사용자의_키워드별_북마크_데이터_수를_조회할_수_있다() {
-        // given
-        long userId = 1L;
-
-        // when
-        Map<Keyword, Long> result = bookmarkRepository.countAllByUserIdGroupByKeyword(userId);
-
-        // then
-        assertAll(
-                () -> assertThat(result.size()).isEqualTo(2),
-                () -> assertThat(result.get(Keyword.감각적인)).isEqualTo(2),
-                () -> assertThat(result.get(Keyword.강렬한)).isEqualTo(1)
         );
     }
 }
