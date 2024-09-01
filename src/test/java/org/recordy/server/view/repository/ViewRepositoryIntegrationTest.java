@@ -44,7 +44,6 @@ class ViewRepositoryIntegrationTest extends IntegrationTest {
         );
     }
 
-    // TODO: ViewRepository에 대한 query 메서드 구현해야 테스트 작성 가능
     @Test
     void deleteByUserId를_통해_특정_사용자의_조회_데이터를_삭제할_수_있다() {
         // given
