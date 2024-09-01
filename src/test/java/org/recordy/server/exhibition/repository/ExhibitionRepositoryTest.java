@@ -8,6 +8,7 @@ import org.recordy.server.exhibition.exception.ExhibitionException;
 import org.recordy.server.util.ExhibitionFixture;
 import org.recordy.server.util.db.IntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Slice;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -156,5 +157,24 @@ class ExhibitionRepositoryTest extends IntegrationTest {
         assertThatThrownBy(() -> exhibitionRepository.findById(100))
                 .isInstanceOf(ExhibitionException.class)
                 .hasMessage(ErrorMessage.EXHIBITION_NOT_FOUND.getMessage());
+    }
+
+    @Test
+    void 쿼리를_포함하는_이름을_가진_전시_객체를_최신순_정렬_리스트로_조회할_수_있다() {
+        // given
+        String name = "전시";
+        exhibitionRepository.save(ExhibitionFixture.create(1, name));
+        exhibitionRepository.save(ExhibitionFixture.create(2, name));
+        exhibitionRepository.save(ExhibitionFixture.create(3, "I Like Watching You Go"));
+
+        // when
+        Slice<Exhibition> result = exhibitionRepository.findAllContainingName(name, null, 10);
+
+        // then
+        assertAll(
+                () -> assertThat(result.getContent()).hasSize(2),
+                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(2),
+                () -> assertThat(result.getContent().get(1).getId()).isEqualTo(1)
+        );
     }
 }

@@ -6,6 +6,7 @@ import org.recordy.server.exhibition.domain.Exhibition;
 import org.recordy.server.exhibition.domain.ExhibitionEntity;
 import org.recordy.server.exhibition.exception.ExhibitionException;
 import org.recordy.server.exhibition.repository.ExhibitionRepository;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 
 import java.util.Objects;
@@ -38,5 +39,11 @@ public class ExhibitionRepositoryImpl implements ExhibitionRepository {
         }
 
         return Exhibition.from(entity);
+    }
+
+    @Override
+    public Slice<Exhibition> findAllContainingName(String name, Long cursor, int size) {
+        return exhibitionQueryDslRepository.findAllContainingName(name, cursor, size)
+                .map(Exhibition::from);
     }
 }
