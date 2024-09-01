@@ -1,10 +1,9 @@
 package org.recordy.server.user.service;
 
-import java.util.Map;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.auth.domain.Auth;
 import org.recordy.server.auth.domain.AuthPlatform;
-import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.mock.FakeContainer;
 import org.recordy.server.subscribe.domain.Subscribe;
 import org.recordy.server.user.domain.TermsAgreement;
@@ -17,6 +16,8 @@ import org.recordy.server.user.exception.UserException;
 import org.recordy.server.util.DomainFixture;
 
 import java.util.Optional;
+
+import org.recordy.server.view.domain.View;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
@@ -310,21 +311,20 @@ public class UserServiceTest extends FakeContainer {
         assertThat(result).isEqualTo(0);
     }
 
-    // TODO: ViewRepository에 대한 query 메서드 구현해야 테스트 작성 가능
-//    @Test
-//    void delete를_통해_사용자를_삭제할_때_관련된_View_객체도_삭제된다() {
-//        // given
-//        AuthPlatform platform = DomainFixture.createAuthPlatform();
-//        UserSignIn userSignIn = DomainFixture.createUserSignIn(platform.getType());
-//        userService.signIn(userSignIn);
-//
-//        // when
-//        userService.delete(DomainFixture.USER_ID);
-//        Map<Keyword,Long> result = viewRepository.countAllByUserIdGroupByKeyword(DomainFixture.USER_ID);
-//
-//        // then
-//        assertThat(result.size()).isEqualTo(0);
-//    }
+    @Test
+    void delete를_통해_사용자를_삭제할_때_관련된_View_객체도_삭제된다() {
+        // given
+        AuthPlatform platform = DomainFixture.createAuthPlatform();
+        UserSignIn userSignIn = DomainFixture.createUserSignIn(platform.getType());
+        userService.signIn(userSignIn);
+
+        // when
+        userService.delete(DomainFixture.USER_ID);
+        List<View> result = viewRepository.findAllByUserId(DomainFixture.USER_ID);
+
+        // then
+        assertThat(result.size()).isEqualTo(0);
+    }
 
     @Test
     void delete를_통해_삭제하고자_하는_사용자가_없을_경우_예외가_발생한다() {

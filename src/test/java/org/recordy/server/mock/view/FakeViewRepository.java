@@ -4,6 +4,7 @@ import org.recordy.server.view.domain.View;
 import org.recordy.server.view.repository.ViewRepository;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class FakeViewRepository implements ViewRepository {
@@ -27,5 +28,12 @@ public class FakeViewRepository implements ViewRepository {
     public void deleteByUserId(long userId) {
         views.values()
                 .removeIf(view -> view.getUser().getId() == userId);
+    }
+
+    @Override
+    public List<View> findAllByUserId(long userId) {
+        return views.values().stream()
+                .filter(view -> view.getUser().getId() == userId)
+                .toList();
     }
 }

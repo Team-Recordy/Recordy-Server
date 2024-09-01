@@ -1,7 +1,6 @@
 package org.recordy.server.view.repository;
 
 import org.junit.jupiter.api.Test;
-import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.view.domain.View;
 import org.recordy.server.user.domain.User;
@@ -11,8 +10,6 @@ import org.recordy.server.util.db.IntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
-
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -48,19 +45,19 @@ class ViewRepositoryIntegrationTest extends IntegrationTest {
     }
 
     // TODO: ViewRepository에 대한 query 메서드 구현해야 테스트 작성 가능
-//    @Test
-//    void deleteByUserId를_통해_특정_사용자의_조회_데이터를_삭제할_수_있다() {
-//        // given
-//        long userId = 1L;
-//        viewRepository.save(View.builder()
-//                .record(DomainFixture.createRecord())
-//                .user(DomainFixture.createUser(userId))
-//                .build());
-//
-//        // when
-//        viewRepository.deleteByUserId(userId);
-//
-//        // then
-//        assertThat(viewRepository.countAllByUserIdGroupByKeyword(userId)).isEmpty();
-//    }
+    @Test
+    void deleteByUserId를_통해_특정_사용자의_조회_데이터를_삭제할_수_있다() {
+        // given
+        long userId = 1L;
+        viewRepository.save(View.builder()
+                .record(DomainFixture.createRecord())
+                .user(DomainFixture.createUser(userId))
+                .build());
+
+        // when
+        viewRepository.deleteByUserId(userId);
+
+        // then
+        assertThat(viewRepository.findAllByUserId(userId).size()).isEqualTo(0);
+    }
 }
