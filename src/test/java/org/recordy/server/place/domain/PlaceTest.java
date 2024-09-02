@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.recordy.server.exhibition.domain.Exhibition;
 import org.recordy.server.place.domain.usecase.PlaceCreate;
 import org.recordy.server.util.ExhibitionFixture;
+import org.recordy.server.util.LocationFixture;
 import org.recordy.server.util.PlaceFixture;
 
 import java.util.List;
@@ -27,7 +28,8 @@ class PlaceTest {
         assertAll(
                 () -> assertThat(place.getId()).isEqualTo(id),
                 () -> assertThat(place.getExhibitions().get(0).getId()).isEqualTo(1L),
-                () -> assertThat(place.getExhibitions().get(1).getId()).isEqualTo(2L)
+                () -> assertThat(place.getExhibitions().get(1).getId()).isEqualTo(2L),
+                () -> assertThat(place.getLocation().getId()).isEqualTo(LocationFixture.ID)
         );
     }
 
@@ -35,12 +37,16 @@ class PlaceTest {
     void PlaceCreate_객체로부터_Place_객체를_생성한다() {
         // given
         long id = 1L;
-        PlaceCreate create = new PlaceCreate(id);
+        PlaceCreate create = new PlaceCreate(id, LocationFixture.create());
 
         // when
         Place place = Place.create(create);
 
         // then
-        assertThat(place.getId()).isEqualTo(id);
+        assertAll(
+                () -> assertThat(place.getId()).isEqualTo(id),
+                () -> assertThat(place.getExhibitions()).isEmpty(),
+                () -> assertThat(place.getLocation().getId()).isEqualTo(LocationFixture.ID)
+        );
     }
 }

@@ -26,7 +26,8 @@ class PlaceEntityTest {
         assertAll(
                 () -> assertThat(entity.getId()).isEqualTo(id),
                 () -> assertThat(entity.getExhibitions().get(0).getId()).isEqualTo(1L),
-                () -> assertThat(entity.getExhibitions().get(1).getId()).isEqualTo(2L)
+                () -> assertThat(entity.getExhibitions().get(1).getId()).isEqualTo(2L),
+                () -> assertThat(entity.getLocation().getId()).isEqualTo(PlaceFixture.LOCATION.getId())
         );
     }
 }

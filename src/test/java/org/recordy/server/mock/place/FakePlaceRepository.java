@@ -22,7 +22,8 @@ public class FakePlaceRepository implements PlaceRepository {
         }
 
         PlaceCreate create = new PlaceCreate(
-                placeAutoIncrementId
+                placeAutoIncrementId,
+                place.getLocation()
         );
 
         Place realPlace = Place.create(create);

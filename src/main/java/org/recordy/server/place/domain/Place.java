@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.recordy.server.exhibition.domain.Exhibition;
+import org.recordy.server.location.domain.Location;
 import org.recordy.server.place.domain.usecase.PlaceCreate;
 
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ public class Place {
 
     private Long id;
     private List<Exhibition> exhibitions;
+    private Location location;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -25,6 +27,7 @@ public class Place {
                 entity.getExhibitions().stream()
                         .map(Exhibition::from)
                         .toList(),
+                Location.from(entity.getLocation()),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
         );
@@ -34,6 +37,7 @@ public class Place {
         return new Place(
                 create.id(),
                 List.of(),
+                create.location(),
                 null,
                 null
         );
@@ -43,6 +47,7 @@ public class Place {
         return new Place(
                 create.id(),
                 exhibitions,
+                create.location(),
                 null,
                 null
         );
