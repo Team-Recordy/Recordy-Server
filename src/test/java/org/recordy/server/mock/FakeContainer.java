@@ -18,8 +18,10 @@ import org.recordy.server.exhibition.repository.ExhibitionRepository;
 import org.recordy.server.exhibition.service.ExhibitionService;
 import org.recordy.server.exhibition.service.impl.ExhibitionServiceImpl;
 import org.recordy.server.mock.exhibition.FakeExhibitionRepository;
+import org.recordy.server.mock.place.FakePlaceRepository;
 import org.recordy.server.mock.record.FakeS3Service;
 import org.recordy.server.mock.subscribe.FakeSubscribeRepository;
+import org.recordy.server.place.repository.PlaceRepository;
 import org.recordy.server.record.service.S3Service;
 import org.recordy.server.mock.auth.FakeAuthApplePlatformServiceImpl;
 import org.recordy.server.mock.auth.FakeAuthKakaoPlatformServiceImpl;
@@ -56,6 +58,7 @@ public class FakeContainer {
     public final ViewRepository viewRepository;
     public final SubscribeRepository subscribeRepository;
     public final ExhibitionRepository exhibitionRepository;
+    public final PlaceRepository placeRepository;
 
     // infrastructure
     public final AuthTokenSigningKeyProvider signingKeyProvider;
@@ -92,6 +95,7 @@ public class FakeContainer {
         this.viewRepository = new FakeViewRepository();
         this.subscribeRepository = new FakeSubscribeRepository();
         this.exhibitionRepository = new FakeExhibitionRepository();
+        this.placeRepository = new FakePlaceRepository();
 
         this.signingKeyProvider = new AuthTokenSigningKeyProvider(DomainFixture.TOKEN_SECRET);
         this.tokenGenerator = new AuthTokenGenerator(signingKeyProvider);
@@ -119,7 +123,7 @@ public class FakeContainer {
         this.recordService = new RecordServiceImpl(s3Service, recordRepository, viewRepository, userRepository);
         this.bookmarkService = new BookmarkServiceImpl(userRepository, recordRepository, bookmarkRepository);
         this.subscribeService = new SubscribeServiceImpl(subscribeRepository, userRepository);
-        this.exhibitionService = new ExhibitionServiceImpl(exhibitionRepository);
+        this.exhibitionService = new ExhibitionServiceImpl(exhibitionRepository, placeRepository);
 
         this.authFilterExceptionHandler = new AuthFilterExceptionHandler(new ObjectMapper());
         this.tokenAuthenticationFilter = new TokenAuthenticationFilter(

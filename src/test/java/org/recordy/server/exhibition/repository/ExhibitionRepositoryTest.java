@@ -1,14 +1,18 @@
 package org.recordy.server.exhibition.repository;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.exhibition.domain.Exhibition;
 import org.recordy.server.exhibition.domain.usecase.ExhibitionUpdate;
 import org.recordy.server.exhibition.exception.ExhibitionException;
+import org.recordy.server.place.domain.Place;
+import org.recordy.server.place.repository.PlaceRepository;
 import org.recordy.server.util.ExhibitionFixture;
 import org.recordy.server.util.db.IntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Slice;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,16 +22,27 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
+@Transactional
 class ExhibitionRepositoryTest extends IntegrationTest {
 
     @Autowired
     private ExhibitionRepository exhibitionRepository;
 
+    @Autowired
+    private PlaceRepository placeRepository;
+
+    private Place place;
+
+    @BeforeEach
+    void setUp() {
+        place = placeRepository.save(ExhibitionFixture.PLACE);
+    }
+
     @Test
     void 전시_객체를_저장할_수_있다() {
         // given
         long id = 1L;
-        Exhibition exhibition = ExhibitionFixture.create(id);
+        Exhibition exhibition = ExhibitionFixture.create(id, place);
 
         // when
         Exhibition result = exhibitionRepository.save(exhibition);
@@ -35,6 +50,9 @@ class ExhibitionRepositoryTest extends IntegrationTest {
         // then
         assertAll(
                 () -> assertThat(result.getId()).isEqualTo(id),
+                () -> assertThat(result.getName()).isEqualTo(exhibition.getName()),
+                () -> assertThat(result.getStartDate()).isEqualTo(exhibition.getStartDate()),
+                () -> assertThat(result.getEndDate()).isEqualTo(exhibition.getEndDate()),
                 () -> assertThat(result.getCreatedAt()).isNotNull(),
                 () -> assertThat(result.getUpdatedAt()).isNotNull()
         );
@@ -66,7 +84,9 @@ class ExhibitionRepositoryTest extends IntegrationTest {
                 id,
                 "수정된 전시",
                 LocalDate.now(),
-                LocalDate.now()
+                LocalDate.now(),
+                true,
+                "https://example.com"
         );
 
         // when
@@ -79,7 +99,9 @@ class ExhibitionRepositoryTest extends IntegrationTest {
                 () -> assertThat(result.getName()).isEqualTo(update.name()),
                 () -> assertThat(result.getStartDate()).isEqualTo(update.startDate()),
                 () -> assertThat(result.getEndDate()).isEqualTo(update.endDate()),
-                () -> assertThat(result.getCreatedAt()).isEqualTo(exhibition.getCreatedAt())
+                () -> assertThat(result.getCreatedAt()).isEqualTo(exhibition.getCreatedAt()),
+                () -> assertThat(result.isFree()).isEqualTo(update.isFree()),
+                () -> assertThat(result.getUrl()).isEqualTo(update.url())
         );
     }
 
@@ -93,7 +115,9 @@ class ExhibitionRepositoryTest extends IntegrationTest {
                 id,
                 "수정된 전시",
                 LocalDate.now(),
-                LocalDate.now()
+                LocalDate.now(),
+                true,
+                "https://example.com"
         );
 
         // when

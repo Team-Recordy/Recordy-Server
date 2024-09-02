@@ -1,6 +1,7 @@
 package org.recordy.server.exhibition.domain.usecase;
 
 import org.recordy.server.exhibition.controller.dto.request.ExhibitionCreateRequest;
+import org.recordy.server.place.domain.Place;
 
 import java.time.LocalDate;
 
@@ -10,17 +11,19 @@ public record ExhibitionCreate(
         LocalDate startDate,
         LocalDate endDate,
         boolean isFree,
-        String url
+        String url,
+        Place place
 ) {
 
-    public static ExhibitionCreate from(ExhibitionCreateRequest request) {
+    public static ExhibitionCreate of(ExhibitionCreateRequest request, Place place) {
         return new ExhibitionCreate(
                 null,
                 request.name(),
                 request.startDate(),
                 request.endDate(),
                 request.isFree(),
-                request.url()
+                request.url(),
+                place
         );
     }
 }

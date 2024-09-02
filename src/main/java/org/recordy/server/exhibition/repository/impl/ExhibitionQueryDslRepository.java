@@ -22,6 +22,7 @@ public class ExhibitionQueryDslRepository {
     public ExhibitionEntity findById(long id) {
         return jpaQueryFactory
                 .selectFrom(exhibitionEntity)
+                .join(exhibitionEntity.place).fetchJoin()
                 .where(exhibitionEntity.id.eq(id))
                 .fetchOne();
     }
@@ -29,6 +30,7 @@ public class ExhibitionQueryDslRepository {
     public Slice<ExhibitionEntity> findAllContainingName(String name, Long cursor, int size) {
         List<ExhibitionEntity> content = jpaQueryFactory
                 .selectFrom(exhibitionEntity)
+                .join(exhibitionEntity.place).fetchJoin()
                 .where(
                         exhibitionEntity.name.containsIgnoreCase(name),
                         QueryDslUtils.ltCursorId(cursor, exhibitionEntity.id)

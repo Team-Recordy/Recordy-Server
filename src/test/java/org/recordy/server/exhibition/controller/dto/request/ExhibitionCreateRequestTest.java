@@ -28,13 +28,14 @@ class ExhibitionCreateRequestTest {
                 null,
                 null,
                 false,
-                ""
+                "",
+                null
         );
 
         // when
         Set<ConstraintViolation<ExhibitionCreateRequest>> violations = validator.validate(request);
 
         // then
-        assertThat(violations).hasSize(3);
+        assertThat(violations).hasSize(4);
     }
 }

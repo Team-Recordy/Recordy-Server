@@ -67,6 +67,11 @@ public enum ErrorMessage {
      * EXHIBITION
      */
     EXHIBITION_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 전시회입니다."),
+
+    /**
+     * PLACE
+     */
+    PLACE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 장소입니다."),
     ;
 
     private final HttpStatus httpStatus;

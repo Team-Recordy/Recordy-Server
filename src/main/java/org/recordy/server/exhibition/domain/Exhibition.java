@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.recordy.server.exhibition.domain.usecase.ExhibitionCreate;
 import org.recordy.server.exhibition.domain.usecase.ExhibitionUpdate;
+import org.recordy.server.place.domain.Place;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,6 +21,7 @@ public class Exhibition {
     private LocalDate endDate;
     private boolean isFree;
     private String url;
+    private Place place;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -32,6 +34,7 @@ public class Exhibition {
                 entity.getEndDate(),
                 entity.isFree(),
                 entity.getUrl(),
+                Place.from(entity.getPlace()),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
         );
@@ -45,6 +48,7 @@ public class Exhibition {
                 create.endDate(),
                 create.isFree(),
                 create.url(),
+                create.place(),
                 null,
                 null
         );
@@ -56,8 +60,9 @@ public class Exhibition {
                 Objects.isNull(update.name()) || update.name().isEmpty() ? this.name : update.name(),
                 Objects.isNull(update.startDate()) ? this.startDate : update.startDate(),
                 Objects.isNull(update.endDate()) ? this.endDate : update.endDate(),
-                this.isFree,
-                this.url,
+                this.isFree == update.isFree() ? this.isFree : update.isFree(),
+                Objects.isNull(update.url()) || update.url().isEmpty() ? this.url : update.url(),
+                this.place,
                 this.createdAt,
                 null
         );

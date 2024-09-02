@@ -18,6 +18,7 @@ public record ExhibitionCreateRequest(
         @NotNull(message = "전시 유무료 여부가 입력되지 않았습니다.")
         boolean isFree,
         @NotBlank(message = "전시 홈페이지 url이 입력되지 않았습니다.")
-        String url
+        String url,
+        Long placeId
 ) {
 }

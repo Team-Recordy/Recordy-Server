@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.recordy.server.exhibition.domain.usecase.ExhibitionCreate;
 import org.recordy.server.exhibition.domain.usecase.ExhibitionUpdate;
 import org.recordy.server.util.ExhibitionFixture;
+import org.recordy.server.util.PlaceFixture;
 
 import java.time.LocalDate;
 
@@ -22,7 +23,15 @@ class ExhibitionTest {
         Exhibition exhibition = Exhibition.from(entity);
 
         // then
-        assertThat(exhibition.getId()).isEqualTo(id);
+        assertAll(
+                () -> assertThat(exhibition.getId()).isEqualTo(entity.getId()),
+                () -> assertThat(exhibition.getName()).isEqualTo(entity.getName()),
+                () -> assertThat(exhibition.getStartDate()).isEqualTo(entity.getStartDate()),
+                () -> assertThat(exhibition.getEndDate()).isEqualTo(entity.getEndDate()),
+                () -> assertThat(exhibition.isFree()).isEqualTo(entity.isFree()),
+                () -> assertThat(exhibition.getUrl()).isEqualTo(entity.getUrl()),
+                () -> assertThat(exhibition.getPlace().getId()).isEqualTo(entity.getPlace().getId())
+        );
     }
 
     @Test
@@ -34,7 +43,8 @@ class ExhibitionTest {
                 LocalDate.now(),
                 LocalDate.now().plusDays(1),
                 false,
-                "http://example.com"
+                "http://example.com",
+                PlaceFixture.create()
         );
 
         // when
@@ -45,8 +55,10 @@ class ExhibitionTest {
                 () -> assertThat(exhibition.getId()).isEqualTo(create.id()),
                 () -> assertThat(exhibition.getName()).isEqualTo(create.name()),
                 () -> assertThat(exhibition.getStartDate()).isEqualTo(create.startDate()),
-                () -> assertThat(exhibition.getEndDate()).isEqualTo(create.endDate())
-
+                () -> assertThat(exhibition.getEndDate()).isEqualTo(create.endDate()),
+                () -> assertThat(exhibition.isFree()).isEqualTo(create.isFree()),
+                () -> assertThat(exhibition.getUrl()).isEqualTo(create.url()),
+                () -> assertThat(exhibition.getPlace()).isEqualTo(create.place())
         );
     }
 
@@ -58,7 +70,9 @@ class ExhibitionTest {
                 exhibition.getId(),
                 "updated name",
                 LocalDate.now().plusDays(1),
-                LocalDate.now().plusDays(2)
+                LocalDate.now().plusDays(2),
+                true,
+                "https://example.com"
         );
 
         // when
@@ -69,7 +83,9 @@ class ExhibitionTest {
                 () -> assertThat(updatedExhibition.getId()).isEqualTo(exhibition.getId()),
                 () -> assertThat(updatedExhibition.getName()).isEqualTo(update.name()),
                 () -> assertThat(updatedExhibition.getStartDate()).isEqualTo(update.startDate()),
-                () -> assertThat(updatedExhibition.getEndDate()).isEqualTo(update.endDate())
+                () -> assertThat(updatedExhibition.getEndDate()).isEqualTo(update.endDate()),
+                () -> assertThat(updatedExhibition.isFree()).isEqualTo(update.isFree()),
+                () -> assertThat(updatedExhibition.getUrl()).isEqualTo(update.url())
         );
     }
 
@@ -81,6 +97,8 @@ class ExhibitionTest {
                 exhibition.getId(),
                 null,
                 null,
+                null,
+                false,
                 null
         );
 
@@ -92,7 +110,9 @@ class ExhibitionTest {
                 () -> assertThat(updatedExhibition.getId()).isEqualTo(exhibition.getId()),
                 () -> assertThat(updatedExhibition.getName()).isEqualTo(exhibition.getName()),
                 () -> assertThat(updatedExhibition.getStartDate()).isEqualTo(exhibition.getStartDate()),
-                () -> assertThat(updatedExhibition.getEndDate()).isEqualTo(exhibition.getEndDate())
+                () -> assertThat(updatedExhibition.getEndDate()).isEqualTo(exhibition.getEndDate()),
+                () -> assertThat(updatedExhibition.isFree()).isEqualTo(exhibition.isFree()),
+                () -> assertThat(updatedExhibition.getUrl()).isEqualTo(exhibition.getUrl())
         );
     }
 }

@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.exhibition.controller.dto.request.ExhibitionCreateRequest;
 import org.recordy.server.exhibition.controller.dto.request.ExhibitionUpdateRequest;
-import org.recordy.server.exhibition.domain.usecase.ExhibitionCreate;
 import org.recordy.server.exhibition.domain.usecase.ExhibitionUpdate;
 import org.recordy.server.exhibition.service.ExhibitionService;
 import org.springframework.http.HttpStatus;
@@ -23,7 +22,7 @@ public class ExhibitionController implements ExhibitionApi {
     public ResponseEntity<Void> create(
             @RequestBody @Valid ExhibitionCreateRequest request
     ) {
-        exhibitionService.create(ExhibitionCreate.from(request));
+        exhibitionService.create(request);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
