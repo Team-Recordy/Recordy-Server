@@ -8,7 +8,9 @@ public record ExhibitionCreate(
         Long id,
         String name,
         LocalDate startDate,
-        LocalDate endDate
+        LocalDate endDate,
+        boolean isFree,
+        String url
 ) {
 
     public static ExhibitionCreate from(ExhibitionCreateRequest request) {
@@ -16,7 +18,9 @@ public record ExhibitionCreate(
                 null,
                 request.name(),
                 request.startDate(),
-                request.endDate()
+                request.endDate(),
+                request.isFree(),
+                request.url()
         );
     }
 }

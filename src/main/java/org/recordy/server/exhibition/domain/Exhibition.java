@@ -18,6 +18,8 @@ public class Exhibition {
     private String name;
     private LocalDate startDate;
     private LocalDate endDate;
+    private boolean isFree;
+    private String url;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -28,6 +30,8 @@ public class Exhibition {
                 entity.getName(),
                 entity.getStartDate(),
                 entity.getEndDate(),
+                entity.isFree(),
+                entity.getUrl(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
         );
@@ -39,6 +43,8 @@ public class Exhibition {
                 create.name(),
                 create.startDate(),
                 create.endDate(),
+                create.isFree(),
+                create.url(),
                 null,
                 null
         );
@@ -49,7 +55,9 @@ public class Exhibition {
                 this.id,
                 Objects.isNull(update.name()) || update.name().isEmpty() ? this.name : update.name(),
                 Objects.isNull(update.startDate()) ? this.startDate : update.startDate(),
-                Objects.isNull(update.endDate()) ? this.endDate :update.endDate(),
+                Objects.isNull(update.endDate()) ? this.endDate : update.endDate(),
+                this.isFree,
+                this.url,
                 this.createdAt,
                 null
         );

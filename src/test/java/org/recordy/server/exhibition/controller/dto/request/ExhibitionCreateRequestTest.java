@@ -26,7 +26,9 @@ class ExhibitionCreateRequestTest {
         ExhibitionCreateRequest request = new ExhibitionCreateRequest(
                 "",
                 null,
-                null
+                null,
+                false,
+                ""
         );
 
         // when

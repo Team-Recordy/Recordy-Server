@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.recordy.server.common.domain.JpaMetaInfoEntity;
+import org.recordy.server.place.domain.PlaceEntity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -21,12 +22,16 @@ public class ExhibitionEntity extends JpaMetaInfoEntity {
     private String name;
     private LocalDate startDate;
     private LocalDate endDate;
+    private boolean isFree;
+    private String url;
 
     private ExhibitionEntity(
             Long id,
             String name,
             LocalDate startDate,
             LocalDate endDate,
+            boolean isFree,
+            String url,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {
@@ -34,6 +39,8 @@ public class ExhibitionEntity extends JpaMetaInfoEntity {
         this.name = name;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.isFree = isFree;
+        this.url = url;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -44,6 +51,8 @@ public class ExhibitionEntity extends JpaMetaInfoEntity {
                 exhibition.getName(),
                 exhibition.getStartDate(),
                 exhibition.getEndDate(),
+                exhibition.isFree(),
+                exhibition.getUrl(),
                 exhibition.getCreatedAt(),
                 exhibition.getUpdatedAt()
         );

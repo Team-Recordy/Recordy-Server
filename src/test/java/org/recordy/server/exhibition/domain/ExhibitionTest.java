@@ -32,7 +32,9 @@ class ExhibitionTest {
                 1L,
                 "name",
                 LocalDate.now(),
-                LocalDate.now().plusDays(1)
+                LocalDate.now().plusDays(1),
+                false,
+                "http://example.com"
         );
 
         // when

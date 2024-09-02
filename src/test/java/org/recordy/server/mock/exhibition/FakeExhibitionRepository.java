@@ -33,7 +33,9 @@ public class FakeExhibitionRepository implements ExhibitionRepository {
                 exhibitionAutoIncrementId,
                 exhibition.getName(),
                 exhibition.getStartDate(),
-                exhibition.getEndDate()
+                exhibition.getEndDate(),
+                exhibition.isFree(),
+                exhibition.getUrl()
         );
         Exhibition realExhibition = Exhibition.create(create);
         exhibitions.put(exhibitionAutoIncrementId++, realExhibition);
