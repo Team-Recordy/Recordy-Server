@@ -26,10 +26,12 @@ public class PlaceEntity extends JpaMetaInfoEntity {
 
     private PlaceEntity(
             Long id,
+            List<ExhibitionEntity> exhibitions,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {
         this.id = id;
+        this.exhibitions.addAll(exhibitions);
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -37,6 +39,9 @@ public class PlaceEntity extends JpaMetaInfoEntity {
     public static PlaceEntity from(Place place) {
         return new PlaceEntity(
                 place.getId(),
+                place.getExhibitions().stream()
+                        .map(ExhibitionEntity::from)
+                        .toList(),
                 place.getCreatedAt(),
                 place.getUpdatedAt()
         );

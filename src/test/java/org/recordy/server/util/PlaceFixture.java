@@ -1,7 +1,10 @@
 package org.recordy.server.util;
 
+import org.recordy.server.exhibition.domain.Exhibition;
 import org.recordy.server.place.domain.Place;
 import org.recordy.server.place.domain.usecase.PlaceCreate;
+
+import java.util.List;
 
 public class PlaceFixture {
 
@@ -13,5 +16,9 @@ public class PlaceFixture {
 
     public static Place create(long id) {
         return Place.create(new PlaceCreate(id));
+    }
+
+    public static Place create(long id, List<Exhibition> exhibitions) {
+        return Place.create(new PlaceCreate(id), exhibitions);
     }
 }
