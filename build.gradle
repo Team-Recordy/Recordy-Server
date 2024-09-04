@@ -63,6 +63,10 @@ dependencies {
 
     // Validator
     implementation 'org.hibernate.validator:hibernate-validator:7.0.1.Final'
+
+    // GEOLOGY
+    implementation 'org.hibernate.orm:hibernate-spatial:6.0.0.Final'
+    implementation 'org.locationtech.jts:jts-core:1.18.1'
 }
 
 tasks.named('test') {
