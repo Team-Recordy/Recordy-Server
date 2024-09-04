@@ -62,9 +62,9 @@ public class ExhibitionFixture {
         ));
     }
 
-    public static Exhibition create(LocalDate startDate, LocalDate endDate, Place place) {
+    public static Exhibition create(long id, LocalDate startDate, LocalDate endDate, Place place) {
         return Exhibition.create(new ExhibitionCreate(
-                null,
+                id,
                 NAME,
                 startDate,
                 endDate,

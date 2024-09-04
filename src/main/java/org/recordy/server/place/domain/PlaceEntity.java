@@ -2,6 +2,7 @@ package org.recordy.server.place.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.recordy.server.common.domain.JpaMetaInfoEntity;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Table(name = "places")
@@ -24,7 +26,7 @@ public class PlaceEntity extends JpaMetaInfoEntity {
     private String name;
 
     @OneToMany(mappedBy = "place")
-    private final List<ExhibitionEntity> exhibitions = new ArrayList<>();
+    private List<ExhibitionEntity> exhibitions = new ArrayList<>();
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private LocationEntity location;
 
@@ -38,7 +40,7 @@ public class PlaceEntity extends JpaMetaInfoEntity {
     ) {
         this.id = id;
         this.name = name;
-        this.exhibitions.addAll(exhibitions);
+        this.exhibitions = exhibitions;
         this.location = location;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -54,6 +56,17 @@ public class PlaceEntity extends JpaMetaInfoEntity {
                 LocationEntity.from(place.getLocation()),
                 place.getCreatedAt(),
                 place.getUpdatedAt()
+        );
+    }
+
+    public PlaceEntity with(List<ExhibitionEntity> exhibitions) {
+        return new PlaceEntity(
+                this.id,
+                this.name,
+                exhibitions,
+                this.location,
+                this.createdAt,
+                this.updatedAt
         );
     }
 }
