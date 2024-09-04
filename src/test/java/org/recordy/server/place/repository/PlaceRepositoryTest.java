@@ -2,7 +2,9 @@ package org.recordy.server.place.repository;
 
 import org.junit.jupiter.api.Test;
 import org.recordy.server.common.message.ErrorMessage;
+import org.recordy.server.exhibition.domain.Exhibition;
 import org.recordy.server.exhibition.repository.ExhibitionRepository;
+import org.recordy.server.location.domain.Location;
 import org.recordy.server.place.domain.Place;
 import org.recordy.server.place.exception.PlaceException;
 import org.recordy.server.util.ExhibitionFixture;
@@ -66,14 +68,36 @@ class PlaceRepositoryTest extends IntegrationTest {
     void 장소_객체를_id로_조회할_수_있다() {
         // given
         Place place = placeRepository.save(PlaceFixture.create());
+        exhibitionRepository.save(ExhibitionFixture.create(1L, place));
 
         // when
-        Place result = placeRepository.findById(place.getId());
+        Place result = placeRepository.findById(1L);
 
         // then
         assertAll(
                 () -> assertThat(result.getId()).isEqualTo(place.getId()),
                 () -> assertThat(result.getName()).isEqualTo(place.getName()),
+                () -> assertThat(result.getLocation().getId()).isEqualTo(place.getLocation().getId())
+        );
+    }
+
+    @Test
+    void 장소_객체를_id로_조회할_때_관련된_전시들과_장소_객체도_조회할_수_있다() {
+        // given
+        long id = 1L;
+        Location location = LocationFixture.create();
+        Place place = placeRepository.save(PlaceFixture.create(id, location));
+        Exhibition exhibition1 = exhibitionRepository.save(ExhibitionFixture.create(1L, place));
+        Exhibition exhibition2 = exhibitionRepository.save(ExhibitionFixture.create(2L, place));
+
+        // when
+        Place result = placeRepository.findById(id);
+
+        // then
+        assertAll(
+                () -> assertThat(result.getExhibitions().size()).isEqualTo(2),
+                () -> assertThat(result.getExhibitions().get(0).getId()).isEqualTo(exhibition1.getId()),
+                () -> assertThat(result.getExhibitions().get(1).getId()).isEqualTo(exhibition2.getId()),
                 () -> assertThat(result.getLocation().getId()).isEqualTo(place.getLocation().getId())
         );
     }

@@ -25,6 +25,8 @@ public class PlaceQueryDslRepository {
     public PlaceEntity findById(long id) {
         return jpaQueryFactory
                 .selectFrom(placeEntity)
+                .join(placeEntity.exhibitions).fetchJoin()
+                .join(placeEntity.location).fetchJoin()
                 .where(placeEntity.id.eq(id))
                 .fetchOne();
     }
@@ -33,6 +35,7 @@ public class PlaceQueryDslRepository {
         List<PlaceEntity> content = jpaQueryFactory
                 .selectFrom(placeEntity)
                 .join(placeEntity.exhibitions, exhibitionEntity).fetchJoin()
+                .join(placeEntity.location).fetchJoin()
                 .where(
                         exhibitionEntity.endDate.goe(LocalDate.now(Clock.systemDefaultZone())),
                         exhibitionEntity.startDate.loe(LocalDate.now(Clock.systemDefaultZone()))
