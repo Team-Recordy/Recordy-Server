@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.recordy.server.util.LocationFixture;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class LocationTest {
 
@@ -17,6 +18,12 @@ class LocationTest {
         Location location = Location.from(entity);
 
         // then
-        assertThat(location.getId()).isEqualTo(id);
+        assertAll(
+                () -> assertThat(location.getId()).isEqualTo(id),
+                () -> assertThat(location.getGeometry()).isEqualTo(entity.getGeometry()),
+                () -> assertThat(location.getAddress()).isEqualTo(entity.getAddress()),
+                () -> assertThat(location.getCreatedAt()).isEqualTo(entity.getCreatedAt()),
+                () -> assertThat(location.getUpdatedAt()).isEqualTo(entity.getUpdatedAt())
+        );
     }
 }
