@@ -10,17 +10,18 @@ import java.util.List;
 public class PlaceFixture {
 
     public final static long ID = 1L;
+    public final static String NAME = "Place";
     public final static Location LOCATION = LocationFixture.create();
 
     public static Place create() {
-        return Place.create(new PlaceCreate(ID, LOCATION));
+        return Place.create(new PlaceCreate(ID, NAME, LOCATION));
     }
 
     public static Place create(long id) {
-        return Place.create(new PlaceCreate(id, LOCATION));
+        return Place.create(new PlaceCreate(id, NAME, LOCATION));
     }
 
     public static Place create(long id, List<Exhibition> exhibitions) {
-        return Place.create(new PlaceCreate(id, LOCATION), exhibitions);
+        return Place.create(new PlaceCreate(id, NAME, LOCATION), exhibitions);
     }
 }

@@ -21,6 +21,7 @@ public class PlaceEntity extends JpaMetaInfoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String name;
 
     @OneToMany(mappedBy = "place")
     private final List<ExhibitionEntity> exhibitions = new ArrayList<>();
@@ -29,12 +30,14 @@ public class PlaceEntity extends JpaMetaInfoEntity {
 
     private PlaceEntity(
             Long id,
+            String name,
             List<ExhibitionEntity> exhibitions,
             LocationEntity location,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {
         this.id = id;
+        this.name = name;
         this.exhibitions.addAll(exhibitions);
         this.location = location;
         this.createdAt = createdAt;
@@ -44,6 +47,7 @@ public class PlaceEntity extends JpaMetaInfoEntity {
     public static PlaceEntity from(Place place) {
         return new PlaceEntity(
                 place.getId(),
+                place.getName(),
                 place.getExhibitions().stream()
                         .map(ExhibitionEntity::from)
                         .toList(),

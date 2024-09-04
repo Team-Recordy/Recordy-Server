@@ -27,6 +27,7 @@ class PlaceTest {
         // then
         assertAll(
                 () -> assertThat(place.getId()).isEqualTo(id),
+                () -> assertThat(place.getName()).isEqualTo(PlaceFixture.NAME),
                 () -> assertThat(place.getExhibitions().get(0).getId()).isEqualTo(1L),
                 () -> assertThat(place.getExhibitions().get(1).getId()).isEqualTo(2L),
                 () -> assertThat(place.getLocation().getId()).isEqualTo(LocationFixture.ID)
@@ -37,7 +38,7 @@ class PlaceTest {
     void PlaceCreate_객체로부터_Place_객체를_생성한다() {
         // given
         long id = 1L;
-        PlaceCreate create = new PlaceCreate(id, LocationFixture.create());
+        PlaceCreate create = new PlaceCreate(id, PlaceFixture.NAME, LocationFixture.create());
 
         // when
         Place place = Place.create(create);
@@ -45,6 +46,7 @@ class PlaceTest {
         // then
         assertAll(
                 () -> assertThat(place.getId()).isEqualTo(id),
+                () -> assertThat(place.getName()).isEqualTo(PlaceFixture.NAME),
                 () -> assertThat(place.getExhibitions()).isEmpty(),
                 () -> assertThat(place.getLocation().getId()).isEqualTo(LocationFixture.ID)
         );

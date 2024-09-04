@@ -23,6 +23,7 @@ public class FakePlaceRepository implements PlaceRepository {
 
         PlaceCreate create = new PlaceCreate(
                 placeAutoIncrementId,
+                place.getName(),
                 place.getLocation()
         );
 

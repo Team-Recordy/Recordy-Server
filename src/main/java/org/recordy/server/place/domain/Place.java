@@ -15,6 +15,7 @@ import java.util.List;
 public class Place {
 
     private Long id;
+    private String name;
     private List<Exhibition> exhibitions;
     private Location location;
 
@@ -24,6 +25,7 @@ public class Place {
     public static Place from(PlaceEntity entity) {
         return new Place(
                 entity.getId(),
+                entity.getName(),
                 entity.getExhibitions().stream()
                         .map(Exhibition::from)
                         .toList(),
@@ -36,6 +38,7 @@ public class Place {
     public static Place create(PlaceCreate create) {
         return new Place(
                 create.id(),
+                create.name(),
                 List.of(),
                 create.location(),
                 null,
@@ -46,6 +49,7 @@ public class Place {
     public static Place create(PlaceCreate create, List<Exhibition> exhibitions) {
         return new Place(
                 create.id(),
+                create.name(),
                 exhibitions,
                 create.location(),
                 null,
