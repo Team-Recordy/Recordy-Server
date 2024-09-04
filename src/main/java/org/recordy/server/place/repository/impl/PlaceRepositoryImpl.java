@@ -6,6 +6,8 @@ import org.recordy.server.place.domain.Place;
 import org.recordy.server.place.domain.PlaceEntity;
 import org.recordy.server.place.exception.PlaceException;
 import org.recordy.server.place.repository.PlaceRepository;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 
 import java.util.Objects;
@@ -33,5 +35,11 @@ public class PlaceRepositoryImpl implements PlaceRepository {
         }
 
         return Place.from(entity);
+    }
+
+    @Override
+    public Slice<Place> findAllOrderByExhibitionStartDateDesc(Pageable pageable) {
+        return placeQueryDslRepository.findAllOrderByExhibitionStartDateDesc(pageable)
+                .map(Place::from);
     }
 }

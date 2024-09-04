@@ -1,12 +1,21 @@
 package org.recordy.server.mock.place;
 
+import org.recordy.server.exhibition.domain.Exhibition;
 import org.recordy.server.place.domain.Place;
 import org.recordy.server.place.domain.usecase.PlaceCreate;
 import org.recordy.server.place.repository.PlaceRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static org.recordy.server.common.util.QueryDslUtils.hasNext;
 
 public class FakePlaceRepository implements PlaceRepository {
 
@@ -36,5 +45,30 @@ public class FakePlaceRepository implements PlaceRepository {
     @Override
     public Place findById(long id) {
         return places.get(id);
+    }
+
+    @Override
+    public Slice<Place> findAllOrderByExhibitionStartDateDesc(Pageable pageable) {
+        List<Place> content = places.values().stream()
+                .filter(place -> Objects.nonNull(place.getExhibitions()))
+                .filter(place -> place.getExhibitions().stream().anyMatch(exhibition -> exhibition.getEndDate().isAfter(exhibition.getStartDate())))
+                .sorted((place1, place2) -> place2.getExhibitions().stream()
+                        .map(Exhibition::getStartDate)
+                        .max(LocalDate::compareTo)
+                        .orElseThrow().compareTo(
+                                place1.getExhibitions().stream()
+                                        .map(Exhibition::getStartDate)
+                                        .max(LocalDate::compareTo)
+                                        .orElseThrow()
+                        )
+                )
+                .toList()
+                .subList((int) pageable.getOffset(), (int) pageable.getOffset() + pageable.getPageSize());
+
+        if (content.size() < pageable.getPageSize()) {
+            return new SliceImpl<>(content, pageable, false);
+        }
+
+        return new SliceImpl<>(content, pageable, hasNext(pageable, content));
     }
 }
