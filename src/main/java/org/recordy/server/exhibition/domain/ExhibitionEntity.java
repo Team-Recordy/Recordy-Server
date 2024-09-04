@@ -10,6 +10,8 @@ import org.recordy.server.place.domain.PlaceEntity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import static org.recordy.server.common.util.DomainUtils.mapIfNotNull;
+
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Table(name = "exhibitions")
@@ -58,7 +60,7 @@ public class ExhibitionEntity extends JpaMetaInfoEntity {
                 exhibition.getEndDate(),
                 exhibition.isFree(),
                 exhibition.getUrl(),
-                PlaceEntity.from(exhibition.getPlace()),
+                mapIfNotNull(exhibition.getPlace(), PlaceEntity::from),
                 exhibition.getCreatedAt(),
                 exhibition.getUpdatedAt()
         );

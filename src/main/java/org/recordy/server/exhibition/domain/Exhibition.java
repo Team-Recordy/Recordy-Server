@@ -9,7 +9,8 @@ import org.recordy.server.place.domain.Place;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Objects;
+
+import static org.recordy.server.common.util.DomainUtils.*;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
@@ -34,7 +35,7 @@ public class Exhibition {
                 entity.getEndDate(),
                 entity.isFree(),
                 entity.getUrl(),
-                Place.from(entity.getPlace()),
+                mapIfNotNull(entity.getPlace(), Place::from),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
         );
@@ -57,11 +58,11 @@ public class Exhibition {
     public Exhibition update(ExhibitionUpdate update) {
         return new Exhibition(
                 this.id,
-                Objects.isNull(update.name()) || update.name().isEmpty() ? this.name : update.name(),
-                Objects.isNull(update.startDate()) ? this.startDate : update.startDate(),
-                Objects.isNull(update.endDate()) ? this.endDate : update.endDate(),
-                this.isFree == update.isFree() ? this.isFree : update.isFree(),
-                Objects.isNull(update.url()) || update.url().isEmpty() ? this.url : update.url(),
+                updateIfNotEmpty(this.name, update.name()),
+                updateIfNotNull(this.startDate, update.startDate()),
+                updateIfNotNull(this.endDate, update.startDate()),
+                updateIfNotNull(this.isFree, update.isFree()),
+                updateIfNotEmpty(this.url, update.url()),
                 this.place,
                 this.createdAt,
                 null

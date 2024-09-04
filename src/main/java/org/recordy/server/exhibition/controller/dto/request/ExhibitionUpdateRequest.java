@@ -11,7 +11,7 @@ public record ExhibitionUpdateRequest(
         LocalDate startDate,
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
         LocalDate endDate,
-        boolean isFree,
+        Boolean isFree,
         String url
 ) {
 }
