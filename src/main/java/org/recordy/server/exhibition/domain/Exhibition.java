@@ -60,7 +60,7 @@ public class Exhibition {
                 this.id,
                 updateIfNotEmpty(this.name, update.name()),
                 updateIfNotNull(this.startDate, update.startDate()),
-                updateIfNotNull(this.endDate, update.startDate()),
+                updateIfNotNull(this.endDate, update.endDate()),
                 updateIfNotNull(this.isFree, update.isFree()),
                 updateIfNotEmpty(this.url, update.url()),
                 this.place,
