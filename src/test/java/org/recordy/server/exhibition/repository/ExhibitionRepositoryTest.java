@@ -9,6 +9,7 @@ import org.recordy.server.exhibition.exception.ExhibitionException;
 import org.recordy.server.place.domain.Place;
 import org.recordy.server.place.repository.PlaceRepository;
 import org.recordy.server.util.ExhibitionFixture;
+import org.recordy.server.util.PlaceFixture;
 import org.recordy.server.util.db.IntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Slice;
@@ -35,7 +36,7 @@ class ExhibitionRepositoryTest extends IntegrationTest {
 
     @BeforeEach
     void setUp() {
-        place = placeRepository.save(ExhibitionFixture.PLACE);
+        place = placeRepository.save(PlaceFixture.create());
     }
 
     @Test

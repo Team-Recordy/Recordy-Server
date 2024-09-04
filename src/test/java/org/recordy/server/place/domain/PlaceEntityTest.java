@@ -3,6 +3,7 @@ package org.recordy.server.place.domain;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.exhibition.domain.Exhibition;
 import org.recordy.server.util.ExhibitionFixture;
+import org.recordy.server.util.LocationFixture;
 import org.recordy.server.util.PlaceFixture;
 
 import java.util.List;
@@ -28,7 +29,7 @@ class PlaceEntityTest {
                 () -> assertThat(entity.getName()).isEqualTo(PlaceFixture.NAME),
                 () -> assertThat(entity.getExhibitions().get(0).getId()).isEqualTo(1L),
                 () -> assertThat(entity.getExhibitions().get(1).getId()).isEqualTo(2L),
-                () -> assertThat(entity.getLocation().getId()).isEqualTo(PlaceFixture.LOCATION.getId())
+                () -> assertThat(entity.getLocation().getId()).isEqualTo(LocationFixture.ID)
         );
     }
 }

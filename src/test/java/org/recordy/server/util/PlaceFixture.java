@@ -11,10 +11,9 @@ public class PlaceFixture {
 
     public final static long ID = 1L;
     public final static String NAME = "Place";
-    public final static Location LOCATION = LocationFixture.create();
 
     public static Place create() {
-        return Place.create(new PlaceCreate(ID, NAME, LOCATION));
+        return Place.create(new PlaceCreate(ID, NAME, LocationFixture.create()));
     }
 
     public static Place create(long id, Location location) {
@@ -22,6 +21,6 @@ public class PlaceFixture {
     }
 
     public static Place create(long id, List<Exhibition> exhibitions) {
-        return Place.create(new PlaceCreate(id, NAME, LOCATION), exhibitions);
+        return Place.create(new PlaceCreate(id, NAME, LocationFixture.create()), exhibitions);
     }
 }
