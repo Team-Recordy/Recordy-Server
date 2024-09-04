@@ -34,7 +34,8 @@ public class PlaceQueryDslRepository {
                 .selectFrom(placeEntity)
                 .join(placeEntity.exhibitions, exhibitionEntity).fetchJoin()
                 .where(
-                        exhibitionEntity.endDate.goe(LocalDate.now(Clock.systemDefaultZone()))
+                        exhibitionEntity.endDate.goe(LocalDate.now(Clock.systemDefaultZone())),
+                        exhibitionEntity.startDate.loe(LocalDate.now(Clock.systemDefaultZone()))
                 )
                 .orderBy(exhibitionEntity.startDate.desc())
                 .offset(pageable.getOffset())

@@ -135,4 +135,23 @@ class PlaceRepositoryTest extends IntegrationTest {
                 () -> assertThat(result.getContent().get(2).getId()).isEqualTo(place3.getId())
         );
     }
+
+    @Test
+    void 전시_시작일이_현재_날짜보다_뒤인_경우_조회되지_않는다() {
+        // given
+        Place placeIncluded = placeRepository.save(PlaceFixture.create());
+        exhibitionRepository.save(ExhibitionFixture.create(LocalDate.now(), LocalDate.now(), placeIncluded));
+
+        Place placeExcluded = placeRepository.save(PlaceFixture.create());
+        exhibitionRepository.save(ExhibitionFixture.create(LocalDate.now().plusDays(1), LocalDate.now().plusDays(1), placeExcluded));
+
+        // when
+        Slice<Place> result = placeRepository.findAllOrderByExhibitionStartDateDesc(PageRequest.ofSize(10));
+
+        // then
+        assertAll(
+                () -> assertThat(result.getContent().size()).isEqualTo(1),
+                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(placeIncluded.getId())
+        );
+    }
 }
