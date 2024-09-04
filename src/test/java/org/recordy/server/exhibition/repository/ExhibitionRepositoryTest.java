@@ -75,6 +75,19 @@ class ExhibitionRepositoryTest extends IntegrationTest {
     }
 
     @Test
+    void 전시_객체를_저장할_때_가지고_있는_장소_객체가_없어도_저장된다() {
+        // given
+        long id = 1L;
+        Exhibition exhibition = ExhibitionFixture.create(id, "nullExhibition", null);
+
+        // when
+        Exhibition result = exhibitionRepository.save(exhibition);
+
+        // then
+        assertThat(result.getPlace()).isNull();
+    }
+
+    @Test
     void 전시_객체를_수정할_수_있다() {
         // given
         long id = 1;
