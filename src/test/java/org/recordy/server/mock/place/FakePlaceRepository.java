@@ -71,4 +71,56 @@ public class FakePlaceRepository implements PlaceRepository {
 
         return new SliceImpl<>(content, pageable, hasNext(pageable, content));
     }
+
+    @Override
+    public Slice<Place> findAllFreeOrderByExhibitionStartDateDesc(Pageable pageable) {
+        List<Place> content = places.values().stream()
+                .filter(place -> Objects.nonNull(place.getExhibitions()))
+                .filter(place -> place.getExhibitions().stream().anyMatch(Exhibition::isFree))
+                .filter(place -> place.getExhibitions().stream().anyMatch(exhibition -> exhibition.getEndDate().isAfter(exhibition.getStartDate())))
+                .sorted((place1, place2) -> place2.getExhibitions().stream()
+                        .map(Exhibition::getStartDate)
+                        .max(LocalDate::compareTo)
+                        .orElseThrow().compareTo(
+                                place1.getExhibitions().stream()
+                                        .map(Exhibition::getStartDate)
+                                        .max(LocalDate::compareTo)
+                                        .orElseThrow()
+                        )
+                )
+                .toList()
+                .subList((int) pageable.getOffset(), (int) pageable.getOffset() + pageable.getPageSize());
+
+        if (content.size() < pageable.getPageSize()) {
+            return new SliceImpl<>(content, pageable, false);
+        }
+
+        return new SliceImpl<>(content, pageable, hasNext(pageable, content));
+    }
+
+    @Override
+    public Slice<Place> findAllByNameOrderByExhibitionStartDateDesc(Pageable pageable, String query) {
+        List<Place> content = places.values().stream()
+                .filter(place -> Objects.nonNull(place.getExhibitions()))
+                .filter(place -> place.getName().contains(query))
+                .filter(place -> place.getExhibitions().stream().anyMatch(exhibition -> exhibition.getEndDate().isAfter(exhibition.getStartDate())))
+                .sorted((place1, place2) -> place2.getExhibitions().stream()
+                        .map(Exhibition::getStartDate)
+                        .max(LocalDate::compareTo)
+                        .orElseThrow().compareTo(
+                                place1.getExhibitions().stream()
+                                        .map(Exhibition::getStartDate)
+                                        .max(LocalDate::compareTo)
+                                        .orElseThrow()
+                        )
+                )
+                .toList()
+                .subList((int) pageable.getOffset(), (int) pageable.getOffset() + pageable.getPageSize());
+
+        if (content.size() < pageable.getPageSize()) {
+            return new SliceImpl<>(content, pageable, false);
+        }
+
+        return new SliceImpl<>(content, pageable, hasNext(pageable, content));
+    }
 }

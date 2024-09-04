@@ -73,4 +73,16 @@ public class ExhibitionFixture {
                 place
         ));
     }
+
+    public static Exhibition create(long id, LocalDate startDate, LocalDate endDate, boolean isFree, Place place) {
+        return Exhibition.create(new ExhibitionCreate(
+                id,
+                NAME,
+                startDate,
+                endDate,
+                isFree,
+                URL,
+                place
+        ));
+    }
 }

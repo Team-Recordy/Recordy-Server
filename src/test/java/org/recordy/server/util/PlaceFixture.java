@@ -24,6 +24,10 @@ public class PlaceFixture {
         return Place.create(new PlaceCreate(id, NAME, LocationFixture.create()), exhibitions);
     }
 
+    public static Place create(long id, String name, Location location) {
+        return Place.create(new PlaceCreate(id, name, location));
+    }
+
     public static Place create(long id, Location location, List<Exhibition> exhibitions) {
         return Place.create(new PlaceCreate(id, NAME, location), exhibitions);
     }

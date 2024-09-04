@@ -190,4 +190,47 @@ class PlaceRepositoryTest extends IntegrationTest {
                 () -> assertThat(result.getContent().get(0).getId()).isEqualTo(placeIncluded.getId())
         );
     }
+
+    @Test
+    void 진행중인_공짜_전시를_가진_장소_리스트를_전시_시작일의_역순으로_조회할_수_있다() {
+        // given
+        Place place1 = placeRepository.save(PlaceFixture.create(1, LocationFixture.create(1)));
+        Place place2 = placeRepository.save(PlaceFixture.create(2, LocationFixture.create(2)));
+        Place place3 = placeRepository.save(PlaceFixture.create(3, LocationFixture.create(3)));
+
+        exhibitionRepository.save(ExhibitionFixture.create(1, LocalDate.now().minusDays(3), LocalDate.now(), true, place1));
+        exhibitionRepository.save(ExhibitionFixture.create(2, LocalDate.now().minusDays(1), LocalDate.now(), true, place2));
+        exhibitionRepository.save(ExhibitionFixture.create(3, LocalDate.now().minusDays(2), LocalDate.now(), false, place3));
+
+        // when
+        Slice<Place> result = placeRepository.findAllFreeOrderByExhibitionStartDateDesc(PageRequest.ofSize(10));
+
+        // then
+        assertAll(
+                () -> assertThat(result.getContent().size()).isEqualTo(2),
+                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(place2.getId()),
+                () -> assertThat(result.getContent().get(1).getId()).isEqualTo(place1.getId())
+        );
+    }
+
+    @Test
+    void 특정_이름을_포함하는_장소_리스트를_전시_시작일의_역순으로_조회할_수_있다() {
+        // given
+        Place place1 = placeRepository.save(PlaceFixture.create(1, "국립현대미술관", LocationFixture.create(1)));
+        Place place2 = placeRepository.save(PlaceFixture.create(2, "이중섭미술관", LocationFixture.create(2)));
+        Place place3 = placeRepository.save(PlaceFixture.create(3, "박물!", LocationFixture.create(3)));
+
+        exhibitionRepository.save(ExhibitionFixture.create(1, LocalDate.now(), LocalDate.now(), place1));
+        exhibitionRepository.save(ExhibitionFixture.create(2, LocalDate.now(), LocalDate.now(), place2));
+        exhibitionRepository.save(ExhibitionFixture.create(3, LocalDate.now(), LocalDate.now(), place3));
+
+        // when
+        Slice<Place> result = placeRepository.findAllByNameOrderByExhibitionStartDateDesc(PageRequest.ofSize(10), "국립현대");
+
+        // then
+        assertAll(
+                () -> assertThat(result.getContent().size()).isEqualTo(1),
+                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(place1.getId())
+        );
+    }
 }

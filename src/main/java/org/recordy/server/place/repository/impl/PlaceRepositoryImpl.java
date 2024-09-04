@@ -42,4 +42,16 @@ public class PlaceRepositoryImpl implements PlaceRepository {
         return placeQueryDslRepository.findAllOrderByExhibitionStartDateDesc(pageable)
                 .map(Place::from);
     }
+
+    @Override
+    public Slice<Place> findAllFreeOrderByExhibitionStartDateDesc(Pageable pageable) {
+        return placeQueryDslRepository.findAllFreeOrderByExhibitionStartDateDesc(pageable)
+                .map(Place::from);
+    }
+
+    @Override
+    public Slice<Place> findAllByNameOrderByExhibitionStartDateDesc(Pageable pageable, String query) {
+        return placeQueryDslRepository.findAllByNameOrderByExhibitionStartDateDesc(pageable, query)
+                .map(Place::from);
+    }
 }
