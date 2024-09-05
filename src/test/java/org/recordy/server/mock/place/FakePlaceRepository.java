@@ -1,10 +1,10 @@
 package org.recordy.server.mock.place;
 
+import org.locationtech.jts.geom.Point;
 import org.recordy.server.exhibition.domain.Exhibition;
 import org.recordy.server.place.domain.Place;
 import org.recordy.server.place.domain.usecase.PlaceCreate;
 import org.recordy.server.place.repository.PlaceRepository;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -122,5 +122,10 @@ public class FakePlaceRepository implements PlaceRepository {
         }
 
         return new SliceImpl<>(content, pageable, hasNext(pageable, content));
+    }
+
+    @Override
+    public Slice<Place> findAllByLocationOrderByExhibitionStartDateDesc(Pageable pageable, Point currentLocation, double distance) {
+        return null;
     }
 }

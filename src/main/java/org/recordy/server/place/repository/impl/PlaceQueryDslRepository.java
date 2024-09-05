@@ -2,7 +2,9 @@ package org.recordy.server.place.repository.impl;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.querydsl.spatial.locationtech.jts.JTSGeometryExpressions;
 import lombok.RequiredArgsConstructor;
+import org.locationtech.jts.geom.Point;
 import org.recordy.server.common.util.QueryDslUtils;
 import org.recordy.server.exhibition.domain.ExhibitionEntity;
 import org.recordy.server.place.domain.PlaceEntity;
@@ -68,8 +70,21 @@ public class PlaceQueryDslRepository {
         return new SliceImpl<>(content, pageable, QueryDslUtils.hasNext(pageable, content));
     }
 
+    public Slice<PlaceEntity> findAllByLocationOrderByExhibitionStartDateDesc(Pageable pageable, Point currentLocation, double distance) {
+        Map<Long, List<ExhibitionEntity>> exhibitions = findExhibitionsWith();
+        List<PlaceEntity> content = findPlacesWith(
+                exhibitions,
+                JTSGeometryExpressions
+                        .asJTSGeometry(currentLocation)
+                        .buffer(distance)
+                        .contains(placeEntity.location.geometry)
+        );
+
+        return new SliceImpl<>(content, pageable, QueryDslUtils.hasNext(pageable, content));
+    }
+
     private Map<Long, List<ExhibitionEntity>> findExhibitionsWith(BooleanExpression... expressions) {
-        return mapByPlaceId(jpaQueryFactory
+        List<ExhibitionEntity> exhibitions = jpaQueryFactory
                 .selectFrom(exhibitionEntity)
                 .where(expressions)
                 .where(
@@ -77,7 +92,9 @@ public class PlaceQueryDslRepository {
                         exhibitionEntity.startDate.loe(LocalDate.now(Clock.systemDefaultZone()))
                 )
                 .orderBy(exhibitionEntity.startDate.desc())
-                .fetch());
+                .fetch();
+
+        return mapByPlaceId(exhibitions);
     }
 
     private Map<Long, List<ExhibitionEntity>> mapByPlaceId(List<ExhibitionEntity> exhibitions) {

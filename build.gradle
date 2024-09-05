@@ -67,6 +67,7 @@ dependencies {
     // GEOLOGY
     implementation 'org.hibernate.orm:hibernate-spatial:6.0.0.Final'
     implementation 'org.locationtech.jts:jts-core:1.18.1'
+    implementation 'com.querydsl:querydsl-sql-spatial:4.1.4'
 }
 
 tasks.named('test') {

@@ -20,4 +20,8 @@ public class LocationFixture {
     public static Location create(long id) {
         return Location.create(id, POINT, Address.of(FORMATTED, SIDO, GUGUN), null, null);
     }
+
+    public static Location create(Point point) {
+        return Location.create(null, point, Address.of(FORMATTED, SIDO, GUGUN), null, null);
+    }
 }

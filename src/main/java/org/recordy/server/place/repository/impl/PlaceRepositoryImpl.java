@@ -1,6 +1,7 @@
 package org.recordy.server.place.repository.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.locationtech.jts.geom.Point;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.place.domain.Place;
 import org.recordy.server.place.domain.PlaceEntity;
@@ -52,6 +53,12 @@ public class PlaceRepositoryImpl implements PlaceRepository {
     @Override
     public Slice<Place> findAllByNameOrderByExhibitionStartDateDesc(Pageable pageable, String query) {
         return placeQueryDslRepository.findAllByNameOrderByExhibitionStartDateDesc(pageable, query)
+                .map(Place::from);
+    }
+
+    @Override
+    public Slice<Place> findAllByLocationOrderByExhibitionStartDateDesc(Pageable pageable, Point currentLocation, double distance) {
+        return placeQueryDslRepository.findAllByLocationOrderByExhibitionStartDateDesc(pageable, currentLocation, distance)
                 .map(Place::from);
     }
 }
