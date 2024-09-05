@@ -30,7 +30,7 @@ class PlaceTest {
                 () -> assertThat(place.getName()).isEqualTo(PlaceFixture.NAME),
                 () -> assertThat(place.getExhibitions().get(0).getId()).isEqualTo(1L),
                 () -> assertThat(place.getExhibitions().get(1).getId()).isEqualTo(2L),
-                () -> assertThat(place.getLocation().getId()).isEqualTo(LocationFixture.ID)
+                () -> assertThat(place.getLocation().getAddress().getFormatted()).isEqualTo(LocationFixture.FORMATTED)
         );
     }
 
@@ -48,7 +48,7 @@ class PlaceTest {
                 () -> assertThat(place.getId()).isEqualTo(id),
                 () -> assertThat(place.getName()).isEqualTo(PlaceFixture.NAME),
                 () -> assertThat(place.getExhibitions()).isEmpty(),
-                () -> assertThat(place.getLocation().getId()).isEqualTo(LocationFixture.ID)
+                () -> assertThat(place.getLocation()).isNotNull()
         );
     }
 }

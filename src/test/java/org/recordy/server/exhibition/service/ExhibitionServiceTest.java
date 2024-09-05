@@ -24,7 +24,7 @@ class ExhibitionServiceTest extends FakeContainer {
             LocalDate.now().plusDays(1),
             false,
             "http://example.com",
-            PlaceFixture.ID
+            1L
     );
 
     @Test

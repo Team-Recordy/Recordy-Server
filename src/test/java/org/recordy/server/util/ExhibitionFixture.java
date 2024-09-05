@@ -26,21 +26,9 @@ public class ExhibitionFixture {
         ));
     }
 
-    public static Exhibition create(long id, String name) {
+    public static Exhibition create(Place place) {
         return Exhibition.create(new ExhibitionCreate(
-                id,
-                name,
-                START_DATE,
-                END_DATE,
-                IS_FREE,
-                URL,
-                PlaceFixture.create()
-        ));
-    }
-
-    public static Exhibition create(long id, Place place) {
-        return Exhibition.create(new ExhibitionCreate(
-                id,
+                null,
                 NAME,
                 START_DATE,
                 END_DATE,
@@ -50,9 +38,9 @@ public class ExhibitionFixture {
         ));
     }
 
-    public static Exhibition create(long id, String name, Place place) {
+    public static Exhibition create(String name, Place place) {
         return Exhibition.create(new ExhibitionCreate(
-                id,
+                null,
                 name,
                 START_DATE,
                 END_DATE,
@@ -62,9 +50,9 @@ public class ExhibitionFixture {
         ));
     }
 
-    public static Exhibition create(long id, LocalDate startDate, LocalDate endDate, Place place) {
+    public static Exhibition create(LocalDate startDate, LocalDate endDate, Place place) {
         return Exhibition.create(new ExhibitionCreate(
-                id,
+                null,
                 NAME,
                 startDate,
                 endDate,
@@ -74,9 +62,9 @@ public class ExhibitionFixture {
         ));
     }
 
-    public static Exhibition create(long id, LocalDate startDate, LocalDate endDate, boolean isFree, Place place) {
+    public static Exhibition create(LocalDate startDate, LocalDate endDate, boolean isFree, Place place) {
         return Exhibition.create(new ExhibitionCreate(
-                id,
+                null,
                 NAME,
                 startDate,
                 endDate,

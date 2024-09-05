@@ -29,7 +29,7 @@ class PlaceEntityTest {
                 () -> assertThat(entity.getName()).isEqualTo(PlaceFixture.NAME),
                 () -> assertThat(entity.getExhibitions().get(0).getId()).isEqualTo(1L),
                 () -> assertThat(entity.getExhibitions().get(1).getId()).isEqualTo(2L),
-                () -> assertThat(entity.getLocation().getId()).isEqualTo(LocationFixture.ID)
+                () -> assertThat(entity.getLocation().getAddress().getFormatted()).isEqualTo(LocationFixture.FORMATTED)
         );
     }
 }

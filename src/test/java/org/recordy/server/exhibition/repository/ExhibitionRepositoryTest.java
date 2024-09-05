@@ -42,15 +42,14 @@ class ExhibitionRepositoryTest extends IntegrationTest {
     @Test
     void 전시_객체를_저장할_수_있다() {
         // given
-        long id = 1L;
-        Exhibition exhibition = ExhibitionFixture.create(id, place);
+        Exhibition exhibition = ExhibitionFixture.create(place);
 
         // when
         Exhibition result = exhibitionRepository.save(exhibition);
 
         // then
         assertAll(
-                () -> assertThat(result.getId()).isEqualTo(id),
+                () -> assertThat(result.getId()).isNotNull(),
                 () -> assertThat(result.getName()).isEqualTo(exhibition.getName()),
                 () -> assertThat(result.getStartDate()).isEqualTo(exhibition.getStartDate()),
                 () -> assertThat(result.getEndDate()).isEqualTo(exhibition.getEndDate()),
@@ -62,8 +61,7 @@ class ExhibitionRepositoryTest extends IntegrationTest {
     @Test
     void 전시_객체를_저장할_때_createdAt_와_updatedAt_값이_자동으로_저장된다() {
         // given
-        long id = 1L;
-        Exhibition exhibition = ExhibitionFixture.create(id);
+        Exhibition exhibition = ExhibitionFixture.create(place);
 
         // when
         Exhibition result = exhibitionRepository.save(exhibition);
@@ -78,8 +76,7 @@ class ExhibitionRepositoryTest extends IntegrationTest {
     @Test
     void 전시_객체를_저장할_때_가지고_있는_장소_객체가_없어도_저장된다() {
         // given
-        long id = 1L;
-        Exhibition exhibition = ExhibitionFixture.create(id, "nullExhibition", null);
+        Exhibition exhibition = ExhibitionFixture.create("nullExhibition", null);
 
         // when
         Exhibition result = exhibitionRepository.save(exhibition);
@@ -91,11 +88,10 @@ class ExhibitionRepositoryTest extends IntegrationTest {
     @Test
     void 전시_객체를_수정할_수_있다() {
         // given
-        long id = 1;
-        Exhibition exhibition = exhibitionRepository.save(ExhibitionFixture.create(id));
+        Exhibition exhibition = exhibitionRepository.save(ExhibitionFixture.create(place));
 
         ExhibitionUpdate update = new ExhibitionUpdate(
-                id,
+                exhibition.getId(),
                 "수정된 전시",
                 LocalDate.now(),
                 LocalDate.now(),
@@ -107,9 +103,9 @@ class ExhibitionRepositoryTest extends IntegrationTest {
         exhibitionRepository.save(exhibition.update(update));
 
         // then
-        Exhibition result = exhibitionRepository.findById(id);
+        Exhibition result = exhibitionRepository.findById(exhibition.getId());
         assertAll(
-                () -> assertThat(result.getId()).isEqualTo(id),
+                () -> assertThat(result.getId()).isEqualTo(exhibition.getId()),
                 () -> assertThat(result.getName()).isEqualTo(update.name()),
                 () -> assertThat(result.getStartDate()).isEqualTo(update.startDate()),
                 () -> assertThat(result.getEndDate()).isEqualTo(update.endDate()),
@@ -122,11 +118,10 @@ class ExhibitionRepositoryTest extends IntegrationTest {
     @Test
     void 전시_객체가_수정될_때_updatedAt_값이_자동으로_저장된다() {
         // given
-        long id = 1;
-        Exhibition exhibition = exhibitionRepository.save(ExhibitionFixture.create(id));
+        Exhibition exhibition = exhibitionRepository.save(ExhibitionFixture.create(place));
 
         ExhibitionUpdate update = new ExhibitionUpdate(
-                id,
+                exhibition.getId(),
                 "수정된 전시",
                 LocalDate.now(),
                 LocalDate.now(),
@@ -138,21 +133,20 @@ class ExhibitionRepositoryTest extends IntegrationTest {
         exhibitionRepository.save(exhibition.update(update));
 
         // then
-        Exhibition result = exhibitionRepository.findById(id);
+        Exhibition result = exhibitionRepository.findById(exhibition.getId());
         assertThat(result.getUpdatedAt()).isBefore(LocalDateTime.now());
     }
 
     @Test
     void 전시_객체를_삭제할_수_있다() {
         // given
-        long id = 1;
-        exhibitionRepository.save(ExhibitionFixture.create(id));
+        Exhibition exhibition = exhibitionRepository.save(ExhibitionFixture.create(place));
 
         // when
-        exhibitionRepository.deleteById(id);
+        exhibitionRepository.deleteById(exhibition.getId());
 
         // then
-        assertThatThrownBy(() -> exhibitionRepository.findById(id))
+        assertThatThrownBy(() -> exhibitionRepository.findById(exhibition.getId()))
                 .isInstanceOf(ExhibitionException.class)
                 .hasMessage(ErrorMessage.EXHIBITION_NOT_FOUND.getMessage());
     }
@@ -160,8 +154,7 @@ class ExhibitionRepositoryTest extends IntegrationTest {
     @Test
     void 존재하지_않는_전시_객체를_삭제할_경우_아무일도_일어나지_않는다() {
         // given
-        long id = 1;
-        exhibitionRepository.save(ExhibitionFixture.create(id));
+        exhibitionRepository.save(ExhibitionFixture.create(place));
 
         // when, then
         assertDoesNotThrow(() -> exhibitionRepository.deleteById(100));
@@ -170,11 +163,10 @@ class ExhibitionRepositoryTest extends IntegrationTest {
     @Test
     void 전시_id로부터_전시_객체를_조회할_수_있다() {
         // given
-        long id = 1;
-        Exhibition exhibition = exhibitionRepository.save(ExhibitionFixture.create(id));
+        Exhibition exhibition = exhibitionRepository.save(ExhibitionFixture.create(place));
 
         // when
-        Exhibition result = exhibitionRepository.findById(id);
+        Exhibition result = exhibitionRepository.findById(exhibition.getId());
 
         // then
         assertAll(
@@ -188,8 +180,7 @@ class ExhibitionRepositoryTest extends IntegrationTest {
     @Test
     void 존재하지_않는_전시_객체의_id로_조회할_경우_예외가_발생한다() {
         // given
-        long id = 1;
-        exhibitionRepository.save(ExhibitionFixture.create(id));
+        exhibitionRepository.save(ExhibitionFixture.create(place));
 
         // when, then
         assertThatThrownBy(() -> exhibitionRepository.findById(100))
@@ -201,9 +192,9 @@ class ExhibitionRepositoryTest extends IntegrationTest {
     void 쿼리를_포함하는_이름을_가진_전시_객체를_최신순_정렬_리스트로_조회할_수_있다() {
         // given
         String name = "전시";
-        exhibitionRepository.save(ExhibitionFixture.create(1, name));
-        exhibitionRepository.save(ExhibitionFixture.create(2, name));
-        exhibitionRepository.save(ExhibitionFixture.create(3, "I Like Watching You Go"));
+        exhibitionRepository.save(ExhibitionFixture.create(name, place));
+        exhibitionRepository.save(ExhibitionFixture.create(name, place));
+        exhibitionRepository.save(ExhibitionFixture.create("I Like Watching You Go", place));
 
         // when
         Slice<Exhibition> result = exhibitionRepository.findAllContainingName(name, null, 10);
