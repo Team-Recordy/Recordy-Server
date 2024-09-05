@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import lombok.*;
 import org.recordy.server.common.domain.JpaMetaInfoEntity;
+import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.RecordEntity;
 import org.recordy.server.user.domain.UserEntity;
 
@@ -59,7 +60,7 @@ public class ViewEntity extends JpaMetaInfoEntity {
     public View toDomain() {
         return View.builder()
                 .id(id)
-                .record(record.toDomain())
+                .record(Record.from(record))
                 .user(user.toDomain())
                 .createdAt(createdAt)
                 .build();

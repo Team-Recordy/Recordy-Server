@@ -6,8 +6,11 @@ import java.util.Random;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.message.ErrorMessage;
+import org.recordy.server.place.domain.Place;
+import org.recordy.server.place.repository.PlaceRepository;
+import org.recordy.server.record.controller.dto.request.RecordCreateRequest;
 import org.recordy.server.record.domain.Record;
-import org.recordy.server.record.domain.usecase.RecordCreates;
+import org.recordy.server.record.domain.usecase.RecordCreate;
 import org.recordy.server.record.exception.RecordException;
 import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.record.service.RecordService;
@@ -33,19 +36,21 @@ public class RecordServiceImpl implements RecordService {
     private final RecordRepository recordRepository;
     private final ViewRepository viewRepository;
     private final UserRepository userRepository;
+    private final PlaceRepository placeRepository;
 
     @Transactional
     @Override
-    public Record create(RecordCreates recordCreates) {
-        User user = userRepository.findById(recordCreates.uploaderId());
+    public Record create(RecordCreateRequest request, long uploaderId) {
+        User user = userRepository.findById(uploaderId);
+        Place place = placeRepository.findById(request.placeId());
+        FileUrl fileUrl = s3Service.convertToCloudFrontUrl(request.fileUrl());
 
-        FileUrl fileUrl = s3Service.convertToCloudFrontUrl(recordCreates.fileUrl());
-
-        return recordRepository.save(Record.builder()
-                .fileUrl(fileUrl)
-                .content(recordCreates.content())
-                .uploader(user)
-                .build());
+        return recordRepository.save(Record.create(RecordCreate.of(
+                fileUrl,
+                request.content(),
+                user,
+                place
+        )));
     }
 
     @Transactional

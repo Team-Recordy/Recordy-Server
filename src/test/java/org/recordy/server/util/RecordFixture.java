@@ -32,4 +32,14 @@ public class RecordFixture {
                 PLACE
         ));
     }
+
+    public static Record create(Place place) {
+        return Record.create(new RecordCreate(
+                null,
+                FILE_URL,
+                CONTENT,
+                UPLOADER,
+                place
+        ));
+    }
 }

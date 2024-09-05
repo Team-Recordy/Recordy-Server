@@ -5,8 +5,6 @@ import org.recordy.server.auth.domain.AuthEntity;
 import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.auth.domain.AuthToken;
 import org.recordy.server.record.domain.Record;
-import org.recordy.server.record.domain.RecordEntity;
-import org.recordy.server.record.domain.usecase.RecordCreates;
 import org.recordy.server.record.domain.FileUrl;
 import org.recordy.server.user.domain.TermsAgreement;
 import org.recordy.server.bookmark.domain.Bookmark;
@@ -186,24 +184,6 @@ public final class DomainFixture {
                 USER_NICKNAME,
                 TermsAgreement.of(USE_TERM_AGREEMENT, PERSONAL_INFO_TERM_AGREEMENT, AGE_TERM_AGREEMENT),
                 LocalDateTime.now()
-        );
-    }
-
-    public static RecordCreates createRecordCreate() {
-        return new RecordCreates(
-                USER_ID,
-                LOCATION,
-                CONTENT,
-                new FileUrl(VIDEO_URL, THUMBNAIL_URL)
-        );
-    }
-
-    public static RecordCreates createRecordCreateByOtherUser() {
-        return new RecordCreates(
-                2,
-                LOCATION,
-                CONTENT,
-                new FileUrl(VIDEO_URL, THUMBNAIL_URL)
         );
     }
 

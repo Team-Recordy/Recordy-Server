@@ -23,6 +23,19 @@ public class Record {
     private LocalDateTime updatedAt;
     long bookmarkCount;
 
+    public static Record from(RecordEntity entity) {
+        return new Record(
+                entity.getId(),
+                entity.getFileUrl(),
+                entity.getContent(),
+                entity.getUser().toDomain(),
+                Place.from(entity.getPlace()),
+                entity.getCreatedAt(),
+                entity.getUpdatedAt(),
+                entity.getBookmarks().size()
+        );
+    }
+
     public static Record create(RecordCreate create) {
         return new Record(
                 create.id(),

@@ -11,4 +11,7 @@ public record RecordCreate(
         User uploader,
         Place place
 ) {
+    public static RecordCreate of(FileUrl fileUrl, String content, User uploader, Place place) {
+        return new RecordCreate(null, fileUrl, content, uploader, place);
+    }
 }

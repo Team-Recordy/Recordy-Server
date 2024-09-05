@@ -5,10 +5,13 @@ import java.time.temporal.ChronoUnit;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.recordy.server.location.domain.Location;
+import org.recordy.server.place.repository.PlaceRepository;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.exception.RecordException;
 import org.recordy.server.bookmark.domain.Bookmark;
 import org.recordy.server.bookmark.domain.BookmarkEntity;
+import org.recordy.server.util.PlaceFixture;
 import org.recordy.server.util.RecordFixture;
 import org.recordy.server.view.domain.View;
 import org.recordy.server.view.domain.ViewEntity;
@@ -61,6 +64,9 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
     @Autowired
     private SubscribeRepository subscribeRepository;
 
+    @Autowired
+    private PlaceRepository placeRepository;
+
     private static LocalDateTime now;
     private static LocalDateTime sevenDaysAgo;
     private static LocalDateTime eightDaysAgo;
@@ -75,7 +81,7 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
     @Test
     void save를_통해_레코드_데이터를_저장할_수_있다() {
         // given
-        Record record = RecordFixture.create(6L);
+        Record record = RecordFixture.create();
 
         // when
         Record result = recordRepository.save(record);
@@ -83,9 +89,9 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
         // then
         assertAll(
                 () -> assertThat(result.getId()).isNotNull(),
-                () -> assertThat(result.getContent()).isEqualTo(RecordFixture.CONTENT),
-                () -> assertThat(result.getFileUrl().videoUrl()).isEqualTo(RecordFixture.FILE_URL.videoUrl()),
-                () -> assertThat(result.getFileUrl().thumbnailUrl()).isEqualTo(RecordFixture.FILE_URL.thumbnailUrl())
+                () -> assertThat(result.getUploader().getId()).isEqualTo(record.getUploader().getId()),
+                () -> assertThat(result.getContent()).isEqualTo(record.getContent()),
+                () -> assertThat(result.getFileUrl()).isEqualTo(record.getFileUrl())
         );
     }
 

@@ -22,8 +22,9 @@ public class RecordRepositoryImpl implements RecordRepository {
     @Transactional
     @Override
     public Record save(Record record) {
-        return recordJpaRepository.save(RecordEntity.from(record))
-                .toDomain();
+        RecordEntity entity = recordJpaRepository.save(RecordEntity.from(record));
+
+        return Record.from(entity);
     }
 
     @Transactional
@@ -42,32 +43,32 @@ public class RecordRepositoryImpl implements RecordRepository {
     @Override
     public Record findById(long recordId) {
         return recordJpaRepository.findById(recordId)
-                .map(RecordEntity::toDomain)
+                .map(Record::from)
                 .orElseThrow(() -> new RecordException(ErrorMessage.RECORD_NOT_FOUND));
     }
 
     @Override
     public Slice<Record> findAllOrderByPopularity(Pageable pageable) {
         return recordQueryDslRepository.findAllOrderByPopularity(pageable)
-                .map(RecordEntity::toDomain);
+                .map(Record::from);
     }
 
     @Override
     public Slice<Record> findAllByIdAfterOrderByIdDesc(Long cursor, Pageable pageable) {
         return recordQueryDslRepository.findAllByIdAfterOrderByIdDesc(cursor, pageable)
-                .map(RecordEntity::toDomain);
+                .map(Record::from);
     }
 
     @Override
     public Slice<Record> findAllByUserIdOrderByIdDesc(long userId, Long cursor, Pageable pageable) {
         return recordQueryDslRepository.findAllByUserIdOrderByIdDesc(userId, cursor, pageable)
-                .map(RecordEntity::toDomain);
+                .map(Record::from);
     }
 
     @Override
     public Slice<Record> findAllBySubscribingUserIdOrderByIdDesc(long userId, Long cursor, Pageable pageable) {
         return recordQueryDslRepository.findAllBySubscribingUserIdOrderByIdDesc(userId, cursor, pageable)
-                .map(RecordEntity::toDomain);
+                .map(Record::from);
     }
 
     @Override

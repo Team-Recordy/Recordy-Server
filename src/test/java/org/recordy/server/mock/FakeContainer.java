@@ -120,7 +120,7 @@ public class FakeContainer {
         this.authService = new AuthServiceImpl(authRepository, platformServiceFactory, tokenService);
         this.userService = new UserServiceImpl(DomainFixture.ROOT_USER_ID, userRepository, subscribeRepository, recordRepository, bookmarkRepository,viewRepository, authService, tokenService);
         this.s3Service = new FakeS3Service();
-        this.recordService = new RecordServiceImpl(s3Service, recordRepository, viewRepository, userRepository);
+        this.recordService = new RecordServiceImpl(s3Service, recordRepository, viewRepository, userRepository, placeRepository);
         this.bookmarkService = new BookmarkServiceImpl(userRepository, recordRepository, bookmarkRepository);
         this.subscribeService = new SubscribeServiceImpl(subscribeRepository, userRepository);
         this.exhibitionService = new ExhibitionServiceImpl(exhibitionRepository, placeRepository);

@@ -1,7 +1,7 @@
 package org.recordy.server.record.service;
 
+import org.recordy.server.record.controller.dto.request.RecordCreateRequest;
 import org.recordy.server.record.domain.Record;
-import org.recordy.server.record.domain.usecase.RecordCreates;
 import org.springframework.data.domain.Slice;
 
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.List;
 public interface RecordService {
 
     // command
-    Record create(RecordCreates recordCreates);
+    Record create(RecordCreateRequest request, long uploaderId);
     void delete(long userId, long recordId);
 
     // query

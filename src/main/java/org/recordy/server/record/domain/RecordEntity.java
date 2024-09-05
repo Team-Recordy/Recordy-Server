@@ -70,18 +70,6 @@ public class RecordEntity extends JpaMetaInfoEntity {
         );
     }
 
-    public Record toDomain() {
-        return Record.builder()
-                .id(id)
-                .fileUrl(fileUrl)
-                .content(content)
-                .uploader(user.toDomain())
-                .bookmarkCount(bookmarks.size())
-                .createdAt(createdAt)
-                .updatedAt(updatedAt)
-                .build();
-    }
-
     public void addView(ViewEntity view) {
         views.add(view);
     }

@@ -33,32 +33,6 @@ class RecordEntityTest {
     }
 
     @Test
-    void toDomain을_통해_RecordEntity_객체로부터_Record_객체를_생성할_수_있다() {
-        // given
-        RecordEntity recordEntity = new RecordEntity(
-                null,
-                RecordFixture.FILE_URL,
-                DomainFixture.CONTENT,
-                UserEntity.from(DomainFixture.createUser()),
-                PlaceEntity.from(PlaceFixture.create()),
-                null,
-                null
-        );
-
-        // when
-        Record record = recordEntity.toDomain();
-
-        // then
-        assertAll(
-                () -> assertThat(record.getId()).isNull(),
-                () -> assertThat(record.getFileUrl().videoUrl()).isEqualTo(recordEntity.getFileUrl().videoUrl()),
-                () -> assertThat(record.getFileUrl().thumbnailUrl()).isEqualTo(recordEntity.getFileUrl().thumbnailUrl()),
-                () -> assertThat(record.getContent()).isEqualTo(recordEntity.getContent()),
-                () -> assertThat(record.getUploader().getId()).isEqualTo(recordEntity.getUser().getId())
-        );
-    }
-
-    @Test
     void isUploader를_통해_Record_객체의_업로더가_맞는지_확인할_수_있다() {
         //given
         RecordEntity recordEntity = new RecordEntity(
@@ -74,8 +48,8 @@ class RecordEntityTest {
         //when
         //then
         assertAll(
-                () -> assertThat(recordEntity.toDomain().isUploader(DomainFixture.createUserEntity().getId())).isTrue(),
-                () -> assertThat(recordEntity.toDomain().isUploader(100)).isFalse()
+                () -> assertThat(Record.from(recordEntity).isUploader(DomainFixture.createUserEntity().getId())).isTrue(),
+                () -> assertThat(Record.from(recordEntity).isUploader(100)).isFalse()
         );
     }
 

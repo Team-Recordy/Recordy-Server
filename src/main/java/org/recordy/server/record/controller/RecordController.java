@@ -11,7 +11,6 @@ import org.recordy.server.record.controller.dto.response.BookmarkedRecord;
 import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
 import org.recordy.server.record.domain.Record;
 
-import org.recordy.server.record.domain.usecase.RecordCreates;
 import org.recordy.server.record.service.RecordService;
 import org.recordy.server.record.service.S3Service;
 import org.recordy.server.record.domain.FileUrl;
@@ -42,8 +41,9 @@ public class RecordController implements RecordApi {
     @PostMapping
     public ResponseEntity<Void> createRecord(
             @UserId Long uploaderId,
-            @RequestBody RecordCreateRequest request) {
-        recordService.create(RecordCreates.of(uploaderId, request));
+            @RequestBody RecordCreateRequest request
+    ) {
+        recordService.create(request, uploaderId);
 
         return ResponseEntity
                 .ok()

@@ -25,7 +25,7 @@ public class PlaceEntity extends JpaMetaInfoEntity {
     private Long id;
     private String name;
 
-    @OneToMany(mappedBy = "place")
+    @OneToMany(mappedBy = "place", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ExhibitionEntity> exhibitions = new ArrayList<>();
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private LocationEntity location;
