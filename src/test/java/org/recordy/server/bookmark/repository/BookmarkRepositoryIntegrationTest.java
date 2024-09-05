@@ -9,6 +9,7 @@ import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.bookmark.domain.Bookmark;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.util.DomainFixture;
+import org.recordy.server.util.RecordFixture;
 import org.recordy.server.util.db.IntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,13 +35,13 @@ public class BookmarkRepositoryIntegrationTest extends IntegrationTest {
 
     @Test
     void save를_통해_북마크_테이터를_생성할_수_있다() {
-        //given
+        // given
         Bookmark bookmark = DomainFixture.createBookmark();
 
-        //when
+        // when
         Bookmark result = bookmarkRepository.save(bookmark);
 
-        //then
+        // then
         assertAll(
                 () -> assertThat(result.getId()).isNotNull(),
                 () -> assertThat(result.getUser().getId()).isEqualTo(DomainFixture.USER_ID),
@@ -119,7 +120,7 @@ public class BookmarkRepositoryIntegrationTest extends IntegrationTest {
     void existsByUserIdAndRecordId를_통해_주어진_userId와_recordId로_bookmark가_존재하면_true를_반환한다() {
         //given
         User user = DomainFixture.createUser(3) ;
-        Record record = DomainFixture.createRecord();
+        Record record = RecordFixture.create(1L);
         Bookmark bookmark = Bookmark.builder()
                 .user(user)
                 .record(record)

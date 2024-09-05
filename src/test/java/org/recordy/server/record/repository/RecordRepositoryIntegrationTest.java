@@ -7,9 +7,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.exception.RecordException;
-import org.recordy.server.record.domain.FileUrl;
 import org.recordy.server.bookmark.domain.Bookmark;
 import org.recordy.server.bookmark.domain.BookmarkEntity;
+import org.recordy.server.util.RecordFixture;
 import org.recordy.server.view.domain.View;
 import org.recordy.server.view.domain.ViewEntity;
 import org.recordy.server.bookmark.repository.BookmarkRepository;
@@ -75,7 +75,7 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
     @Test
     void save를_통해_레코드_데이터를_저장할_수_있다() {
         // given
-        Record record = DomainFixture.createRecord(6);
+        Record record = RecordFixture.create(6L);
 
         // when
         Record result = recordRepository.save(record);
@@ -83,10 +83,9 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
         // then
         assertAll(
                 () -> assertThat(result.getId()).isNotNull(),
-                () -> assertThat(result.getFileUrl().videoUrl()).isEqualTo(DomainFixture.VIDEO_URL),
-                () -> assertThat(result.getFileUrl().thumbnailUrl()).isEqualTo(DomainFixture.THUMBNAIL_URL),
-                () -> assertThat(result.getLocation()).isEqualTo(DomainFixture.LOCATION),
-                () -> assertThat(result.getContent()).isEqualTo(CONTENT)
+                () -> assertThat(result.getContent()).isEqualTo(RecordFixture.CONTENT),
+                () -> assertThat(result.getFileUrl().videoUrl()).isEqualTo(RecordFixture.FILE_URL.videoUrl()),
+                () -> assertThat(result.getFileUrl().thumbnailUrl()).isEqualTo(RecordFixture.FILE_URL.thumbnailUrl())
         );
     }
 
@@ -200,25 +199,11 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
         // given
         viewRepository.save(View.builder()
                 .user(createUser(UserStatus.ACTIVE))
-                .record(Record.builder()
-                        .id(1L)
-                        .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
-                        .location(LOCATION)
-                        .content(CONTENT)
-                        .uploader(createUser(UserStatus.ACTIVE))
-                        .build())
-                .createdAt(sevenDaysAgo)
+                .record(RecordFixture.create(1L))
                 .build());
         bookmarkRepository.save(Bookmark.builder()
                 .user(createUser(UserStatus.ACTIVE))
-                .record(Record.builder()
-                        .id(2L)
-                        .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
-                        .location(LOCATION)
-                        .content(CONTENT)
-                        .uploader(createUser(UserStatus.ACTIVE))
-                        .createdAt(sevenDaysAgo)
-                        .build())
+                .record(RecordFixture.create(2L))
                 .build());
 
         // when
@@ -259,7 +244,7 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
     private void saveBookmarkWithCreatedAt(long recordId, LocalDateTime createdAt) {
         Bookmark bookmark = bookmarkRepository.save(Bookmark.builder()
                 .user(createUser(UserStatus.ACTIVE))
-                .record(createRecord(recordId))
+                .record(RecordFixture.create(recordId))
                 .build());
         BookmarkEntity bookmarkEntity = bookmarkJpaRepository.findById(bookmark.getId())
                 .orElseThrow();
@@ -269,7 +254,7 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
     private void saveViewWithCreatedAt(long recordId, LocalDateTime createdAt) {
         View view = viewRepository.save(View.builder()
                 .user(createUser(UserStatus.ACTIVE))
-                .record(createRecord(recordId))
+                .record(RecordFixture.create(recordId))
                 .build());
         ViewEntity viewEntity = viewJpaRepository.findById(view.getId())
                 .orElseThrow();
@@ -280,25 +265,25 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
     void findAllOrderByPopularity를_통해_조회한_레코드는_조회수보다_저장수에서_더_큰_가중치를_얻는다() {
         // given
         viewRepository.save(View.builder()
-                .record(createRecord(1))
+                .record(RecordFixture.create(1L))
                 .user(createUser(UserStatus.ACTIVE))
                 .createdAt(sevenDaysAgo)
                 .build()
         );
         viewRepository.save(View.builder()
-                .record(createRecord(1))
+                .record(RecordFixture.create(1L))
                 .user(createUser(UserStatus.ACTIVE))
                 .createdAt(sevenDaysAgo)
                 .build()
         );
         viewRepository.save(View.builder()
-                .record(createRecord(1))
+                .record(RecordFixture.create(1L))
                 .user(createUser(UserStatus.ACTIVE))
                 .createdAt(sevenDaysAgo)
                 .build()
         );
         viewRepository.save(View.builder()
-                .record(createRecord(2))
+                .record(RecordFixture.create(2L))
                 .user(createUser(UserStatus.ACTIVE))
                 .createdAt(sevenDaysAgo)
                 .build()
@@ -307,13 +292,13 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
 
         bookmarkRepository.save(Bookmark.builder()
                 .user(createUser(UserStatus.ACTIVE))
-                .record(createRecord(3))
+                .record(RecordFixture.create(3L))
                 .createdAt(sevenDaysAgo)
                 .build()
         );
         bookmarkRepository.save(Bookmark.builder()
                 .user(createUser(UserStatus.ACTIVE))
-                .record(createRecord(4))
+                .record(RecordFixture.create(4L))
                 .createdAt(sevenDaysAgo)
                 .build()
         );

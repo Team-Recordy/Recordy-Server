@@ -1,21 +1,14 @@
 package org.recordy.server.record.domain.usecase;
 
-import org.recordy.server.record.controller.dto.request.RecordCreateRequest;
+import org.recordy.server.place.domain.Place;
 import org.recordy.server.record.domain.FileUrl;
+import org.recordy.server.user.domain.User;
 
 public record RecordCreate(
-        long uploaderId,
-        String location,
+        Long id,
+        FileUrl fileUrl,
         String content,
-        FileUrl fileUrl
+        User uploader,
+        Place place
 ) {
-
-    public static RecordCreate of(Long uploaderId, RecordCreateRequest recordCreateRequest) {
-        return new RecordCreate(
-                uploaderId,
-                recordCreateRequest.location(),
-                recordCreateRequest.content(),
-                recordCreateRequest.fileUrl()
-        );
-    }
 }

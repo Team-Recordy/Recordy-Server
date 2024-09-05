@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.mock.FakeContainer;
 import org.recordy.server.record.domain.Record;
-import org.recordy.server.record.domain.usecase.RecordCreate;
+import org.recordy.server.record.domain.usecase.RecordCreates;
 import org.recordy.server.record.exception.RecordException;
 import org.recordy.server.util.DomainFixture;
 import org.springframework.data.domain.Slice;
@@ -25,17 +25,16 @@ class RecordServiceTest extends FakeContainer {
     @Test
     void create을_통해_레코드를_생성할_수_있다() {
         // given
-        RecordCreate recordCreate = DomainFixture.createRecordCreate();
+        RecordCreates recordCreates = DomainFixture.createRecordCreate();
 
         // when
-        Record result = recordService.create(recordCreate);
+        Record result = recordService.create(recordCreates);
 
         // then
         assertAll(
                 () -> assertThat(result.getFileUrl().videoUrl()).isEqualTo(DomainFixture.VIDEO_URL),
                 () -> assertThat(result.getFileUrl().thumbnailUrl()).isEqualTo(DomainFixture.THUMBNAIL_URL),
-                () -> assertThat(result.getLocation()).isEqualTo(recordCreate.location()),
-                () -> assertThat(result.getContent()).isEqualTo(recordCreate.content()),
+                () -> assertThat(result.getContent()).isEqualTo(recordCreates.content()),
                 () -> assertThat(result.getUploader().getId()).isEqualTo(DomainFixture.USER_ID)
         );
     }
@@ -43,8 +42,8 @@ class RecordServiceTest extends FakeContainer {
     @Test
     void delete을_통해_레코드를_삭제할_수_있다() {
         // given
-        RecordCreate recordCreate = DomainFixture.createRecordCreate();
-        Record record = recordService.create(recordCreate);
+        RecordCreates recordCreates = DomainFixture.createRecordCreate();
+        Record record = recordService.create(recordCreates);
 
         // when
         recordService.delete(1, record.getId());
@@ -60,8 +59,8 @@ class RecordServiceTest extends FakeContainer {
     @Test
     void 업로더가_아니면_delete을_통해_레코드를_삭제할_때_예외가_발생한다() {
         // given
-        RecordCreate recordCreate = DomainFixture.createRecordCreate();
-        Record record = recordService.create(recordCreate);
+        RecordCreates recordCreates = DomainFixture.createRecordCreate();
+        Record record = recordService.create(recordCreates);
 
         // when
         // then

@@ -7,7 +7,7 @@ import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.record.domain.Record;
-import org.recordy.server.record.domain.usecase.RecordCreate;
+import org.recordy.server.record.domain.usecase.RecordCreates;
 import org.recordy.server.record.exception.RecordException;
 import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.record.service.RecordService;
@@ -36,15 +36,14 @@ public class RecordServiceImpl implements RecordService {
 
     @Transactional
     @Override
-    public Record create(RecordCreate recordCreate) {
-        User user = userRepository.findById(recordCreate.uploaderId());
+    public Record create(RecordCreates recordCreates) {
+        User user = userRepository.findById(recordCreates.uploaderId());
 
-        FileUrl fileUrl = s3Service.convertToCloudFrontUrl(recordCreate.fileUrl());
+        FileUrl fileUrl = s3Service.convertToCloudFrontUrl(recordCreates.fileUrl());
 
         return recordRepository.save(Record.builder()
                 .fileUrl(fileUrl)
-                .location(recordCreate.location())
-                .content(recordCreate.content())
+                .content(recordCreates.content())
                 .uploader(user)
                 .build());
     }

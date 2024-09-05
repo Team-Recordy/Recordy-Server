@@ -84,17 +84,4 @@ class UserEntityTest {
                 () -> assertThat(user.getTermsAgreement().ageTerm()).isEqualTo(userEntity.isAgeTerm())
         );
     }
-
-    @Test
-    void addRecord를_통해_사용자와_연관된_레코드를_추가할_수_있다() {
-        // given
-        UserEntity userEntity = DomainFixture.createUserEntity();
-        RecordEntity recordEntity = DomainFixture.createRecordEntity();
-
-        // when
-        userEntity.addRecord(recordEntity);
-
-        // then
-        assertThat(userEntity.getRecords()).contains(recordEntity);
-    }
 }

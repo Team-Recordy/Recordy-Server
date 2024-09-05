@@ -19,7 +19,6 @@ public class FakeRecordRepository implements RecordRepository {
         Record realRecord = Record.builder()
                 .id(recordAutoIncrementId)
                 .fileUrl(record.getFileUrl())
-                .location(record.getLocation())
                 .content(record.getContent())
                 .uploader(record.getUploader())
                 .build();

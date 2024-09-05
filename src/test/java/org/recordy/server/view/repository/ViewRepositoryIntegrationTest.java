@@ -2,6 +2,7 @@ package org.recordy.server.view.repository;
 
 import org.junit.jupiter.api.Test;
 import org.recordy.server.record.domain.Record;
+import org.recordy.server.util.RecordFixture;
 import org.recordy.server.view.domain.View;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.UserStatus;
@@ -28,7 +29,7 @@ class ViewRepositoryIntegrationTest extends IntegrationTest {
     void save를_통해_조회_데이터를_저장할_수_있다() {
         // given
         User user = DomainFixture.createUser(UserStatus.ACTIVE);
-        Record record = DomainFixture.createRecord();
+        Record record = RecordFixture.create(1L);
 
         // when
         View view = viewRepository.save(View.builder()
@@ -49,7 +50,7 @@ class ViewRepositoryIntegrationTest extends IntegrationTest {
         // given
         long userId = 1L;
         viewRepository.save(View.builder()
-                .record(DomainFixture.createRecord())
+                .record(RecordFixture.create(1L))
                 .user(DomainFixture.createUser(userId))
                 .build());
 

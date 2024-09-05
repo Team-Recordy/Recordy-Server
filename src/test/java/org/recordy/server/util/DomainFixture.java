@@ -6,7 +6,7 @@ import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.auth.domain.AuthToken;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.RecordEntity;
-import org.recordy.server.record.domain.usecase.RecordCreate;
+import org.recordy.server.record.domain.usecase.RecordCreates;
 import org.recordy.server.record.domain.FileUrl;
 import org.recordy.server.user.domain.TermsAgreement;
 import org.recordy.server.bookmark.domain.Bookmark;
@@ -189,8 +189,8 @@ public final class DomainFixture {
         );
     }
 
-    public static RecordCreate createRecordCreate() {
-        return new RecordCreate(
+    public static RecordCreates createRecordCreate() {
+        return new RecordCreates(
                 USER_ID,
                 LOCATION,
                 CONTENT,
@@ -198,8 +198,8 @@ public final class DomainFixture {
         );
     }
 
-    public static RecordCreate createRecordCreateByOtherUser() {
-        return new RecordCreate(
+    public static RecordCreates createRecordCreateByOtherUser() {
+        return new RecordCreates(
                 2,
                 LOCATION,
                 CONTENT,
@@ -211,7 +211,6 @@ public final class DomainFixture {
         return Record.builder()
                 .id(RECORD_ID)
                 .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
-                .location(LOCATION)
                 .content(CONTENT)
                 .uploader(createUser(UserStatus.ACTIVE))
                 .build();
@@ -221,26 +220,14 @@ public final class DomainFixture {
         return Record.builder()
                 .id(id)
                 .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
-                .location(LOCATION)
                 .content(CONTENT)
                 .uploader(createUser(UserStatus.ACTIVE))
                 .build();
     }
 
-    public static RecordEntity createRecordEntity() {
-        return RecordEntity.builder()
-                .id(RECORD_ID)
-                .videoUrl(VIDEO_URL)
-                .thumbnailUrl(THUMBNAIL_URL)
-                .location(LOCATION)
-                .content(CONTENT)
-                .user(createUserEntity())
-                .build();
-    }
-
     public static Bookmark createBookmark() {
         return Bookmark.builder()
-                .record(createRecord())
+                .record(RecordFixture.create(1L))
                 .user(createUser(UserStatus.ACTIVE))
                 .build();
     }

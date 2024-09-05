@@ -5,7 +5,6 @@ import org.recordy.server.record.domain.Record;
 public record RecordInfo (
         Long id,
         FileUrl fileUrl,
-        String location,
         String content,
         Long uploaderId,
         String uploaderNickname,
@@ -16,7 +15,6 @@ public record RecordInfo (
         return new RecordInfo(
                 record.getId(),
                 record.getFileUrl(),
-                record.getLocation(),
                 record.getContent(),
                 record.getUploader().getId(),
                 record.getUploader().getNickname(),
