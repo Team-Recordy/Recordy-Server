@@ -31,9 +31,6 @@ public class UserEntity extends JpaMetaInfoEntity {
     private boolean personalInfoTerm;
     private boolean ageTerm;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<RecordEntity> records = new ArrayList<>();
-
     @OneToMany(mappedBy = "subscribingUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SubscribeEntity> subscribings = new ArrayList<>();
 
@@ -85,9 +82,5 @@ public class UserEntity extends JpaMetaInfoEntity {
                 .termsAgreement(TermsAgreement.of(useTerm, personalInfoTerm, ageTerm))
                 .createdAt(createdAt)
                 .build();
-    }
-
-    public void addRecord(RecordEntity record) {
-        records.add(record);
     }
 }
