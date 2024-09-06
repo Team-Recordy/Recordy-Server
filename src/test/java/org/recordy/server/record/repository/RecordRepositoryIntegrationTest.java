@@ -126,19 +126,18 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
     @Test
     void findAllByUserIdOrderByCreatedAtDesc를_통해_userId를_기반으로_레코드_데이터를_조회할_수_있다() {
         // given
-        // userId 순서 : {1, 1, 2, 2, 1}
+        // userId가 1인 레코드 : {1, 2, 5}
         long userId = 1;
-        long cursor = 4L;
-        int size = 2;
 
         //when
-        Slice<Record> result = recordRepository.findAllByUserIdOrderByIdDesc(userId, cursor, PageRequest.ofSize(size));
+        Slice<Record> result = recordRepository.findAllByUserIdOrderByIdDesc(userId, null, PageRequest.ofSize(10));
 
         //then
         assertAll(
-                () -> assertThat(result.get()).hasSize(2),
-                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(2L),
-                () -> assertThat(result.getContent().get(1).getId()).isEqualTo(1L),
+                () -> assertThat(result.get()).hasSize(3),
+                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(5L),
+                () -> assertThat(result.getContent().get(1).getId()).isEqualTo(2L),
+                () -> assertThat(result.getContent().get(2).getId()).isEqualTo(1L),
                 () -> assertThat((result.hasNext())).isFalse()
         );
 

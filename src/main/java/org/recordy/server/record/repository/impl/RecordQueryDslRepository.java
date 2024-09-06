@@ -30,8 +30,12 @@ public class RecordQueryDslRepository {
 
         List<RecordEntity> recordEntities = jpaQueryFactory
                 .selectFrom(recordEntity)
-                .leftJoin(recordEntity.bookmarks, bookmarkEntity).on(bookmarkEntity.createdAt.after(sevenDaysAgo))
+                .leftJoin(recordEntity.bookmarks, bookmarkEntity).fetchJoin()
                 .leftJoin(recordEntity.views, viewEntity).on(viewEntity.createdAt.after(sevenDaysAgo))
+                .where(
+                        bookmarkEntity.isNull()
+                                .or(bookmarkEntity.createdAt.after(sevenDaysAgo))
+                )
                 .groupBy(recordEntity.id)
                 .orderBy(bookmarkEntity.count().multiply(2).add(viewEntity.count()).desc())
                 .offset(pageable.getOffset())
@@ -44,10 +48,12 @@ public class RecordQueryDslRepository {
     public Slice<RecordEntity> findAllByIdAfterOrderByIdDesc(Long cursor, Pageable pageable) {
         List<RecordEntity> recordEntities = jpaQueryFactory
                 .selectFrom(recordEntity)
+                .leftJoin(recordEntity.bookmarks, bookmarkEntity).fetchJoin()
                 .where(
                         QueryDslUtils.ltCursorId(cursor, recordEntity.id)
                 )
                 .orderBy(recordEntity.id.desc())
+                .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
 
@@ -57,12 +63,14 @@ public class RecordQueryDslRepository {
     public Slice<RecordEntity> findAllByUserIdOrderByIdDesc(long userId, Long cursor, Pageable pageable) {
         List<RecordEntity> recordEntities = jpaQueryFactory
                 .selectFrom(recordEntity)
-                .join(recordEntity.user, userEntity)
+                .leftJoin(recordEntity.bookmarks, bookmarkEntity).fetchJoin()
+                .join(recordEntity.user, userEntity).fetchJoin()
                 .where(
                         QueryDslUtils.ltCursorId(cursor, recordEntity.id),
                         userEntity.id.eq(userId)
                 )
                 .orderBy(recordEntity.id.desc())
+                .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
 
@@ -71,8 +79,7 @@ public class RecordQueryDslRepository {
 
     public Slice<RecordEntity> findAllBySubscribingUserIdOrderByIdDesc(long userId, Long cursor, Pageable pageable) {
         List<RecordEntity> recordEntities = jpaQueryFactory
-                .select(recordEntity)
-                .from(recordEntity)
+                .selectFrom(recordEntity)
                 .leftJoin(recordEntity.bookmarks, bookmarkEntity).fetchJoin()
                 .join(recordEntity.user, userEntity).fetchJoin()
                 .join(userEntity.subscribers, subscribeEntity)
@@ -81,6 +88,7 @@ public class RecordQueryDslRepository {
                         subscribeEntity.subscribingUser.id.eq(userId)
                 )
                 .orderBy(recordEntity.id.desc())
+                .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
 
