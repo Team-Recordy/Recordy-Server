@@ -38,9 +38,10 @@ class RecordServiceTest extends FakeContainer {
     @Test
     void create을_통해_레코드를_생성할_수_있다() {
         // given, when
-        Record result = recordService.create(request, DomainFixture.USER_ID);
+        Long id = recordService.create(request, DomainFixture.USER_ID);
 
         // then
+        Record result = recordRepository.findById(id);
         assertAll(
                 () -> assertThat(result.getFileUrl().videoUrl()).isEqualTo(DomainFixture.VIDEO_URL),
                 () -> assertThat(result.getFileUrl().thumbnailUrl()).isEqualTo(DomainFixture.THUMBNAIL_URL),
@@ -52,10 +53,10 @@ class RecordServiceTest extends FakeContainer {
     @Test
     void delete을_통해_레코드를_삭제할_수_있다() {
         // given
-        Record record = recordService.create(request, DomainFixture.USER_ID);
+        Long id = recordService.create(request, DomainFixture.USER_ID);
 
         // when
-        recordService.delete(1, record.getId());
+        recordService.delete(DomainFixture.USER_ID, id);
 
         // then
         Slice<Record> result = recordService.getRecentRecords(0L, 1);
@@ -68,11 +69,11 @@ class RecordServiceTest extends FakeContainer {
     @Test
     void 업로더가_아니면_delete을_통해_레코드를_삭제할_때_예외가_발생한다() {
         // given
-        Record record = recordService.create(request, DomainFixture.USER_ID);
+        Long id = recordService.create(request, DomainFixture.USER_ID);
 
         // when
         // then
-        assertThatThrownBy(() -> recordService.delete(100, record.getId()))
+        assertThatThrownBy(() -> recordService.delete(100, id))
                 .isInstanceOf(RecordException.class)
                 .hasMessageContaining(ErrorMessage.FORBIDDEN_DELETE_RECORD.getMessage());
     }

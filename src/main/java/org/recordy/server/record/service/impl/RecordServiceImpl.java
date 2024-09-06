@@ -40,7 +40,7 @@ public class RecordServiceImpl implements RecordService {
 
     @Transactional
     @Override
-    public Record create(RecordCreateRequest request, long uploaderId) {
+    public Long create(RecordCreateRequest request, long uploaderId) {
         User user = userRepository.findById(uploaderId);
         Place place = placeRepository.findById(request.placeId());
         FileUrl fileUrl = s3Service.convertToCloudFrontUrl(request.fileUrl());

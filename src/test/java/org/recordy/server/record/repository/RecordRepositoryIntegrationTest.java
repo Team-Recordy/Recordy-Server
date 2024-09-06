@@ -5,13 +5,11 @@ import java.time.temporal.ChronoUnit;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.recordy.server.location.domain.Location;
 import org.recordy.server.place.repository.PlaceRepository;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.exception.RecordException;
 import org.recordy.server.bookmark.domain.Bookmark;
 import org.recordy.server.bookmark.domain.BookmarkEntity;
-import org.recordy.server.util.PlaceFixture;
 import org.recordy.server.util.RecordFixture;
 import org.recordy.server.view.domain.View;
 import org.recordy.server.view.domain.ViewEntity;
@@ -84,9 +82,10 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
         Record record = RecordFixture.create();
 
         // when
-        Record result = recordRepository.save(record);
+        Long id = recordRepository.save(record);
 
         // then
+        Record result = recordRepository.findById(id);
         assertAll(
                 () -> assertThat(result.getId()).isNotNull(),
                 () -> assertThat(result.getUploader().getId()).isEqualTo(record.getUploader().getId()),

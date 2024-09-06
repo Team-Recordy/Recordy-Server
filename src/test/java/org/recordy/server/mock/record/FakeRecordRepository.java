@@ -15,7 +15,7 @@ public class FakeRecordRepository implements RecordRepository {
     private final Map<Long, Record> records = new ConcurrentHashMap<>();
 
     @Override
-    public Record save(Record record) {
+    public Long save(Record record) {
         Record realRecord = Record.builder()
                 .id(recordAutoIncrementId)
                 .fileUrl(record.getFileUrl())
@@ -25,7 +25,7 @@ public class FakeRecordRepository implements RecordRepository {
 
         records.put(recordAutoIncrementId++, realRecord);
 
-        return realRecord;
+        return realRecord.getId();
     }
 
     @Override

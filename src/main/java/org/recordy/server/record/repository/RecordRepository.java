@@ -7,7 +7,7 @@ import org.springframework.data.domain.Slice;
 public interface RecordRepository {
 
     // command
-    Record save(Record record);
+    Long save(Record record);
     void deleteById(long recordId);
     void deleteByUserId(long userId);
 

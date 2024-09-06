@@ -9,7 +9,7 @@ import java.util.List;
 public interface RecordService {
 
     // command
-    Record create(RecordCreateRequest request, long uploaderId);
+    Long create(RecordCreateRequest request, long uploaderId);
     void delete(long userId, long recordId);
 
     // query

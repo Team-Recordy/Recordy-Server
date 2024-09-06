@@ -21,10 +21,9 @@ public class RecordRepositoryImpl implements RecordRepository {
 
     @Transactional
     @Override
-    public Record save(Record record) {
-        RecordEntity entity = recordJpaRepository.save(RecordEntity.from(record));
-
-        return Record.from(entity);
+    public Long save(Record record) {
+        return recordJpaRepository.save(RecordEntity.from(record))
+                .getId();
     }
 
     @Transactional
