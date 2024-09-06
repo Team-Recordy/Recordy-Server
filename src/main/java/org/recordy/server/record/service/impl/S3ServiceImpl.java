@@ -22,9 +22,9 @@ public class S3ServiceImpl implements S3Service {
 
     public S3ServiceImpl(
             S3Presigner presigner,
-            @Value("${aws-property.s3-bucket-name}") String s3Domain,
+            @Value("${aws-property.s3-domain}") String s3Domain,
             @Value("${aws-property.cloudfront-domain-name}") String cloudFrontDomain,
-            @Value("${aws-property.s3-domain}") String bucket
+            @Value("${aws-property.s3-bucket-name}") String bucket
     ) {
         this.presigner = presigner;
         this.s3Domain = s3Domain;
