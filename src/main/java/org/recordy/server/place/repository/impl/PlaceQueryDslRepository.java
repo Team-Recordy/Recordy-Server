@@ -1,12 +1,18 @@
 package org.recordy.server.place.repository.impl;
 
+import com.querydsl.core.group.GroupBy;
+import com.querydsl.core.types.ConstructorExpression;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.querydsl.spatial.locationtech.jts.JTSGeometryExpressions;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
 import org.recordy.server.common.util.QueryDslUtils;
+import org.recordy.server.exhibition.controller.dto.response.ExhibitionGetResponse;
 import org.recordy.server.exhibition.domain.ExhibitionEntity;
+import org.recordy.server.location.controller.dto.response.LocationGetResponse;
+import org.recordy.server.place.controller.dto.response.PlaceGetResponse;
 import org.recordy.server.place.domain.PlaceEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -15,12 +21,10 @@ import org.springframework.stereotype.Repository;
 
 import java.time.Clock;
 import java.time.LocalDate;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
+import static com.querydsl.core.group.GroupBy.groupBy;
+import static com.querydsl.core.group.GroupBy.list;
 import static org.recordy.server.exhibition.domain.QExhibitionEntity.exhibitionEntity;
 import static org.recordy.server.place.domain.QPlaceEntity.placeEntity;
 
@@ -29,49 +33,87 @@ import static org.recordy.server.place.domain.QPlaceEntity.placeEntity;
 public class PlaceQueryDslRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
+    private final ConstructorExpression<PlaceGetResponse> placeGetResponse = Projections.constructor(
+            PlaceGetResponse.class,
+            placeEntity.id,
+            placeEntity.name,
+            Projections.list(Projections.constructor(
+                    ExhibitionGetResponse.class,
+                    exhibitionEntity.id,
+                    exhibitionEntity.name,
+                    exhibitionEntity.startDate,
+                    exhibitionEntity.endDate,
+                    exhibitionEntity.isFree
+            )),
+            Projections.constructor(
+                    LocationGetResponse.class,
+                    placeEntity.location.id,
+                    placeEntity.location.geometry,
+                    placeEntity.location.address.formatted,
+                    placeEntity.location.address.sido,
+                    placeEntity.location.address.gugun
+            )
+    );
 
     public PlaceEntity findById(long id) {
-        PlaceEntity content = jpaQueryFactory
-                .selectFrom(placeEntity)
-                .join(placeEntity.location).fetchJoin()
+        List<PlaceEntity> content = jpaQueryFactory
+                .from(placeEntity)
+                .join(placeEntity.location)
+                .join(placeEntity.exhibitions, exhibitionEntity)
                 .where(placeEntity.id.eq(id))
-                .fetchOne();
+                .transform(groupBy(placeEntity.id).list(
+                        Projections.constructor(
+                                PlaceEntity.class,
+                                placeEntity.id,
+                                placeEntity.name,
+                                list(Projections.constructor(
+                                        ExhibitionEntity.class,
+                                        exhibitionEntity.id,
+                                        exhibitionEntity.name,
+                                        exhibitionEntity.startDate,
+                                        exhibitionEntity.endDate,
+                                        exhibitionEntity.isFree,
+                                        exhibitionEntity.url,
+                                        exhibitionEntity.place
+                                )),
+                                placeEntity.location
+                        )
+                ));
 
-        if (Objects.isNull(content)) {
+        if (content.isEmpty()) {
             return null;
         }
 
-        List<ExhibitionEntity> exhibitions = findExhibitionsWith(exhibitionEntity.place.id.eq(id))
-                .get(id);
-
-        return content.with(exhibitions);
+        return content.get(0);
     }
 
-    public Slice<PlaceEntity> findAllOrderByExhibitionStartDateDesc(Pageable pageable) {
-        Map<Long, List<ExhibitionEntity>> exhibitions = findExhibitionsWith();
-        List<PlaceEntity> content = findPlacesWith(exhibitions);
+    public Slice<PlaceGetResponse> findAllOrderByExhibitionStartDateDesc(Pageable pageable) {
+        List<PlaceGetResponse> content = findPlacesWith(pageable);
 
         return new SliceImpl<>(content, pageable, QueryDslUtils.hasNext(pageable, content));
     }
 
-    public Slice<PlaceEntity> findAllFreeOrderByExhibitionStartDateDesc(Pageable pageable) {
-        Map<Long, List<ExhibitionEntity>> exhibitions = findExhibitionsWith(exhibitionEntity.isFree.isTrue());
-        List<PlaceEntity> content = findPlacesWith(exhibitions);
+    public Slice<PlaceGetResponse> findAllFreeOrderByExhibitionStartDateDesc(Pageable pageable) {
+        List<PlaceGetResponse> content = findPlacesWith(
+                pageable,
+                exhibitionEntity.isFree.isTrue()
+        );
 
         return new SliceImpl<>(content, pageable, QueryDslUtils.hasNext(pageable, content));
     }
 
-    public Slice<PlaceEntity> findAllByNameOrderByExhibitionStartDateDesc(Pageable pageable, String query) {
-        Map<Long, List<ExhibitionEntity>> exhibitions = findExhibitionsWith();
-        List<PlaceEntity> content = findPlacesWith(exhibitions, placeEntity.name.containsIgnoreCase(query));
+    public Slice<PlaceGetResponse> findAllByNameOrderByExhibitionStartDateDesc(Pageable pageable, String query) {
+        List<PlaceGetResponse> content = findPlacesWith(
+                pageable,
+                placeEntity.name.containsIgnoreCase(query)
+        );
 
         return new SliceImpl<>(content, pageable, QueryDslUtils.hasNext(pageable, content));
     }
 
-    public Slice<PlaceEntity> findAllByLocationOrderByExhibitionStartDateDesc(Pageable pageable, Point currentLocation, double distance) {
-        Map<Long, List<ExhibitionEntity>> exhibitions = findExhibitionsWith();
-        List<PlaceEntity> content = findPlacesWith(
-                exhibitions,
+    public Slice<PlaceGetResponse> findAllByLocationOrderByExhibitionStartDateDesc(Pageable pageable, Point currentLocation, double distance) {
+        List<PlaceGetResponse> content = findPlacesWith(
+                pageable,
                 JTSGeometryExpressions
                         .asJTSGeometry(currentLocation)
                         .buffer(distance)
@@ -81,35 +123,20 @@ public class PlaceQueryDslRepository {
         return new SliceImpl<>(content, pageable, QueryDslUtils.hasNext(pageable, content));
     }
 
-    private Map<Long, List<ExhibitionEntity>> findExhibitionsWith(BooleanExpression... expressions) {
-        List<ExhibitionEntity> exhibitions = jpaQueryFactory
-                .selectFrom(exhibitionEntity)
+    private List<PlaceGetResponse> findPlacesWith(Pageable pageable, BooleanExpression... expressions) {
+        return jpaQueryFactory
+                .selectDistinct(placeGetResponse)
+                .from(placeEntity)
+                .join(placeEntity.location)
+                .leftJoin(placeEntity.exhibitions, exhibitionEntity)
                 .where(expressions)
                 .where(
                         exhibitionEntity.endDate.goe(LocalDate.now(Clock.systemDefaultZone())),
                         exhibitionEntity.startDate.loe(LocalDate.now(Clock.systemDefaultZone()))
                 )
                 .orderBy(exhibitionEntity.startDate.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
-
-        return mapByPlaceId(exhibitions);
-    }
-
-    private Map<Long, List<ExhibitionEntity>> mapByPlaceId(List<ExhibitionEntity> exhibitions) {
-        return exhibitions.stream()
-                .collect(Collectors.groupingBy(exhibition -> exhibition.getPlace().getId()));
-    }
-
-    private List<PlaceEntity> findPlacesWith(Map<Long, List<ExhibitionEntity>> exhibitions, BooleanExpression... expressions) {
-        return jpaQueryFactory
-                .selectFrom(placeEntity)
-                .join(placeEntity.location).fetchJoin()
-                .where(expressions)
-                .fetch()
-                .stream()
-                .map(place -> place.with(exhibitions.get(place.getId())))
-                .filter(place -> Objects.nonNull(place.getExhibitions()) && !place.getExhibitions().isEmpty())
-                .sorted(Comparator.comparing(place -> place.getExhibitions().get(0).getStartDate(), Comparator.reverseOrder()))
-                .toList();
     }
 }
