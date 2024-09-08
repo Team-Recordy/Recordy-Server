@@ -1,6 +1,5 @@
 package org.recordy.server.place.repository.impl;
 
-import com.querydsl.core.group.GroupBy;
 import com.querydsl.core.types.ConstructorExpression;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -33,26 +32,28 @@ import static org.recordy.server.place.domain.QPlaceEntity.placeEntity;
 public class PlaceQueryDslRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
-    private final ConstructorExpression<PlaceGetResponse> placeGetResponse = Projections.constructor(
+    private static final ConstructorExpression<ExhibitionGetResponse> exhibitionGetResponse = Projections.constructor(
+            ExhibitionGetResponse.class,
+            exhibitionEntity.id,
+            exhibitionEntity.name,
+            exhibitionEntity.startDate,
+            exhibitionEntity.endDate,
+            exhibitionEntity.isFree
+    );
+    private static final ConstructorExpression<LocationGetResponse> locationGetResponse = Projections.constructor(
+            LocationGetResponse.class,
+            placeEntity.location.id,
+            placeEntity.location.geometry,
+            placeEntity.location.address.formatted,
+            placeEntity.location.address.sido,
+            placeEntity.location.address.gugun
+    );
+    private static final ConstructorExpression<PlaceGetResponse> placeGetResponse = Projections.constructor(
             PlaceGetResponse.class,
             placeEntity.id,
             placeEntity.name,
-            Projections.list(Projections.constructor(
-                    ExhibitionGetResponse.class,
-                    exhibitionEntity.id,
-                    exhibitionEntity.name,
-                    exhibitionEntity.startDate,
-                    exhibitionEntity.endDate,
-                    exhibitionEntity.isFree
-            )),
-            Projections.constructor(
-                    LocationGetResponse.class,
-                    placeEntity.location.id,
-                    placeEntity.location.geometry,
-                    placeEntity.location.address.formatted,
-                    placeEntity.location.address.sido,
-                    placeEntity.location.address.gugun
-            )
+            list(exhibitionGetResponse),
+            locationGetResponse
     );
 
     public PlaceEntity findById(long id) {
@@ -125,7 +126,6 @@ public class PlaceQueryDslRepository {
 
     private List<PlaceGetResponse> findPlacesWith(Pageable pageable, BooleanExpression... expressions) {
         return jpaQueryFactory
-                .selectDistinct(placeGetResponse)
                 .from(placeEntity)
                 .join(placeEntity.location)
                 .leftJoin(placeEntity.exhibitions, exhibitionEntity)
@@ -137,6 +137,6 @@ public class PlaceQueryDslRepository {
                 .orderBy(exhibitionEntity.startDate.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .fetch();
+                .transform(groupBy(placeEntity.id).list(placeGetResponse));
     }
 }

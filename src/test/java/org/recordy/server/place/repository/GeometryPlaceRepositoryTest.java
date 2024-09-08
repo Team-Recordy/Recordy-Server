@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.recordy.server.exhibition.repository.ExhibitionRepository;
+import org.recordy.server.place.controller.dto.response.PlaceGetResponse;
 import org.recordy.server.place.domain.Place;
 import org.recordy.server.util.ExhibitionFixture;
 import org.recordy.server.util.LocationFixture;
@@ -48,7 +49,7 @@ public class GeometryPlaceRepositoryTest {
         exhibitionRepository.save(ExhibitionFixture.create(farPlace));
 
         // when
-        Slice<Place> result = placeRepository.findAllByLocationOrderByExhibitionStartDateDesc(
+        Slice<PlaceGetResponse> result = placeRepository.findAllByLocationOrderByExhibitionStartDateDesc(
                 PageRequest.ofSize(10),
                 geometryFactory.createPoint(new Coordinate(0, 0)),
                 distance
@@ -57,8 +58,8 @@ public class GeometryPlaceRepositoryTest {
         // then
         assertAll(
                 () -> assertThat(result.getContent().size()).isEqualTo(2),
-                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(samePlace.getId()),
-                () -> assertThat(result.getContent().get(1).getId()).isEqualTo(closePlace.getId())
+                () -> assertThat(result.getContent().get(0).id()).isEqualTo(samePlace.getId()),
+                () -> assertThat(result.getContent().get(1).id()).isEqualTo(closePlace.getId())
         );
     }
 }

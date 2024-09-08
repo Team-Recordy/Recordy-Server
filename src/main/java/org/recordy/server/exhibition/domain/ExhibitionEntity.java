@@ -2,6 +2,7 @@ package org.recordy.server.exhibition.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.recordy.server.common.domain.JpaMetaInfoEntity;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 
 import static org.recordy.server.common.util.DomainUtils.mapIfNotNull;
 
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Table(name = "exhibitions")

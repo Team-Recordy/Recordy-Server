@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Table(name = "places")
@@ -56,17 +56,6 @@ public class PlaceEntity extends JpaMetaInfoEntity {
                 LocationEntity.from(place.getLocation()),
                 place.getCreatedAt(),
                 place.getUpdatedAt()
-        );
-    }
-
-    public PlaceEntity with(List<ExhibitionEntity> exhibitions) {
-        return new PlaceEntity(
-                this.id,
-                this.name,
-                exhibitions,
-                this.location,
-                this.createdAt,
-                this.updatedAt
         );
     }
 }
