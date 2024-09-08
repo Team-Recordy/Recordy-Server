@@ -17,8 +17,8 @@ public class FakeS3Service implements S3Service {
     @Override
     public FileUrl convertToCloudFrontUrl(FileUrl fileUrl) {
         return FileUrl.of(
-                DomainFixture.VIDEO_URL,
-                DomainFixture.THUMBNAIL_URL
+                fileUrl.videoUrl(),
+                fileUrl.thumbnailUrl()
         );
     }
 }
