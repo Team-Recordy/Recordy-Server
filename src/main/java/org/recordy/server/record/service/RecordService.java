@@ -1,6 +1,7 @@
 package org.recordy.server.record.service;
 
 import org.recordy.server.record.controller.dto.request.RecordCreateRequest;
+import org.recordy.server.record.controller.dto.response.RecordGetResponse;
 import org.recordy.server.record.domain.Record;
 import org.springframework.data.domain.Slice;
 
@@ -14,6 +15,7 @@ public interface RecordService {
 
     // query
     void watch(long userId, long recordId);
+    Slice<RecordGetResponse> getRecordsByPlaceId(long placeId, long userId, Long cursorId, int size);
     Slice<Record> getFamousRecords(int pageNumber, int size);
     Slice<Record> getRecentRecords(Long cursorId, int size);
     Slice<Record> getRecentRecordsByUser(long userId, Long cursorId, int size);

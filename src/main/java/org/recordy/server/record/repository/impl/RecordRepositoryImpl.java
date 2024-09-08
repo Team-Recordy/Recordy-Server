@@ -2,6 +2,7 @@ package org.recordy.server.record.repository.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.message.ErrorMessage;
+import org.recordy.server.record.controller.dto.response.RecordGetResponse;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.RecordEntity;
 import org.recordy.server.record.exception.RecordException;
@@ -44,6 +45,11 @@ public class RecordRepositoryImpl implements RecordRepository {
         return recordJpaRepository.findById(recordId)
                 .map(Record::from)
                 .orElseThrow(() -> new RecordException(ErrorMessage.RECORD_NOT_FOUND));
+    }
+
+    @Override
+    public Slice<RecordGetResponse> findAllByPlaceIdOrderByIdDesc(long placeId, long userId, Long cursor, int size) {
+        return recordQueryDslRepository.findAllByPlaceIdOrderByIdDesc(placeId, userId, cursor, size);
     }
 
     @Override

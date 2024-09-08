@@ -1,10 +1,17 @@
 package org.recordy.server.record.repository.impl;
 
+import com.querydsl.core.types.ConstructorExpression;
+import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+
 import java.time.LocalDateTime;
+
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.util.QueryDslUtils;
+import org.recordy.server.record.controller.dto.response.RecordGetResponse;
 import org.recordy.server.record.domain.RecordEntity;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -24,6 +31,43 @@ import static org.recordy.server.user.domain.QUserEntity.userEntity;
 public class RecordQueryDslRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
+
+    public Slice<RecordGetResponse> findAllByPlaceIdOrderByIdDesc(long placeId, long userId, Long cursor, int size) {
+        List<RecordGetResponse> content = jpaQueryFactory
+                .select(getRecordResponse(userId))
+                .from(recordEntity)
+                .leftJoin(recordEntity.bookmarks, bookmarkEntity)
+                .join(recordEntity.user, userEntity)
+                .where(
+                        recordEntity.place.id.eq(placeId),
+                        QueryDslUtils.ltCursorId(cursor, recordEntity.id)
+                )
+                .groupBy(recordEntity.id)
+                .orderBy(recordEntity.id.desc())
+                .limit(size + 1)
+                .fetch();
+
+        return new SliceImpl<>(content, PageRequest.ofSize(size), QueryDslUtils.hasNext(size, content));
+    }
+
+    private ConstructorExpression<RecordGetResponse> getRecordResponse(long userId) {
+        return Projections.constructor(RecordGetResponse.class,
+                recordEntity.id,
+                recordEntity.fileUrl,
+                recordEntity.content,
+                recordEntity.user.id,
+                userEntity.nickname,
+                bookmarkEntity.id.count(),
+                new CaseBuilder()
+                        .when(recordEntity.user.id.eq(userId))
+                        .then(true)
+                        .otherwise(false),
+                new CaseBuilder()
+                        .when(bookmarkEntity.user.id.eq(userId))
+                        .then(true)
+                        .otherwise(false)
+        );
+    }
 
     public Slice<RecordEntity> findAllOrderByPopularity(Pageable pageable) {
         LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
@@ -106,8 +150,8 @@ public class RecordQueryDslRepository {
     public Optional<Long> findMaxId() {
         return Optional.ofNullable(jpaQueryFactory
                 .select(recordEntity.id.max())
-                        .from(recordEntity)
-                        .fetchOne()
+                .from(recordEntity)
+                .fetchOne()
         );
     }
 }

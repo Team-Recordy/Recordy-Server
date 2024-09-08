@@ -1,5 +1,6 @@
 package org.recordy.server.mock.record;
 
+import org.recordy.server.record.controller.dto.response.RecordGetResponse;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.repository.RecordRepository;
 import org.springframework.data.domain.Pageable;
@@ -43,6 +44,11 @@ public class FakeRecordRepository implements RecordRepository {
     @Override
     public Record findById(long recordId) {
         return records.get(recordId);
+    }
+
+    @Override
+    public Slice<RecordGetResponse> findAllByPlaceIdOrderByIdDesc(long placeId, long userId, Long cursor, int size) {
+        return null;
     }
 
     @Override

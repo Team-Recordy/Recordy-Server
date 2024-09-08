@@ -41,10 +41,8 @@ public class PlaceQueryDslRepository {
             return null;
         }
 
-        List<ExhibitionEntity> exhibitions = jpaQueryFactory
-                .selectFrom(exhibitionEntity)
-                .where(exhibitionEntity.place.id.eq(id))
-                .fetch();
+        List<ExhibitionEntity> exhibitions = findExhibitionsWith(exhibitionEntity.place.id.eq(id))
+                .get(id);
 
         return content.with(exhibitions);
     }

@@ -9,6 +9,7 @@ import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.place.domain.Place;
 import org.recordy.server.place.repository.PlaceRepository;
 import org.recordy.server.record.controller.dto.request.RecordCreateRequest;
+import org.recordy.server.record.controller.dto.response.RecordGetResponse;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.usecase.RecordCreate;
 import org.recordy.server.record.exception.RecordException;
@@ -75,6 +76,11 @@ public class RecordServiceImpl implements RecordService {
                 .record(record)
                 .user(user)
                 .build());
+    }
+
+    @Override
+    public Slice<RecordGetResponse> getRecordsByPlaceId(long placeId, long userId, Long cursorId, int size) {
+        return recordRepository.findAllByPlaceIdOrderByIdDesc(placeId, userId, cursorId, size);
     }
 
     @Override

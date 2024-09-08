@@ -5,11 +5,12 @@ import java.time.temporal.ChronoUnit;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.recordy.server.place.repository.PlaceRepository;
+import org.recordy.server.record.controller.dto.response.RecordGetResponse;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.exception.RecordException;
 import org.recordy.server.bookmark.domain.Bookmark;
 import org.recordy.server.bookmark.domain.BookmarkEntity;
+import org.recordy.server.util.BookmarkFixture;
 import org.recordy.server.util.RecordFixture;
 import org.recordy.server.view.domain.View;
 import org.recordy.server.view.domain.ViewEntity;
@@ -62,9 +63,6 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
     @Autowired
     private SubscribeRepository subscribeRepository;
 
-    @Autowired
-    private PlaceRepository placeRepository;
-
     private static LocalDateTime now;
     private static LocalDateTime sevenDaysAgo;
     private static LocalDateTime eightDaysAgo;
@@ -104,6 +102,87 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
         assertAll(
                 () -> assertThat(result.getContent()).hasSize(0),
                 () -> assertThat(result.hasNext()).isFalse()
+        );
+    }
+
+    @Test
+    void 특정한_장소와_관련한_레코드_리스트를_조회할_수_있다() {
+        // given
+        // placeId가 1인 레코드 : {1, 2, 3, 4, 5, 6}
+
+        // when
+        Slice<RecordGetResponse> result = recordRepository.findAllByPlaceIdOrderByIdDesc(1, 1, null, 6);
+
+        // then
+        assertAll(
+                () -> assertThat(result.get()).hasSize(6),
+                () -> assertThat(result.getContent().get(0).id()).isEqualTo(6L),
+                () -> assertThat(result.getContent().get(1).id()).isEqualTo(5L),
+                () -> assertThat(result.getContent().get(2).id()).isEqualTo(4L),
+                () -> assertThat(result.getContent().get(3).id()).isEqualTo(3L),
+                () -> assertThat(result.getContent().get(4).id()).isEqualTo(2L),
+                () -> assertThat(result.getContent().get(5).id()).isEqualTo(1L),
+                () -> assertThat(result.hasNext()).isFalse()
+        );
+    }
+
+    @Test
+    void 특정한_장소와_관련한_커서보다_작은_id를_가진_레코드_리스트를_조회할_수_있다() {
+        // given
+        // placeId가 1인 레코드 : {1, 2, 3, 4, 5, 6}
+
+        // when
+        Slice<RecordGetResponse> result = recordRepository.findAllByPlaceIdOrderByIdDesc(1, 1, 4L, 3);
+
+        // then
+        assertAll(
+                () -> assertThat(result.get()).hasSize(3),
+                () -> assertThat(result.getContent().get(0).id()).isEqualTo(3L),
+                () -> assertThat(result.getContent().get(1).id()).isEqualTo(2L),
+                () -> assertThat(result.getContent().get(2).id()).isEqualTo(1L),
+                () -> assertThat(result.hasNext()).isFalse()
+        );
+    }
+
+    @Test
+    void 레코드_리스트_조회_시_해당_레코드가_사용자의_것인지_아닌지_판별할_수_있다() {
+        // given
+        // userId가 1인 레코드 : {1, 2, 5}
+        // placeId가 1인 레코드 : {1, 2, 3, 4, 5, 6}
+
+        // when
+        Slice<RecordGetResponse> result = recordRepository.findAllByPlaceIdOrderByIdDesc(1, 1, null, 6);
+
+        // then
+        assertAll(
+                () -> assertThat(result.getContent().get(0).isMine()).isFalse(), // id : 6
+                () -> assertThat(result.getContent().get(1).isMine()).isTrue(),  // id : 5
+                () -> assertThat(result.getContent().get(2).isMine()).isFalse(), // id : 4
+                () -> assertThat(result.getContent().get(3).isMine()).isFalse(), // id : 3
+                () -> assertThat(result.getContent().get(4).isMine()).isTrue(),  // id : 2
+                () -> assertThat(result.getContent().get(5).isMine()).isTrue()   // id : 1
+        );
+    }
+
+    @Test
+    void 레코드_리스트_조회_시_해당_레코드를_사용자가_북마크했는지_안했는지_판별할_수_있다() {
+        // given
+        // placeId가 1인 레코드 : {1, 2, 3, 4, 5, 6}
+        bookmarkRepository.save(BookmarkFixture.create(DomainFixture.createUser(), RecordFixture.create(1L)));
+        bookmarkRepository.save(BookmarkFixture.create(DomainFixture.createUser(), RecordFixture.create(3L)));
+        bookmarkRepository.save(BookmarkFixture.create(DomainFixture.createUser(), RecordFixture.create(5L)));
+
+        // when
+        Slice<RecordGetResponse> result = recordRepository.findAllByPlaceIdOrderByIdDesc(1, 1, null, 6);
+
+        // then
+        assertAll(
+                () -> assertThat(result.getContent().get(0).isBookmarked()).isFalse(), // id : 6
+                () -> assertThat(result.getContent().get(1).isBookmarked()).isTrue(),  // id : 5
+                () -> assertThat(result.getContent().get(2).isBookmarked()).isFalse(), // id : 4
+                () -> assertThat(result.getContent().get(3).isBookmarked()).isTrue(),  // id : 3
+                () -> assertThat(result.getContent().get(4).isBookmarked()).isFalse(), // id : 2
+                () -> assertThat(result.getContent().get(5).isBookmarked()).isTrue()   // id : 1
         );
     }
 

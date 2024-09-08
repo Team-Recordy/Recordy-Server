@@ -8,6 +8,7 @@ import org.recordy.server.common.dto.response.PaginatedResponse;
 import org.recordy.server.auth.security.resolver.UserId;
 import org.recordy.server.record.controller.dto.request.RecordCreateRequest;
 import org.recordy.server.record.controller.dto.response.BookmarkedRecord;
+import org.recordy.server.record.controller.dto.response.RecordGetResponse;
 import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
 import org.recordy.server.record.domain.Record;
 
@@ -64,6 +65,33 @@ public class RecordController implements RecordApi {
     }
 
     @Override
+    @PostMapping("/{recordId}")
+    public ResponseEntity<Void> watch(
+            @UserId Long userId,
+            @PathVariable Long recordId
+    ) {
+        recordService.watch(userId, recordId);
+        return ResponseEntity
+                .ok()
+                .build();
+    }
+
+    @Override
+    @GetMapping
+    public ResponseEntity<CursorBasePaginatedResponse<RecordGetResponse>> getRecordsByPlaceId(
+            @UserId Long userId,
+            @RequestParam Long placeId,
+            @RequestParam(required = false) Long cursorId,
+            @RequestParam(required = false, defaultValue = "10") int size
+    ) {
+        Slice<RecordGetResponse> records = recordService.getRecordsByPlaceId(placeId, userId, cursorId, size);
+
+        return ResponseEntity
+                .ok()
+                .body(CursorBasePaginatedResponse.of(records, RecordGetResponse::id));
+    }
+
+    @Override
     @GetMapping("/recent")
     public ResponseEntity<CursorBasePaginatedResponse<RecordInfoWithBookmark>> getRecentRecordInfosWithBookmarks(
             @UserId Long userId,
@@ -91,18 +119,6 @@ public class RecordController implements RecordApi {
         return ResponseEntity
                 .ok()
                 .body(PaginatedResponse.of(RecordInfoWithBookmark.of(records, bookmarks, userId)));
-    }
-
-    @Override
-    @PostMapping("/{recordId}")
-    public ResponseEntity<Void> watch(
-            @UserId Long userId,
-            @PathVariable Long recordId
-    ) {
-        recordService.watch(userId, recordId);
-        return ResponseEntity
-                .ok()
-                .build();
     }
 
     @Override
@@ -139,7 +155,7 @@ public class RecordController implements RecordApi {
     }
 
     @Override
-    @GetMapping
+    @GetMapping("/total")
     public ResponseEntity<List<RecordInfoWithBookmark>> getTotalRecordInfosWithBookmarks(
             @UserId Long userId,
             @RequestParam(required = false, defaultValue = "10") int size
