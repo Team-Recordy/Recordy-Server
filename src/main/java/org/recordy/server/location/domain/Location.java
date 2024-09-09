@@ -13,6 +13,7 @@ public class Location {
     private Long id;
     private Point geometry;
     private Address address;
+    private String googlePlaceId;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -22,6 +23,7 @@ public class Location {
                 entity.getId(),
                 entity.getGeometry(),
                 entity.getAddress(),
+                entity.getGooglePlaceId(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
         );
