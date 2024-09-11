@@ -3,20 +3,34 @@ package org.recordy.server.mock.place;
 import org.locationtech.jts.geom.Point;
 import org.recordy.server.place.controller.dto.response.PlaceGetResponse;
 import org.recordy.server.place.domain.Place;
+import org.recordy.server.place.domain.usecase.PlaceCreate;
 import org.recordy.server.place.repository.PlaceRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 public class FakePlaceRepository implements PlaceRepository {
+
+    public long placeAutoIncrementId = 1L;
+    private final Map<Long, Place> places = new ConcurrentHashMap<>();
 
     @Override
     public Place save(Place place) {
-        return null;
+        Place realPlace = Place.create(new PlaceCreate(
+                placeAutoIncrementId,
+                place.getName(),
+                place.getLocation()
+        ));
+        places.put(placeAutoIncrementId++, realPlace);
+
+        return realPlace;
     }
 
     @Override
     public Place findById(long id) {
-        return null;
+        return places.get(id);
     }
 
     @Override
