@@ -25,6 +25,7 @@ import java.util.List;
 import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.querydsl.core.group.GroupBy.list;
 import static org.recordy.server.exhibition.domain.QExhibitionEntity.exhibitionEntity;
+import static org.recordy.server.location.domain.QLocationEntity.locationEntity;
 import static org.recordy.server.place.domain.QPlaceEntity.placeEntity;
 
 @RequiredArgsConstructor
@@ -32,6 +33,7 @@ import static org.recordy.server.place.domain.QPlaceEntity.placeEntity;
 public class PlaceQueryDslRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
+
     private static final ConstructorExpression<ExhibitionGetResponse> exhibitionGetResponse = Projections.constructor(
             ExhibitionGetResponse.class,
             exhibitionEntity.id,
@@ -118,7 +120,7 @@ public class PlaceQueryDslRepository {
                 JTSGeometryExpressions
                         .asJTSGeometry(currentLocation)
                         .buffer(distance)
-                        .contains(placeEntity.location.geometry)
+                        .contains(locationEntity.geometry)
         );
 
         return new SliceImpl<>(content, pageable, QueryDslUtils.hasNext(pageable, content));
@@ -127,7 +129,7 @@ public class PlaceQueryDslRepository {
     private List<PlaceGetResponse> findPlacesWith(Pageable pageable, BooleanExpression... expressions) {
         return jpaQueryFactory
                 .from(placeEntity)
-                .join(placeEntity.location)
+                .join(placeEntity.location, locationEntity)
                 .leftJoin(placeEntity.exhibitions, exhibitionEntity)
                 .where(expressions)
                 .where(
