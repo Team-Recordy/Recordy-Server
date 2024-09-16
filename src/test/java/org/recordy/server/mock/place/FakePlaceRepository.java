@@ -3,7 +3,6 @@ package org.recordy.server.mock.place;
 import org.locationtech.jts.geom.Point;
 import org.recordy.server.place.controller.dto.response.PlaceGetResponse;
 import org.recordy.server.place.domain.Place;
-import org.recordy.server.place.domain.usecase.PlaceCreate;
 import org.recordy.server.place.repository.PlaceRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -18,10 +17,14 @@ public class FakePlaceRepository implements PlaceRepository {
 
     @Override
     public Place save(Place place) {
-        Place realPlace = Place.create(new PlaceCreate(
+        Place realPlace = new Place(
+                placeAutoIncrementId,
                 place.getName(),
-                place.getLocation()
-        ));
+                place.getExhibitions(),
+                place.getLocation(),
+                place.getCreatedAt(),
+                place.getUpdatedAt()
+        );
         places.put(placeAutoIncrementId++, realPlace);
 
         return realPlace;

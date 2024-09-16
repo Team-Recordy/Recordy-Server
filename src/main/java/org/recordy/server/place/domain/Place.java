@@ -1,6 +1,5 @@
 package org.recordy.server.place.domain;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.recordy.server.exhibition.domain.Exhibition;
@@ -10,7 +9,7 @@ import org.recordy.server.place.domain.usecase.PlaceCreate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
 @Getter
 public class Place {
 
