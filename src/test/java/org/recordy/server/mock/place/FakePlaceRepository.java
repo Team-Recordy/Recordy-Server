@@ -19,7 +19,6 @@ public class FakePlaceRepository implements PlaceRepository {
     @Override
     public Place save(Place place) {
         Place realPlace = Place.create(new PlaceCreate(
-                placeAutoIncrementId,
                 place.getName(),
                 place.getLocation()
         ));

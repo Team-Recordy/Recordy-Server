@@ -37,20 +37,9 @@ public class Place {
 
     public static Place create(PlaceCreate create) {
         return new Place(
-                create.id(),
+                null,
                 create.name(),
                 List.of(),
-                create.location(),
-                null,
-                null
-        );
-    }
-
-    public static Place create(PlaceCreate create, List<Exhibition> exhibitions) {
-        return new Place(
-                create.id(),
-                create.name(),
-                exhibitions,
                 create.location(),
                 null,
                 null
