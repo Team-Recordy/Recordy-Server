@@ -25,6 +25,10 @@ public class PlaceServiceImpl implements PlaceService {
         PlaceGoogle placeGoogle = googlePlaceService.search(request.toQuery());
         Location location = Location.of(placeGoogle);
 
-        placeRepository.save(Place.create(new PlaceCreate(request.name(), location)));
+        placeRepository.save(Place.create(new PlaceCreate(
+                request.name(),
+                placeGoogle.website(),
+                location
+        )));
     }
 }

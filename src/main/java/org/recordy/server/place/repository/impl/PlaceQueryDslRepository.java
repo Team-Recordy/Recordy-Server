@@ -52,6 +52,7 @@ public class PlaceQueryDslRepository {
             PlaceGetResponse.class,
             placeEntity.id,
             placeEntity.name,
+            placeEntity.websiteUrl,
             list(exhibitionGetResponse),
             locationGetResponse
     );
@@ -67,6 +68,7 @@ public class PlaceQueryDslRepository {
                                 PlaceEntity.class,
                                 placeEntity.id,
                                 placeEntity.name,
+                                placeEntity.websiteUrl,
                                 list(Projections.constructor(
                                         ExhibitionEntity.class,
                                         exhibitionEntity.id,

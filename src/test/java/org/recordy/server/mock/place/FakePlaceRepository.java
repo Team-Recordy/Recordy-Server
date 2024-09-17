@@ -20,6 +20,7 @@ public class FakePlaceRepository implements PlaceRepository {
         Place realPlace = new Place(
                 placeAutoIncrementId,
                 place.getName(),
+                place.getWebsiteUrl(),
                 place.getExhibitions(),
                 place.getLocation(),
                 place.getCreatedAt(),

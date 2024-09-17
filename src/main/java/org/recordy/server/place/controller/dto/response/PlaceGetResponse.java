@@ -8,6 +8,7 @@ import java.util.List;
 public record PlaceGetResponse(
         Long id,
         String name,
+        String websiteUrl,
         List<ExhibitionGetResponse> exhibitions,
         LocationGetResponse location
 ) {

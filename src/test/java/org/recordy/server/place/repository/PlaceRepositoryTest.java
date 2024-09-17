@@ -47,6 +47,7 @@ class PlaceRepositoryTest extends IntegrationTest {
         assertAll(
                 () -> assertThat(result.getId()).isNotNull(),
                 () -> assertThat(result.getName()).isEqualTo(place.getName()),
+                () -> assertThat(result.getWebsiteUrl()).isEqualTo(place.getWebsiteUrl()),
                 () -> assertThat(result.getLocation().getAddress()).isEqualTo(place.getLocation().getAddress())
         );
     }
@@ -79,6 +80,7 @@ class PlaceRepositoryTest extends IntegrationTest {
         assertAll(
                 () -> assertThat(result.getId()).isEqualTo(place.getId()),
                 () -> assertThat(result.getName()).isEqualTo(place.getName()),
+                () -> assertThat(result.getWebsiteUrl()).isEqualTo(place.getWebsiteUrl()),
                 () -> assertThat(result.getLocation().getId()).isEqualTo(place.getLocation().getId())
         );
     }
@@ -98,6 +100,7 @@ class PlaceRepositoryTest extends IntegrationTest {
         assertAll(
                 () -> assertThat(result.getId()).isEqualTo(place.getId()),
                 () -> assertThat(result.getName()).isEqualTo(place.getName()),
+                () -> assertThat(result.getWebsiteUrl()).isEqualTo(place.getWebsiteUrl()),
                 () -> assertThat(result.getLocation().getId()).isEqualTo(place.getLocation().getId()),
                 () -> assertThat(result.getExhibitions().size()).isEqualTo(2),
                 () -> assertThat(result.getExhibitions().get(0).getId()).isEqualTo(exhibition1.getId()),

@@ -15,6 +15,7 @@ public class Place {
 
     private Long id;
     private String name;
+    private String websiteUrl;
     private List<Exhibition> exhibitions;
     private Location location;
 
@@ -25,6 +26,7 @@ public class Place {
         return new Place(
                 entity.getId(),
                 entity.getName(),
+                entity.getWebsiteUrl(),
                 entity.getExhibitions().stream()
                         .map(Exhibition::from)
                         .toList(),
@@ -38,6 +40,7 @@ public class Place {
         return new Place(
                 null,
                 create.name(),
+                create.websiteUrl(),
                 List.of(),
                 create.location(),
                 null,

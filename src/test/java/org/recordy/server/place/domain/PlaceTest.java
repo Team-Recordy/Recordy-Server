@@ -22,6 +22,7 @@ class PlaceTest {
         // then
         assertAll(
                 () -> assertThat(place.getName()).isEqualTo(PlaceFixture.NAME),
+                () -> assertThat(place.getWebsiteUrl()).isEqualTo(PlaceFixture.WEBSITE_URL),
                 () -> assertThat(place.getLocation().getAddress()).isEqualTo(LocationFixture.ADDRESS),
                 () -> assertThat(place.getLocation().getGooglePlaceId()).isEqualTo(LocationFixture.GOOGLE_PLACE_ID),
                 () -> assertThat(place.getLocation().getGeometry()).isEqualTo(LocationFixture.POINT)
@@ -32,7 +33,7 @@ class PlaceTest {
     void PlaceCreate_객체로부터_Place_객체를_생성한다() {
         // given
         Location location = LocationFixture.create();
-        PlaceCreate create = new PlaceCreate(PlaceFixture.NAME, location);
+        PlaceCreate create = new PlaceCreate(PlaceFixture.NAME, PlaceFixture.WEBSITE_URL, location);
 
         // when
         Place place = Place.create(create);
@@ -41,6 +42,7 @@ class PlaceTest {
         assertAll(
                 () -> assertThat(place.getId()).isNull(),
                 () -> assertThat(place.getName()).isEqualTo(PlaceFixture.NAME),
+                () -> assertThat(place.getWebsiteUrl()).isEqualTo(PlaceFixture.WEBSITE_URL),
                 () -> assertThat(place.getExhibitions()).isEmpty(),
                 () -> assertThat(place.getLocation().getAddress()).isEqualTo(location.getAddress()),
                 () -> assertThat(place.getLocation().getGooglePlaceId()).isEqualTo(location.getGooglePlaceId()),

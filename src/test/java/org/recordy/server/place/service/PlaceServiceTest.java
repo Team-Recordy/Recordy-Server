@@ -1,4 +1,4 @@
-package org.recordy.server.place.service.impl;
+package org.recordy.server.place.service;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -8,7 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.recordy.server.place.controller.dto.request.PlaceCreateRequest;
 import org.recordy.server.place.domain.usecase.PlaceGoogle;
 import org.recordy.server.place.repository.PlaceRepository;
-import org.recordy.server.place.service.GooglePlaceService;
+import org.recordy.server.place.service.impl.PlaceServiceImpl;
 import org.recordy.server.util.LocationFixture;
 
 import static org.mockito.ArgumentMatchers.any;
