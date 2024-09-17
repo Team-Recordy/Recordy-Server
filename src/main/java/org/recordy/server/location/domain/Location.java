@@ -23,7 +23,7 @@ public class Location {
         return new Location(
                 null,
                 placeGoogle.geometry(),
-                placeGoogle.formattedAddress(),
+                placeGoogle.address(),
                 placeGoogle.placeId(),
                 null,
                 null

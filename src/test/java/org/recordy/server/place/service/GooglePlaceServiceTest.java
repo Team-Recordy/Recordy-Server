@@ -23,7 +23,7 @@ class GooglePlaceServiceTest {
         assertAll(
                 () -> assertThat(result.placeId()).isNotNull(),
                 () -> assertThat(result.geometry()).isNotNull(),
-                () -> assertThat(result.formattedAddress()).isNotNull()
+                () -> assertThat(result.address()).isNotNull()
         );
     }
 }

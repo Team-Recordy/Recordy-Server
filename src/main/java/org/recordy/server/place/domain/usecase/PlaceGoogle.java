@@ -8,7 +8,7 @@ import java.util.List;
 
 public record PlaceGoogle(
         Point geometry,
-        String formattedAddress,
+        String address,
         String placeId,
         List<Review> reviews,
         String website
