@@ -45,6 +45,11 @@ public class FakeExhibitionRepository implements ExhibitionRepository {
     }
 
     @Override
+    public void saveAll(List<Exhibition> exhibitions) {
+
+    }
+
+    @Override
     public void deleteById(long id) {
         exhibitions.remove(id);
     }

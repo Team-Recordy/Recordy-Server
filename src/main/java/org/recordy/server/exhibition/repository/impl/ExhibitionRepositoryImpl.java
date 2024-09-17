@@ -9,6 +9,7 @@ import org.recordy.server.exhibition.repository.ExhibitionRepository;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Objects;
 
 @RequiredArgsConstructor
@@ -23,6 +24,15 @@ public class ExhibitionRepositoryImpl implements ExhibitionRepository {
         ExhibitionEntity entity = exhibitionJpaRepository.save(ExhibitionEntity.from(exhibition));
 
         return Exhibition.from(entity);
+    }
+
+    @Override
+    public void saveAll(List<Exhibition> exhibitions) {
+        List<ExhibitionEntity> entities = exhibitions.stream()
+                .map(ExhibitionEntity::from)
+                .toList();
+
+        exhibitionJpaRepository.saveAll(entities);
     }
 
     @Override

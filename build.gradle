@@ -69,6 +69,9 @@ dependencies {
     implementation 'org.hibernate:hibernate-spatial:6.0.0.Final'
     implementation 'org.locationtech.jts:jts-core:1.18.1'
     implementation 'com.querydsl:querydsl-sql-spatial:4.1.4'
+
+    // EXHIBITION API DATA MAPPING
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.17.2'
 }
 
 tasks.named('test') {
