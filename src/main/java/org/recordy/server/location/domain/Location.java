@@ -13,17 +13,17 @@ public class Location {
 
     private Long id;
     private Point geometry;
-    private Address address;
+    private String address;
     private String googlePlaceId;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public static Location of(PlaceGoogle placeGoogle, String sido, String gugun) {
+    public static Location of(PlaceGoogle placeGoogle) {
         return new Location(
                 null,
                 placeGoogle.geometry(),
-                Address.of(placeGoogle.formattedAddress(), sido, gugun),
+                placeGoogle.formattedAddress(),
                 placeGoogle.placeId(),
                 null,
                 null

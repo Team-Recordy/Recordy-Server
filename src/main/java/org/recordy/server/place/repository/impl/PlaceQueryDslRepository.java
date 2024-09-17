@@ -46,9 +46,7 @@ public class PlaceQueryDslRepository {
             LocationGetResponse.class,
             placeEntity.location.id,
             placeEntity.location.geometry,
-            placeEntity.location.address.formatted,
-            placeEntity.location.address.sido,
-            placeEntity.location.address.gugun
+            placeEntity.location.address
     );
     private static final ConstructorExpression<PlaceGetResponse> placeGetResponse = Projections.constructor(
             PlaceGetResponse.class,

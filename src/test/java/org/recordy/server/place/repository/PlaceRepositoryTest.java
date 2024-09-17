@@ -47,7 +47,7 @@ class PlaceRepositoryTest extends IntegrationTest {
         assertAll(
                 () -> assertThat(result.getId()).isNotNull(),
                 () -> assertThat(result.getName()).isEqualTo(place.getName()),
-                () -> assertThat(result.getLocation().getAddress().getFormatted()).isEqualTo(place.getLocation().getAddress().getFormatted())
+                () -> assertThat(result.getLocation().getAddress()).isEqualTo(place.getLocation().getAddress())
         );
     }
 

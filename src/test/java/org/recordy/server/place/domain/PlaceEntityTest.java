@@ -20,10 +20,10 @@ class PlaceEntityTest {
         // then
         assertAll(
                 () -> assertThat(entity.getName()).isEqualTo(PlaceFixture.NAME),
-                () -> assertThat(entity.getLocation().getAddress().getFormatted()).isEqualTo(place.getLocation().getAddress().getFormatted()),
+                () -> assertThat(entity.getLocation().getAddress()).isEqualTo(place.getLocation().getAddress()),
                 () -> assertThat(entity.getLocation().getGooglePlaceId()).isEqualTo(place.getLocation().getGooglePlaceId()),
                 () -> assertThat(entity.getLocation().getGeometry()).isEqualTo(place.getLocation().getGeometry()),
-                () -> assertThat(entity.getLocation().getAddress().getFormatted()).isEqualTo(LocationFixture.FORMATTED)
+                () -> assertThat(entity.getLocation().getAddress()).isEqualTo(LocationFixture.ADDRESS)
         );
     }
 }

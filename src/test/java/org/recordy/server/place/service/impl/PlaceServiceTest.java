@@ -31,15 +31,14 @@ class PlaceServiceTest {
         // given
         PlaceGoogle placeGoogle = new PlaceGoogle(
                 LocationFixture.POINT,
-                LocationFixture.FORMATTED,
+                LocationFixture.ADDRESS,
                 LocationFixture.GOOGLE_PLACE_ID,
                 null,
                 null
         );
         PlaceCreateRequest request = new PlaceCreateRequest(
                 "CLUB FF",
-                "서울시",
-                "마포구"
+                "서울"
         );
         String query = request.toQuery();
 

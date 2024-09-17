@@ -23,7 +23,7 @@ public class PlaceServiceImpl implements PlaceService {
     @Override
     public void create(PlaceCreateRequest request) {
         PlaceGoogle placeGoogle = googlePlaceService.search(request.toQuery());
-        Location location = Location.of(placeGoogle, request.sido(), request.gugun());
+        Location location = Location.of(placeGoogle);
 
         placeRepository.save(Place.create(new PlaceCreate(request.name(), location)));
     }

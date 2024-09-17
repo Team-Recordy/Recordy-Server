@@ -20,8 +20,7 @@ public class LocationEntity extends JpaMetaInfoEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Point geometry;
-    @Embedded
-    private Address address;
+    private String address;
     private String googlePlaceId;
 
     @OneToOne(mappedBy = "location")
@@ -30,7 +29,7 @@ public class LocationEntity extends JpaMetaInfoEntity {
     private LocationEntity(
             Long id,
             Point geometry,
-            Address address,
+            String address,
             String googlePlaceId,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
