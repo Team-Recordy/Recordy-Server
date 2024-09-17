@@ -21,7 +21,6 @@ public class Exhibition {
     private LocalDate startDate;
     private LocalDate endDate;
     private boolean isFree;
-    private String url;
     private Place place;
 
     private LocalDateTime createdAt;
@@ -34,7 +33,6 @@ public class Exhibition {
                 entity.getStartDate(),
                 entity.getEndDate(),
                 entity.isFree(),
-                entity.getUrl(),
                 mapIfNotNull(entity.getPlace(), Place::from),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
@@ -48,7 +46,6 @@ public class Exhibition {
                 create.startDate(),
                 create.endDate(),
                 create.isFree(),
-                create.url(),
                 create.place(),
                 null,
                 null
@@ -62,7 +59,6 @@ public class Exhibition {
                 updateIfNotNull(this.startDate, update.startDate()),
                 updateIfNotNull(this.endDate, update.endDate()),
                 updateIfNotNull(this.isFree, update.isFree()),
-                updateIfNotEmpty(this.url, update.url()),
                 this.place,
                 this.createdAt,
                 null

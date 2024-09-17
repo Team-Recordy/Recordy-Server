@@ -35,7 +35,6 @@ public class FakeExhibitionRepository implements ExhibitionRepository {
                 exhibition.getStartDate(),
                 exhibition.getEndDate(),
                 exhibition.isFree(),
-                exhibition.getUrl(),
                 exhibition.getPlace()
         );
         Exhibition realExhibition = Exhibition.create(create);

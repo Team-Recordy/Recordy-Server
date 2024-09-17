@@ -29,7 +29,6 @@ class ExhibitionTest {
                 () -> assertThat(exhibition.getStartDate()).isEqualTo(entity.getStartDate()),
                 () -> assertThat(exhibition.getEndDate()).isEqualTo(entity.getEndDate()),
                 () -> assertThat(exhibition.isFree()).isEqualTo(entity.isFree()),
-                () -> assertThat(exhibition.getUrl()).isEqualTo(entity.getUrl()),
                 () -> assertThat(exhibition.getPlace().getId()).isEqualTo(entity.getPlace().getId())
         );
     }
@@ -43,7 +42,6 @@ class ExhibitionTest {
                 LocalDate.now(),
                 LocalDate.now().plusDays(1),
                 false,
-                "http://example.com",
                 PlaceFixture.create()
         );
 
@@ -57,7 +55,6 @@ class ExhibitionTest {
                 () -> assertThat(exhibition.getStartDate()).isEqualTo(create.startDate()),
                 () -> assertThat(exhibition.getEndDate()).isEqualTo(create.endDate()),
                 () -> assertThat(exhibition.isFree()).isEqualTo(create.isFree()),
-                () -> assertThat(exhibition.getUrl()).isEqualTo(create.url()),
                 () -> assertThat(exhibition.getPlace()).isEqualTo(create.place())
         );
     }
@@ -71,8 +68,7 @@ class ExhibitionTest {
                 "updated name",
                 LocalDate.now().plusDays(1),
                 LocalDate.now().plusDays(2),
-                true,
-                "https://example.com"
+                true
         );
 
         // when
@@ -84,8 +80,7 @@ class ExhibitionTest {
                 () -> assertThat(updatedExhibition.getName()).isEqualTo(update.name()),
                 () -> assertThat(updatedExhibition.getStartDate()).isEqualTo(update.startDate()),
                 () -> assertThat(updatedExhibition.getEndDate()).isEqualTo(update.endDate()),
-                () -> assertThat(updatedExhibition.isFree()).isEqualTo(update.isFree()),
-                () -> assertThat(updatedExhibition.getUrl()).isEqualTo(update.url())
+                () -> assertThat(updatedExhibition.isFree()).isEqualTo(update.isFree())
         );
     }
 
@@ -98,8 +93,7 @@ class ExhibitionTest {
                 null,
                 null,
                 null,
-                false,
-                null
+                false
         );
 
         // when
@@ -111,8 +105,7 @@ class ExhibitionTest {
                 () -> assertThat(updatedExhibition.getName()).isEqualTo(exhibition.getName()),
                 () -> assertThat(updatedExhibition.getStartDate()).isEqualTo(exhibition.getStartDate()),
                 () -> assertThat(updatedExhibition.getEndDate()).isEqualTo(exhibition.getEndDate()),
-                () -> assertThat(updatedExhibition.isFree()).isEqualTo(exhibition.isFree()),
-                () -> assertThat(updatedExhibition.getUrl()).isEqualTo(exhibition.getUrl())
+                () -> assertThat(updatedExhibition.isFree()).isEqualTo(exhibition.isFree())
         );
     }
 }

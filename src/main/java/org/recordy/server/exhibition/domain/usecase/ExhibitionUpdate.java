@@ -9,8 +9,7 @@ public record ExhibitionUpdate(
         String name,
         LocalDate startDate,
         LocalDate endDate,
-        Boolean isFree,
-        String url
+        Boolean isFree
 ) {
     public static ExhibitionUpdate from(ExhibitionUpdateRequest request) {
         return new ExhibitionUpdate(
@@ -18,8 +17,7 @@ public record ExhibitionUpdate(
                 request.name(),
                 request.startDate(),
                 request.endDate(),
-                request.isFree(),
-                request.url()
+                request.isFree()
         );
     }
 }

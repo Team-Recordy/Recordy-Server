@@ -11,7 +11,6 @@ public record ExhibitionCreate(
         LocalDate startDate,
         LocalDate endDate,
         boolean isFree,
-        String url,
         Place place
 ) {
 
@@ -22,7 +21,6 @@ public record ExhibitionCreate(
                 request.startDate(),
                 request.endDate(),
                 request.isFree(),
-                request.url(),
                 place
         );
     }

@@ -28,7 +28,6 @@ class ExhibitionCreateRequestTest {
                 null,
                 null,
                 false,
-                "",
                 null
         );
 
@@ -36,6 +35,6 @@ class ExhibitionCreateRequestTest {
         Set<ConstraintViolation<ExhibitionCreateRequest>> violations = validator.validate(request);
 
         // then
-        assertThat(violations).hasSize(4);
+        assertThat(violations).hasSize(3);
     }
 }

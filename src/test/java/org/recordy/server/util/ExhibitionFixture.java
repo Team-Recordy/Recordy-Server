@@ -12,7 +12,6 @@ public class ExhibitionFixture {
     public final static LocalDate START_DATE = LocalDate.now();
     public final static LocalDate END_DATE = LocalDate.now();
     public final static boolean IS_FREE = false;
-    public final static String URL = "http://example.com";
 
     public static Exhibition create(long id) {
         return Exhibition.create(new ExhibitionCreate(
@@ -21,7 +20,6 @@ public class ExhibitionFixture {
                 START_DATE,
                 END_DATE,
                 IS_FREE,
-                URL,
                 PlaceFixture.create()
         ));
     }
@@ -33,7 +31,6 @@ public class ExhibitionFixture {
                 START_DATE,
                 END_DATE,
                 IS_FREE,
-                URL,
                 place
         ));
     }
@@ -45,7 +42,6 @@ public class ExhibitionFixture {
                 START_DATE,
                 END_DATE,
                 IS_FREE,
-                URL,
                 place
         ));
     }
@@ -57,7 +53,6 @@ public class ExhibitionFixture {
                 startDate,
                 endDate,
                 IS_FREE,
-                URL,
                 place
         ));
     }
@@ -69,7 +64,6 @@ public class ExhibitionFixture {
                 startDate,
                 endDate,
                 isFree,
-                URL,
                 place
         ));
     }

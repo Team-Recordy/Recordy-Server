@@ -74,7 +74,6 @@ public class PlaceQueryDslRepository {
                                         exhibitionEntity.startDate,
                                         exhibitionEntity.endDate,
                                         exhibitionEntity.isFree,
-                                        exhibitionEntity.url,
                                         exhibitionEntity.place
                                 )),
                                 placeEntity.location

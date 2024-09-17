@@ -27,7 +27,6 @@ public class ExhibitionEntity extends JpaMetaInfoEntity {
     private LocalDate startDate;
     private LocalDate endDate;
     private boolean isFree;
-    private String url;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private PlaceEntity place;
@@ -38,7 +37,6 @@ public class ExhibitionEntity extends JpaMetaInfoEntity {
             LocalDate startDate,
             LocalDate endDate,
             boolean isFree,
-            String url,
             PlaceEntity place,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
@@ -48,7 +46,6 @@ public class ExhibitionEntity extends JpaMetaInfoEntity {
         this.startDate = startDate;
         this.endDate = endDate;
         this.isFree = isFree;
-        this.url = url;
         this.place = place;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -61,7 +58,6 @@ public class ExhibitionEntity extends JpaMetaInfoEntity {
                 exhibition.getStartDate(),
                 exhibition.getEndDate(),
                 exhibition.isFree(),
-                exhibition.getUrl(),
                 mapIfNotNull(exhibition.getPlace(), PlaceEntity::from),
                 exhibition.getCreatedAt(),
                 exhibition.getUpdatedAt()

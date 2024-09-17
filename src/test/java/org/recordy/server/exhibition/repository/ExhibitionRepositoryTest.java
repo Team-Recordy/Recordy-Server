@@ -95,8 +95,7 @@ class ExhibitionRepositoryTest extends IntegrationTest {
                 "수정된 전시",
                 LocalDate.now(),
                 LocalDate.now(),
-                true,
-                "https://example.com"
+                true
         );
 
         // when
@@ -110,8 +109,7 @@ class ExhibitionRepositoryTest extends IntegrationTest {
                 () -> assertThat(result.getStartDate()).isEqualTo(update.startDate()),
                 () -> assertThat(result.getEndDate()).isEqualTo(update.endDate()),
                 () -> assertThat(result.getCreatedAt()).isEqualTo(exhibition.getCreatedAt()),
-                () -> assertThat(result.isFree()).isEqualTo(update.isFree()),
-                () -> assertThat(result.getUrl()).isEqualTo(update.url())
+                () -> assertThat(result.isFree()).isEqualTo(update.isFree())
         );
     }
 
@@ -125,8 +123,7 @@ class ExhibitionRepositoryTest extends IntegrationTest {
                 "수정된 전시",
                 LocalDate.now(),
                 LocalDate.now(),
-                true,
-                "https://example.com"
+                true
         );
 
         // when

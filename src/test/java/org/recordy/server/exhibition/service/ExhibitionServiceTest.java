@@ -23,7 +23,6 @@ class ExhibitionServiceTest extends FakeContainer {
             LocalDate.now(),
             LocalDate.now().plusDays(1),
             false,
-            "http://example.com",
             1L
     );
 
@@ -36,7 +35,6 @@ class ExhibitionServiceTest extends FakeContainer {
                 LocalDate.now(),
                 LocalDate.now().plusDays(1),
                 false,
-                "http://example.com",
                 place.getId()
         );
         Exhibition result = exhibitionService.create(request);
@@ -47,7 +45,6 @@ class ExhibitionServiceTest extends FakeContainer {
                 () -> assertThat(result.getStartDate()).isEqualTo(request.startDate()),
                 () -> assertThat(result.getEndDate()).isEqualTo(request.endDate()),
                 () -> assertThat(result.isFree()).isEqualTo(request.isFree()),
-                () -> assertThat(result.getUrl()).isEqualTo(request.url()),
                 () -> assertThat(result.getPlace().getId()).isEqualTo(request.placeId())
         );
     }
@@ -61,8 +58,7 @@ class ExhibitionServiceTest extends FakeContainer {
                 "update",
                 LocalDate.now().plusDays(1),
                 LocalDate.now().plusDays(2),
-                true,
-                "https://example.com"
+                true
         );
 
         // when
@@ -74,8 +70,7 @@ class ExhibitionServiceTest extends FakeContainer {
                 () -> assertThat(result.getName()).isEqualTo(update.name()),
                 () -> assertThat(result.getStartDate()).isEqualTo(update.startDate()),
                 () -> assertThat(result.getEndDate()).isEqualTo(update.endDate()),
-                () -> assertThat(result.isFree()).isEqualTo(update.isFree()),
-                () -> assertThat(result.getUrl()).isEqualTo(update.url())
+                () -> assertThat(result.isFree()).isEqualTo(update.isFree())
         );
     }
 
@@ -87,8 +82,7 @@ class ExhibitionServiceTest extends FakeContainer {
                 "update",
                 LocalDate.now().plusDays(1),
                 LocalDate.now().plusDays(2),
-                true,
-                "https://example.com"
+                true
         );
 
         // when, then
