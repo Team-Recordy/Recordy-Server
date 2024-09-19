@@ -12,10 +12,12 @@ import org.recordy.server.place.repository.PlaceRepository;
 import org.recordy.server.place.repository.PlaceReviewRepository;
 import org.recordy.server.place.service.GooglePlaceService;
 import org.recordy.server.place.service.PlaceService;
+import org.recordy.server.place.service.dto.Review;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -38,11 +40,17 @@ public class PlaceServiceImpl implements PlaceService {
                 location
         )));
 
-        List<PlaceReview> reviews = placeGoogle.reviews().stream()
-                .map(review -> PlaceReview.of(review, PlaceEntity.from(place)))
-                .toList();
-        placeReviewRepository.saveAll(reviews);
+        if (Objects.nonNull(placeGoogle.reviews())) {
+            saveReviews(placeGoogle.reviews(), place);
+        }
 
         return place;
+    }
+
+    private void saveReviews(List<Review> reviews, Place place) {
+        List<PlaceReview> placeReviews = reviews.stream()
+                .map(review -> PlaceReview.of(review, PlaceEntity.from(place)))
+                .toList();
+        placeReviewRepository.saveAll(placeReviews);
     }
 }
