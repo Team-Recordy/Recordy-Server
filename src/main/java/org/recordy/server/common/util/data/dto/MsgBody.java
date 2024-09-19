@@ -15,14 +15,11 @@ public record MsgBody(
         @JacksonXmlProperty(localName = "rows")
         int rows,
 
-        @JacksonXmlProperty(localName = "from")
-        String from,
+        @JacksonXmlProperty(localName = "realmCode")
+        int realmCode,
 
-        @JacksonXmlProperty(localName = "to")
-        String to,
-
-        @JacksonXmlProperty(localName = "sortStdr")
-        int sortStdr,
+        @JacksonXmlProperty(localName = "sido")
+        String sido,
 
         @JacksonXmlElementWrapper(useWrapping = false)
         @JacksonXmlProperty(localName = "perforList")
