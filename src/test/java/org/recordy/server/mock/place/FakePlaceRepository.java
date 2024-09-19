@@ -37,6 +37,11 @@ public class FakePlaceRepository implements PlaceRepository {
     }
 
     @Override
+    public Place findByName(String name) {
+        return null;
+    }
+
+    @Override
     public Slice<PlaceGetResponse> findAllOrderByExhibitionStartDateDesc(Pageable pageable) {
         return null;
     }
