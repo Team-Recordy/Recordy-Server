@@ -4,13 +4,18 @@ import lombok.RequiredArgsConstructor;
 import org.recordy.server.location.domain.Location;
 import org.recordy.server.place.controller.dto.request.PlaceCreateRequest;
 import org.recordy.server.place.domain.Place;
+import org.recordy.server.place.domain.PlaceEntity;
+import org.recordy.server.place.domain.PlaceReview;
 import org.recordy.server.place.domain.usecase.PlaceCreate;
 import org.recordy.server.place.domain.usecase.PlaceGoogle;
 import org.recordy.server.place.repository.PlaceRepository;
+import org.recordy.server.place.repository.PlaceReviewRepository;
 import org.recordy.server.place.service.GooglePlaceService;
 import org.recordy.server.place.service.PlaceService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -18,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PlaceServiceImpl implements PlaceService {
 
     private final PlaceRepository placeRepository;
+    private final PlaceReviewRepository placeReviewRepository;
     private final GooglePlaceService googlePlaceService;
 
     @Transactional
@@ -26,10 +32,17 @@ public class PlaceServiceImpl implements PlaceService {
         PlaceGoogle placeGoogle = googlePlaceService.search(request.toQuery());
         Location location = Location.of(placeGoogle);
 
-        return placeRepository.save(Place.create(new PlaceCreate(
+        Place place = placeRepository.save(Place.create(new PlaceCreate(
                 request.name(),
                 placeGoogle.website(),
                 location
         )));
+
+        List<PlaceReview> reviews = placeGoogle.reviews().stream()
+                .map(review -> PlaceReview.of(review, PlaceEntity.from(place)))
+                .toList();
+        placeReviewRepository.saveAll(reviews);
+
+        return place;
     }
 }

@@ -17,6 +17,7 @@ public class PlaceReview {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String authorName;
+    @Column(length = 2000)
     private String content;
     private int rating;
     private LocalDateTime writtenAt;
