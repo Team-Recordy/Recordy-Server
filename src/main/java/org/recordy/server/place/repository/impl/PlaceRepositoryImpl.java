@@ -11,43 +11,44 @@ import org.recordy.server.place.repository.PlaceRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Repository
 public class PlaceRepositoryImpl implements PlaceRepository {
 
     private final PlaceJpaRepository placeJpaRepository;
     private final PlaceQueryDslRepository placeQueryDslRepository;
 
+    @Transactional
     @Override
     public Place save(Place place) {
-        PlaceEntity entity = placeJpaRepository.save(PlaceEntity.from(place));
+        PlaceEntity entity = placeJpaRepository.save(PlaceEntity.create(place));
 
         return Place.from(entity);
     }
 
     @Override
     public Place findById(long id) {
-        PlaceEntity entity = placeQueryDslRepository.findById(id);
-
-        if (Objects.isNull(entity)) {
+        if (Objects.isNull(placeQueryDslRepository.findById(id))) {
             throw new PlaceException(ErrorMessage.PLACE_NOT_FOUND);
         }
 
-        return Place.from(entity);
+        return Place.from(id);
     }
 
     @Override
     public Place findByName(String name) {
-        PlaceEntity entity = placeQueryDslRepository.findByName(name);
+        Long id = placeQueryDslRepository.findByName(name);
 
-        if (Objects.isNull(entity)) {
+        if (Objects.isNull(id)) {
             throw new PlaceException(ErrorMessage.PLACE_NOT_FOUND);
         }
 
-        return Place.from(entity);
+        return Place.from(id);
     }
 
     @Override

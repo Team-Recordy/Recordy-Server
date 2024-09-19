@@ -78,33 +78,7 @@ class PlaceRepositoryTest extends IntegrationTest {
 
         // then
         assertAll(
-                () -> assertThat(result.getId()).isEqualTo(place.getId()),
-                () -> assertThat(result.getName()).isEqualTo(place.getName()),
-                () -> assertThat(result.getWebsiteUrl()).isEqualTo(place.getWebsiteUrl()),
-                () -> assertThat(result.getLocation().getId()).isEqualTo(place.getLocation().getId())
-        );
-    }
-
-    @Test
-    void 장소_객체를_id로_조회할_때_관련된_전시들과_장소_객체도_조회할_수_있다() {
-        // given
-        Place place = placeRepository.save(PlaceFixture.create(LocationFixture.create()));
-
-        Exhibition exhibition1 = exhibitionRepository.save(ExhibitionFixture.create("a", place));
-        Exhibition exhibition2 = exhibitionRepository.save(ExhibitionFixture.create("b", place));
-
-        // when
-        Place result = placeRepository.findById(place.getId());
-
-        // then
-        assertAll(
-                () -> assertThat(result.getId()).isEqualTo(place.getId()),
-                () -> assertThat(result.getName()).isEqualTo(place.getName()),
-                () -> assertThat(result.getWebsiteUrl()).isEqualTo(place.getWebsiteUrl()),
-                () -> assertThat(result.getLocation().getId()).isEqualTo(place.getLocation().getId()),
-                () -> assertThat(result.getExhibitions().size()).isEqualTo(2),
-                () -> assertThat(result.getExhibitions().get(0).getId()).isEqualTo(exhibition1.getId()),
-                () -> assertThat(result.getExhibitions().get(1).getId()).isEqualTo(exhibition2.getId())
+                () -> assertThat(result.getId()).isEqualTo(place.getId())
         );
     }
 

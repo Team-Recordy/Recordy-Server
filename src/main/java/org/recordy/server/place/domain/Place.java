@@ -9,6 +9,8 @@ import org.recordy.server.place.domain.usecase.PlaceCreate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static org.recordy.server.common.util.DomainUtils.mapIfNotNull;
+
 @AllArgsConstructor
 @Getter
 public class Place {
@@ -22,6 +24,10 @@ public class Place {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    private Place(Long id) {
+        this.id = id;
+    }
+
     public static Place from(PlaceEntity entity) {
         return new Place(
                 entity.getId(),
@@ -30,10 +36,14 @@ public class Place {
                 entity.getExhibitions().stream()
                         .map(Exhibition::from)
                         .toList(),
-                Location.from(entity.getLocation()),
+                mapIfNotNull(entity.getLocation(), Location::from),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
         );
+    }
+
+    public static Place from(Long id) {
+        return new Place(id);
     }
 
     public static Place create(PlaceCreate create) {

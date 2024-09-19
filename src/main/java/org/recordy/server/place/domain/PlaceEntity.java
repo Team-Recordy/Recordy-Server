@@ -49,7 +49,11 @@ public class PlaceEntity extends JpaMetaInfoEntity {
         this.updatedAt = updatedAt;
     }
 
-    public static PlaceEntity from(Place place) {
+    private PlaceEntity(Long id) {
+        this.id = id;
+    }
+
+    public static PlaceEntity create(Place place) {
         return new PlaceEntity(
                 place.getId(),
                 place.getName(),
@@ -61,5 +65,9 @@ public class PlaceEntity extends JpaMetaInfoEntity {
                 place.getCreatedAt(),
                 place.getUpdatedAt()
         );
+    }
+
+    public static PlaceEntity from(Place place) {
+        return new PlaceEntity(place.getId());
     }
 }

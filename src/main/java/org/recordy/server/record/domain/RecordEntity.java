@@ -64,7 +64,7 @@ public class RecordEntity extends JpaMetaInfoEntity {
                 record.getFileUrl(),
                 record.getContent(),
                 UserEntity.from(record.getUploader()),
-                PlaceEntity.from(record.getPlace()),
+                PlaceEntity.create(record.getPlace()),
                 record.getCreatedAt(),
                 record.getUpdatedAt()
         );

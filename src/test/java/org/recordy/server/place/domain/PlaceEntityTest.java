@@ -15,7 +15,7 @@ class PlaceEntityTest {
         Place place = PlaceFixture.create();
 
         // when
-        PlaceEntity entity = PlaceEntity.from(place);
+        PlaceEntity entity = PlaceEntity.create(place);
 
         // then
         assertAll(

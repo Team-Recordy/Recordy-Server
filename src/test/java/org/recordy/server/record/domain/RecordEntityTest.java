@@ -40,7 +40,7 @@ class RecordEntityTest {
                 RecordFixture.FILE_URL,
                 DomainFixture.CONTENT,
                 UserEntity.from(DomainFixture.createUser()),
-                PlaceEntity.from(PlaceFixture.create()),
+                PlaceEntity.create(PlaceFixture.create()),
                 null,
                 null
         );
@@ -63,7 +63,7 @@ class RecordEntityTest {
                 RecordFixture.FILE_URL,
                 DomainFixture.CONTENT,
                 UserEntity.from(DomainFixture.createUser()),
-                PlaceEntity.from(PlaceFixture.create()),
+                PlaceEntity.create(PlaceFixture.create()),
                 null,
                 null
         );
@@ -95,7 +95,7 @@ class RecordEntityTest {
                 RecordFixture.FILE_URL,
                 DomainFixture.CONTENT,
                 UserEntity.from(DomainFixture.createUser()),
-                PlaceEntity.from(PlaceFixture.create()),
+                PlaceEntity.create(PlaceFixture.create()),
                 null,
                 null
         );

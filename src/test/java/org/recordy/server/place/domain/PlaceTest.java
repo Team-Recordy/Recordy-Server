@@ -14,7 +14,7 @@ class PlaceTest {
     @Test
     void Place_엔티티_객체로부터_Place_객체를_생성한다() {
         // given
-        PlaceEntity entity = PlaceEntity.from(PlaceFixture.create());
+        PlaceEntity entity = PlaceEntity.create(PlaceFixture.create());
 
         // when
         Place place = Place.from(entity);

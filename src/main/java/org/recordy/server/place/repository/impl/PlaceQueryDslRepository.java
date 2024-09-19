@@ -9,10 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
 import org.recordy.server.common.util.QueryDslUtils;
 import org.recordy.server.exhibition.controller.dto.response.ExhibitionGetResponse;
-import org.recordy.server.exhibition.domain.ExhibitionEntity;
 import org.recordy.server.location.controller.dto.response.LocationGetResponse;
 import org.recordy.server.place.controller.dto.response.PlaceGetResponse;
-import org.recordy.server.place.domain.PlaceEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -56,51 +54,23 @@ public class PlaceQueryDslRepository {
             list(exhibitionGetResponse),
             locationGetResponse
     );
-    private static final ConstructorExpression<PlaceEntity> placeEntityResponse = Projections.constructor(
-            PlaceEntity.class,
-            placeEntity.id,
-            placeEntity.name,
-            placeEntity.websiteUrl,
-            list(Projections.constructor(
-                    ExhibitionEntity.class,
-                    exhibitionEntity.id,
-                    exhibitionEntity.name,
-                    exhibitionEntity.startDate,
-                    exhibitionEntity.endDate,
-                    exhibitionEntity.isFree,
-                    exhibitionEntity.place
-            )),
-            placeEntity.location
-    );
 
-    public PlaceEntity findById(long id) {
-        List<PlaceEntity> content = jpaQueryFactory
-                .from(placeEntity)
-                .join(placeEntity.location)
-                .join(placeEntity.exhibitions, exhibitionEntity)
-                .where(placeEntity.id.eq(id))
-                .transform(groupBy(placeEntity.id).list(placeEntityResponse));
-
-        if (content.isEmpty()) {
-            return null;
-        }
-
-        return content.get(0);
+    public Long findById(long id) {
+        return findIdWith(placeEntity.id.eq(id));
     }
 
-    public PlaceEntity findByName(String name) {
-        List<PlaceEntity> content = jpaQueryFactory
+    public Long findByName(String name) {
+        return findIdWith(placeEntity.name.eq(name));
+    }
+
+    private Long findIdWith(BooleanExpression... expressions) {
+        return jpaQueryFactory
+                .select(placeEntity.id)
                 .from(placeEntity)
                 .join(placeEntity.location)
                 .join(placeEntity.exhibitions, exhibitionEntity)
-                .where(placeEntity.name.eq(name))
-                .transform(groupBy(placeEntity.id).list(placeEntityResponse));
-
-        if (content.isEmpty()) {
-            return null;
-        }
-
-        return content.get(0);
+                .where(expressions)
+                .fetchOne();
     }
 
     public Slice<PlaceGetResponse> findAllOrderByExhibitionStartDateDesc(Pageable pageable) {

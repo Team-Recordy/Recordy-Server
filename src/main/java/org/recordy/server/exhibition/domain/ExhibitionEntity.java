@@ -11,8 +11,6 @@ import org.recordy.server.place.domain.PlaceEntity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static org.recordy.server.common.util.DomainUtils.mapIfNotNull;
-
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -58,7 +56,7 @@ public class ExhibitionEntity extends JpaMetaInfoEntity {
                 exhibition.getStartDate(),
                 exhibition.getEndDate(),
                 exhibition.isFree(),
-                mapIfNotNull(exhibition.getPlace(), PlaceEntity::from),
+                PlaceEntity.from(exhibition.getPlace()),
                 exhibition.getCreatedAt(),
                 exhibition.getUpdatedAt()
         );
