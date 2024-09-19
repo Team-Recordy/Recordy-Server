@@ -27,6 +27,7 @@ import java.net.URLEncoder;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -56,7 +57,7 @@ public class ExhibitionDataInitializer {
 
     @PostConstruct
     public void init() throws Exception {
-        String response = getResponse(1, 1);
+        String response = getResponse(1, 1000);
         saveExhibitions(response);
     }
 
@@ -82,17 +83,22 @@ public class ExhibitionDataInitializer {
         try {
             place = placeRepository.findByName(performance.place());
         } catch (PlaceException e) {
-            place = placeService.create(new PlaceCreateRequest(performance.place(), performance.area()));
+            try {
+                place = placeService.create(new PlaceCreateRequest(performance.place(), performance.area()));
+            } catch (PlaceException ee) {
+                place = null;
+            }
         }
 
-        exhibitionRepository.save(Exhibition.create(new ExhibitionCreate(
-                null,
-                performance.title(),
-                LocalDate.parse(performance.startDate(), formatter),
-                LocalDate.parse(performance.endDate(), formatter),
-                false,
-                place
-        )));
+        if (Objects.nonNull(place))
+            exhibitionRepository.save(Exhibition.create(new ExhibitionCreate(
+                    null,
+                    performance.title(),
+                    LocalDate.parse(performance.startDate(), formatter),
+                    LocalDate.parse(performance.endDate(), formatter),
+                    false,
+                    place
+            )));
     }
 
     private String getResponse(int page, int size) {

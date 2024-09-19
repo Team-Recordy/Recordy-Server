@@ -72,6 +72,7 @@ public enum ErrorMessage {
      * PLACE
      */
     PLACE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 장소입니다."),
+    PLACE_GOOGLE_NO_RESULT(HttpStatus.NOT_FOUND, "구글 지도 검색 결과가 없습니다.")
     ;
 
     private final HttpStatus httpStatus;

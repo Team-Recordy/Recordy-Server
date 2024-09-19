@@ -1,17 +1,23 @@
 package org.recordy.server.place.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
+import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.place.domain.usecase.PlaceGoogle;
+import org.recordy.server.place.exception.PlaceException;
 import org.recordy.server.place.service.GooglePlaceService;
 import org.recordy.server.place.service.dto.GooglePlaceDetails;
 import org.recordy.server.place.service.dto.GooglePlaceDetailsResponse;
+import org.recordy.server.place.service.dto.GooglePlaceSearch;
 import org.recordy.server.place.service.dto.GooglePlaceSearchResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @Component
 public class GooglePlaceServiceImpl implements GooglePlaceService {
 
@@ -51,8 +57,14 @@ public class GooglePlaceServiceImpl implements GooglePlaceService {
                 .build()
                 .toUriString();
 
-        return Objects.requireNonNull(restTemplate.getForObject(url, GooglePlaceSearchResponse.class))
-                .candidates().get(0)
+        List<GooglePlaceSearch> candidates = Objects.requireNonNull(restTemplate.getForObject(url, GooglePlaceSearchResponse.class)).candidates();
+
+        if (candidates.isEmpty()) {
+            log.error("{} has no search result", query);
+            throw new PlaceException(ErrorMessage.PLACE_GOOGLE_NO_RESULT);
+        }
+
+        return candidates.get(0)
                 .place_id();
     }
 
