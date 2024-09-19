@@ -56,6 +56,22 @@ public class PlaceQueryDslRepository {
             list(exhibitionGetResponse),
             locationGetResponse
     );
+    private static final ConstructorExpression<PlaceEntity> placeEntityResponse = Projections.constructor(
+            PlaceEntity.class,
+            placeEntity.id,
+            placeEntity.name,
+            placeEntity.websiteUrl,
+            list(Projections.constructor(
+                    ExhibitionEntity.class,
+                    exhibitionEntity.id,
+                    exhibitionEntity.name,
+                    exhibitionEntity.startDate,
+                    exhibitionEntity.endDate,
+                    exhibitionEntity.isFree,
+                    exhibitionEntity.place
+            )),
+            placeEntity.location
+    );
 
     public PlaceEntity findById(long id) {
         List<PlaceEntity> content = jpaQueryFactory
@@ -63,24 +79,22 @@ public class PlaceQueryDslRepository {
                 .join(placeEntity.location)
                 .join(placeEntity.exhibitions, exhibitionEntity)
                 .where(placeEntity.id.eq(id))
-                .transform(groupBy(placeEntity.id).list(
-                        Projections.constructor(
-                                PlaceEntity.class,
-                                placeEntity.id,
-                                placeEntity.name,
-                                placeEntity.websiteUrl,
-                                list(Projections.constructor(
-                                        ExhibitionEntity.class,
-                                        exhibitionEntity.id,
-                                        exhibitionEntity.name,
-                                        exhibitionEntity.startDate,
-                                        exhibitionEntity.endDate,
-                                        exhibitionEntity.isFree,
-                                        exhibitionEntity.place
-                                )),
-                                placeEntity.location
-                        )
-                ));
+                .transform(groupBy(placeEntity.id).list(placeEntityResponse));
+
+        if (content.isEmpty()) {
+            return null;
+        }
+
+        return content.get(0);
+    }
+
+    public PlaceEntity findByName(String name) {
+        List<PlaceEntity> content = jpaQueryFactory
+                .from(placeEntity)
+                .join(placeEntity.location)
+                .join(placeEntity.exhibitions, exhibitionEntity)
+                .where(placeEntity.name.eq(name))
+                .transform(groupBy(placeEntity.id).list(placeEntityResponse));
 
         if (content.isEmpty()) {
             return null;

@@ -13,6 +13,7 @@ public interface PlaceRepository {
 
     // query
     Place findById(long id);
+    Place findByName(String name);
     Slice<PlaceGetResponse> findAllOrderByExhibitionStartDateDesc(Pageable pageable);
     Slice<PlaceGetResponse> findAllFreeOrderByExhibitionStartDateDesc(Pageable pageable);
     Slice<PlaceGetResponse> findAllByNameOrderByExhibitionStartDateDesc(Pageable pageable, String query);

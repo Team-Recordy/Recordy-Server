@@ -6,7 +6,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.recordy.server.common.util.data.dto.PerforList;
 import org.recordy.server.common.util.data.dto.Response;
+import org.recordy.server.exhibition.domain.Exhibition;
+import org.recordy.server.exhibition.domain.usecase.ExhibitionCreate;
 import org.recordy.server.exhibition.repository.ExhibitionRepository;
+import org.recordy.server.place.controller.dto.request.PlaceCreateRequest;
+import org.recordy.server.place.domain.Place;
+import org.recordy.server.place.exception.PlaceException;
 import org.recordy.server.place.repository.PlaceRepository;
 import org.recordy.server.place.service.PlaceService;
 import org.springframework.beans.factory.annotation.Value;
@@ -51,7 +56,7 @@ public class ExhibitionDataInitializer {
 
     @PostConstruct
     public void init() throws Exception {
-        String response = getResponse(1, 1000);
+        String response = getResponse(1, 1);
         saveExhibitions(response);
     }
 
@@ -65,6 +70,29 @@ public class ExhibitionDataInitializer {
                         LocalDate.parse(performance.startDate(), formatter).isBefore(LocalDate.now().plusDays(1))
                 )
                 .toList();
+
+        for (PerforList performance : list) {
+            saveExhibition(performance);
+        }
+    }
+
+    private void saveExhibition(PerforList performance) {
+        Place place;
+
+        try {
+            place = placeRepository.findByName(performance.place());
+        } catch (PlaceException e) {
+            place = placeService.create(new PlaceCreateRequest(performance.place(), performance.area()));
+        }
+
+        exhibitionRepository.save(Exhibition.create(new ExhibitionCreate(
+                null,
+                performance.title(),
+                LocalDate.parse(performance.startDate(), formatter),
+                LocalDate.parse(performance.endDate(), formatter),
+                false,
+                place
+        )));
     }
 
     private String getResponse(int page, int size) {

@@ -20,12 +20,13 @@ public class PlaceServiceImpl implements PlaceService {
     private final PlaceRepository placeRepository;
     private final GooglePlaceService googlePlaceService;
 
+    @Transactional
     @Override
-    public void create(PlaceCreateRequest request) {
+    public Place create(PlaceCreateRequest request) {
         PlaceGoogle placeGoogle = googlePlaceService.search(request.toQuery());
         Location location = Location.of(placeGoogle);
 
-        placeRepository.save(Place.create(new PlaceCreate(
+        return placeRepository.save(Place.create(new PlaceCreate(
                 request.name(),
                 placeGoogle.website(),
                 location

@@ -40,6 +40,17 @@ public class PlaceRepositoryImpl implements PlaceRepository {
     }
 
     @Override
+    public Place findByName(String name) {
+        PlaceEntity entity = placeQueryDslRepository.findByName(name);
+
+        if (Objects.isNull(entity)) {
+            throw new PlaceException(ErrorMessage.PLACE_NOT_FOUND);
+        }
+
+        return Place.from(entity);
+    }
+
+    @Override
     public Slice<PlaceGetResponse> findAllOrderByExhibitionStartDateDesc(Pageable pageable) {
         return placeQueryDslRepository.findAllOrderByExhibitionStartDateDesc(pageable);
     }
