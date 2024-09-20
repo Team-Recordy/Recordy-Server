@@ -1,18 +1,16 @@
 package org.recordy.server.record.repository;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
+import java.util.List;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.record.controller.dto.response.RecordGetResponse;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.exception.RecordException;
+import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.util.BookmarkFixture;
 import org.recordy.server.util.RecordFixture;
 import org.recordy.server.bookmark.repository.BookmarkRepository;
-import org.recordy.server.bookmark.repository.impl.BookmarkJpaRepository;
 import org.recordy.server.subscribe.domain.Subscribe;
 import org.recordy.server.subscribe.repository.SubscribeRepository;
 import org.recordy.server.util.DomainFixture;
@@ -43,22 +41,12 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
 
     @Autowired
     private BookmarkRepository bookmarkRepository;
-    @Autowired
-    private BookmarkJpaRepository bookmarkJpaRepository;
 
     @Autowired
     private SubscribeRepository subscribeRepository;
 
-    private static LocalDateTime now;
-    private static LocalDateTime sevenDaysAgo;
-    private static LocalDateTime eightDaysAgo;
-
-    @BeforeAll
-    static void setup() {
-        now = LocalDateTime.now();
-        sevenDaysAgo = now.minus(7, ChronoUnit.DAYS);
-        eightDaysAgo = now.minus(8, ChronoUnit.DAYS);
-    }
+    @Autowired
+    private UserRepository userRepository;
 
     @Test
     void save를_통해_레코드_데이터를_저장할_수_있다() {
@@ -204,6 +192,76 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
                 () -> assertThat((result.hasNext())).isFalse()
         );
 
+    }
+
+    @Test
+    void 사용자가_구독중인_사용자가_업로드한_모든_영상의_id_리스트를_조회할_수_있다() {
+        // given
+        // userId가 2인 사용자가 업로드한 레코드 : {3, 4, 6}
+        subscribeRepository.save(Subscribe.builder()
+                .subscribingUser(userRepository.findById(1))
+                .subscribedUser(userRepository.findById(2))
+                .build());
+
+        // when
+        List<Long> result = recordRepository.findAllIdsBySubscribingUserId(1);
+
+        // then
+        assertAll(
+                () -> assertThat(result.size()).isEqualTo(3),
+                () -> assertThat(result).hasSameElementsAs(List.of(3L, 4L, 6L))
+        );
+    }
+
+    @Test
+    void id_리스트의_각_요소로부터_일치하는_레코드_객체_리스트를_조회할_수_있다() {
+        // given
+        List<Long> ids = List.of(1L, 2L, 3L);
+
+        // when
+        List<Long> result = recordRepository.findAllByIds(ids, 1)
+                .stream()
+                .map(RecordGetResponse::id)
+                .toList();
+
+        // then
+        assertAll(
+                () -> assertThat(result).hasSameSizeAs(ids),
+                () -> assertThat(result).hasSameElementsAs(ids)
+        );
+    }
+
+    @Test
+    void id_리스트의_각_요소로부터_일치하는_레코드_객체_리스트를_조회할_때_해당_레코드가_자신의_것인지_알_수_있다() {
+        // given
+        // userId가 1인 사용자와 연관된 레코드 : {1, 2, 5}
+        List<Long> ids = List.of(1L, 2L, 3L);
+
+        // when
+        List<Boolean> result = recordRepository.findAllByIds(ids, 1)
+                .stream()
+                .map(RecordGetResponse::isMine)
+                .toList();
+
+        // then
+        assertThat(result).hasSameElementsAs(List.of(true, true, false));
+    }
+
+    @Test
+    void id_리스트의_각_요소로부터_일치하는_레코드_객체_리스트를_조회할_때_해당_레코드가_북마크_된_것인지_알_수_있다() {
+        // given
+        bookmarkRepository.save(BookmarkFixture.create(DomainFixture.createUser(), RecordFixture.create(1L)));
+        bookmarkRepository.save(BookmarkFixture.create(DomainFixture.createUser(), RecordFixture.create(2L)));
+        List<Long> ids = List.of(1L, 2L, 3L);
+
+        // when
+        List<Boolean> result = recordRepository.findAllByIds(ids, 1)
+                .stream()
+                .map(RecordGetResponse::isBookmarked)
+                .toList();
+
+        // then
+        assertThat(result).hasSameElementsAs(List.of(true, true, false));
     }
 
     @Test
