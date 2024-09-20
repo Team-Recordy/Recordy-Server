@@ -65,18 +65,6 @@ public class RecordController implements RecordApi {
     }
 
     @Override
-    @PostMapping("/{recordId}")
-    public ResponseEntity<Void> watch(
-            @UserId Long userId,
-            @PathVariable Long recordId
-    ) {
-        recordService.watch(userId, recordId);
-        return ResponseEntity
-                .ok()
-                .build();
-    }
-
-    @Override
     @GetMapping
     public ResponseEntity<CursorBasePaginatedResponse<RecordGetResponse>> getRecordsByPlaceId(
             @UserId Long userId,

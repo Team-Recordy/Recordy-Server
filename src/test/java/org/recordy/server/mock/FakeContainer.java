@@ -30,12 +30,10 @@ import org.recordy.server.mock.auth.FakeKakaoFeignClient;
 import org.recordy.server.mock.bookmark.FakeBookmarkRepository;
 import org.recordy.server.mock.record.FakeRecordRepository;
 import org.recordy.server.mock.user.FakeUserRepository;
-import org.recordy.server.mock.view.FakeViewRepository;
 import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.record.service.RecordService;
 import org.recordy.server.record.service.impl.RecordServiceImpl;
 import org.recordy.server.bookmark.repository.BookmarkRepository;
-import org.recordy.server.view.repository.ViewRepository;
 import org.recordy.server.subscribe.repository.SubscribeRepository;
 import org.recordy.server.subscribe.service.SubscribeService;
 import org.recordy.server.subscribe.service.impl.SubscribeServiceImpl;
@@ -55,7 +53,6 @@ public class FakeContainer {
     public final AuthRepository authRepository;
     public final RecordRepository recordRepository;
     public final BookmarkRepository bookmarkRepository;
-    public final ViewRepository viewRepository;
     public final SubscribeRepository subscribeRepository;
     public final ExhibitionRepository exhibitionRepository;
     public final PlaceRepository placeRepository;
@@ -92,7 +89,6 @@ public class FakeContainer {
         this.authRepository = new FakeAuthRepository();
         this.recordRepository = new FakeRecordRepository();
         this.bookmarkRepository = new FakeBookmarkRepository();
-        this.viewRepository = new FakeViewRepository();
         this.subscribeRepository = new FakeSubscribeRepository();
         this.exhibitionRepository = new FakeExhibitionRepository();
         this.placeRepository = new FakePlaceRepository();
@@ -118,9 +114,9 @@ public class FakeContainer {
                 authRepository
         );
         this.authService = new AuthServiceImpl(authRepository, platformServiceFactory, tokenService);
-        this.userService = new UserServiceImpl(DomainFixture.ROOT_USER_ID, userRepository, subscribeRepository, recordRepository, bookmarkRepository,viewRepository, authService, tokenService);
+        this.userService = new UserServiceImpl(DomainFixture.ROOT_USER_ID, userRepository, subscribeRepository, recordRepository, bookmarkRepository,authService, tokenService);
         this.s3Service = new FakeS3Service();
-        this.recordService = new RecordServiceImpl(s3Service, recordRepository, viewRepository, userRepository, placeRepository);
+        this.recordService = new RecordServiceImpl(s3Service, recordRepository, userRepository, placeRepository);
         this.bookmarkService = new BookmarkServiceImpl(userRepository, recordRepository, bookmarkRepository);
         this.subscribeService = new SubscribeServiceImpl(subscribeRepository, userRepository);
         this.exhibitionService = new ExhibitionServiceImpl(exhibitionRepository, placeRepository);

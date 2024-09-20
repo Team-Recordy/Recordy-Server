@@ -213,42 +213,6 @@ public interface RecordApi {
     );
 
     @Operation(
-            summary = "레코드 시청 API",
-            description = "사용자가 특정 레코드를 시청했음을 기록합니다.",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "요청이 성공적으로 처리되었습니다.",
-                            content = @Content
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Not Found - 존재하지 않는 사용자 또는 기록입니다.",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(
-                                            implementation = ErrorMessage.class
-                                    )
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "500",
-                            description = "Internal Server Error - 서버 내부 오류입니다.",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(
-                                            implementation = ErrorMessage.class
-                                    )
-                            )
-                    )
-            }
-    )
-    ResponseEntity<Void> watch(
-            @UserId Long userId,
-            @PathVariable Long recordId
-    );
-
-    @Operation(
             summary = "인기 레코드 리스트 조회 API",
             description = "사용자가 인기 레코드를 키워드와 함께 조회합니다. 키워드가 없으면 전체 인기 레코드를 조회합니다.",
             responses = {

@@ -14,7 +14,6 @@ public interface RecordService {
     void delete(long userId, long recordId);
 
     // query
-    void watch(long userId, long recordId);
     Slice<RecordGetResponse> getRecordsByPlaceId(long placeId, long userId, Long cursorId, int size);
     Slice<Record> getFamousRecords(int pageNumber, int size);
     Slice<Record> getRecentRecords(Long cursorId, int size);

@@ -8,19 +8,12 @@ import org.junit.jupiter.api.Test;
 import org.recordy.server.record.controller.dto.response.RecordGetResponse;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.exception.RecordException;
-import org.recordy.server.bookmark.domain.Bookmark;
-import org.recordy.server.bookmark.domain.BookmarkEntity;
 import org.recordy.server.util.BookmarkFixture;
 import org.recordy.server.util.RecordFixture;
-import org.recordy.server.view.domain.View;
-import org.recordy.server.view.domain.ViewEntity;
 import org.recordy.server.bookmark.repository.BookmarkRepository;
-import org.recordy.server.view.repository.ViewRepository;
 import org.recordy.server.bookmark.repository.impl.BookmarkJpaRepository;
-import org.recordy.server.view.repository.impl.ViewJpaRepository;
 import org.recordy.server.subscribe.domain.Subscribe;
 import org.recordy.server.subscribe.repository.SubscribeRepository;
-import org.recordy.server.user.domain.UserStatus;
 import org.recordy.server.util.DomainFixture;
 import org.recordy.server.util.db.IntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,12 +24,9 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.recordy.server.util.DomainFixture.*;
 
 @SqlGroup({
         @Sql(value = "/sql/clean-database.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS),
@@ -54,11 +44,6 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
     private BookmarkRepository bookmarkRepository;
     @Autowired
     private BookmarkJpaRepository bookmarkJpaRepository;
-
-    @Autowired
-    private ViewRepository viewRepository;
-    @Autowired
-    private ViewJpaRepository viewJpaRepository;
 
     @Autowired
     private SubscribeRepository subscribeRepository;
@@ -274,130 +259,6 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
         assertAll(
                 () -> assertThat(result.getContent()).isEmpty(),
                 () -> assertThat(result.hasNext()).isFalse()
-        );
-    }
-
-    @Test
-    void findAllOrderByPopularity를_통해_인기순으로_레코드_데이터를_조회할_수_있다() {
-        // given
-        viewRepository.save(View.builder()
-                .user(createUser(UserStatus.ACTIVE))
-                .record(RecordFixture.create(1L))
-                .build());
-        bookmarkRepository.save(Bookmark.builder()
-                .user(createUser(UserStatus.ACTIVE))
-                .record(RecordFixture.create(2L))
-                .build());
-
-        // when
-        List<Record> result = recordRepository.findAllOrderByPopularity(PageRequest.of(0, 2))
-                .getContent();
-
-        // then
-        assertAll(
-                () -> assertThat(result).hasSize(2),
-                () -> assertThat(result.get(0).getId()).isEqualTo(2L)
-        );
-    }
-
-    @Test
-    void findAllOrderByPopularity를_통해_계산한_인기순은_7일간의_데이터만_반영한다() {
-        // given
-        // 8일 전에 1L,2L을 저장, 7일 전에 3L를 저장
-        // 8일 전에 4L,5L을 시청, 7일 전에 6L를 시청
-        saveBookmarkWithCreatedAt(1, eightDaysAgo);
-        saveBookmarkWithCreatedAt(2, eightDaysAgo);
-        saveBookmarkWithCreatedAt(3, sevenDaysAgo);
-        saveViewWithCreatedAt(4, eightDaysAgo);
-        saveViewWithCreatedAt(5, eightDaysAgo);
-        saveViewWithCreatedAt(6, sevenDaysAgo);
-
-        // when
-        List<Record> result = recordRepository.findAllOrderByPopularity(PageRequest.of(0, 2))
-                .getContent();
-
-        // then
-        assertAll(
-                () -> assertThat(result).hasSize(2),
-                () -> assertThat(result.get(0).getId()).isEqualTo(3L),
-                () -> assertThat(result.get(1).getId()).isEqualTo(6L)
-        );
-    }
-
-    private void saveBookmarkWithCreatedAt(long recordId, LocalDateTime createdAt) {
-        Bookmark bookmark = bookmarkRepository.save(Bookmark.builder()
-                .user(createUser(UserStatus.ACTIVE))
-                .record(RecordFixture.create(recordId))
-                .build());
-        BookmarkEntity bookmarkEntity = bookmarkJpaRepository.findById(bookmark.getId())
-                .orElseThrow();
-        bookmarkEntity.setCreatedAt(createdAt.plusMinutes(1));
-    }
-
-    private void saveViewWithCreatedAt(long recordId, LocalDateTime createdAt) {
-        View view = viewRepository.save(View.builder()
-                .user(createUser(UserStatus.ACTIVE))
-                .record(RecordFixture.create(recordId))
-                .build());
-        ViewEntity viewEntity = viewJpaRepository.findById(view.getId())
-                .orElseThrow();
-        viewEntity.setCreatedAt(createdAt.plusMinutes(1));
-    }
-
-    @Test
-    void findAllOrderByPopularity를_통해_조회한_레코드는_조회수보다_저장수에서_더_큰_가중치를_얻는다() {
-        // given
-        viewRepository.save(View.builder()
-                .record(RecordFixture.create(1L))
-                .user(createUser(UserStatus.ACTIVE))
-                .createdAt(sevenDaysAgo)
-                .build()
-        );
-        viewRepository.save(View.builder()
-                .record(RecordFixture.create(1L))
-                .user(createUser(UserStatus.ACTIVE))
-                .createdAt(sevenDaysAgo)
-                .build()
-        );
-        viewRepository.save(View.builder()
-                .record(RecordFixture.create(1L))
-                .user(createUser(UserStatus.ACTIVE))
-                .createdAt(sevenDaysAgo)
-                .build()
-        );
-        viewRepository.save(View.builder()
-                .record(RecordFixture.create(2L))
-                .user(createUser(UserStatus.ACTIVE))
-                .createdAt(sevenDaysAgo)
-                .build()
-        );
-        // 1번 레코드 3번 시청, 2번 레코드 1번 시청
-
-        bookmarkRepository.save(Bookmark.builder()
-                .user(createUser(UserStatus.ACTIVE))
-                .record(RecordFixture.create(3L))
-                .createdAt(sevenDaysAgo)
-                .build()
-        );
-        bookmarkRepository.save(Bookmark.builder()
-                .user(createUser(UserStatus.ACTIVE))
-                .record(RecordFixture.create(4L))
-                .createdAt(sevenDaysAgo)
-                .build()
-        );
-        // 3번 레코드 1번 저장, 4번 레코드 1번 저장
-
-        // when
-        List<Record> result = recordRepository.findAllOrderByPopularity(PageRequest.of(0, 4))
-                .getContent();
-
-        // then
-        assertAll(
-                () -> assertThat(result).hasSize(4),
-                () -> assertThat(result.get(0).getId()).isEqualTo(1),
-                () -> assertThat(result.get(1).getId()).isIn(3L, 4L),
-                () -> assertThat(result.get(2).getId()).isIn(3L, 4L),
-                () -> assertThat(result.get(3).getId()).isEqualTo(2)
         );
     }
 

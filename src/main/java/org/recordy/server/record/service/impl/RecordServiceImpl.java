@@ -17,8 +17,6 @@ import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.record.service.RecordService;
 import org.recordy.server.record.service.S3Service;
 import org.recordy.server.record.domain.FileUrl;
-import org.recordy.server.view.domain.View;
-import org.recordy.server.view.repository.ViewRepository;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.repository.UserRepository;
 import org.springframework.data.domain.PageRequest;
@@ -35,7 +33,6 @@ public class RecordServiceImpl implements RecordService {
 
     private final S3Service s3Service;
     private final RecordRepository recordRepository;
-    private final ViewRepository viewRepository;
     private final UserRepository userRepository;
     private final PlaceRepository placeRepository;
 
@@ -64,18 +61,6 @@ public class RecordServiceImpl implements RecordService {
         }
 
         recordRepository.deleteById(recordId);
-    }
-
-    @Transactional
-    @Override
-    public void watch(long userId, long recordId) {
-        User user = userRepository.findById(userId);
-        Record record = recordRepository.findById(recordId);
-
-        viewRepository.save(View.builder()
-                .record(record)
-                .user(user)
-                .build());
     }
 
     @Override

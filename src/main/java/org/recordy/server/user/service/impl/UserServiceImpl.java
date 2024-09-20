@@ -18,7 +18,6 @@ import org.recordy.server.user.domain.usecase.UserSignUp;
 import org.recordy.server.user.exception.UserException;
 import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.user.service.UserService;
-import org.recordy.server.view.repository.ViewRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +31,6 @@ public class UserServiceImpl implements UserService {
     private final SubscribeRepository subscribeRepository;
     private final RecordRepository recordRepository;
     private final BookmarkRepository bookmarkRepository;
-    private final ViewRepository viewRepository;
     private final AuthService authService;
     private final AuthTokenService authTokenService;
 
@@ -42,7 +40,6 @@ public class UserServiceImpl implements UserService {
             SubscribeRepository subscribeRepository,
             RecordRepository recordRepository,
             BookmarkRepository bookmarkRepository,
-            ViewRepository viewRepository,
             AuthService authService,
             AuthTokenService authTokenService) {
         this.rootUserId = rootUserId;
@@ -50,7 +47,6 @@ public class UserServiceImpl implements UserService {
         this.subscribeRepository = subscribeRepository;
         this.recordRepository = recordRepository;
         this.bookmarkRepository = bookmarkRepository;
-        this.viewRepository = viewRepository;
         this.authService = authService;
         this.authTokenService = authTokenService;
     }
@@ -124,7 +120,6 @@ public class UserServiceImpl implements UserService {
 
         subscribeRepository.deleteByUserId(userId);
         bookmarkRepository.deleteByUserId(userId);
-        viewRepository.deleteByUserId(userId);
         recordRepository.deleteByUserId(userId);
         authService.signOut(user.getAuthPlatform().getId());
         userRepository.deleteById(userId);

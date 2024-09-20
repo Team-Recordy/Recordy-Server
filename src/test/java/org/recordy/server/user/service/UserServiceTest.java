@@ -1,6 +1,5 @@
 package org.recordy.server.user.service;
 
-import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.auth.domain.Auth;
 import org.recordy.server.auth.domain.AuthPlatform;
@@ -17,7 +16,6 @@ import org.recordy.server.util.DomainFixture;
 
 import java.util.Optional;
 
-import org.recordy.server.view.domain.View;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
@@ -309,21 +307,6 @@ public class UserServiceTest extends FakeContainer {
 
         // then
         assertThat(result).isEqualTo(0);
-    }
-
-    @Test
-    void delete를_통해_사용자를_삭제할_때_관련된_View_객체도_삭제된다() {
-        // given
-        AuthPlatform platform = DomainFixture.createAuthPlatform();
-        UserSignIn userSignIn = DomainFixture.createUserSignIn(platform.getType());
-        userService.signIn(userSignIn);
-
-        // when
-        userService.delete(DomainFixture.USER_ID);
-        List<View> result = viewRepository.findAllByUserId(DomainFixture.USER_ID);
-
-        // then
-        assertThat(result.size()).isEqualTo(0);
     }
 
     @Test
