@@ -15,7 +15,6 @@ public interface RecordRepository {
     // query
     Record findById(long id);
     Slice<RecordGetResponse> findAllByPlaceIdOrderByIdDesc(long placeId, long userId, Long cursor, int size);
-    Slice<Record> findAllOrderByPopularity(Pageable pageable);
     Slice<Record> findAllByIdAfterOrderByIdDesc(Long cursor, Pageable pageable);
     Slice<Record> findAllByUserIdOrderByIdDesc(long userId, Long cursor, Pageable pageable);
     Slice<Record> findAllBySubscribingUserIdOrderByIdDesc(long userId, Long cursor, Pageable pageable);

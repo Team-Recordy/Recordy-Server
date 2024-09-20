@@ -95,21 +95,6 @@ public class RecordController implements RecordApi {
     }
 
     @Override
-    @GetMapping("/famous")
-    public ResponseEntity<PaginatedResponse<RecordInfoWithBookmark>> getFamousRecordInfoWithBookmarks(
-            @UserId Long userId,
-            @RequestParam(required = false, defaultValue = "0") int pageNumber,
-            @RequestParam(required = false, defaultValue = "10") int pageSize
-    ){
-        Slice<Record> records = recordService.getFamousRecords(pageNumber, pageSize);
-        List<Boolean> bookmarks = bookmarkService.findBookmarks(userId, records.getContent());
-
-        return ResponseEntity
-                .ok()
-                .body(PaginatedResponse.of(RecordInfoWithBookmark.of(records, bookmarks, userId)));
-    }
-
-    @Override
     @GetMapping("/user/{otherUserId}")
     public ResponseEntity<CursorBasePaginatedResponse<RecordInfoWithBookmark>> getRecentRecordInfosWithBookmarksByUser(
             @UserId Long userId,

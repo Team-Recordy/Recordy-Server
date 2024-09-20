@@ -69,11 +69,6 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public Slice<Record> getFamousRecords(int pageNumber, int size) {
-        return recordRepository.findAllOrderByPopularity(PageRequest.of(pageNumber, size));
-    }
-
-    @Override
     public Slice<Record> getRecentRecordsByUser(long userId, Long cursorId, int size) {
         return recordRepository.findAllByUserIdOrderByIdDesc(userId, cursorId, PageRequest.ofSize(size));
     }

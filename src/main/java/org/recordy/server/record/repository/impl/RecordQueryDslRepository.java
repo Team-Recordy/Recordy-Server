@@ -22,7 +22,6 @@ import java.util.Optional;
 
 import static org.recordy.server.record.domain.QRecordEntity.recordEntity;
 import static org.recordy.server.bookmark.domain.QBookmarkEntity.bookmarkEntity;
-import static org.recordy.server.view.domain.QViewEntity.viewEntity;
 import static org.recordy.server.subscribe.domain.QSubscribeEntity.subscribeEntity;
 import static org.recordy.server.user.domain.QUserEntity.userEntity;
 
@@ -67,26 +66,6 @@ public class RecordQueryDslRepository {
                         .then(true)
                         .otherwise(false)
         );
-    }
-
-    public Slice<RecordEntity> findAllOrderByPopularity(Pageable pageable) {
-        LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
-
-        List<RecordEntity> recordEntities = jpaQueryFactory
-                .selectFrom(recordEntity)
-                .leftJoin(recordEntity.bookmarks, bookmarkEntity).fetchJoin()
-                .leftJoin(recordEntity.views, viewEntity).on(viewEntity.createdAt.after(sevenDaysAgo))
-                .where(
-                        bookmarkEntity.isNull()
-                                .or(bookmarkEntity.createdAt.after(sevenDaysAgo))
-                )
-                .groupBy(recordEntity.id)
-                .orderBy(bookmarkEntity.count().multiply(2).add(viewEntity.count()).desc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize() + 1)
-                .fetch();
-
-        return new SliceImpl<>(recordEntities, pageable, QueryDslUtils.hasNext(pageable, recordEntities));
     }
 
     public Slice<RecordEntity> findAllByIdAfterOrderByIdDesc(Long cursor, Pageable pageable) {
