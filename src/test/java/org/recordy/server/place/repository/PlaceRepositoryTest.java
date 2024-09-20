@@ -71,15 +71,13 @@ class PlaceRepositoryTest extends IntegrationTest {
     void 장소_객체를_id로_조회할_수_있다() {
         // given
         Place place = placeRepository.save(PlaceFixture.create());
-        Exhibition exhibition = exhibitionRepository.save(ExhibitionFixture.create(place));
+        exhibitionRepository.save(ExhibitionFixture.create(place));
 
         // when
-        Place result = placeRepository.findById(exhibition.getId());
+        Place result = placeRepository.findById(place.getId());
 
         // then
-        assertAll(
-                () -> assertThat(result.getId()).isEqualTo(place.getId())
-        );
+        assertThat(result.getId()).isEqualTo(place.getId());
     }
 
     @Test
@@ -89,6 +87,30 @@ class PlaceRepositoryTest extends IntegrationTest {
 
         // when, then
         assertThatThrownBy(() -> placeRepository.findById(place.getId() + 1))
+                .isInstanceOf(PlaceException.class)
+                .hasMessage(ErrorMessage.PLACE_NOT_FOUND.getMessage());
+    }
+
+    @Test
+    void 장소_객체를_이름으로_조회할_수_있다() {
+        // given
+        Place place = placeRepository.save(PlaceFixture.create());
+        exhibitionRepository.save(ExhibitionFixture.create(place));
+
+        // when
+        Place result = placeRepository.findByName(place.getName());
+
+        // then
+        assertThat(result.getId()).isEqualTo(place.getId());
+    }
+
+    @Test
+    void 존재하지_않는_이름으로_장소_객체를_조회할_경우_예외가_발생한다() {
+        // given
+        Place place = placeRepository.save(PlaceFixture.create());
+
+        // when, then
+        assertThatThrownBy(() -> placeRepository.findByName("존재하지 않는 이름"))
                 .isInstanceOf(PlaceException.class)
                 .hasMessage(ErrorMessage.PLACE_NOT_FOUND.getMessage());
     }
