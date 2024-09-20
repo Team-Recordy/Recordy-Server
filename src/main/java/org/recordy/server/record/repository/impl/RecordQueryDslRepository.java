@@ -85,22 +85,25 @@ public class RecordQueryDslRepository {
         return new SliceImpl<>(recordEntities, pageable, QueryDslUtils.hasNext(pageable, recordEntities));
     }
 
-    public Slice<RecordEntity> findAllBySubscribingUserIdOrderByIdDesc(long userId, Long cursor, Pageable pageable) {
-        List<RecordEntity> recordEntities = jpaQueryFactory
-                .selectFrom(recordEntity)
-                .leftJoin(recordEntity.bookmarks, bookmarkEntity).fetchJoin()
-                .join(recordEntity.user, userEntity).fetchJoin()
+    public List<Long> findAllIdsBySubscribingUserId(long userId) {
+        return jpaQueryFactory
+                .select(recordEntity.id)
+                .from(recordEntity)
+                .join(recordEntity.user, userEntity)
                 .join(userEntity.subscribers, subscribeEntity)
-                .where(
-                        QueryDslUtils.ltCursorId(cursor, recordEntity.id),
-                        subscribeEntity.subscribingUser.id.eq(userId)
-                )
-                .orderBy(recordEntity.id.desc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize() + 1)
+                .where(subscribeEntity.subscribingUser.id.eq(userId))
                 .fetch();
+    }
 
-        return new SliceImpl<>(recordEntities, pageable, QueryDslUtils.hasNext(pageable, recordEntities));
+    public List<RecordGetResponse> findAllByIds(List<Long> ids, long userId) {
+        return jpaQueryFactory
+                .select(getRecordResponse(userId))
+                .from(recordEntity)
+                .leftJoin(recordEntity.bookmarks, bookmarkEntity)
+                .join(recordEntity.user, userEntity)
+                .where(recordEntity.id.in(ids))
+                .groupBy(recordEntity.id)
+                .fetch();
     }
 
     public long countAllByUserId(long userId) {

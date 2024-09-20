@@ -248,9 +248,8 @@ public interface RecordApi {
                     )
             }
     )
-    ResponseEntity<CursorBasePaginatedResponse<RecordInfoWithBookmark>> getSubscribingRecordInfosWithBookmarks(
+    ResponseEntity<List<RecordGetResponse>> getSubscribingRecordInfosWithBookmarks(
             @UserId Long userId,
-            @RequestParam(required = false) Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     );
 

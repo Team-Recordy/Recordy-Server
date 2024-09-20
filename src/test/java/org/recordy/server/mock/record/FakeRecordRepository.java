@@ -65,8 +65,13 @@ public class FakeRecordRepository implements RecordRepository {
     }
 
     @Override
-    public Slice<Record> findAllBySubscribingUserIdOrderByIdDesc(long userId, Long cursor, Pageable pageable) {
-        return null;
+    public List<Long> findAllIdsBySubscribingUserId(long userId) {
+        return List.of();
+    }
+
+    @Override
+    public List<RecordGetResponse> findAllByIds(List<Long> ids, long userId) {
+        return List.of();
     }
 
     @Override

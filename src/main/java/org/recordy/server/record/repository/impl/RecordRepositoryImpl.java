@@ -12,6 +12,8 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Repository
@@ -59,9 +61,13 @@ public class RecordRepositoryImpl implements RecordRepository {
     }
 
     @Override
-    public Slice<Record> findAllBySubscribingUserIdOrderByIdDesc(long userId, Long cursor, Pageable pageable) {
-        return recordQueryDslRepository.findAllBySubscribingUserIdOrderByIdDesc(userId, cursor, pageable)
-                .map(Record::from);
+    public List<Long> findAllIdsBySubscribingUserId(long userId) {
+        return recordQueryDslRepository.findAllIdsBySubscribingUserId(userId);
+    }
+
+    @Override
+    public List<RecordGetResponse> findAllByIds(List<Long> ids, long userId) {
+        return recordQueryDslRepository.findAllByIds(ids, userId);
     }
 
     @Override

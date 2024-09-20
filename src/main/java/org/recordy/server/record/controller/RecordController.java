@@ -65,7 +65,7 @@ public class RecordController implements RecordApi {
     }
 
     @Override
-    @GetMapping
+    @GetMapping("/place")
     public ResponseEntity<CursorBasePaginatedResponse<RecordGetResponse>> getRecordsByPlaceId(
             @UserId Long userId,
             @RequestParam Long placeId,
@@ -98,18 +98,13 @@ public class RecordController implements RecordApi {
 
     @Override
     @GetMapping("/follow")
-    public ResponseEntity<CursorBasePaginatedResponse<RecordInfoWithBookmark>> getSubscribingRecordInfosWithBookmarks(
+    public ResponseEntity<List<RecordGetResponse>> getSubscribingRecordInfosWithBookmarks(
             @UserId Long userId,
-            @RequestParam(required = false) Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
-        Slice<Record> records = recordService.getSubscribingRecords(userId, cursorId, size);
-        List<Boolean> bookmarks = bookmarkService.findBookmarks(userId, records.getContent());
-
         return ResponseEntity
                 .ok()
-                .body(CursorBasePaginatedResponse.of(RecordInfoWithBookmark.of(records, bookmarks, userId), recordInfoWithBookmark -> recordInfoWithBookmark.recordInfo()
-                        .id()));
+                .body(recordService.getSubscribingRecords(userId, size));
     }
 
     @Override

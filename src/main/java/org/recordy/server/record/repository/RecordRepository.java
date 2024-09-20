@@ -5,6 +5,8 @@ import org.recordy.server.record.domain.Record;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
+import java.util.List;
+
 public interface RecordRepository {
 
     // command
@@ -16,7 +18,8 @@ public interface RecordRepository {
     Record findById(long id);
     Slice<RecordGetResponse> findAllByPlaceIdOrderByIdDesc(long placeId, long userId, Long cursor, int size);
     Slice<Record> findAllByUserIdOrderByIdDesc(long userId, Long cursor, Pageable pageable);
-    Slice<Record> findAllBySubscribingUserIdOrderByIdDesc(long userId, Long cursor, Pageable pageable);
+    List<Long> findAllIdsBySubscribingUserId(long userId);
+    List<RecordGetResponse> findAllByIds(List<Long> ids, long userId);
     long countAllByUserId(long userId);
     Long findMaxId();
     Long count();

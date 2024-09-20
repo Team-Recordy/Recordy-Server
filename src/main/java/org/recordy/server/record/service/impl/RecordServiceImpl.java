@@ -1,9 +1,7 @@
 package org.recordy.server.record.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
+
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.place.domain.Place;
@@ -23,8 +21,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -74,8 +70,16 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public Slice<Record> getSubscribingRecords(long userId, Long cursorId, int size) {
-        return recordRepository.findAllBySubscribingUserIdOrderByIdDesc(userId, cursorId, PageRequest.ofSize(size));
+    public List<RecordGetResponse> getSubscribingRecords(long userId, int size) {
+        List<Long> randomIds = getRandomSubscribingIds(userId, size);
+        return recordRepository.findAllByIds(randomIds, userId);
+    }
+
+    private List<Long> getRandomSubscribingIds(long userId, int size) {
+        List<Long> ids = recordRepository.findAllIdsBySubscribingUserId(userId);
+        Collections.shuffle(ids);
+
+        return ids.subList(0, Math.min(size, ids.size()));
     }
 
     @Override
