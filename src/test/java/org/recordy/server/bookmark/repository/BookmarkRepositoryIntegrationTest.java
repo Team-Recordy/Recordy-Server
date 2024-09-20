@@ -59,7 +59,7 @@ public class BookmarkRepositoryIntegrationTest extends IntegrationTest {
         // userId 2 <-> recordId 1
 
         // when
-        Slice<Record> result = recordRepository.findAllByIdAfterOrderByIdDesc(null, PageRequest.ofSize(4));
+        Slice<Record> result = recordRepository.findAllByUserIdOrderByIdDesc(1, null, PageRequest.ofSize(4));
 
         // then
         assertAll(

@@ -5,6 +5,7 @@ import java.time.temporal.ChronoUnit;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.record.controller.dto.response.RecordGetResponse;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.exception.RecordException;
@@ -81,13 +82,11 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
     void deleteById를_통해_레코드를_삭제할_수_있다() {
         // when
         recordRepository.deleteById(1);
-        Slice<Record> result = recordRepository.findAllByIdAfterOrderByIdDesc(2L, PageRequest.ofSize(1));
 
-        //then
-        assertAll(
-                () -> assertThat(result.getContent()).hasSize(0),
-                () -> assertThat(result.hasNext()).isFalse()
-        );
+        // then
+        assertThatThrownBy(() -> recordRepository.findById(1))
+                .isInstanceOf(RecordException.class)
+                .hasMessage(ErrorMessage.RECORD_NOT_FOUND.getMessage());
     }
 
     @Test
@@ -205,61 +204,6 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
                 () -> assertThat((result.hasNext())).isFalse()
         );
 
-    }
-
-    @Test
-    void findAllByIdAfterOrderByIdDesc를_통해_cursor_값이_null일_경우_최신순으로_레코드_데이터를_조회할_수_있다() {
-        // given
-        int size = 10;
-
-        // when
-        Slice<Record> result = recordRepository.findAllByIdAfterOrderByIdDesc(null, PageRequest.ofSize(size));
-
-        // then
-        assertAll(
-                () -> assertThat(result.getContent()).hasSize(6),
-                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(6L),
-                () -> assertThat(result.getContent().get(1).getId()).isEqualTo(5L),
-                () -> assertThat(result.getContent().get(2).getId()).isEqualTo(4L),
-                () -> assertThat(result.getContent().get(3).getId()).isEqualTo(3L),
-                () -> assertThat(result.getContent().get(4).getId()).isEqualTo(2L),
-                () -> assertThat(result.getContent().get(5).getId()).isEqualTo(1L),
-                () -> assertThat(result.hasNext()).isFalse()
-        );
-    }
-
-    @Test
-    void findAllByIdAfterOrderByIdDesc를_통해_커서보다_오래된_레코드_데이터를_최신순으로_조회할_수_있다() {
-        // given
-        long cursor = 4L;
-        int size = 2;
-
-        // when
-        Slice<Record> result = recordRepository.findAllByIdAfterOrderByIdDesc(cursor, PageRequest.ofSize(size));
-
-        // then
-        assertAll(
-                () -> assertThat(result.getContent()).hasSize(2),
-                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(3L),
-                () -> assertThat(result.getContent().get(1).getId()).isEqualTo(2L),
-                () -> assertThat(result.hasNext()).isTrue()
-        );
-    }
-
-    @Test
-    void findAllByIdAfterOrderByIdDesc를_통해_커서가_가장_오래된_레코드_데이터라면_아무것도_반환하지_않는다() {
-        // given
-        long cursor = 1L;
-        int size = 2;
-
-        // when
-        var result = recordRepository.findAllByIdAfterOrderByIdDesc(cursor, PageRequest.ofSize(size));
-
-        // then
-        assertAll(
-                () -> assertThat(result.getContent()).isEmpty(),
-                () -> assertThat(result.hasNext()).isFalse()
-        );
     }
 
     @Test

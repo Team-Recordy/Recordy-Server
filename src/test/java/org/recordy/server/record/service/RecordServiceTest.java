@@ -61,11 +61,7 @@ class RecordServiceTest extends FakeContainer {
         recordService.delete(user.getId(), id);
 
         // then
-        Slice<Record> result = recordService.getRecentRecords(0L, 1);
-        assertAll(
-                () -> assertThat(result.getContent()).hasSize(0),
-                () -> assertThat(result.hasNext()).isFalse()
-        );
+        assertThat(recordRepository.findById(id)).isNull();
     }
 
     @Test
@@ -97,47 +93,6 @@ class RecordServiceTest extends FakeContainer {
                 () -> assertThat(result.get()).hasSize(2),
                 () -> assertThat(result.getContent().get(0).getId()).isEqualTo(2L),
                 () -> assertThat(result.getContent().get(1).getId()).isEqualTo(1L),
-                () -> assertThat(result.hasNext()).isFalse()
-        );
-    }
-
-    @Test
-    void getRecentRecords를_통해_커서_이후의_레코드를_최신_순서로_읽을_수_있다() {
-        // given
-        recordService.create(request, DomainFixture.USER_ID);
-        recordService.create(request, DomainFixture.USER_ID);
-        recordService.create(request, DomainFixture.USER_ID);
-        recordService.create(request, DomainFixture.USER_ID);
-        recordService.create(request, DomainFixture.USER_ID);
-
-        // when
-        Slice<Record> result = recordService.getRecentRecords(6L, 10);
-
-        // then
-        assertAll(
-                () -> assertThat(result.getContent()).hasSize(5),
-                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(5L),
-                () -> assertThat(result.getContent().get(1).getId()).isEqualTo(4L),
-                () -> assertThat(result.getContent().get(2).getId()).isEqualTo(3L),
-                () -> assertThat(result.getContent().get(3).getId()).isEqualTo(2L),
-                () -> assertThat(result.getContent().get(4).getId()).isEqualTo(1L),
-                () -> assertThat(result.hasNext()).isFalse()
-        );
-    }
-
-    @Test
-    void getRecentRecords를_통해_커서가_제일_오래된_값이라면_아무것도_반환되지_않는다() {
-        // given
-        recordService.create(request, DomainFixture.USER_ID);
-        recordService.create(request, DomainFixture.USER_ID);
-        recordService.create(request, DomainFixture.USER_ID);
-
-        // when
-        Slice<Record> result = recordService.getRecentRecords(1L, 3);
-
-        // then
-        assertAll(
-                () -> assertThat(result.getContent()).hasSize(0),
                 () -> assertThat(result.hasNext()).isFalse()
         );
     }
