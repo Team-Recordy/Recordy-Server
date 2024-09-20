@@ -74,11 +74,6 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public Slice<Record> getRecentRecords(Long cursorId, int size) {
-        return recordRepository.findAllByIdAfterOrderByIdDesc(cursorId, PageRequest.ofSize(size));
-    }
-
-    @Override
     public Slice<Record> getSubscribingRecords(long userId, Long cursorId, int size) {
         return recordRepository.findAllBySubscribingUserIdOrderByIdDesc(userId, cursorId, PageRequest.ofSize(size));
     }

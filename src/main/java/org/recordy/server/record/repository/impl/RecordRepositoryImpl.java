@@ -53,12 +53,6 @@ public class RecordRepositoryImpl implements RecordRepository {
     }
 
     @Override
-    public Slice<Record> findAllByIdAfterOrderByIdDesc(Long cursor, Pageable pageable) {
-        return recordQueryDslRepository.findAllByIdAfterOrderByIdDesc(cursor, pageable)
-                .map(Record::from);
-    }
-
-    @Override
     public Slice<Record> findAllByUserIdOrderByIdDesc(long userId, Long cursor, Pageable pageable) {
         return recordQueryDslRepository.findAllByUserIdOrderByIdDesc(userId, cursor, pageable)
                 .map(Record::from);

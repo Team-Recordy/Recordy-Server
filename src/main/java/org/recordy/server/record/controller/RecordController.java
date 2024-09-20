@@ -80,21 +80,6 @@ public class RecordController implements RecordApi {
     }
 
     @Override
-    @GetMapping("/recent")
-    public ResponseEntity<CursorBasePaginatedResponse<RecordInfoWithBookmark>> getRecentRecordInfosWithBookmarks(
-            @UserId Long userId,
-            @RequestParam(required = false) Long cursorId,
-            @RequestParam(required = false, defaultValue = "10") int size
-    ) {
-        Slice<Record> records = recordService.getRecentRecords(cursorId, size);
-        List<Boolean> bookmarks = bookmarkService.findBookmarks(userId, records.getContent());
-
-        return ResponseEntity
-                .ok().
-                body(CursorBasePaginatedResponse.of(RecordInfoWithBookmark.of(records, bookmarks, userId),recordInfoWithBookmark -> recordInfoWithBookmark.recordInfo().id()));
-    }
-
-    @Override
     @GetMapping("/user/{otherUserId}")
     public ResponseEntity<CursorBasePaginatedResponse<RecordInfoWithBookmark>> getRecentRecordInfosWithBookmarksByUser(
             @UserId Long userId,

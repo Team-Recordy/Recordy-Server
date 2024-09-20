@@ -52,20 +52,6 @@ public class FakeRecordRepository implements RecordRepository {
     }
 
     @Override
-    public Slice<Record> findAllByIdAfterOrderByIdDesc(Long cursor, Pageable pageable) {
-        List<Record> content = records.keySet().stream()
-                .filter(key -> key < checkCursor(cursor))
-                .map(records::get)
-                .sorted(Comparator.comparing(Record::getId).reversed())
-                .toList();
-
-        if (content.size() < pageable.getPageSize())
-            return new SliceImpl<>(content, pageable, false);
-
-        return new SliceImpl<>(content.subList(0, pageable.getPageSize()), pageable, true);
-    }
-
-    @Override
     public Slice<Record> findAllByUserIdOrderByIdDesc(long userId, Long cursor, Pageable pageable) {
         List<Record> content = records.values().stream()
                 .filter(record -> record.getId() < checkCursor(cursor) && record.getUploader().getId() == userId)

@@ -15,7 +15,6 @@ public interface RecordService {
 
     // query
     Slice<RecordGetResponse> getRecordsByPlaceId(long placeId, long userId, Long cursorId, int size);
-    Slice<Record> getRecentRecords(Long cursorId, int size);
     Slice<Record> getRecentRecordsByUser(long userId, Long cursorId, int size);
     Slice<Record> getSubscribingRecords(long userId, Long cursorId, int size);
     List<Record> getTotalRecords(int size);

@@ -68,21 +68,6 @@ public class RecordQueryDslRepository {
         );
     }
 
-    public Slice<RecordEntity> findAllByIdAfterOrderByIdDesc(Long cursor, Pageable pageable) {
-        List<RecordEntity> recordEntities = jpaQueryFactory
-                .selectFrom(recordEntity)
-                .leftJoin(recordEntity.bookmarks, bookmarkEntity).fetchJoin()
-                .where(
-                        QueryDslUtils.ltCursorId(cursor, recordEntity.id)
-                )
-                .orderBy(recordEntity.id.desc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize() + 1)
-                .fetch();
-
-        return new SliceImpl<>(recordEntities, pageable, QueryDslUtils.hasNext(pageable, recordEntities));
-    }
-
     public Slice<RecordEntity> findAllByUserIdOrderByIdDesc(long userId, Long cursor, Pageable pageable) {
         List<RecordEntity> recordEntities = jpaQueryFactory
                 .selectFrom(recordEntity)

@@ -213,48 +213,6 @@ public interface RecordApi {
     );
 
     @Operation(
-            summary = "최근 레코드 리스트 조회 API",
-            description = "사용자가 최근 레코드를 키워드와 함께 조회합니다. 키워드가 없으면 전체 최근 레코드를 조회합니다.",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "요청이 성공적으로 처리되었습니다.",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(
-                                            implementation = Slice.class
-                                    )
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "401",
-                            description = "Unauthorized - 인증이 필요합니다.",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(
-                                            implementation = ErrorMessage.class
-                                    )
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "500",
-                            description = "Internal Server Error - 서버 내부 오류입니다.",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(
-                                            implementation = ErrorMessage.class
-                                    )
-                            )
-                    )
-            }
-    )
-    ResponseEntity<CursorBasePaginatedResponse<RecordInfoWithBookmark>> getRecentRecordInfosWithBookmarks(
-            @UserId Long userId,
-            @RequestParam(required = false) Long cursorId,
-            @RequestParam(required = false, defaultValue = "10") int size
-    );
-
-    @Operation(
             summary = "구독 레코드 리스트 조회 API",
             description = "구독 중인 유저의 레코드 리스트를 최신순으로 반환합니다.",
             responses = {
