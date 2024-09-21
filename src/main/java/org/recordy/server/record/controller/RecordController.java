@@ -1,16 +1,10 @@
 package org.recordy.server.record.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.recordy.server.bookmark.domain.Bookmark;
-import org.recordy.server.bookmark.service.BookmarkService;
 import org.recordy.server.common.dto.response.CursorBasePaginatedResponse;
-import org.recordy.server.common.dto.response.PaginatedResponse;
 import org.recordy.server.auth.security.resolver.UserId;
 import org.recordy.server.record.controller.dto.request.RecordCreateRequest;
-import org.recordy.server.record.controller.dto.response.BookmarkedRecord;
 import org.recordy.server.record.controller.dto.response.RecordGetResponse;
-import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
-import org.recordy.server.record.domain.Record;
 
 import org.recordy.server.record.service.RecordService;
 import org.recordy.server.record.service.S3Service;
@@ -28,7 +22,6 @@ import java.util.List;
 public class RecordController implements RecordApi {
 
     private final RecordService recordService;
-    private final BookmarkService bookmarkService;
     private final S3Service s3Service;
 
     @GetMapping("/presigned-url")
@@ -40,7 +33,7 @@ public class RecordController implements RecordApi {
 
     @Override
     @PostMapping
-    public ResponseEntity<Void> createRecord(
+    public ResponseEntity<Void> create(
             @UserId Long uploaderId,
             @RequestBody RecordCreateRequest request
     ) {
@@ -53,7 +46,7 @@ public class RecordController implements RecordApi {
 
     @Override
     @DeleteMapping("/{recordId}")
-    public ResponseEntity<Void> deleteRecord(
+    public ResponseEntity<Void> delete(
             @UserId Long uploaderId,
             @PathVariable Long recordId
     ) {
@@ -66,7 +59,7 @@ public class RecordController implements RecordApi {
 
     @Override
     @GetMapping("/place")
-    public ResponseEntity<CursorBasePaginatedResponse<RecordGetResponse>> getRecordsByPlaceId(
+    public ResponseEntity<CursorBasePaginatedResponse<RecordGetResponse>> getAllByPlace(
             @UserId Long userId,
             @RequestParam Long placeId,
             @RequestParam(required = false) Long cursorId,
@@ -81,24 +74,22 @@ public class RecordController implements RecordApi {
 
     @Override
     @GetMapping("/user/{otherUserId}")
-    public ResponseEntity<CursorBasePaginatedResponse<RecordInfoWithBookmark>> getRecentRecordInfosWithBookmarksByUser(
+    public ResponseEntity<CursorBasePaginatedResponse<RecordGetResponse>> getAllByUser(
             @UserId Long userId,
             @PathVariable Long otherUserId,
             @RequestParam(required = false) Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
-        Slice<Record> records = recordService.getRecentRecordsByUser(otherUserId, cursorId, size);
-        List<Boolean> bookmarks = bookmarkService.findBookmarks(userId, records.getContent());
+        Slice<RecordGetResponse> records = recordService.getRecentRecordsByUser(otherUserId, userId, cursorId, size);
 
         return ResponseEntity
                 .ok()
-                .body(CursorBasePaginatedResponse.of(RecordInfoWithBookmark.of(records, bookmarks, userId), recordInfoWithBookmark -> recordInfoWithBookmark.recordInfo()
-                        .id()));
+                .body(CursorBasePaginatedResponse.of(records, RecordGetResponse::id));
     }
 
     @Override
     @GetMapping("/follow")
-    public ResponseEntity<List<RecordGetResponse>> getSubscribingRecordInfosWithBookmarks(
+    public ResponseEntity<List<RecordGetResponse>> getRandomBySubscription(
             @UserId Long userId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
@@ -108,30 +99,27 @@ public class RecordController implements RecordApi {
     }
 
     @Override
-    @GetMapping("/total")
-    public ResponseEntity<List<RecordInfoWithBookmark>> getTotalRecordInfosWithBookmarks(
+    @GetMapping("/random")
+    public ResponseEntity<List<RecordGetResponse>> getRandom(
             @UserId Long userId,
             @RequestParam(required = false, defaultValue = "10") int size
     ){
-        List<Record> records = recordService.getTotalRecords(size);
-        List<Boolean> bookmarks = bookmarkService.findBookmarks(userId, records);
-
         return ResponseEntity
                 .ok()
-                .body(RecordInfoWithBookmark.of(records, bookmarks, userId));
+                .body(recordService.getRecords(userId, size));
     }
 
     @Override
     @GetMapping("/bookmarks")
-    public ResponseEntity<CursorBasePaginatedResponse<BookmarkedRecord>> getBookmarkedRecords(
+    public ResponseEntity<CursorBasePaginatedResponse<RecordGetResponse>> getAllBookmarked(
             @UserId Long userId,
             @RequestParam(required = false) Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
-        Slice<Bookmark> bookmarks = bookmarkService.getBookmarks(userId, cursorId, size);
+        Slice<RecordGetResponse> records = recordService.getBookmarkedRecords(userId, cursorId, size);
 
         return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(CursorBasePaginatedResponse.of(BookmarkedRecord.of(bookmarks, userId), BookmarkedRecord::bookmarkId));
+                .ok()
+                .body(CursorBasePaginatedResponse.of(records, RecordGetResponse::id));
     }
 }

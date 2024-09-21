@@ -17,7 +17,6 @@ import org.recordy.server.record.service.S3Service;
 import org.recordy.server.record.domain.FileUrl;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.repository.UserRepository;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,8 +64,13 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public Slice<Record> getRecentRecordsByUser(long userId, Long cursorId, int size) {
-        return recordRepository.findAllByUserIdOrderByIdDesc(userId, cursorId, PageRequest.ofSize(size));
+    public Slice<RecordGetResponse> getRecentRecordsByUser(long otherUserId, long userId, Long cursorId, int size) {
+        return recordRepository.findAllByUserIdOrderByIdDesc(otherUserId, userId, cursorId, size);
+    }
+
+    @Override
+    public Slice<RecordGetResponse> getBookmarkedRecords(long userId, Long cursorId, int size) {
+        return recordRepository.findAllByBookmarkOrderByIdDesc(userId, cursorId, size);
     }
 
     @Override
@@ -77,30 +81,22 @@ public class RecordServiceImpl implements RecordService {
 
     private List<Long> getRandomSubscribingIds(long userId, int size) {
         List<Long> ids = recordRepository.findAllIdsBySubscribingUserId(userId);
-        Collections.shuffle(ids);
-
-        return ids.subList(0, Math.min(size, ids.size()));
+        return getRandomSubList(ids, size);
     }
 
     @Override
-    public List<Record> getTotalRecords(int size) {
-        Long maxId = recordRepository.findMaxId();
-        Long count = recordRepository.count();
+    public List<RecordGetResponse> getRecords(long userId, int size) {
+        List<Long> ids = getRandomIds(size);
+        return recordRepository.findAllByIds(ids, userId);
+    }
 
-        Set<Long> selectedIds = new HashSet<>();
-        Random random = new Random();
-        List<Record> records = new ArrayList<>();
+    private List<Long> getRandomIds(int size) {
+        List<Long> ids = recordRepository.findAllIds();
+        return getRandomSubList(ids, size);
+    }
 
-        while (records.size() < size && records.size() < count) {
-            long randomId = random.nextLong(maxId) + 1;
-
-            if (!selectedIds.contains(randomId)) {
-                selectedIds.add(randomId);
-
-                records.add(recordRepository.findById(randomId));
-            }
-        }
-
-        return records;
+    private List<Long> getRandomSubList(List<Long> ids, int size) {
+        Collections.shuffle(ids);
+        return ids.subList(0, Math.min(size, ids.size()));
     }
 }

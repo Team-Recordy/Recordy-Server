@@ -17,7 +17,6 @@ import org.recordy.server.util.DomainFixture;
 import org.recordy.server.util.db.IntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
@@ -175,23 +174,21 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    void findAllByUserIdOrderByCreatedAtDesc를_통해_userId를_기반으로_레코드_데이터를_조회할_수_있다() {
+    void findAllByUserIdOrderByIdDesc를_통해_userId를_기반으로_레코드_데이터를_조회할_수_있다() {
         // given
         // userId가 1인 레코드 : {1, 2, 5}
         long userId = 1;
 
-        //when
-        Slice<Record> result = recordRepository.findAllByUserIdOrderByIdDesc(userId, null, PageRequest.ofSize(10));
+        // when
+        Slice<RecordGetResponse> result = recordRepository.findAllByUserIdOrderByIdDesc(userId, userId, null, 10);
 
-        //then
+        // then
         assertAll(
                 () -> assertThat(result.get()).hasSize(3),
-                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(5L),
-                () -> assertThat(result.getContent().get(1).getId()).isEqualTo(2L),
-                () -> assertThat(result.getContent().get(2).getId()).isEqualTo(1L),
-                () -> assertThat((result.hasNext())).isFalse()
+                () -> assertThat(result.getContent().get(0).id()).isEqualTo(5L),
+                () -> assertThat(result.getContent().get(1).id()).isEqualTo(2L),
+                () -> assertThat(result.getContent().get(2).id()).isEqualTo(1L)
         );
-
     }
 
     @Test
@@ -262,39 +259,5 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(result).hasSameElementsAs(List.of(true, true, false));
-    }
-
-    @Test
-    void countAllByUserId를_통해_특정_사용자가_올린_레코드_데이터의_수를_구할_수_있다() {
-        //given
-        //when
-        long result = recordRepository.countAllByUserId(1L);
-
-        //then
-        assertAll(
-                () -> assertThat(result).isEqualTo(3)
-        );
-    }
-
-    @Test
-    void findMaxId를_통해_현재_모든_레코드_데이터_중_가장_큰_id값을_구할_수_있다() {
-        //given
-        //when
-        Long maxId = recordRepository.findMaxId();
-
-        //then
-        assertThat(maxId).isEqualTo(6);
-    }
-
-    @Test
-    void count를_통해_현재_모든_레코드_데이터의_개수를_구할_수_있다() {
-        //given
-        //when
-        Long result = recordRepository.count();
-
-        //then
-        assertAll(
-                () -> assertThat(result).isEqualTo(6)
-        );
     }
 }

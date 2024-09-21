@@ -1,19 +1,13 @@
 package org.recordy.server.bookmark.service.impl;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.bookmark.domain.Bookmark;
 import org.recordy.server.bookmark.repository.BookmarkRepository;
 import org.recordy.server.bookmark.service.BookmarkService;
-import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.record.domain.Record;
-import org.recordy.server.record.exception.RecordException;
 import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.repository.UserRepository;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,20 +40,8 @@ public class BookmarkServiceImpl implements BookmarkService {
     }
 
     @Override
-    public List<Boolean> findBookmarks(long userId, List<Record> records) {
-        return records.stream()
-                .map(record -> bookmarkRepository.existsByUserIdAndRecordId(userId, record.getId()))
-                .collect(Collectors.toList());
-    }
-
-    @Override
     public Long countBookmarks(long userId) {
         return bookmarkRepository.countByUserId(userId);
-    }
-
-    @Override
-    public Slice<Bookmark> getBookmarks(long userId, Long cursorId, int size) {
-        return bookmarkRepository.findAllByBookmarksOrderByIdDesc(userId, cursorId, PageRequest.ofSize(size));
     }
 }
 

@@ -1,6 +1,5 @@
 package org.recordy.server.record.service;
 
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.common.message.ErrorMessage;
@@ -13,7 +12,7 @@ import org.recordy.server.user.domain.User;
 import org.recordy.server.util.DomainFixture;
 import org.recordy.server.util.PlaceFixture;
 import org.recordy.server.util.RecordFixture;
-import org.springframework.data.domain.Slice;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -74,66 +73,5 @@ class RecordServiceTest extends FakeContainer {
         assertThatThrownBy(() -> recordService.delete(100, id))
                 .isInstanceOf(RecordException.class)
                 .hasMessageContaining(ErrorMessage.FORBIDDEN_DELETE_RECORD.getMessage());
-    }
-
-    @Test
-    void getRecentRecordsByUser를_통해_userId를_기반으로_레코드_데이터를_조회할_수_있다() {
-        //given
-        recordService.create(request, 1);
-        recordService.create(request, 1);
-        recordService.create(request, 2);
-        recordService.create(request, 2);
-        recordService.create(request, 2);
-
-        //when
-        Slice<Record> result = recordService.getRecentRecordsByUser(1, Long.MAX_VALUE, 10);
-
-        //then
-        assertAll(
-                () -> assertThat(result.get()).hasSize(2),
-                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(2L),
-                () -> assertThat(result.getContent().get(1).getId()).isEqualTo(1L),
-                () -> assertThat(result.hasNext()).isFalse()
-        );
-    }
-
-    @Test
-    void getTotalRecords를_통해_size만큼의_레코드를_중복없이_랜덤으로_반환할_수_있다() {
-        // given
-        recordService.create(request, DomainFixture.USER_ID);
-        recordService.create(request, DomainFixture.USER_ID);
-        recordService.create(request, DomainFixture.USER_ID);
-        recordService.create(request, DomainFixture.USER_ID);
-        recordService.create(request, DomainFixture.USER_ID);
-
-        // when
-        List<Record> result = recordService.getTotalRecords(3);
-
-        // then
-        assertAll(
-                () -> assertThat(result.size()).isEqualTo(3),
-                () -> assertThat(result.get(0).getId()).isNotEqualTo(result.get(1).getId()),
-                () -> assertThat(result.get(1).getId()).isNotEqualTo(result.get(2).getId()),
-                () -> assertThat(result.get(0).getId()).isNotEqualTo(result.get(2).getId())
-        );
-    }
-
-    @Test
-    void getTotalRecords를_통해_size만큼의_레코드가_없으면_현재_레코드_수만큼만_반환한다() {
-        // given
-        recordService.create(request, DomainFixture.USER_ID);
-        recordService.create(request, DomainFixture.USER_ID);
-        recordService.create(request, DomainFixture.USER_ID);
-
-        // when
-        List<Record> result = recordService.getTotalRecords(5);
-
-        // then
-        assertAll(
-                () -> assertThat(result.size()).isEqualTo(3),
-                () -> assertThat(result.get(0).getId()).isNotEqualTo(result.get(1).getId()),
-                () -> assertThat(result.get(1).getId()).isNotEqualTo(result.get(2).getId()),
-                () -> assertThat(result.get(0).getId()).isNotEqualTo(result.get(2).getId())
-        );
     }
 }

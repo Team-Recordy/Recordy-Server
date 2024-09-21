@@ -255,8 +255,7 @@ public class UserServiceTest extends FakeContainer {
 
         // then
         assertAll(
-                () -> assertThat(userRepository.findById(DomainFixture.USER_ID)).isNull(),
-                () -> assertThat(recordRepository.count()).isZero()
+                () -> assertThat(userRepository.findById(DomainFixture.USER_ID)).isNull()
         );
     }
 

@@ -6,13 +6,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.recordy.server.common.dto.response.CursorBasePaginatedResponse;
-import org.recordy.server.common.dto.response.PaginatedResponse;
 import org.recordy.server.auth.security.resolver.UserId;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.record.controller.dto.request.RecordCreateRequest;
-import org.recordy.server.record.controller.dto.response.BookmarkedRecord;
 import org.recordy.server.record.controller.dto.response.RecordGetResponse;
-import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -76,7 +73,7 @@ public interface RecordApi {
                     )
             }
     )
-    public ResponseEntity<Void> createRecord(
+    public ResponseEntity<Void> create(
             @UserId Long uploaderId,
             @RequestBody RecordCreateRequest request);
 
@@ -121,7 +118,7 @@ public interface RecordApi {
                     )
             }
     )
-    ResponseEntity<Void> deleteRecord(
+    ResponseEntity<Void> delete(
             @UserId Long uploaderId,
             @PathVariable Long recordId
     );
@@ -162,7 +159,7 @@ public interface RecordApi {
                     )
             }
     )
-    ResponseEntity<CursorBasePaginatedResponse<RecordGetResponse>> getRecordsByPlaceId(
+    ResponseEntity<CursorBasePaginatedResponse<RecordGetResponse>> getAllByPlace(
             @UserId Long userId,
             @RequestParam Long placeId,
             @RequestParam(required = false) Long cursorId,
@@ -205,7 +202,7 @@ public interface RecordApi {
                     )
             }
     )
-    ResponseEntity<CursorBasePaginatedResponse<RecordInfoWithBookmark>> getRecentRecordInfosWithBookmarksByUser(
+    ResponseEntity<CursorBasePaginatedResponse<RecordGetResponse>> getAllByUser(
             @UserId Long userId,
             @PathVariable Long otherUserId,
             @RequestParam(required = false) Long cursorId,
@@ -248,7 +245,7 @@ public interface RecordApi {
                     )
             }
     )
-    ResponseEntity<List<RecordGetResponse>> getSubscribingRecordInfosWithBookmarks(
+    ResponseEntity<List<RecordGetResponse>> getRandomBySubscription(
             @UserId Long userId,
             @RequestParam(required = false, defaultValue = "10") int size
     );
@@ -289,7 +286,7 @@ public interface RecordApi {
                     )
             }
     )
-    ResponseEntity<List<RecordInfoWithBookmark>> getTotalRecordInfosWithBookmarks(
+    ResponseEntity<List<RecordGetResponse>> getRandom(
             @UserId Long userId,
             @RequestParam(required = false, defaultValue = "10") int size
     );
@@ -330,7 +327,7 @@ public interface RecordApi {
                     )
             }
     )
-    public ResponseEntity<CursorBasePaginatedResponse<BookmarkedRecord>> getBookmarkedRecords(
+    public ResponseEntity<CursorBasePaginatedResponse<RecordGetResponse>> getAllBookmarked(
             @UserId Long userId,
             @RequestParam(required = false) Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size

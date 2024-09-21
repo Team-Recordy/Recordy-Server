@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import org.junit.jupiter.api.Test;
+import org.recordy.server.record.controller.dto.response.RecordGetResponse;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.bookmark.domain.Bookmark;
@@ -53,19 +54,17 @@ public class BookmarkRepositoryIntegrationTest extends IntegrationTest {
     @Test
     void save를_통해_저장된_북마크_데이터는_레코드_조회_시_데이터_개수로_카운트될_수_있다() {
         // given
-        // userId 1 <-> recordId 1
-        // userId 1 <-> recordId 2
-        // userId 2 <-> recordId 1
-        // userId 2 <-> recordId 1
+        // id가 1, 2인 각 레코드 모두 북마크 2번씩 되어 있음
+        // 2개 레코드 모두 id가 1인 사용자가 업로드했음
 
         // when
-        Slice<Record> result = recordRepository.findAllByUserIdOrderByIdDesc(1, null, PageRequest.ofSize(4));
+        Slice<RecordGetResponse> result = recordRepository.findAllByUserIdOrderByIdDesc(1, 1, null, 4);
 
         // then
         assertAll(
                 () -> assertThat(result.getContent().size()).isEqualTo(2),
-                () -> assertThat(result.getContent().get(0).getBookmarkCount()).isEqualTo(2),
-                () -> assertThat(result.getContent().get(1).getBookmarkCount()).isEqualTo(2)
+                () -> assertThat(result.getContent().get(0).bookmarkCount()).isEqualTo(2),
+                () -> assertThat(result.getContent().get(1).bookmarkCount()).isEqualTo(2)
         );
     }
 

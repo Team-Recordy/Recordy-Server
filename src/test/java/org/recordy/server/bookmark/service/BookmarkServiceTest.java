@@ -4,11 +4,9 @@ package org.recordy.server.bookmark.service;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.mock.FakeContainer;
-import org.recordy.server.record.domain.Record;
 import org.recordy.server.util.DomainFixture;
 
 public class BookmarkServiceTest extends FakeContainer {
@@ -47,29 +45,5 @@ public class BookmarkServiceTest extends FakeContainer {
                 () -> assertThat(result).isFalse(),
                 () -> assertThat(bookmarkRepository.existsByUserIdAndRecordId(DomainFixture.USER_ID, DomainFixture.RECORD_ID)).isFalse()
         );
-    }
-
-        @Test
-    void findBookmarks를_통해_주어진_레코드_리스트에_대한_북마크_여부예_대한_리스트를_반환받을_수_있다() {
-        //given
-        Long userId = 1L;
-        bookmarkService.bookmark(userId, 1);
-        bookmarkService.bookmark(userId, 3);
-        List<Record> records = List.of(
-                DomainFixture.createRecord(1),
-                DomainFixture.createRecord(2),
-                DomainFixture.createRecord(3)
-        );
-
-        //when
-        List<Boolean> result = bookmarkService.findBookmarks(userId, records);
-
-        //then
-        assertAll(
-                () -> result.get(0).equals(true),
-                () -> result.get(1).equals(false),
-                () -> result.get(2).equals(true)
-        );
-
     }
 }
