@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.common.domain.JpaMetaInfoEntity;
-import org.recordy.server.record.domain.RecordEntity;
 import org.recordy.server.subscribe.domain.SubscribeEntity;
 
 import java.time.LocalDateTime;
@@ -70,17 +69,5 @@ public class UserEntity extends JpaMetaInfoEntity {
                 user.getTermsAgreement(),
                 user.getCreatedAt()
         );
-    }
-
-    public User toDomain() {
-        return User.builder()
-                .id(id)
-                .authPlatform(new AuthPlatform(platformId, platformType))
-                .status(status)
-                .profileImageUrl(profileImageUrl)
-                .nickname(nickname)
-                .termsAgreement(TermsAgreement.of(useTerm, personalInfoTerm, ageTerm))
-                .createdAt(createdAt)
-                .build();
     }
 }

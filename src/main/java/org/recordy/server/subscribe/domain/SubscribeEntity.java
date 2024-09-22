@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.UserEntity;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -43,8 +44,8 @@ public class SubscribeEntity {
     public Subscribe toDomain() {
         return Subscribe.builder()
                 .id(id)
-                .subscribingUser(subscribingUser.toDomain())
-                .subscribedUser(subscribedUser.toDomain())
+                .subscribingUser(User.from(subscribingUser))
+                .subscribedUser(User.from(subscribedUser))
                 .build();
     }
 }

@@ -1,9 +1,11 @@
 package org.recordy.server.mock.user;
 
 import org.recordy.server.common.message.ErrorMessage;
+import org.recordy.server.user.controller.dto.response.UserInfo;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.exception.UserException;
 import org.recordy.server.user.repository.UserRepository;
+import org.springframework.data.domain.Slice;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,13 +36,13 @@ public class FakeUserRepository implements UserRepository {
     }
 
     @Override
-    public void deleteById(long userId) {
-        users.remove(userId);
+    public void deleteById(long id) {
+        users.remove(id);
     }
 
     @Override
-    public User findById(long userId) {
-        return users.get(userId);
+    public User findById(long id) {
+        return users.get(id);
     }
 
     @Override
@@ -60,5 +62,15 @@ public class FakeUserRepository implements UserRepository {
 
                     return false;
                 });
+    }
+
+    @Override
+    public Slice<UserInfo> findFollowings(long userId, Long cursor, int size) {
+        return null;
+    }
+
+    @Override
+    public Slice<UserInfo> findFollowers(long userId, Long cursor, int size) {
+        return null;
     }
 }

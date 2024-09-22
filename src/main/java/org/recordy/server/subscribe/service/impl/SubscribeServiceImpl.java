@@ -1,7 +1,5 @@
 package org.recordy.server.subscribe.service.impl;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.subscribe.domain.Subscribe;
 import org.recordy.server.subscribe.domain.usecase.SubscribeCreate;
@@ -45,18 +43,5 @@ public class SubscribeServiceImpl implements SubscribeService {
     public Slice<User> getSubscribedUsers(long subscribingUserId, Long cursor, int size) {
         return subscribeRepository.findAllBySubscribingUserId(subscribingUserId, cursor, PageRequest.ofSize(size))
                 .map(Subscribe::getSubscribedUser);
-    }
-
-    @Override
-    public Slice<User> getSubscribingUsers(long subscribedUserId, Long cursor, int size) {
-        return subscribeRepository.findAllBySubscribedUserId(subscribedUserId, cursor, PageRequest.ofSize(size))
-                .map(Subscribe::getSubscribingUser);
-    }
-
-    @Override
-    public List<Boolean> findSubscribes(long userId, Slice<User> subscribingUsers) {
-        return subscribingUsers.getContent().stream()
-                .map(subscribingUser -> subscribeRepository.existsBySubscribingUserIdAndSubscribedUserId(userId, subscribingUser.getId()))
-                .collect(Collectors.toList());
     }
 }

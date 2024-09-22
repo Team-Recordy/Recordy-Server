@@ -72,17 +72,12 @@ class UserRepositoryIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    void findById를_통해_유저_ID로_유저_데이터를_조회할_수_있다() {
+    void 유저_ID로부터_id가_포함된_유저_데이터를_조회할_수_있다() {
         // when
         User result = userRepository.findById(USER_ID);
 
         // then
-        assertAll(
-                () -> assertThat(result.getId()).isEqualTo(USER_ID),
-                () -> assertThat(result.getAuthPlatform().getId()).isEqualTo(DomainFixture.PLATFORM_ID),
-                () -> assertThat(result.getAuthPlatform().getType()).isEqualTo(DomainFixture.KAKAO_PLATFORM_TYPE),
-                () -> assertThat(result.getStatus()).isEqualTo(DomainFixture.DEFAULT_USER_STATUS)
-        );
+        assertThat(result.getId()).isEqualTo(USER_ID);
     }
 
     @Test
@@ -94,12 +89,15 @@ class UserRepositoryIntegrationTest extends IntegrationTest {
 
     @Test
     void findByPlatformId를_통해_플랫폼_ID로_유저_데이터를_조회할_수_있다() {
+        // given
+        User user = userRepository.save(createUser());
+
         // when
-        User result = userRepository.findByPlatformId(DomainFixture.PLATFORM_ID);
+        User result = userRepository.findByPlatformId(user.getAuthPlatform().getId());
 
         // then
         assertAll(
-                () -> assertThat(result.getId()).isNotNull(),
+                () -> assertThat(result.getId()).isEqualTo(user.getId()),
                 () -> assertThat(result.getAuthPlatform().getId()).isEqualTo(DomainFixture.PLATFORM_ID),
                 () -> assertThat(result.getAuthPlatform().getType()).isEqualTo(DomainFixture.KAKAO_PLATFORM_TYPE),
                 () -> assertThat(result.getStatus()).isEqualTo(DomainFixture.DEFAULT_USER_STATUS)

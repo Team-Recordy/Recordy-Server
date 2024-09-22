@@ -1,10 +1,12 @@
 package org.recordy.server.user.service;
 
 import org.recordy.server.auth.domain.Auth;
+import org.recordy.server.user.controller.dto.response.UserInfo;
 import org.recordy.server.user.domain.usecase.UserProfile;
 import org.recordy.server.user.domain.usecase.UserSignIn;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.usecase.UserSignUp;
+import org.springframework.data.domain.Slice;
 
 public interface UserService {
 
@@ -18,4 +20,6 @@ public interface UserService {
     // query
     UserProfile getProfile(long userId, long otherUserId);
     void validateDuplicateNickname(String nickname);
+    Slice<UserInfo> getSubscribingUserInfos(long userId, Long cursor, int size);
+    Slice<UserInfo> getSubscribedUserInfos(long userId, Long cursor, int size);
 }

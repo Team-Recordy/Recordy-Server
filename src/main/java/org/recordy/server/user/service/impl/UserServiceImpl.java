@@ -9,6 +9,7 @@ import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.subscribe.domain.Subscribe;
 import org.recordy.server.subscribe.repository.SubscribeRepository;
+import org.recordy.server.user.controller.dto.response.UserInfo;
 import org.recordy.server.user.domain.TermsAgreement;
 import org.recordy.server.user.domain.usecase.UserProfile;
 import org.recordy.server.user.domain.User;
@@ -19,6 +20,7 @@ import org.recordy.server.user.exception.UserException;
 import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.user.service.UserService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -142,5 +144,15 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByNickname(nickname)) {
             throw new UserException(ErrorMessage.DUPLICATE_NICKNAME);
         }
+    }
+
+    @Override
+    public Slice<UserInfo> getSubscribingUserInfos(long userId, Long cursor, int size) {
+        return userRepository.findFollowings(userId, cursor, size);
+    }
+
+    @Override
+    public Slice<UserInfo> getSubscribedUserInfos(long userId, Long cursor, int size) {
+        return userRepository.findFollowers(userId, cursor, size);
     }
 }

@@ -46,7 +46,7 @@ public class Record {
                 entity.getId(),
                 entity.getFileUrl(),
                 entity.getContent(),
-                entity.getUser().toDomain(),
+                User.from(entity.getUser()),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt(),
                 entity.getBookmarks().size()

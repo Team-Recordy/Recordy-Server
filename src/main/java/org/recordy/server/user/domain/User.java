@@ -28,6 +28,20 @@ public class User {
     private String nickname;
     private TermsAgreement termsAgreement;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
+    public static User from(UserEntity entity) {
+        return User.builder()
+                .id(entity.getId())
+                .authPlatform(new AuthPlatform(entity.getPlatformId(), entity.getPlatformType()))
+                .status(entity.getStatus())
+                .profileImageUrl(entity.getProfileImageUrl())
+                .nickname(entity.getNickname())
+                .termsAgreement(TermsAgreement.of(entity.isUseTerm(), entity.isPersonalInfoTerm(), entity.isAgeTerm()))
+                .createdAt(entity.getCreatedAt())
+                .updatedAt(entity.getUpdatedAt())
+                .build();
+    }
 
     public User activate(UserSignUp userSignUp) {
         validateNicknameFormat(userSignUp.nickname());
