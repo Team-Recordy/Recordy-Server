@@ -52,8 +52,7 @@ public class UserController implements UserApi {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(CursorBasePaginatedResponse.of(
-                        UserInfo.from(subscribeService.getSubscribedUsers(userId, cursorId, size)),
-                        UserInfo::id
+                        UserInfo.from(subscribeService.getSubscribedUsers(userId, cursorId, size))
                 ));
     }
 
@@ -70,8 +69,7 @@ public class UserController implements UserApi {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(CursorBasePaginatedResponse.of(
-                        UserInfoWithFollowing.of(users, following),
-                        userInfoWithFollowing -> userInfoWithFollowing.userInfo().id()
+                        UserInfoWithFollowing.of(users, following)
                 ));
     }
 

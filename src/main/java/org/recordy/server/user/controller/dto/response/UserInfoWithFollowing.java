@@ -1,13 +1,16 @@
 package org.recordy.server.user.controller.dto.response;
 
 import java.util.List;
+
+import org.recordy.server.common.dto.response.CursorResponse;
 import org.recordy.server.user.domain.User;
 import org.springframework.data.domain.Slice;
 
 public record UserInfoWithFollowing(
         UserInfo userInfo,
         Boolean following
-) {
+) implements CursorResponse {
+
     public static Slice<UserInfoWithFollowing> of(Slice<User> users, List<Boolean> following) {
         return users.map(user -> {
             int index = users.getContent().indexOf(user);
@@ -16,5 +19,10 @@ public record UserInfoWithFollowing(
 
             return new UserInfoWithFollowing(userInfo, isFollowing);
         });
+    }
+
+    @Override
+    public long getId() {
+        return userInfo.getId();
     }
 }

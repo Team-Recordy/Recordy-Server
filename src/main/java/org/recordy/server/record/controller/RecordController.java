@@ -69,7 +69,7 @@ public class RecordController implements RecordApi {
 
         return ResponseEntity
                 .ok()
-                .body(CursorBasePaginatedResponse.of(records, RecordGetResponse::id));
+                .body(CursorBasePaginatedResponse.of(records));
     }
 
     @Override
@@ -84,7 +84,7 @@ public class RecordController implements RecordApi {
 
         return ResponseEntity
                 .ok()
-                .body(CursorBasePaginatedResponse.of(records, RecordGetResponse::id));
+                .body(CursorBasePaginatedResponse.of(records));
     }
 
     @Override
@@ -120,6 +120,6 @@ public class RecordController implements RecordApi {
 
         return ResponseEntity
                 .ok()
-                .body(CursorBasePaginatedResponse.of(records, RecordGetResponse::id));
+                .body(CursorBasePaginatedResponse.of(records));
     }
 }

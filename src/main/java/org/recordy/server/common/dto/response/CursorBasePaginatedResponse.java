@@ -1,7 +1,6 @@
 package org.recordy.server.common.dto.response;
 
 import java.util.List;
-import java.util.function.Function;
 import org.springframework.data.domain.Slice;
 
 public record CursorBasePaginatedResponse<T>(
@@ -10,18 +9,11 @@ public record CursorBasePaginatedResponse<T>(
         List<T> content
 ) {
 
-    public static <T> CursorBasePaginatedResponse<T> of(Slice<T> slice, Function<T, Long> idExtractor) {
-        Long nextCursor = null;
-        List<T> content = slice.getContent();
-
-        if (!content.isEmpty()) {
-            nextCursor = idExtractor.apply(content.get(content.size() - 1));
-        }
-
+    public static <T extends CursorResponse> CursorBasePaginatedResponse<T> of(Slice<T> slice) {
         return new CursorBasePaginatedResponse<>(
-                nextCursor,
+                slice.getContent().isEmpty() ? null : slice.getContent().get(slice.getSize() - 1).getId(),
                 slice.hasNext(),
-                content
+                slice.getContent()
         );
     }
 }
