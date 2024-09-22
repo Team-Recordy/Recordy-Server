@@ -20,6 +20,8 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @SqlGroup({
         @Sql(value = "/sql/clean-database.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS),
         @Sql(value = "/sql/bookmark-repository-test-data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
@@ -56,15 +58,20 @@ public class BookmarkRepositoryIntegrationTest extends IntegrationTest {
         // given
         // id가 1, 2인 각 레코드 모두 북마크 2번씩 되어 있음
         // 2개 레코드 모두 id가 1인 사용자가 업로드했음
+        // 레코드의 총 개수는 4임
 
         // when
-        Slice<RecordGetResponse> result = recordRepository.findAllByUserIdOrderByIdDesc(1, 1, null, 4);
+        List<Long> result = recordRepository.findAllByUserIdOrderByIdDesc(1, 1, null, 4)
+                .stream()
+                .map(RecordGetResponse::bookmarkCount)
+                .sorted()
+                .toList();
 
         // then
         assertAll(
-                () -> assertThat(result.getContent().size()).isEqualTo(2),
-                () -> assertThat(result.getContent().get(0).bookmarkCount()).isEqualTo(2),
-                () -> assertThat(result.getContent().get(1).bookmarkCount()).isEqualTo(2)
+                () -> assertThat(result).hasSize(2),
+                () -> assertThat(result.get(0)).isEqualTo(2),
+                () -> assertThat(result.get(1)).isEqualTo(2)
         );
     }
 

@@ -2,7 +2,7 @@ package org.recordy.server.record.repository.impl;
 
 import com.querydsl.core.types.ConstructorExpression;
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,6 @@ public class RecordQueryDslRepository {
         List<RecordGetResponse> content = jpaQueryFactory
                 .select(getRecordResponse(userId))
                 .from(recordEntity)
-                .leftJoin(recordEntity.bookmarks, bookmarkEntity)
                 .join(recordEntity.user, userEntity)
                 .where(
                         recordEntity.place.id.eq(placeId),
@@ -48,7 +47,6 @@ public class RecordQueryDslRepository {
         List<RecordGetResponse> content = jpaQueryFactory
                 .select(getRecordResponse(userId))
                 .from(recordEntity)
-                .leftJoin(recordEntity.bookmarks, bookmarkEntity)
                 .join(recordEntity.user, userEntity)
                 .where(
                         userEntity.id.eq(otherUserId),
@@ -66,10 +64,10 @@ public class RecordQueryDslRepository {
         return jpaQueryFactory
                 .select(getRecordResponse(userId))
                 .from(recordEntity)
-                .leftJoin(recordEntity.bookmarks, bookmarkEntity)
                 .join(recordEntity.user, userEntity)
                 .where(recordEntity.id.in(ids))
                 .groupBy(recordEntity.id)
+                .orderBy(recordEntity.id.desc())
                 .fetch();
     }
 
@@ -77,7 +75,6 @@ public class RecordQueryDslRepository {
         List<RecordGetResponse> content = jpaQueryFactory
                 .select(getRecordResponse(userId))
                 .from(recordEntity)
-                .join(recordEntity.bookmarks, bookmarkEntity)
                 .join(recordEntity.user, userEntity)
                 .where(
                         bookmarkEntity.user.id.eq(userId),
@@ -97,16 +94,18 @@ public class RecordQueryDslRepository {
                 recordEntity.fileUrl,
                 recordEntity.content,
                 recordEntity.user.id,
-                userEntity.nickname,
-                bookmarkEntity.id.count(),
-                new CaseBuilder()
-                        .when(recordEntity.user.id.eq(userId))
-                        .then(true)
-                        .otherwise(false),
-                new CaseBuilder()
-                        .when(bookmarkEntity.user.id.eq(userId))
-                        .then(true)
-                        .otherwise(false)
+                recordEntity.user.nickname,
+                JPAExpressions
+                        .select(bookmarkEntity.count())
+                        .from(bookmarkEntity)
+                        .where(bookmarkEntity.record.eq(recordEntity)),
+                recordEntity.user.id.eq(userId),
+                JPAExpressions
+                        .selectOne()
+                        .from(bookmarkEntity)
+                        .where(bookmarkEntity.record.eq(recordEntity)
+                                .and(bookmarkEntity.user.id.eq(userId)))
+                        .exists()
         );
     }
 
