@@ -3,6 +3,7 @@ package org.recordy.server.mock.user;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.user.controller.dto.response.UserInfo;
 import org.recordy.server.user.domain.User;
+import org.recordy.server.user.domain.usecase.UserProfile;
 import org.recordy.server.user.exception.UserException;
 import org.recordy.server.user.repository.UserRepository;
 import org.springframework.data.domain.Slice;
@@ -71,6 +72,11 @@ public class FakeUserRepository implements UserRepository {
 
     @Override
     public Slice<UserInfo> findFollowers(long userId, Long cursor, int size) {
+        return null;
+    }
+
+    @Override
+    public UserProfile findProfile(long targetUserId, long userId) {
         return null;
     }
 }

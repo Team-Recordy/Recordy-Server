@@ -7,6 +7,7 @@ import org.recordy.server.subscribe.repository.impl.SubscribeJpaRepository;
 import org.recordy.server.user.controller.dto.response.UserInfo;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.UserEntity;
+import org.recordy.server.user.domain.usecase.UserProfile;
 import org.recordy.server.user.exception.UserException;
 import org.recordy.server.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -83,5 +84,10 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public Slice<UserInfo> findFollowers(long userId, Long cursor, int size) {
         return userQueryDslRepository.findFollowers(userId, cursor, size);
+    }
+
+    @Override
+    public UserProfile findProfile(long targetUserId, long userId) {
+        return userQueryDslRepository.findProfile(targetUserId, userId);
     }
 }

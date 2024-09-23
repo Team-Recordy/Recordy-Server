@@ -128,15 +128,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserProfile getProfile(long userId, long otherUserId) {
-        User user = userRepository.findById(otherUserId);
-//        long records = recordRepository.countAllByUserId(user.getId());
-        long followers = subscribeRepository.countSubscribingUsers(user.getId());
-        long followings = subscribeRepository.countSubscribedUsers(user.getId());
-        long bookmarks = bookmarkRepository.countByUserId(userId);
-        boolean isFollowing = subscribeRepository.existsBySubscribingUserIdAndSubscribedUserId(userId, otherUserId);
-
-        return UserProfile.of(user, 0L, followers, followings, bookmarks, isFollowing);
+    public UserProfile getProfile(long targetUserId, long userId) {
+        return userRepository.findProfile(targetUserId, userId);
     }
 
     @Override

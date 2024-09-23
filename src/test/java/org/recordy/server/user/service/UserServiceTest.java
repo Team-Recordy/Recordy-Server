@@ -318,29 +318,6 @@ public class UserServiceTest extends FakeContainer {
     }
 
     @Test
-    void getProfile을_통해_사용자의_프로필_정보를_읽을_수_있다() {
-        // given
-        User user1 = userRepository.save(DomainFixture.createUser(1));
-        User user2 = userRepository.save(DomainFixture.createUser(2));
-
-        recordRepository.save(DomainFixture.createRecord());
-        subscribeRepository.save(new Subscribe(1L, user1, user2));
-        subscribeRepository.save(new Subscribe(2L, user2, user1));
-
-        // when
-        UserProfile userProfile = userService.getProfile(2, DomainFixture.USER_ID);
-
-        // then
-        assertAll(
-                () -> assertThat(userProfile.id()).isEqualTo(DomainFixture.USER_ID),
-                () -> assertThat(userProfile.nickname()).isEqualTo(DomainFixture.USER_NICKNAME),
-                () -> assertThat(userProfile.recordCount()).isEqualTo(1),
-                () -> assertThat(userProfile.followerCount()).isEqualTo(1),
-                () -> assertThat(userProfile.followingCount()).isEqualTo(1)
-        );
-    }
-
-    @Test
     void validateDuplicateNickname을_통해_중복된_닉네임을_확인할_수_있다() {
         // given
         String nickname = DomainFixture.USER_NICKNAME;

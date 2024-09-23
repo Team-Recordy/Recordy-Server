@@ -72,6 +72,6 @@ public class UserController implements UserApi {
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(userService.getProfile(userId, otherUserId));
+                .body(userService.getProfile(otherUserId, userId));
     }
 }

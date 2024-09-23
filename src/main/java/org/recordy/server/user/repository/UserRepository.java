@@ -2,6 +2,7 @@ package org.recordy.server.user.repository;
 
 import org.recordy.server.user.controller.dto.response.UserInfo;
 import org.recordy.server.user.domain.User;
+import org.recordy.server.user.domain.usecase.UserProfile;
 import org.springframework.data.domain.Slice;
 
 public interface UserRepository {
@@ -16,4 +17,5 @@ public interface UserRepository {
     boolean existsByNickname(String nickname);
     Slice<UserInfo> findFollowings(long userId, Long cursor, int size);
     Slice<UserInfo> findFollowers(long userId, Long cursor, int size);
+    UserProfile findProfile(long targetUserId, long userId);
 }
