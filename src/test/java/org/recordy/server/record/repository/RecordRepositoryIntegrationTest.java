@@ -3,16 +3,15 @@ package org.recordy.server.record.repository;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.recordy.server.keyword.domain.Keyword;
+import org.recordy.server.record.controller.dto.response.RecordGetResponse;
 import org.recordy.server.record.domain.Record;
-import org.recordy.server.record.domain.UploadEntity;
 import org.recordy.server.record.exception.RecordException;
-import org.recordy.server.record.service.dto.FileUrl;
 import org.recordy.server.bookmark.domain.Bookmark;
 import org.recordy.server.bookmark.domain.BookmarkEntity;
+import org.recordy.server.util.BookmarkFixture;
+import org.recordy.server.util.RecordFixture;
 import org.recordy.server.view.domain.View;
 import org.recordy.server.view.domain.ViewEntity;
 import org.recordy.server.bookmark.repository.BookmarkRepository;
@@ -52,9 +51,6 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
     private RecordRepository recordRepository;
 
     @Autowired
-    private UploadRepository uploadRepository;
-
-    @Autowired
     private BookmarkRepository bookmarkRepository;
     @Autowired
     private BookmarkJpaRepository bookmarkJpaRepository;
@@ -81,52 +77,18 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
     @Test
     void save를_통해_레코드_데이터를_저장할_수_있다() {
         // given
-        Record record = DomainFixture.createRecord(6);
+        Record record = RecordFixture.create();
 
         // when
-        Record result = recordRepository.save(record);
+        Long id = recordRepository.save(record);
 
         // then
+        Record result = recordRepository.findById(id);
         assertAll(
                 () -> assertThat(result.getId()).isNotNull(),
-                () -> assertThat(result.getFileUrl().videoUrl()).isEqualTo(DomainFixture.VIDEO_URL),
-                () -> assertThat(result.getFileUrl().thumbnailUrl()).isEqualTo(DomainFixture.THUMBNAIL_URL),
-                () -> assertThat(result.getLocation()).isEqualTo(DomainFixture.LOCATION),
-                () -> assertThat(result.getContent()).isEqualTo(CONTENT)
-        );
-    }
-
-    @Test
-    void save를_통해_레코드와_관련한_키워드로부터_업로드_데이터를_저장할_수_있다() {
-        // given
-        Record record = recordRepository.save(createRecord(6));
-
-        // when
-        List<UploadEntity> uploads = uploadRepository.findAllByRecordId(record.getId());
-
-        // then
-        assertAll(
-                () -> assertThat(uploads).hasSize(3),
-                () -> assertThat(uploads.get(0).getKeyword().toDomain()).isEqualTo(KEYWORD_1),
-                () -> assertThat(uploads.get(1).getKeyword().toDomain()).isEqualTo(KEYWORD_2),
-                () -> assertThat(uploads.get(2).getKeyword().toDomain()).isEqualTo(KEYWORD_3)
-        );
-    }
-
-    @Test
-    void save를_통해_저장한_업로드는_관련된_레코드를_참조할_수_있다() {
-        // given
-        Record savedRecord = recordRepository.save(DomainFixture.createRecord(6));
-
-        // when
-        List<UploadEntity> uploads = uploadRepository.findAllByRecordId(savedRecord.getId());
-
-        // then
-        assertAll(
-                () -> assertThat(uploads).hasSize(3),
-                () -> assertThat(uploads.get(0).getRecord().getId()).isEqualTo(savedRecord.getId()),
-                () -> assertThat(uploads.get(1).getRecord().getId()).isEqualTo(savedRecord.getId()),
-                () -> assertThat(uploads.get(2).getRecord().getId()).isEqualTo(savedRecord.getId())
+                () -> assertThat(result.getUploader().getId()).isEqualTo(record.getUploader().getId()),
+                () -> assertThat(result.getContent()).isEqualTo(record.getContent()),
+                () -> assertThat(result.getFileUrl()).isEqualTo(record.getFileUrl())
         );
     }
 
@@ -140,6 +102,87 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
         assertAll(
                 () -> assertThat(result.getContent()).hasSize(0),
                 () -> assertThat(result.hasNext()).isFalse()
+        );
+    }
+
+    @Test
+    void 특정한_장소와_관련한_레코드_리스트를_조회할_수_있다() {
+        // given
+        // placeId가 1인 레코드 : {1, 2, 3, 4, 5, 6}
+
+        // when
+        Slice<RecordGetResponse> result = recordRepository.findAllByPlaceIdOrderByIdDesc(1, 1, null, 6);
+
+        // then
+        assertAll(
+                () -> assertThat(result.get()).hasSize(6),
+                () -> assertThat(result.getContent().get(0).id()).isEqualTo(6L),
+                () -> assertThat(result.getContent().get(1).id()).isEqualTo(5L),
+                () -> assertThat(result.getContent().get(2).id()).isEqualTo(4L),
+                () -> assertThat(result.getContent().get(3).id()).isEqualTo(3L),
+                () -> assertThat(result.getContent().get(4).id()).isEqualTo(2L),
+                () -> assertThat(result.getContent().get(5).id()).isEqualTo(1L),
+                () -> assertThat(result.hasNext()).isFalse()
+        );
+    }
+
+    @Test
+    void 특정한_장소와_관련한_커서보다_작은_id를_가진_레코드_리스트를_조회할_수_있다() {
+        // given
+        // placeId가 1인 레코드 : {1, 2, 3, 4, 5, 6}
+
+        // when
+        Slice<RecordGetResponse> result = recordRepository.findAllByPlaceIdOrderByIdDesc(1, 1, 4L, 3);
+
+        // then
+        assertAll(
+                () -> assertThat(result.get()).hasSize(3),
+                () -> assertThat(result.getContent().get(0).id()).isEqualTo(3L),
+                () -> assertThat(result.getContent().get(1).id()).isEqualTo(2L),
+                () -> assertThat(result.getContent().get(2).id()).isEqualTo(1L),
+                () -> assertThat(result.hasNext()).isFalse()
+        );
+    }
+
+    @Test
+    void 레코드_리스트_조회_시_해당_레코드가_사용자의_것인지_아닌지_판별할_수_있다() {
+        // given
+        // userId가 1인 레코드 : {1, 2, 5}
+        // placeId가 1인 레코드 : {1, 2, 3, 4, 5, 6}
+
+        // when
+        Slice<RecordGetResponse> result = recordRepository.findAllByPlaceIdOrderByIdDesc(1, 1, null, 6);
+
+        // then
+        assertAll(
+                () -> assertThat(result.getContent().get(0).isMine()).isFalse(), // id : 6
+                () -> assertThat(result.getContent().get(1).isMine()).isTrue(),  // id : 5
+                () -> assertThat(result.getContent().get(2).isMine()).isFalse(), // id : 4
+                () -> assertThat(result.getContent().get(3).isMine()).isFalse(), // id : 3
+                () -> assertThat(result.getContent().get(4).isMine()).isTrue(),  // id : 2
+                () -> assertThat(result.getContent().get(5).isMine()).isTrue()   // id : 1
+        );
+    }
+
+    @Test
+    void 레코드_리스트_조회_시_해당_레코드를_사용자가_북마크했는지_안했는지_판별할_수_있다() {
+        // given
+        // placeId가 1인 레코드 : {1, 2, 3, 4, 5, 6}
+        bookmarkRepository.save(BookmarkFixture.create(DomainFixture.createUser(), RecordFixture.create(1L)));
+        bookmarkRepository.save(BookmarkFixture.create(DomainFixture.createUser(), RecordFixture.create(3L)));
+        bookmarkRepository.save(BookmarkFixture.create(DomainFixture.createUser(), RecordFixture.create(5L)));
+
+        // when
+        Slice<RecordGetResponse> result = recordRepository.findAllByPlaceIdOrderByIdDesc(1, 1, null, 6);
+
+        // then
+        assertAll(
+                () -> assertThat(result.getContent().get(0).isBookmarked()).isFalse(), // id : 6
+                () -> assertThat(result.getContent().get(1).isBookmarked()).isTrue(),  // id : 5
+                () -> assertThat(result.getContent().get(2).isBookmarked()).isFalse(), // id : 4
+                () -> assertThat(result.getContent().get(3).isBookmarked()).isTrue(),  // id : 3
+                () -> assertThat(result.getContent().get(4).isBookmarked()).isFalse(), // id : 2
+                () -> assertThat(result.getContent().get(5).isBookmarked()).isTrue()   // id : 1
         );
     }
 
@@ -162,19 +205,18 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
     @Test
     void findAllByUserIdOrderByCreatedAtDesc를_통해_userId를_기반으로_레코드_데이터를_조회할_수_있다() {
         // given
-        // userId 순서 : {1, 1, 2, 2, 1}
+        // userId가 1인 레코드 : {1, 2, 5}
         long userId = 1;
-        long cursor = 4L;
-        int size = 2;
 
         //when
-        Slice<Record> result = recordRepository.findAllByUserIdOrderByIdDesc(userId, cursor, PageRequest.ofSize(size));
+        Slice<Record> result = recordRepository.findAllByUserIdOrderByIdDesc(userId, null, PageRequest.ofSize(10));
 
         //then
         assertAll(
-                () -> assertThat(result.get()).hasSize(2),
-                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(2L),
-                () -> assertThat(result.getContent().get(1).getId()).isEqualTo(1L),
+                () -> assertThat(result.get()).hasSize(3),
+                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(5L),
+                () -> assertThat(result.getContent().get(1).getId()).isEqualTo(2L),
+                () -> assertThat(result.getContent().get(2).getId()).isEqualTo(1L),
                 () -> assertThat((result.hasNext())).isFalse()
         );
 
@@ -236,50 +278,15 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    void findAllByIdAfterAndKeywordsOrderByIdDesc를_통해_키워드로_필터링된_레코드_데이터를_최신순으로_조회할_수_있다() {
-        // given
-        List<Keyword> keywords = List.of(DomainFixture.KEYWORD_1, DomainFixture.KEYWORD_2);
-        long cursor = 3L;
-        int size = 2;
-
-        // when
-        Slice<Record> result = recordRepository.findAllByIdAfterAndKeywordsOrderByIdDesc(keywords, cursor, PageRequest.ofSize(size));
-
-        // then
-        assertAll(
-                () -> assertThat(result.getContent()).hasSize(2),
-                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(2L),
-                () -> assertThat(result.getContent().get(1).getId()).isEqualTo(1L),
-                () -> assertThat(result.hasNext()).isFalse()
-        );
-    }
-
-    @Test
     void findAllOrderByPopularity를_통해_인기순으로_레코드_데이터를_조회할_수_있다() {
         // given
         viewRepository.save(View.builder()
                 .user(createUser(UserStatus.ACTIVE))
-                .record(Record.builder()
-                        .id(1L)
-                        .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
-                        .location(LOCATION)
-                        .content(CONTENT)
-                        .keywords(KEYWORDS)
-                        .uploader(createUser(UserStatus.ACTIVE))
-                        .build())
-                .createdAt(sevenDaysAgo)
+                .record(RecordFixture.create(1L))
                 .build());
         bookmarkRepository.save(Bookmark.builder()
                 .user(createUser(UserStatus.ACTIVE))
-                .record(Record.builder()
-                        .id(2L)
-                        .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
-                        .location(LOCATION)
-                        .content(CONTENT)
-                        .keywords(KEYWORDS)
-                        .uploader(createUser(UserStatus.ACTIVE))
-                        .createdAt(sevenDaysAgo)
-                        .build())
+                .record(RecordFixture.create(2L))
                 .build());
 
         // when
@@ -320,7 +327,7 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
     private void saveBookmarkWithCreatedAt(long recordId, LocalDateTime createdAt) {
         Bookmark bookmark = bookmarkRepository.save(Bookmark.builder()
                 .user(createUser(UserStatus.ACTIVE))
-                .record(createRecord(recordId))
+                .record(RecordFixture.create(recordId))
                 .build());
         BookmarkEntity bookmarkEntity = bookmarkJpaRepository.findById(bookmark.getId())
                 .orElseThrow();
@@ -330,7 +337,7 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
     private void saveViewWithCreatedAt(long recordId, LocalDateTime createdAt) {
         View view = viewRepository.save(View.builder()
                 .user(createUser(UserStatus.ACTIVE))
-                .record(createRecord(recordId))
+                .record(RecordFixture.create(recordId))
                 .build());
         ViewEntity viewEntity = viewJpaRepository.findById(view.getId())
                 .orElseThrow();
@@ -341,25 +348,25 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
     void findAllOrderByPopularity를_통해_조회한_레코드는_조회수보다_저장수에서_더_큰_가중치를_얻는다() {
         // given
         viewRepository.save(View.builder()
-                .record(createRecord(1))
+                .record(RecordFixture.create(1L))
                 .user(createUser(UserStatus.ACTIVE))
                 .createdAt(sevenDaysAgo)
                 .build()
         );
         viewRepository.save(View.builder()
-                .record(createRecord(1))
+                .record(RecordFixture.create(1L))
                 .user(createUser(UserStatus.ACTIVE))
                 .createdAt(sevenDaysAgo)
                 .build()
         );
         viewRepository.save(View.builder()
-                .record(createRecord(1))
+                .record(RecordFixture.create(1L))
                 .user(createUser(UserStatus.ACTIVE))
                 .createdAt(sevenDaysAgo)
                 .build()
         );
         viewRepository.save(View.builder()
-                .record(createRecord(2))
+                .record(RecordFixture.create(2L))
                 .user(createUser(UserStatus.ACTIVE))
                 .createdAt(sevenDaysAgo)
                 .build()
@@ -368,13 +375,13 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
 
         bookmarkRepository.save(Bookmark.builder()
                 .user(createUser(UserStatus.ACTIVE))
-                .record(createRecord(3))
+                .record(RecordFixture.create(3L))
                 .createdAt(sevenDaysAgo)
                 .build()
         );
         bookmarkRepository.save(Bookmark.builder()
                 .user(createUser(UserStatus.ACTIVE))
-                .record(createRecord(4))
+                .record(RecordFixture.create(4L))
                 .createdAt(sevenDaysAgo)
                 .build()
         );
@@ -391,30 +398,6 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
                 () -> assertThat(result.get(1).getId()).isIn(3L, 4L),
                 () -> assertThat(result.get(2).getId()).isIn(3L, 4L),
                 () -> assertThat(result.get(3).getId()).isEqualTo(2)
-        );
-    }
-
-    @Test
-    void findAllByKeywordsOrderByPopularity를_통해_조회한_레코드는_키워드_필터링이_적용된다() {
-        // given
-        viewRepository.save(View.builder()
-                .record(createRecord(1))
-                .user(createUser(UserStatus.ACTIVE))
-                .createdAt(sevenDaysAgo)
-                .build()
-        );
-
-        // when
-        List<Record> inclusiveResult = recordRepository.findAllByKeywordsOrderByPopularity(List.of(Keyword.감각적인), PageRequest.of(0, 4))
-                .getContent();
-        List<Record> exclusiveResult = recordRepository.findAllByKeywordsOrderByPopularity(List.of(Keyword.아늑한), PageRequest.of(0, 4))
-                .getContent();
-
-        // then
-        assertAll(
-                () -> assertThat(inclusiveResult).hasSize(3),
-                () -> assertThat(inclusiveResult.get(0).getId()).isEqualTo(1),
-                () -> assertThat(exclusiveResult).isEmpty()
         );
     }
 

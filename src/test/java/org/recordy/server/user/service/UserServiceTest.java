@@ -1,10 +1,9 @@
 package org.recordy.server.user.service;
 
-import java.util.Map;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.auth.domain.Auth;
 import org.recordy.server.auth.domain.AuthPlatform;
-import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.mock.FakeContainer;
 import org.recordy.server.subscribe.domain.Subscribe;
 import org.recordy.server.user.domain.TermsAgreement;
@@ -17,6 +16,8 @@ import org.recordy.server.user.exception.UserException;
 import org.recordy.server.util.DomainFixture;
 
 import java.util.Optional;
+
+import org.recordy.server.view.domain.View;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
@@ -319,7 +320,7 @@ public class UserServiceTest extends FakeContainer {
 
         // when
         userService.delete(DomainFixture.USER_ID);
-        Map<Keyword,Long> result = viewRepository.countAllByUserIdGroupByKeyword(DomainFixture.USER_ID);
+        List<View> result = viewRepository.findAllByUserId(DomainFixture.USER_ID);
 
         // then
         assertThat(result.size()).isEqualTo(0);

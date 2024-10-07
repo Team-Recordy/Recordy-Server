@@ -2,19 +2,21 @@ package org.recordy.server.record.service.impl;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.message.ErrorMessage;
-import org.recordy.server.keyword.domain.Keyword;
+import org.recordy.server.place.domain.Place;
+import org.recordy.server.place.repository.PlaceRepository;
+import org.recordy.server.record.controller.dto.request.RecordCreateRequest;
+import org.recordy.server.record.controller.dto.response.RecordGetResponse;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.usecase.RecordCreate;
 import org.recordy.server.record.exception.RecordException;
 import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.record.service.RecordService;
 import org.recordy.server.record.service.S3Service;
-import org.recordy.server.record.service.dto.FileUrl;
+import org.recordy.server.record.domain.FileUrl;
 import org.recordy.server.view.domain.View;
 import org.recordy.server.view.repository.ViewRepository;
 import org.recordy.server.user.domain.User;
@@ -25,7 +27,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -36,21 +37,21 @@ public class RecordServiceImpl implements RecordService {
     private final RecordRepository recordRepository;
     private final ViewRepository viewRepository;
     private final UserRepository userRepository;
+    private final PlaceRepository placeRepository;
 
     @Transactional
     @Override
-    public Record create(RecordCreate recordCreate) {
-        User user = userRepository.findById(recordCreate.uploaderId());
+    public Long create(RecordCreateRequest request, long uploaderId) {
+        User user = userRepository.findById(uploaderId);
+        Place place = placeRepository.findById(request.placeId());
+        FileUrl fileUrl = s3Service.convertToCloudFrontUrl(request.fileUrl());
 
-        FileUrl fileUrl = s3Service.convertToCloudFrontUrl(recordCreate.fileUrl());
-
-        return recordRepository.save(Record.builder()
-                .fileUrl(fileUrl)
-                .location(recordCreate.location())
-                .content(recordCreate.content())
-                .uploader(user)
-                .keywords(recordCreate.keywords())
-                .build());
+        return recordRepository.save(Record.create(RecordCreate.of(
+                fileUrl,
+                request.content(),
+                user,
+                place
+        )));
     }
 
     @Transactional
@@ -78,20 +79,13 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public Slice<Record> getFamousRecords(String keywords, int pageNumber, int size) {
-        if (Objects.isNull(keywords) || keywords.isEmpty()) {
-            return getFamousRecords(pageNumber, size);
-        }
-
-        return getFamousRecordsWithKeywords(Keyword.decode(keywords), pageNumber, size);
+    public Slice<RecordGetResponse> getRecordsByPlaceId(long placeId, long userId, Long cursorId, int size) {
+        return recordRepository.findAllByPlaceIdOrderByIdDesc(placeId, userId, cursorId, size);
     }
 
-    private Slice<Record> getFamousRecords(int pageNumber, int size) {
+    @Override
+    public Slice<Record> getFamousRecords(int pageNumber, int size) {
         return recordRepository.findAllOrderByPopularity(PageRequest.of(pageNumber, size));
-    }
-
-    private Slice<Record> getFamousRecordsWithKeywords(List<Keyword> keywords, int pageNumber, int size) {
-        return recordRepository.findAllByKeywordsOrderByPopularity(keywords, PageRequest.of(pageNumber, size));
     }
 
     @Override
@@ -100,20 +94,8 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public Slice<Record> getRecentRecords(String keywords, Long cursorId, int size) {
-        if (Objects.isNull(keywords)) {
-            return getRecentRecords(cursorId, size);
-        }
-
-        return getRecentRecordsWithKeywords(Keyword.decode(keywords), cursorId, size);
-    }
-
-    private Slice<Record> getRecentRecords(Long cursorId, int size) {
+    public Slice<Record> getRecentRecords(Long cursorId, int size) {
         return recordRepository.findAllByIdAfterOrderByIdDesc(cursorId, PageRequest.ofSize(size));
-    }
-
-    private Slice<Record> getRecentRecordsWithKeywords(List<Keyword> keywords, Long cursorId, int size) {
-        return recordRepository.findAllByIdAfterAndKeywordsOrderByIdDesc(keywords, cursorId, PageRequest.ofSize(size));
     }
 
     @Override

@@ -3,14 +3,11 @@ package org.recordy.server.record.domain;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.recordy.server.common.domain.JpaMetaInfoEntity;
-import org.recordy.server.keyword.domain.Keyword;
-import org.recordy.server.keyword.domain.KeywordEntity;
-import org.recordy.server.record.service.dto.FileUrl;
 import org.recordy.server.bookmark.domain.BookmarkEntity;
+import org.recordy.server.place.domain.PlaceEntity;
 import org.recordy.server.view.domain.ViewEntity;
 import org.recordy.server.user.domain.UserEntity;
 
@@ -26,79 +23,51 @@ public class RecordEntity extends JpaMetaInfoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private String videoUrl;
-    private String thumbnailUrl;
-    private String location;
+    private FileUrl fileUrl;
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    @OneToMany(mappedBy = "record", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UploadEntity> uploads = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "place_id")
+    private PlaceEntity place;
 
     @OneToMany(mappedBy = "record", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ViewEntity> views = new ArrayList<>();
+    private final List<ViewEntity> views = new ArrayList<>();
 
     @OneToMany(mappedBy = "record", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<BookmarkEntity> bookmarks = new ArrayList<>();
+    private final List<BookmarkEntity> bookmarks = new ArrayList<>();
 
-    @Builder
-    public RecordEntity(Long id, String videoUrl, String thumbnailUrl, String location, String content, UserEntity user, LocalDateTime createdAt) {
+    public RecordEntity(
+            Long id,
+            FileUrl fileUrl,
+            String content,
+            UserEntity user,
+            PlaceEntity place,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt
+    ) {
         this.id = id;
-        this.videoUrl = videoUrl;
-        this.thumbnailUrl = thumbnailUrl;
-        this.location = location;
+        this.fileUrl = fileUrl;
         this.content = content;
         this.user = user;
+        this.place = place;
         this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public static RecordEntity from(Record record) {
-        RecordEntity recordEntity = new RecordEntity(
+        return new RecordEntity(
                 record.getId(),
-                record.getFileUrl().videoUrl(),
-                record.getFileUrl().thumbnailUrl(),
-                record.getLocation(),
+                record.getFileUrl(),
                 record.getContent(),
                 UserEntity.from(record.getUploader()),
-                record.getCreatedAt()
+                PlaceEntity.create(record.getPlace()),
+                record.getCreatedAt(),
+                record.getUpdatedAt()
         );
-        recordEntity.user.addRecord(recordEntity);
-        recordEntity.createAndAddUploads(record.getKeywords());
-
-        return recordEntity;
-    }
-
-    private void createAndAddUploads(List<Keyword> keywords) {
-        keywords.stream()
-                .map(keyword -> UploadEntity.of(this, KeywordEntity.from(keyword)))
-                .forEach(this::addUpload);
-    }
-
-    public Record toDomain() {
-        return Record.builder()
-                .id(id)
-                .fileUrl(new FileUrl(
-                        videoUrl,
-                        thumbnailUrl
-                ))
-                .location(location)
-                .content(content)
-                .keywords(uploads.stream()
-                        .map(UploadEntity::getKeyword)
-                        .map(KeywordEntity::toDomain)
-                        .toList())
-                .uploader(user.toDomain())
-                .bookmarkCount(bookmarks.size())
-                .createdAt(createdAt)
-                .build();
-    }
-
-    public void addUpload(UploadEntity upload) {
-        uploads.add(upload);
     }
 
     public void addView(ViewEntity view) {

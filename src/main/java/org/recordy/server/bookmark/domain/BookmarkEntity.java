@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.recordy.server.common.domain.JpaMetaInfoEntity;
+import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.RecordEntity;
 import org.recordy.server.user.domain.UserEntity;
 
@@ -50,7 +51,7 @@ public class BookmarkEntity extends JpaMetaInfoEntity {
     public Bookmark toDomain() {
         return Bookmark.builder()
                 .id(id)
-                .record(record.toDomain())
+                .record(Record.from(record))
                 .user(user.toDomain())
                 .createdAt(createdAt)
                 .build();

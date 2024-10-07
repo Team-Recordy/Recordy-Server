@@ -1,60 +1,67 @@
 package org.recordy.server.record.service;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.common.message.ErrorMessage;
-import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.mock.FakeContainer;
+import org.recordy.server.place.domain.Place;
+import org.recordy.server.record.controller.dto.request.RecordCreateRequest;
 import org.recordy.server.record.domain.Record;
-import org.recordy.server.record.domain.usecase.RecordCreate;
 import org.recordy.server.record.exception.RecordException;
+import org.recordy.server.user.domain.User;
 import org.recordy.server.util.DomainFixture;
+import org.recordy.server.util.PlaceFixture;
+import org.recordy.server.util.RecordFixture;
 import org.springframework.data.domain.Slice;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-
 class RecordServiceTest extends FakeContainer {
+
+    User user;
+    RecordCreateRequest request;
 
     @BeforeEach
     void init() {
-        userRepository.save(DomainFixture.createUser(1));
+        user = userRepository.save(DomainFixture.createUser(1));
         userRepository.save(DomainFixture.createUser(2));
+
+        Place place = placeRepository.save(PlaceFixture.create());
+
+        request = new RecordCreateRequest(
+                RecordFixture.FILE_URL,
+                RecordFixture.CONTENT,
+                place.getId()
+        );
     }
 
     @Test
     void create을_통해_레코드를_생성할_수_있다() {
-        // given
-        RecordCreate recordCreate = DomainFixture.createRecordCreate();
-
-        // when
-        Record result = recordService.create(recordCreate);
+        // given, when
+        Long id = recordService.create(request, user.getId());
 
         // then
+        Record result = recordRepository.findById(id);
         assertAll(
-                () -> assertThat(result.getFileUrl().videoUrl()).isEqualTo(DomainFixture.VIDEO_URL),
-                () -> assertThat(result.getFileUrl().thumbnailUrl()).isEqualTo(DomainFixture.THUMBNAIL_URL),
-                () -> assertThat(result.getLocation()).isEqualTo(recordCreate.location()),
-                () -> assertThat(result.getContent()).isEqualTo(recordCreate.content()),
-                () -> assertThat(result.getUploader().getId()).isEqualTo(DomainFixture.USER_ID)
+                () -> assertThat(result.getFileUrl().videoUrl()).isEqualTo(request.fileUrl().videoUrl()),
+                () -> assertThat(result.getFileUrl().thumbnailUrl()).isEqualTo(request.fileUrl().thumbnailUrl()),
+                () -> assertThat(result.getContent()).isEqualTo(request.content()),
+                () -> assertThat(result.getUploader().getId()).isEqualTo(user.getId())
         );
     }
 
     @Test
     void delete을_통해_레코드를_삭제할_수_있다() {
         // given
-        RecordCreate recordCreate = DomainFixture.createRecordCreate();
-        Record record = recordService.create(recordCreate);
+        Long id = recordService.create(request, user.getId());
 
         // when
-        recordService.delete(1, record.getId());
+        recordService.delete(user.getId(), id);
 
         // then
-        Slice<Record> result = recordService.getRecentRecords(null, 0L, 1);
+        Slice<Record> result = recordService.getRecentRecords(0L, 1);
         assertAll(
                 () -> assertThat(result.getContent()).hasSize(0),
                 () -> assertThat(result.hasNext()).isFalse()
@@ -64,12 +71,11 @@ class RecordServiceTest extends FakeContainer {
     @Test
     void 업로더가_아니면_delete을_통해_레코드를_삭제할_때_예외가_발생한다() {
         // given
-        RecordCreate recordCreate = DomainFixture.createRecordCreate();
-        Record record = recordService.create(recordCreate);
+        Long id = recordService.create(request, DomainFixture.USER_ID);
 
         // when
         // then
-        assertThatThrownBy(() -> recordService.delete(100, record.getId()))
+        assertThatThrownBy(() -> recordService.delete(100, id))
                 .isInstanceOf(RecordException.class)
                 .hasMessageContaining(ErrorMessage.FORBIDDEN_DELETE_RECORD.getMessage());
     }
@@ -77,11 +83,11 @@ class RecordServiceTest extends FakeContainer {
     @Test
     void getRecentRecordsByUser를_통해_userId를_기반으로_레코드_데이터를_조회할_수_있다() {
         //given
-        recordService.create(DomainFixture.createRecordCreate());
-        recordService.create(DomainFixture.createRecordCreate());
-        recordService.create(DomainFixture.createRecordCreateByOtherUser());
-        recordService.create(DomainFixture.createRecordCreateByOtherUser());
-        recordService.create(DomainFixture.createRecordCreateByOtherUser());
+        recordService.create(request, 1);
+        recordService.create(request, 1);
+        recordService.create(request, 2);
+        recordService.create(request, 2);
+        recordService.create(request, 2);
 
         //when
         Slice<Record> result = recordService.getRecentRecordsByUser(1, Long.MAX_VALUE, 10);
@@ -98,14 +104,14 @@ class RecordServiceTest extends FakeContainer {
     @Test
     void getRecentRecords를_통해_커서_이후의_레코드를_최신_순서로_읽을_수_있다() {
         // given
-        recordService.create(DomainFixture.createRecordCreate());
-        recordService.create(DomainFixture.createRecordCreate());
-        recordService.create(DomainFixture.createRecordCreate());
-        recordService.create(DomainFixture.createRecordCreate());
-        recordService.create(DomainFixture.createRecordCreate());
+        recordService.create(request, DomainFixture.USER_ID);
+        recordService.create(request, DomainFixture.USER_ID);
+        recordService.create(request, DomainFixture.USER_ID);
+        recordService.create(request, DomainFixture.USER_ID);
+        recordService.create(request, DomainFixture.USER_ID);
 
         // when
-        Slice<Record> result = recordService.getRecentRecords(null, 6L, 10);
+        Slice<Record> result = recordService.getRecentRecords(6L, 10);
 
         // then
         assertAll(
@@ -122,13 +128,12 @@ class RecordServiceTest extends FakeContainer {
     @Test
     void getRecentRecords를_통해_커서가_제일_오래된_값이라면_아무것도_반환되지_않는다() {
         // given
-        recordService.create(DomainFixture.createRecordCreate());
-        recordService.create(DomainFixture.createRecordCreate());
-        recordService.create(DomainFixture.createRecordCreate());
-
+        recordService.create(request, DomainFixture.USER_ID);
+        recordService.create(request, DomainFixture.USER_ID);
+        recordService.create(request, DomainFixture.USER_ID);
 
         // when
-        Slice<Record> result = recordService.getRecentRecords(null, 1L, 3);
+        Slice<Record> result = recordService.getRecentRecords(1L, 3);
 
         // then
         assertAll(
@@ -138,33 +143,13 @@ class RecordServiceTest extends FakeContainer {
     }
 
     @Test
-    void getRecentRecords를_통해_키워드를_디코딩해서_해당_키워드에_대한_최신_레코드만_반환할_수_있다() {
-        // given
-        List<Keyword> keywords = List.of(Keyword.덕후몰이, Keyword.깔끔한);
-        Record record = recordService.create(DomainFixture.createRecordCreate(keywords));
-        recordService.create(DomainFixture.createRecordCreate());
-        recordService.create(DomainFixture.createRecordCreate());
-        String encodedKeyword = new String(Base64.getEncoder().encode("깔끔한,덕후몰이".getBytes(StandardCharsets.UTF_8)));
-
-        // when
-        Slice<Record> result = recordService.getRecentRecords(encodedKeyword, 4L, 3);
-
-        // then
-        assertAll(
-                () -> assertThat(result.getContent()).hasSize(1),
-                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(record.getId()),
-                () -> assertThat(result.hasNext()).isFalse()
-        );
-    }
-
-    @Test
     void getTotalRecords를_통해_size만큼의_레코드를_중복없이_랜덤으로_반환할_수_있다() {
         // given
-        recordService.create(DomainFixture.createRecordCreate());
-        recordService.create(DomainFixture.createRecordCreate());
-        recordService.create(DomainFixture.createRecordCreate());
-        recordService.create(DomainFixture.createRecordCreate());
-        recordService.create(DomainFixture.createRecordCreate());
+        recordService.create(request, DomainFixture.USER_ID);
+        recordService.create(request, DomainFixture.USER_ID);
+        recordService.create(request, DomainFixture.USER_ID);
+        recordService.create(request, DomainFixture.USER_ID);
+        recordService.create(request, DomainFixture.USER_ID);
 
         // when
         List<Record> result = recordService.getTotalRecords(3);
@@ -172,19 +157,18 @@ class RecordServiceTest extends FakeContainer {
         // then
         assertAll(
                 () -> assertThat(result.size()).isEqualTo(3),
-                () -> assertThat(result.get(0)).isNotEqualTo(result.get(1).getId()),
-                () -> assertThat(result.get(1)).isNotEqualTo(result.get(2).getId()),
-                () -> assertThat(result.get(0)).isNotEqualTo(result.get(2).getId())
+                () -> assertThat(result.get(0).getId()).isNotEqualTo(result.get(1).getId()),
+                () -> assertThat(result.get(1).getId()).isNotEqualTo(result.get(2).getId()),
+                () -> assertThat(result.get(0).getId()).isNotEqualTo(result.get(2).getId())
         );
     }
 
     @Test
     void getTotalRecords를_통해_size만큼의_레코드가_없으면_현재_레코드_수만큼만_반환한다() {
         // given
-        recordService.create(DomainFixture.createRecordCreate());
-        recordService.create(DomainFixture.createRecordCreate());
-        recordService.create(DomainFixture.createRecordCreate());
-
+        recordService.create(request, DomainFixture.USER_ID);
+        recordService.create(request, DomainFixture.USER_ID);
+        recordService.create(request, DomainFixture.USER_ID);
 
         // when
         List<Record> result = recordService.getTotalRecords(5);
@@ -192,10 +176,9 @@ class RecordServiceTest extends FakeContainer {
         // then
         assertAll(
                 () -> assertThat(result.size()).isEqualTo(3),
-                () -> assertThat(result.get(0)).isNotEqualTo(result.get(1).getId()),
-                () -> assertThat(result.get(1)).isNotEqualTo(result.get(2).getId()),
-                () -> assertThat(result.get(0)).isNotEqualTo(result.get(2).getId())
+                () -> assertThat(result.get(0).getId()).isNotEqualTo(result.get(1).getId()),
+                () -> assertThat(result.get(1).getId()).isNotEqualTo(result.get(2).getId()),
+                () -> assertThat(result.get(0).getId()).isNotEqualTo(result.get(2).getId())
         );
-
     }
 }

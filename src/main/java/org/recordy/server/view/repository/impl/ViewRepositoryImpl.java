@@ -1,14 +1,12 @@
 package org.recordy.server.view.repository.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.view.domain.View;
 import org.recordy.server.view.domain.ViewEntity;
 import org.recordy.server.view.repository.ViewRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Repository
@@ -29,12 +27,9 @@ public class ViewRepositoryImpl implements ViewRepository {
     }
 
     @Override
-    public Map<Keyword, Long> countAllByUserIdGroupByKeyword(long userId) {
-        return viewQueryDslRepository.countAllByUserIdGroupByKeyword(userId)
-                .entrySet().stream()
-                .collect(Collectors.toMap(
-                        entry -> entry.getKey().toDomain(),
-                        Map.Entry::getValue
-                ));
+    public List<View> findAllByUserId(long userId) {
+        return viewQueryDslRepository.findAllByUserId(userId).stream()
+                .map(ViewEntity::toDomain)
+                .toList();
     }
 }

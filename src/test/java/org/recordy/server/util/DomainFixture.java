@@ -4,12 +4,8 @@ import org.recordy.server.auth.domain.Auth;
 import org.recordy.server.auth.domain.AuthEntity;
 import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.auth.domain.AuthToken;
-import org.recordy.server.keyword.domain.Keyword;
-import org.recordy.server.record.domain.File;
 import org.recordy.server.record.domain.Record;
-import org.recordy.server.record.domain.RecordEntity;
-import org.recordy.server.record.domain.usecase.RecordCreate;
-import org.recordy.server.record.service.dto.FileUrl;
+import org.recordy.server.record.domain.FileUrl;
 import org.recordy.server.user.domain.TermsAgreement;
 import org.recordy.server.bookmark.domain.Bookmark;
 import org.recordy.server.user.domain.usecase.UserSignIn;
@@ -19,7 +15,6 @@ import org.recordy.server.user.domain.UserStatus;
 import org.recordy.server.user.domain.usecase.UserSignUp;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 public final class DomainFixture {
 
@@ -34,7 +29,6 @@ public final class DomainFixture {
     public static final boolean USE_TERM_AGREEMENT = true;
     public static final boolean PERSONAL_INFO_TERM_AGREEMENT = true;
     public static final boolean AGE_TERM_AGREEMENT = true;
-    public static final LocalDateTime USER_CREATED_AT = LocalDateTime.of(2021, 1, 1, 0, 0);
 
     /**
      * AUTH
@@ -66,15 +60,6 @@ public final class DomainFixture {
     public static final String THUMBNAIL_URL = "thumbnail_url";
     public static final String LOCATION = "location";
     public static final String CONTENT = "content";
-
-    /**
-     * KEYWORD
-     */
-    public static final Long KEYWORD_ID = 1L;
-    public static final Keyword KEYWORD_1 = Keyword.감각적인;
-    public static final Keyword KEYWORD_2 = Keyword.강렬한;
-    public static final Keyword KEYWORD_3 = Keyword.귀여운;
-    public static final List<Keyword> KEYWORDS = List.of(Keyword.감각적인, Keyword.강렬한, Keyword.귀여운);
 
     public static AuthPlatform createAuthPlatform() {
         return new AuthPlatform(PLATFORM_ID, KAKAO_PLATFORM_TYPE);
@@ -130,18 +115,6 @@ public final class DomainFixture {
         return new UserSignUp(
                 id,
                 USER_NICKNAME,
-                TermsAgreement.of(
-                        USE_TERM_AGREEMENT,
-                        PERSONAL_INFO_TERM_AGREEMENT,
-                        AGE_TERM_AGREEMENT
-                )
-        );
-    }
-
-    public static UserSignUp createUserSignUp(Long id, String nickname) {
-        return new UserSignUp(
-                id,
-                nickname,
                 TermsAgreement.of(
                         USE_TERM_AGREEMENT,
                         PERSONAL_INFO_TERM_AGREEMENT,
@@ -214,47 +187,11 @@ public final class DomainFixture {
         );
     }
 
-    public static RecordCreate createRecordCreate() {
-        return new RecordCreate(
-                USER_ID,
-                LOCATION,
-                CONTENT,
-                KEYWORDS,
-                new FileUrl(VIDEO_URL, THUMBNAIL_URL)
-        );
-    }
-
-    public static RecordCreate createRecordCreate(List<Keyword> keywords) {
-        return new RecordCreate(
-                USER_ID,
-                LOCATION,
-                CONTENT,
-                keywords,
-                new FileUrl(VIDEO_URL, THUMBNAIL_URL)
-        );
-    }
-
-    public static RecordCreate createRecordCreateByOtherUser() {
-        return new RecordCreate(
-                2,
-                LOCATION,
-                CONTENT,
-                KEYWORDS,
-                new FileUrl(VIDEO_URL, THUMBNAIL_URL)
-        );
-    }
-
-    public static FileUrl createFileUrl() {
-        return new FileUrl(VIDEO_URL, THUMBNAIL_URL);
-    }
-
     public static Record createRecord() {
         return Record.builder()
                 .id(RECORD_ID)
                 .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
-                .location(LOCATION)
                 .content(CONTENT)
-                .keywords(KEYWORDS)
                 .uploader(createUser(UserStatus.ACTIVE))
                 .build();
     }
@@ -263,38 +200,14 @@ public final class DomainFixture {
         return Record.builder()
                 .id(id)
                 .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
-                .location(LOCATION)
                 .content(CONTENT)
-                .keywords(KEYWORDS)
                 .uploader(createUser(UserStatus.ACTIVE))
-                .build();
-    }
-
-    public static Record createRecord(long id, List<Keyword> keywords) {
-        return Record.builder()
-                .id(id)
-                .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
-                .location(LOCATION)
-                .content(CONTENT)
-                .keywords(keywords)
-                .uploader(createUser(UserStatus.ACTIVE))
-                .build();
-    }
-
-    public static RecordEntity createRecordEntity() {
-        return RecordEntity.builder()
-                .id(RECORD_ID)
-                .videoUrl(VIDEO_URL)
-                .thumbnailUrl(THUMBNAIL_URL)
-                .location(LOCATION)
-                .content(CONTENT)
-                .user(createUserEntity())
                 .build();
     }
 
     public static Bookmark createBookmark() {
         return Bookmark.builder()
-                .record(createRecord())
+                .record(RecordFixture.create(1L))
                 .user(createUser(UserStatus.ACTIVE))
                 .build();
     }

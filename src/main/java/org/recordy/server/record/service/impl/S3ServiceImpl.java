@@ -1,7 +1,7 @@
 package org.recordy.server.record.service.impl;
 
 import org.recordy.server.record.service.S3Service;
-import org.recordy.server.record.service.dto.FileUrl;
+import org.recordy.server.record.domain.FileUrl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;

@@ -11,6 +11,7 @@ import org.recordy.server.auth.security.resolver.UserId;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.record.controller.dto.request.RecordCreateRequest;
 import org.recordy.server.record.controller.dto.response.BookmarkedRecord;
+import org.recordy.server.record.controller.dto.response.RecordGetResponse;
 import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.MediaType;
@@ -123,6 +124,49 @@ public interface RecordApi {
     ResponseEntity<Void> deleteRecord(
             @UserId Long uploaderId,
             @PathVariable Long recordId
+    );
+
+    @Operation(
+            summary = "특정 장소와 연관된 레코드 리스트 조회 API",
+            description = "특정 장소와 연관된 레코드 리스트를 최신순으로 조회합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "요청이 성공적으로 처리되었습니다.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = Slice.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized - 인증이 필요합니다.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = ErrorMessage.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Internal Server Error - 서버 내부 오류입니다.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = ErrorMessage.class
+                                    )
+                            )
+                    )
+            }
+    )
+    ResponseEntity<CursorBasePaginatedResponse<RecordGetResponse>> getRecordsByPlaceId(
+            @UserId Long userId,
+            @RequestParam Long placeId,
+            @RequestParam(required = false) Long cursorId,
+            @RequestParam(required = false, defaultValue = "10") int size
     );
 
     @Operation(
@@ -242,7 +286,6 @@ public interface RecordApi {
     )
     ResponseEntity<PaginatedResponse<RecordInfoWithBookmark>> getFamousRecordInfoWithBookmarks(
             @UserId Long userId,
-            @RequestParam(required = false) String keywords,
             @RequestParam(required = false, defaultValue = "0") int pageNumber,
             @RequestParam(required = false, defaultValue = "10") int pageSize
     ) ;
@@ -285,7 +328,6 @@ public interface RecordApi {
     )
     ResponseEntity<CursorBasePaginatedResponse<RecordInfoWithBookmark>> getRecentRecordInfosWithBookmarks(
             @UserId Long userId,
-            @RequestParam(required = false) String keywords,
             @RequestParam(required = false) Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     );

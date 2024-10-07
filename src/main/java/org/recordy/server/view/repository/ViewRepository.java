@@ -1,9 +1,8 @@
 package org.recordy.server.view.repository;
 
-import org.recordy.server.keyword.domain.Keyword;
 import org.recordy.server.view.domain.View;
 
-import java.util.Map;
+import java.util.List;
 
 public interface ViewRepository {
 
@@ -12,5 +11,5 @@ public interface ViewRepository {
     void deleteByUserId(long userId);
 
     // query
-    Map<Keyword, Long> countAllByUserIdGroupByKeyword(long userId);
+    List<View> findAllByUserId(long userId);
 }

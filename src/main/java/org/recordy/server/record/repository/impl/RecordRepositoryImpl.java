@@ -1,12 +1,8 @@
 package org.recordy.server.record.repository.impl;
 
-import java.util.Optional;
-
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.message.ErrorMessage;
-import org.recordy.server.keyword.domain.Keyword;
-import org.recordy.server.keyword.domain.KeywordEntity;
-import org.recordy.server.keyword.repository.impl.KeywordJpaRepository;
+import org.recordy.server.record.controller.dto.response.RecordGetResponse;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.RecordEntity;
 import org.recordy.server.record.exception.RecordException;
@@ -16,8 +12,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Repository
@@ -25,13 +19,12 @@ public class RecordRepositoryImpl implements RecordRepository {
 
     private final RecordJpaRepository recordJpaRepository;
     private final RecordQueryDslRepository recordQueryDslRepository;
-    private final KeywordJpaRepository keywordJpaRepository;
 
     @Transactional
     @Override
-    public Record save(Record record) {
+    public Long save(Record record) {
         return recordJpaRepository.save(RecordEntity.from(record))
-                .toDomain();
+                .getId();
     }
 
     @Transactional
@@ -50,52 +43,37 @@ public class RecordRepositoryImpl implements RecordRepository {
     @Override
     public Record findById(long recordId) {
         return recordJpaRepository.findById(recordId)
-                .map(RecordEntity::toDomain)
+                .map(Record::from)
                 .orElseThrow(() -> new RecordException(ErrorMessage.RECORD_NOT_FOUND));
+    }
+
+    @Override
+    public Slice<RecordGetResponse> findAllByPlaceIdOrderByIdDesc(long placeId, long userId, Long cursor, int size) {
+        return recordQueryDslRepository.findAllByPlaceIdOrderByIdDesc(placeId, userId, cursor, size);
     }
 
     @Override
     public Slice<Record> findAllOrderByPopularity(Pageable pageable) {
         return recordQueryDslRepository.findAllOrderByPopularity(pageable)
-                .map(RecordEntity::toDomain);
-    }
-
-    @Override
-    public Slice<Record> findAllByKeywordsOrderByPopularity(List<Keyword> keywords, Pageable pageable) {
-        List<KeywordEntity> keywordEntities = keywordJpaRepository.findAll().stream()
-                .filter(keyword -> keywords.contains(keyword.toDomain()))
-                .toList();
-
-        return recordQueryDslRepository.findAllByKeywordsOrderByPopularity(keywordEntities, pageable)
-                .map(RecordEntity::toDomain);
+                .map(Record::from);
     }
 
     @Override
     public Slice<Record> findAllByIdAfterOrderByIdDesc(Long cursor, Pageable pageable) {
         return recordQueryDslRepository.findAllByIdAfterOrderByIdDesc(cursor, pageable)
-                .map(RecordEntity::toDomain);
-    }
-
-    @Override
-    public Slice<Record> findAllByIdAfterAndKeywordsOrderByIdDesc(List<Keyword> keywords, Long cursor, Pageable pageable) {
-        List<KeywordEntity> keywordEntities = keywordJpaRepository.findAll().stream()
-                .filter(keyword -> keywords.contains(keyword.toDomain()))
-                .toList();
-
-        return recordQueryDslRepository.findAllByIdAfterAndKeywordsOrderByIdDesc(keywordEntities, cursor, pageable)
-                .map(RecordEntity::toDomain);
+                .map(Record::from);
     }
 
     @Override
     public Slice<Record> findAllByUserIdOrderByIdDesc(long userId, Long cursor, Pageable pageable) {
         return recordQueryDslRepository.findAllByUserIdOrderByIdDesc(userId, cursor, pageable)
-                .map(RecordEntity::toDomain);
+                .map(Record::from);
     }
 
     @Override
     public Slice<Record> findAllBySubscribingUserIdOrderByIdDesc(long userId, Long cursor, Pageable pageable) {
         return recordQueryDslRepository.findAllBySubscribingUserIdOrderByIdDesc(userId, cursor, pageable)
-                .map(RecordEntity::toDomain);
+                .map(Record::from);
     }
 
     @Override

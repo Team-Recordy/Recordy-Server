@@ -4,8 +4,11 @@ import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.bookmark.domain.Bookmark;
 import org.recordy.server.bookmark.domain.BookmarkEntity;
+import org.recordy.server.record.domain.RecordEntity;
+import org.recordy.server.user.domain.UserEntity;
 import org.recordy.server.user.domain.UserStatus;
 import org.recordy.server.util.DomainFixture;
+import org.recordy.server.util.RecordFixture;
 import org.recordy.server.view.domain.ViewEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,7 +22,7 @@ class BookmarkEntityTest {
         Bookmark bookmark = Bookmark.builder()
                 .id(1L)
                 .user(DomainFixture.createUser(UserStatus.ACTIVE))
-                .record(DomainFixture.createRecord())
+                .record(RecordFixture.create())
                 .build();
 
         // when
@@ -38,8 +41,8 @@ class BookmarkEntityTest {
         // given
         BookmarkEntity bookmarkEntity = BookmarkEntity.builder()
                 .id(1L)
-                .record(DomainFixture.createRecordEntity())
-                .user(DomainFixture.createUserEntity())
+                .record(RecordEntity.from(RecordFixture.create()))
+                .user(UserEntity.from(DomainFixture.createUser()))
                 .build();
 
         // when
@@ -59,8 +62,8 @@ class BookmarkEntityTest {
         LocalDateTime localDateTime = LocalDateTime.of(2002, 7, 4, 17, 15);
         BookmarkEntity bookmarkEntity = BookmarkEntity.builder()
                 .id(1L)
-                .record(DomainFixture.createRecordEntity())
-                .user(DomainFixture.createUserEntity())
+                .record(RecordEntity.from(RecordFixture.create()))
+                .user(UserEntity.from(DomainFixture.createUser()))
                 .build();
 
         //when
