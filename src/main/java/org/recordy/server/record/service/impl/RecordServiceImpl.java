@@ -1,9 +1,7 @@
 package org.recordy.server.record.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
+
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.place.domain.Place;
@@ -17,16 +15,11 @@ import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.record.service.RecordService;
 import org.recordy.server.record.service.S3Service;
 import org.recordy.server.record.domain.FileUrl;
-import org.recordy.server.view.domain.View;
-import org.recordy.server.view.repository.ViewRepository;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.repository.UserRepository;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -35,7 +28,6 @@ public class RecordServiceImpl implements RecordService {
 
     private final S3Service s3Service;
     private final RecordRepository recordRepository;
-    private final ViewRepository viewRepository;
     private final UserRepository userRepository;
     private final PlaceRepository placeRepository;
 
@@ -66,62 +58,45 @@ public class RecordServiceImpl implements RecordService {
         recordRepository.deleteById(recordId);
     }
 
-    @Transactional
-    @Override
-    public void watch(long userId, long recordId) {
-        User user = userRepository.findById(userId);
-        Record record = recordRepository.findById(recordId);
-
-        viewRepository.save(View.builder()
-                .record(record)
-                .user(user)
-                .build());
-    }
-
     @Override
     public Slice<RecordGetResponse> getRecordsByPlaceId(long placeId, long userId, Long cursorId, int size) {
         return recordRepository.findAllByPlaceIdOrderByIdDesc(placeId, userId, cursorId, size);
     }
 
     @Override
-    public Slice<Record> getFamousRecords(int pageNumber, int size) {
-        return recordRepository.findAllOrderByPopularity(PageRequest.of(pageNumber, size));
+    public Slice<RecordGetResponse> getRecentRecordsByUser(long otherUserId, long userId, Long cursorId, int size) {
+        return recordRepository.findAllByUserIdOrderByIdDesc(otherUserId, userId, cursorId, size);
     }
 
     @Override
-    public Slice<Record> getRecentRecordsByUser(long userId, Long cursorId, int size) {
-        return recordRepository.findAllByUserIdOrderByIdDesc(userId, cursorId, PageRequest.ofSize(size));
+    public Slice<RecordGetResponse> getBookmarkedRecords(long userId, Long cursorId, int size) {
+        return recordRepository.findAllByBookmarkOrderByIdDesc(userId, cursorId, size);
     }
 
     @Override
-    public Slice<Record> getRecentRecords(Long cursorId, int size) {
-        return recordRepository.findAllByIdAfterOrderByIdDesc(cursorId, PageRequest.ofSize(size));
+    public List<RecordGetResponse> getSubscribingRecords(long userId, int size) {
+        List<Long> randomIds = getRandomSubscribingIds(userId, size);
+        return recordRepository.findAllByIds(randomIds, userId);
+    }
+
+    private List<Long> getRandomSubscribingIds(long userId, int size) {
+        List<Long> ids = recordRepository.findAllIdsBySubscribingUserId(userId);
+        return getRandomSubList(ids, size);
     }
 
     @Override
-    public Slice<Record> getSubscribingRecords(long userId, Long cursorId, int size) {
-        return recordRepository.findAllBySubscribingUserIdOrderByIdDesc(userId, cursorId, PageRequest.ofSize(size));
+    public List<RecordGetResponse> getRecords(long userId, int size) {
+        List<Long> ids = getRandomIds(size);
+        return recordRepository.findAllByIds(ids, userId);
     }
 
-    @Override
-    public List<Record> getTotalRecords(int size) {
-        Long maxId = recordRepository.findMaxId();
-        Long count = recordRepository.count();
+    private List<Long> getRandomIds(int size) {
+        List<Long> ids = recordRepository.findAllIds();
+        return getRandomSubList(ids, size);
+    }
 
-        Set<Long> selectedIds = new HashSet<>();
-        Random random = new Random();
-        List<Record> records = new ArrayList<>();
-
-        while (records.size() < size && records.size() < count) {
-            long randomId = random.nextLong(maxId) + 1;
-
-            if (!selectedIds.contains(randomId)) {
-                selectedIds.add(randomId);
-
-                records.add(recordRepository.findById(randomId));
-            }
-        }
-
-        return records;
+    private List<Long> getRandomSubList(List<Long> ids, int size) {
+        Collections.shuffle(ids);
+        return ids.subList(0, Math.min(size, ids.size()));
     }
 }

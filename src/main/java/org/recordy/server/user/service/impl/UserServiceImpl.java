@@ -9,6 +9,7 @@ import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.subscribe.domain.Subscribe;
 import org.recordy.server.subscribe.repository.SubscribeRepository;
+import org.recordy.server.user.controller.dto.response.UserInfo;
 import org.recordy.server.user.domain.TermsAgreement;
 import org.recordy.server.user.domain.usecase.UserProfile;
 import org.recordy.server.user.domain.User;
@@ -18,8 +19,8 @@ import org.recordy.server.user.domain.usecase.UserSignUp;
 import org.recordy.server.user.exception.UserException;
 import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.user.service.UserService;
-import org.recordy.server.view.repository.ViewRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +33,6 @@ public class UserServiceImpl implements UserService {
     private final SubscribeRepository subscribeRepository;
     private final RecordRepository recordRepository;
     private final BookmarkRepository bookmarkRepository;
-    private final ViewRepository viewRepository;
     private final AuthService authService;
     private final AuthTokenService authTokenService;
 
@@ -42,7 +42,6 @@ public class UserServiceImpl implements UserService {
             SubscribeRepository subscribeRepository,
             RecordRepository recordRepository,
             BookmarkRepository bookmarkRepository,
-            ViewRepository viewRepository,
             AuthService authService,
             AuthTokenService authTokenService) {
         this.rootUserId = rootUserId;
@@ -50,7 +49,6 @@ public class UserServiceImpl implements UserService {
         this.subscribeRepository = subscribeRepository;
         this.recordRepository = recordRepository;
         this.bookmarkRepository = bookmarkRepository;
-        this.viewRepository = viewRepository;
         this.authService = authService;
         this.authTokenService = authTokenService;
     }
@@ -124,22 +122,14 @@ public class UserServiceImpl implements UserService {
 
         subscribeRepository.deleteByUserId(userId);
         bookmarkRepository.deleteByUserId(userId);
-        viewRepository.deleteByUserId(userId);
         recordRepository.deleteByUserId(userId);
         authService.signOut(user.getAuthPlatform().getId());
         userRepository.deleteById(userId);
     }
 
     @Override
-    public UserProfile getProfile(long userId, long otherUserId) {
-        User user = userRepository.findById(otherUserId);
-        long records = recordRepository.countAllByUserId(user.getId());
-        long followers = subscribeRepository.countSubscribingUsers(user.getId());
-        long followings = subscribeRepository.countSubscribedUsers(user.getId());
-        long bookmarks = bookmarkRepository.countByUserId(userId);
-        boolean isFollowing = subscribeRepository.existsBySubscribingUserIdAndSubscribedUserId(userId, otherUserId);
-
-        return UserProfile.of(user, records, followers, followings, bookmarks, isFollowing);
+    public UserProfile getProfile(long targetUserId, long userId) {
+        return userRepository.findProfile(targetUserId, userId);
     }
 
     @Override
@@ -147,5 +137,15 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByNickname(nickname)) {
             throw new UserException(ErrorMessage.DUPLICATE_NICKNAME);
         }
+    }
+
+    @Override
+    public Slice<UserInfo> getSubscribingUserInfos(long userId, Long cursor, int size) {
+        return userRepository.findFollowings(userId, cursor, size);
+    }
+
+    @Override
+    public Slice<UserInfo> getSubscribedUserInfos(long userId, Long cursor, int size) {
+        return userRepository.findFollowers(userId, cursor, size);
     }
 }

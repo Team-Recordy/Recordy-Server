@@ -2,14 +2,11 @@ package org.recordy.server.bookmark.domain;
 
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
-import org.recordy.server.bookmark.domain.Bookmark;
-import org.recordy.server.bookmark.domain.BookmarkEntity;
 import org.recordy.server.record.domain.RecordEntity;
 import org.recordy.server.user.domain.UserEntity;
 import org.recordy.server.user.domain.UserStatus;
 import org.recordy.server.util.DomainFixture;
 import org.recordy.server.util.RecordFixture;
-import org.recordy.server.view.domain.ViewEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;

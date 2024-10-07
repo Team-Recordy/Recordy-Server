@@ -7,10 +7,11 @@ import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.domain.RecordEntity;
 import org.recordy.server.record.exception.RecordException;
 import org.recordy.server.record.repository.RecordRepository;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -53,42 +54,27 @@ public class RecordRepositoryImpl implements RecordRepository {
     }
 
     @Override
-    public Slice<Record> findAllOrderByPopularity(Pageable pageable) {
-        return recordQueryDslRepository.findAllOrderByPopularity(pageable)
-                .map(Record::from);
+    public Slice<RecordGetResponse> findAllByUserIdOrderByIdDesc(long otherUserId, long userId, Long cursor, int size) {
+        return recordQueryDslRepository.findAllByUserIdOrderByIdDesc(otherUserId, userId, cursor, size);
     }
 
     @Override
-    public Slice<Record> findAllByIdAfterOrderByIdDesc(Long cursor, Pageable pageable) {
-        return recordQueryDslRepository.findAllByIdAfterOrderByIdDesc(cursor, pageable)
-                .map(Record::from);
+    public Slice<RecordGetResponse> findAllByBookmarkOrderByIdDesc(long userId, Long cursor, int size) {
+        return recordQueryDslRepository.findAllByBookmarkOrderByIdDesc(userId, cursor, size);
     }
 
     @Override
-    public Slice<Record> findAllByUserIdOrderByIdDesc(long userId, Long cursor, Pageable pageable) {
-        return recordQueryDslRepository.findAllByUserIdOrderByIdDesc(userId, cursor, pageable)
-                .map(Record::from);
+    public List<Long> findAllIdsBySubscribingUserId(long userId) {
+        return recordQueryDslRepository.findAllIdsBySubscribingUserId(userId);
     }
 
     @Override
-    public Slice<Record> findAllBySubscribingUserIdOrderByIdDesc(long userId, Long cursor, Pageable pageable) {
-        return recordQueryDslRepository.findAllBySubscribingUserIdOrderByIdDesc(userId, cursor, pageable)
-                .map(Record::from);
+    public List<Long> findAllIds() {
+        return recordQueryDslRepository.findAllIds();
     }
 
     @Override
-    public long countAllByUserId(long userId) {
-        return recordQueryDslRepository.countAllByUserId(userId);
-    }
-
-    @Override
-    public Long findMaxId() {
-        return recordQueryDslRepository.findMaxId()
-                .orElse(0L);
-    }
-
-    @Override
-    public Long count() {
-        return recordJpaRepository.count();
+    public List<RecordGetResponse> findAllByIds(List<Long> ids, long userId) {
+        return recordQueryDslRepository.findAllByIds(ids, userId);
     }
 }

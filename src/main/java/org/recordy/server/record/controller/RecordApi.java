@@ -6,13 +6,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.recordy.server.common.dto.response.CursorBasePaginatedResponse;
-import org.recordy.server.common.dto.response.PaginatedResponse;
 import org.recordy.server.auth.security.resolver.UserId;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.record.controller.dto.request.RecordCreateRequest;
-import org.recordy.server.record.controller.dto.response.BookmarkedRecord;
 import org.recordy.server.record.controller.dto.response.RecordGetResponse;
-import org.recordy.server.record.controller.dto.response.RecordInfoWithBookmark;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -76,7 +73,7 @@ public interface RecordApi {
                     )
             }
     )
-    public ResponseEntity<Void> createRecord(
+    public ResponseEntity<Void> create(
             @UserId Long uploaderId,
             @RequestBody RecordCreateRequest request);
 
@@ -121,7 +118,7 @@ public interface RecordApi {
                     )
             }
     )
-    ResponseEntity<Void> deleteRecord(
+    ResponseEntity<Void> delete(
             @UserId Long uploaderId,
             @PathVariable Long recordId
     );
@@ -162,7 +159,7 @@ public interface RecordApi {
                     )
             }
     )
-    ResponseEntity<CursorBasePaginatedResponse<RecordGetResponse>> getRecordsByPlaceId(
+    ResponseEntity<CursorBasePaginatedResponse<RecordGetResponse>> getAllByPlace(
             @UserId Long userId,
             @RequestParam Long placeId,
             @RequestParam(required = false) Long cursorId,
@@ -205,129 +202,9 @@ public interface RecordApi {
                     )
             }
     )
-    ResponseEntity<CursorBasePaginatedResponse<RecordInfoWithBookmark>> getRecentRecordInfosWithBookmarksByUser(
+    ResponseEntity<CursorBasePaginatedResponse<RecordGetResponse>> getAllByUser(
             @UserId Long userId,
             @PathVariable Long otherUserId,
-            @RequestParam(required = false) Long cursorId,
-            @RequestParam(required = false, defaultValue = "10") int size
-    );
-
-    @Operation(
-            summary = "레코드 시청 API",
-            description = "사용자가 특정 레코드를 시청했음을 기록합니다.",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "요청이 성공적으로 처리되었습니다.",
-                            content = @Content
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Not Found - 존재하지 않는 사용자 또는 기록입니다.",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(
-                                            implementation = ErrorMessage.class
-                                    )
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "500",
-                            description = "Internal Server Error - 서버 내부 오류입니다.",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(
-                                            implementation = ErrorMessage.class
-                                    )
-                            )
-                    )
-            }
-    )
-    ResponseEntity<Void> watch(
-            @UserId Long userId,
-            @PathVariable Long recordId
-    );
-
-    @Operation(
-            summary = "인기 레코드 리스트 조회 API",
-            description = "사용자가 인기 레코드를 키워드와 함께 조회합니다. 키워드가 없으면 전체 인기 레코드를 조회합니다.",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "요청이 성공적으로 처리되었습니다.",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(
-                                            implementation = Slice.class
-                                    )
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "401",
-                            description = "Unauthorized - 인증이 필요합니다.",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(
-                                            implementation = ErrorMessage.class
-                                    )
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "500",
-                            description = "Internal Server Error - 서버 내부 오류입니다.",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(
-                                            implementation = ErrorMessage.class
-                                    )
-                            )
-                    )
-            }
-    )
-    ResponseEntity<PaginatedResponse<RecordInfoWithBookmark>> getFamousRecordInfoWithBookmarks(
-            @UserId Long userId,
-            @RequestParam(required = false, defaultValue = "0") int pageNumber,
-            @RequestParam(required = false, defaultValue = "10") int pageSize
-    ) ;
-
-    @Operation(
-            summary = "최근 레코드 리스트 조회 API",
-            description = "사용자가 최근 레코드를 키워드와 함께 조회합니다. 키워드가 없으면 전체 최근 레코드를 조회합니다.",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "요청이 성공적으로 처리되었습니다.",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(
-                                            implementation = Slice.class
-                                    )
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "401",
-                            description = "Unauthorized - 인증이 필요합니다.",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(
-                                            implementation = ErrorMessage.class
-                                    )
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "500",
-                            description = "Internal Server Error - 서버 내부 오류입니다.",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(
-                                            implementation = ErrorMessage.class
-                                    )
-                            )
-                    )
-            }
-    )
-    ResponseEntity<CursorBasePaginatedResponse<RecordInfoWithBookmark>> getRecentRecordInfosWithBookmarks(
-            @UserId Long userId,
             @RequestParam(required = false) Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     );
@@ -368,9 +245,8 @@ public interface RecordApi {
                     )
             }
     )
-    ResponseEntity<CursorBasePaginatedResponse<RecordInfoWithBookmark>> getSubscribingRecordInfosWithBookmarks(
+    ResponseEntity<List<RecordGetResponse>> getRandomBySubscription(
             @UserId Long userId,
-            @RequestParam(required = false) Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size
     );
 
@@ -410,7 +286,7 @@ public interface RecordApi {
                     )
             }
     )
-    ResponseEntity<List<RecordInfoWithBookmark>> getTotalRecordInfosWithBookmarks(
+    ResponseEntity<List<RecordGetResponse>> getRandom(
             @UserId Long userId,
             @RequestParam(required = false, defaultValue = "10") int size
     );
@@ -451,7 +327,7 @@ public interface RecordApi {
                     )
             }
     )
-    public ResponseEntity<CursorBasePaginatedResponse<BookmarkedRecord>> getBookmarkedRecords(
+    public ResponseEntity<CursorBasePaginatedResponse<RecordGetResponse>> getAllBookmarked(
             @UserId Long userId,
             @RequestParam(required = false) Long cursorId,
             @RequestParam(required = false, defaultValue = "10") int size

@@ -4,14 +4,17 @@ import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.subscribe.domain.SubscribeEntity;
 import org.recordy.server.subscribe.repository.impl.SubscribeJpaRepository;
+import org.recordy.server.user.controller.dto.response.UserInfo;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.UserEntity;
+import org.recordy.server.user.domain.usecase.UserProfile;
 import org.recordy.server.user.exception.UserException;
 import org.recordy.server.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Repository
@@ -21,14 +24,15 @@ public class UserRepositoryImpl implements UserRepository {
     private Long rootUserId;
 
     private final UserJpaRepository userJpaRepository;
+    private final UserQueryDslRepository userQueryDslRepository;
     private final SubscribeJpaRepository subscribeJpaRepository;
 
     @Override
     public User save(User user) {
-        UserEntity userEntity = userJpaRepository.save(UserEntity.from(user));
-        followRootUser(userEntity);
+        UserEntity entity = userJpaRepository.save(UserEntity.from(user));
+        followRootUser(entity);
 
-        return userEntity.toDomain();
+        return User.from(entity);
     }
 
     private void followRootUser(UserEntity userEntity) {
@@ -43,26 +47,47 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void deleteById(long userId) {
-        userJpaRepository.deleteById(userId);
+    public void deleteById(long id) {
+        userJpaRepository.deleteById(id);
     }
 
     @Override
-    public User findById(long userId) {
-        return userJpaRepository.findById(userId)
-                .map(UserEntity::toDomain)
-                .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
+    public User findById(long id) {
+        UserEntity entity = userQueryDslRepository.findById(id);
+
+        if (Objects.isNull(entity))
+            throw new UserException(ErrorMessage.USER_NOT_FOUND);
+
+        return User.from(entity);
     }
 
     @Override
     public User findByPlatformId(String platformId) {
-        return userJpaRepository.findByPlatformId(platformId)
-                .map(UserEntity::toDomain)
-                .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
+        UserEntity entity = userQueryDslRepository.findByPlatformId(platformId);
+
+        if (Objects.isNull(entity))
+            throw new UserException(ErrorMessage.USER_NOT_FOUND);
+
+        return User.from(entity);
     }
 
     @Override
     public boolean existsByNickname(String nickname) {
         return userJpaRepository.existsByNickname(nickname);
+    }
+
+    @Override
+    public Slice<UserInfo> findFollowings(long userId, Long cursor, int size) {
+        return userQueryDslRepository.findFollowings(userId, cursor, size);
+    }
+
+    @Override
+    public Slice<UserInfo> findFollowers(long userId, Long cursor, int size) {
+        return userQueryDslRepository.findFollowers(userId, cursor, size);
+    }
+
+    @Override
+    public UserProfile findProfile(long targetUserId, long userId) {
+        return userQueryDslRepository.findProfile(targetUserId, userId);
     }
 }

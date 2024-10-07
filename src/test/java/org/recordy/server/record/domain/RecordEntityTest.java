@@ -7,7 +7,6 @@ import org.recordy.server.user.domain.UserEntity;
 import org.recordy.server.util.DomainFixture;
 import org.recordy.server.util.PlaceFixture;
 import org.recordy.server.util.RecordFixture;
-import org.recordy.server.view.domain.ViewEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -50,38 +49,6 @@ class RecordEntityTest {
         assertAll(
                 () -> assertThat(Record.from(recordEntity).isUploader(DomainFixture.createUserEntity().getId())).isTrue(),
                 () -> assertThat(Record.from(recordEntity).isUploader(100)).isFalse()
-        );
-    }
-
-    @Test
-    void addView를_통해_View_엔티티를_views_리스트에_추가할_수_있다() {
-        //given
-        UserEntity userEntity = DomainFixture.createUserEntity();
-
-        RecordEntity recordEntity = new RecordEntity(
-                null,
-                RecordFixture.FILE_URL,
-                DomainFixture.CONTENT,
-                UserEntity.from(DomainFixture.createUser()),
-                PlaceEntity.create(PlaceFixture.create()),
-                null,
-                null
-        );
-
-        ViewEntity viewEntity = ViewEntity.builder()
-                .id(1L)
-                .record(recordEntity)
-                .user(userEntity)
-                .build();
-
-        //when
-        recordEntity.addView(viewEntity);
-
-        //then
-        assertAll(
-                () -> assertThat(recordEntity.getViews().size()).isEqualTo(1),
-                () -> assertThat(recordEntity.getViews().get(0).getRecord().getId()).isEqualTo(recordEntity.getId()),
-                () -> assertThat(recordEntity.getViews().get(0).getUser().getId()).isEqualTo(userEntity.getId())
         );
     }
 

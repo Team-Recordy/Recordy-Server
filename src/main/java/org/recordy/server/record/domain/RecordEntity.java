@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import org.recordy.server.common.domain.JpaMetaInfoEntity;
 import org.recordy.server.bookmark.domain.BookmarkEntity;
 import org.recordy.server.place.domain.PlaceEntity;
-import org.recordy.server.view.domain.ViewEntity;
 import org.recordy.server.user.domain.UserEntity;
 
 import java.util.ArrayList;
@@ -33,9 +32,6 @@ public class RecordEntity extends JpaMetaInfoEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "place_id")
     private PlaceEntity place;
-
-    @OneToMany(mappedBy = "record", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<ViewEntity> views = new ArrayList<>();
 
     @OneToMany(mappedBy = "record", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<BookmarkEntity> bookmarks = new ArrayList<>();
@@ -68,10 +64,6 @@ public class RecordEntity extends JpaMetaInfoEntity {
                 record.getCreatedAt(),
                 record.getUpdatedAt()
         );
-    }
-
-    public void addView(ViewEntity view) {
-        views.add(view);
     }
 
     public void addBookmark(BookmarkEntity bookmark) {

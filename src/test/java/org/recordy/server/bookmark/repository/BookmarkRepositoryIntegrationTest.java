@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import org.junit.jupiter.api.Test;
+import org.recordy.server.record.controller.dto.response.RecordGetResponse;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.bookmark.domain.Bookmark;
@@ -18,6 +19,8 @@ import org.springframework.data.domain.Slice;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @SqlGroup({
         @Sql(value = "/sql/clean-database.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS),
@@ -53,19 +56,22 @@ public class BookmarkRepositoryIntegrationTest extends IntegrationTest {
     @Test
     void save를_통해_저장된_북마크_데이터는_레코드_조회_시_데이터_개수로_카운트될_수_있다() {
         // given
-        // userId 1 <-> recordId 1
-        // userId 1 <-> recordId 2
-        // userId 2 <-> recordId 1
-        // userId 2 <-> recordId 1
+        // id가 1, 2인 각 레코드 모두 북마크 2번씩 되어 있음
+        // 2개 레코드 모두 id가 1인 사용자가 업로드했음
+        // 레코드의 총 개수는 4임
 
         // when
-        Slice<Record> result = recordRepository.findAllByIdAfterOrderByIdDesc(null, PageRequest.ofSize(4));
+        List<Long> result = recordRepository.findAllByUserIdOrderByIdDesc(1, 1, null, 4)
+                .stream()
+                .map(RecordGetResponse::bookmarkCount)
+                .sorted()
+                .toList();
 
         // then
         assertAll(
-                () -> assertThat(result.getContent().size()).isEqualTo(2),
-                () -> assertThat(result.getContent().get(0).getBookmarkCount()).isEqualTo(2),
-                () -> assertThat(result.getContent().get(1).getBookmarkCount()).isEqualTo(2)
+                () -> assertThat(result).hasSize(2),
+                () -> assertThat(result.get(0)).isEqualTo(2),
+                () -> assertThat(result.get(1)).isEqualTo(2)
         );
     }
 
