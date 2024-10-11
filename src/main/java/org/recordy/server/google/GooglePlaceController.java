@@ -11,7 +11,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
-public class PlaceController {
+public class GooglePlaceController {
 
     @Autowired
     private VenueService venueService;
