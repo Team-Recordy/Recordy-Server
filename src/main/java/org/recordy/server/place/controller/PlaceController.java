@@ -21,12 +21,28 @@ public class PlaceController implements PlaceApi {
     private final PlaceService placeService;
 
     @Override
-    @GetMapping
+    @GetMapping("/exhibitions/date")
     public ResponseEntity<OffsetBasePaginatedResponse<PlaceGetResponse>> getPlacesByExhibitionStartDate(
-            @RequestParam int number,
-            @RequestParam int size
+            @RequestParam(required = false, defaultValue = "0") int number,
+            @RequestParam(required = false, defaultValue = "10") int size
     ) {
         Slice<PlaceGetResponse> result = placeService.getPlacesByExhibitionStartDate(PageRequest.of(number, size));
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(OffsetBasePaginatedResponse.of(result));
+    }
+
+    @Override
+    @GetMapping("/exhibitions/geography")
+    public ResponseEntity<OffsetBasePaginatedResponse<PlaceGetResponse>> getPlacesByGeography(
+            @RequestParam(required = false, defaultValue = "0") int number,
+            @RequestParam(required = false, defaultValue = "10") int size,
+            @RequestParam double latitude,
+            @RequestParam double longitude,
+            @RequestParam(required = false, defaultValue = "4.0") double distance
+    ) {
+        Slice<PlaceGetResponse> result = placeService.getPlacesByGeography(PageRequest.of(number, size), latitude, longitude, distance);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

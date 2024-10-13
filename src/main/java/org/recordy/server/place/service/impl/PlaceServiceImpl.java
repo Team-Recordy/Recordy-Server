@@ -30,10 +30,16 @@ public class PlaceServiceImpl implements PlaceService {
     private final PlaceRepository placeRepository;
     private final PlaceReviewRepository placeReviewRepository;
     private final GooglePlaceService googlePlaceService;
+    private final GeometryConverter geometryConverter;
 
     @Override
     public Slice<PlaceGetResponse> getPlacesByExhibitionStartDate(Pageable pageable) {
         return placeRepository.findAllOrderByExhibitionStartDateDesc(pageable);
+    }
+
+    @Override
+    public Slice<PlaceGetResponse> getPlacesByGeography(Pageable pageable, double latitude, double longitude, double distance) {
+        return placeRepository.findAllByLocationOrderByExhibitionStartDateDesc(pageable, geometryConverter.of(latitude, longitude), distance);
     }
 
     @Transactional
