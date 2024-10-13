@@ -129,8 +129,8 @@ class PlaceRepositoryTest extends IntegrationTest {
         // then
         assertAll(
                 () -> assertThat(result.getContent().size()).isEqualTo(1),
-                () -> assertThat(result.getContent().get(0).id()).isEqualTo(placeIncluded.getId()),
-                () -> assertThat(result.getContent().get(0).exhibitionSize()).isEqualTo(1)
+                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(placeIncluded.getId()),
+                () -> assertThat(result.getContent().get(0).getExhibitionSize()).isEqualTo(1)
         );
     }
 
@@ -155,9 +155,9 @@ class PlaceRepositoryTest extends IntegrationTest {
         // then
         assertAll(
                 () -> assertThat(result.getContent().size()).isEqualTo(3),
-                () -> assertThat(result.getContent().get(0).id()).isEqualTo(place2.getId()),
-                () -> assertThat(result.getContent().get(1).id()).isEqualTo(place1.getId()),
-                () -> assertThat(result.getContent().get(2).id()).isEqualTo(place3.getId())
+                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(place2.getId()),
+                () -> assertThat(result.getContent().get(1).getId()).isEqualTo(place1.getId()),
+                () -> assertThat(result.getContent().get(2).getId()).isEqualTo(place3.getId())
         );
     }
 
@@ -176,7 +176,7 @@ class PlaceRepositoryTest extends IntegrationTest {
         // then
         assertAll(
                 () -> assertThat(result.getContent().size()).isEqualTo(1),
-                () -> assertThat(result.getContent().get(0).id()).isEqualTo(placeIncluded.getId())
+                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(placeIncluded.getId())
         );
     }
 
@@ -197,8 +197,8 @@ class PlaceRepositoryTest extends IntegrationTest {
         // then
         assertAll(
                 () -> assertThat(result.getContent().size()).isEqualTo(2),
-                () -> assertThat(result.getContent().get(0).id()).isEqualTo(place2.getId()),
-                () -> assertThat(result.getContent().get(1).id()).isEqualTo(place1.getId())
+                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(place2.getId()),
+                () -> assertThat(result.getContent().get(1).getId()).isEqualTo(place1.getId())
         );
     }
 
@@ -219,7 +219,7 @@ class PlaceRepositoryTest extends IntegrationTest {
         // then
         assertAll(
                 () -> assertThat(result.getContent().size()).isEqualTo(1),
-                () -> assertThat(result.getContent().get(0).id()).isEqualTo(place1.getId())
+                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(place1.getId())
         );
     }
 }

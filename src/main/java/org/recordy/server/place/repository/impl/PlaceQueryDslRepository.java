@@ -1,6 +1,7 @@
 package org.recordy.server.place.repository.impl;
 
 import com.querydsl.core.types.ConstructorExpression;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -8,7 +9,6 @@ import com.querydsl.spatial.locationtech.jts.JTSGeometryExpressions;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
 import org.recordy.server.common.util.QueryDslUtils;
-import org.recordy.server.exhibition.controller.dto.response.ExhibitionGetResponse;
 import org.recordy.server.location.controller.dto.response.LocationGetResponse;
 import org.recordy.server.place.controller.dto.response.PlaceGetResponse;
 import org.springframework.data.domain.Pageable;
@@ -19,9 +19,11 @@ import org.springframework.stereotype.Repository;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.querydsl.core.group.GroupBy.groupBy;
-import static com.querydsl.core.group.GroupBy.list;
 import static org.recordy.server.exhibition.domain.QExhibitionEntity.exhibitionEntity;
 import static org.recordy.server.location.domain.QLocationEntity.locationEntity;
 import static org.recordy.server.place.domain.QPlaceEntity.placeEntity;
@@ -32,14 +34,6 @@ public class PlaceQueryDslRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    private static final ConstructorExpression<ExhibitionGetResponse> exhibitionGetResponse = Projections.constructor(
-            ExhibitionGetResponse.class,
-            exhibitionEntity.id,
-            exhibitionEntity.name,
-            exhibitionEntity.startDate,
-            exhibitionEntity.endDate,
-            exhibitionEntity.isFree
-    );
     private static final ConstructorExpression<LocationGetResponse> locationGetResponse = Projections.constructor(
             LocationGetResponse.class,
             placeEntity.location.id,
@@ -50,7 +44,6 @@ public class PlaceQueryDslRepository {
             PlaceGetResponse.class,
             placeEntity.id,
             placeEntity.name,
-            exhibitionEntity.count(),
             locationGetResponse
     );
 
@@ -109,18 +102,44 @@ public class PlaceQueryDslRepository {
     }
 
     private List<PlaceGetResponse> findPlacesWith(Pageable pageable, BooleanExpression... expressions) {
-        return jpaQueryFactory
+        Predicate[] hasOngoingExhibitions = {
+                exhibitionEntity.endDate.goe(LocalDate.now(Clock.systemDefaultZone())),
+                exhibitionEntity.startDate.loe(LocalDate.now(Clock.systemDefaultZone()))
+        };
+
+        List<PlaceGetResponse> places = jpaQueryFactory
                 .from(placeEntity)
                 .join(placeEntity.location, locationEntity)
                 .leftJoin(placeEntity.exhibitions, exhibitionEntity)
                 .where(expressions)
-                .where(
-                        exhibitionEntity.endDate.goe(LocalDate.now(Clock.systemDefaultZone())),
-                        exhibitionEntity.startDate.loe(LocalDate.now(Clock.systemDefaultZone()))
-                )
+                .where(hasOngoingExhibitions)
                 .orderBy(exhibitionEntity.startDate.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .transform(groupBy(placeEntity.id).list(placeGetResponse));
+
+        collectExhibitionCounts(places, hasOngoingExhibitions);
+        return places;
+    }
+
+    private void collectExhibitionCounts(List<PlaceGetResponse> places, Predicate[] hasOngoingExhibitions) {
+        Map<Long, Long> exhibitionSizes = jpaQueryFactory
+                .select(placeEntity.id, exhibitionEntity.count())
+                .from(placeEntity)
+                .leftJoin(placeEntity.exhibitions, exhibitionEntity)
+                .where(placeEntity.id.in(places.stream().map(PlaceGetResponse::getId).toList()))
+                .where(hasOngoingExhibitions)
+                .groupBy(placeEntity.id)
+                .fetch()
+                .stream()
+                .collect(Collectors.toMap(
+                        tuple -> tuple.get(placeEntity.id),
+                        tuple -> Optional.ofNullable(tuple.get(exhibitionEntity.count())).orElse(0L)
+                ));
+
+        for (PlaceGetResponse place : places) {
+            Long exhibitionSize = exhibitionSizes.getOrDefault(place.getId(), 0L);
+            place.setExhibitionSize(exhibitionSize);
+        }
     }
 }

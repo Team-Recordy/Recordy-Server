@@ -1,11 +1,25 @@
 package org.recordy.server.place.controller.dto.response;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.recordy.server.location.controller.dto.response.LocationGetResponse;
 
-public record PlaceGetResponse(
-        Long id,
-        String name,
-        long exhibitionSize,
-        LocationGetResponse location
-) {
+@Getter
+public class PlaceGetResponse {
+
+    Long id;
+    String name;
+    LocationGetResponse location;
+    @Setter
+    long exhibitionSize;
+
+    public PlaceGetResponse(
+            Long id,
+            String name,
+            LocationGetResponse location
+    ) {
+        this.id = id;
+        this.name = name;
+        this.location = location;
+    }
 }

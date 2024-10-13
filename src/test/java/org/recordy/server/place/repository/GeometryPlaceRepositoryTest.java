@@ -58,8 +58,8 @@ public class GeometryPlaceRepositoryTest {
         // then
         assertAll(
                 () -> assertThat(result.getContent().size()).isEqualTo(2),
-                () -> assertThat(result.getContent().get(0).id()).isEqualTo(samePlace.getId()),
-                () -> assertThat(result.getContent().get(1).id()).isEqualTo(closePlace.getId())
+                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(samePlace.getId()),
+                () -> assertThat(result.getContent().get(1).getId()).isEqualTo(closePlace.getId())
         );
     }
 }
