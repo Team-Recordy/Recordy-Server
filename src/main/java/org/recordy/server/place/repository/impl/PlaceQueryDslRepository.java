@@ -50,7 +50,7 @@ public class PlaceQueryDslRepository {
             PlaceGetResponse.class,
             placeEntity.id,
             placeEntity.name,
-            list(exhibitionGetResponse),
+            exhibitionEntity.count(),
             locationGetResponse
     );
 

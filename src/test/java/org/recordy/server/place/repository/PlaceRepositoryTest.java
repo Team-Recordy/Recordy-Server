@@ -119,11 +119,9 @@ class PlaceRepositoryTest extends IntegrationTest {
         Place placeIncluded = placeRepository.save(PlaceFixture.create(LocationFixture.create()));
         Place placeExcluded = placeRepository.save(PlaceFixture.create(LocationFixture.create()));
 
-        List<Exhibition> exhibitions = List.of(
-                exhibitionRepository.save(ExhibitionFixture.create(LocalDate.now(), LocalDate.now(), placeIncluded)),
-                exhibitionRepository.save(ExhibitionFixture.create(LocalDate.now().minusDays(1), LocalDate.now().minusDays(1), placeIncluded)),
-                exhibitionRepository.save(ExhibitionFixture.create(LocalDate.now().minusDays(1), LocalDate.now().minusDays(1), placeExcluded))
-        );
+        exhibitionRepository.save(ExhibitionFixture.create(LocalDate.now(), LocalDate.now(), placeIncluded));
+        exhibitionRepository.save(ExhibitionFixture.create(LocalDate.now().minusDays(1), LocalDate.now().minusDays(1), placeIncluded));
+        exhibitionRepository.save(ExhibitionFixture.create(LocalDate.now().minusDays(1), LocalDate.now().minusDays(1), placeExcluded));
 
         // when
         Slice<PlaceGetResponse> result = placeRepository.findAllOrderByExhibitionStartDateDesc(PageRequest.ofSize(10));
@@ -132,8 +130,7 @@ class PlaceRepositoryTest extends IntegrationTest {
         assertAll(
                 () -> assertThat(result.getContent().size()).isEqualTo(1),
                 () -> assertThat(result.getContent().get(0).id()).isEqualTo(placeIncluded.getId()),
-                () -> assertThat(result.getContent().get(0).exhibitions().size()).isEqualTo(1),
-                () -> assertThat(result.getContent().get(0).exhibitions().get(0).id()).isEqualTo(exhibitions.get(0).getId())
+                () -> assertThat(result.getContent().get(0).exhibitionSize()).isEqualTo(1)
         );
     }
 

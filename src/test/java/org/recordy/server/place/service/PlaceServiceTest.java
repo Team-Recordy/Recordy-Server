@@ -33,7 +33,6 @@ class PlaceServiceTest {
                 LocationFixture.POINT,
                 LocationFixture.ADDRESS,
                 LocationFixture.GOOGLE_PLACE_ID,
-                null,
                 null
         );
         PlaceCreateRequest request = new PlaceCreateRequest(
