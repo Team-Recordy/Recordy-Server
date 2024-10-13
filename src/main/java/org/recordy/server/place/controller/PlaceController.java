@@ -22,11 +22,11 @@ public class PlaceController implements PlaceApi {
 
     @Override
     @GetMapping("/exhibitions/date")
-    public ResponseEntity<OffsetBasePaginatedResponse<PlaceGetResponse>> getPlacesByExhibitionStartDate(
+    public ResponseEntity<OffsetBasePaginatedResponse<PlaceGetResponse>> getAllByExhibitionStartDate(
             @RequestParam(required = false, defaultValue = "0") int number,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
-        Slice<PlaceGetResponse> result = placeService.getPlacesByExhibitionStartDate(PageRequest.of(number, size));
+        Slice<PlaceGetResponse> result = placeService.getAllByExhibitionStartDate(PageRequest.of(number, size));
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -35,18 +35,27 @@ public class PlaceController implements PlaceApi {
 
     @Override
     @GetMapping("/exhibitions/geography")
-    public ResponseEntity<OffsetBasePaginatedResponse<PlaceGetResponse>> getPlacesByGeography(
+    public ResponseEntity<OffsetBasePaginatedResponse<PlaceGetResponse>> getAllByGeography(
             @RequestParam(required = false, defaultValue = "0") int number,
             @RequestParam(required = false, defaultValue = "10") int size,
             @RequestParam double latitude,
             @RequestParam double longitude,
             @RequestParam(required = false, defaultValue = "4.0") double distance
     ) {
-        Slice<PlaceGetResponse> result = placeService.getPlacesByGeography(PageRequest.of(number, size), latitude, longitude, distance);
+        Slice<PlaceGetResponse> result = placeService.getAllByGeography(PageRequest.of(number, size), latitude, longitude, distance);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(OffsetBasePaginatedResponse.of(result));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PlaceGetResponse> getById(
+            @PathVariable Long id
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(placeService.getDetailById(id));
     }
 
     @Override
@@ -56,14 +65,6 @@ public class PlaceController implements PlaceApi {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(createdPlace);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Place> getPlaceById(@PathVariable long id) {
-        Place place = placeService.getPlaceById(id);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(place);
     }
 
     @GetMapping("/name")

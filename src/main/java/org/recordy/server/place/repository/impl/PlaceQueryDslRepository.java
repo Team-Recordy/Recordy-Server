@@ -8,9 +8,11 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.querydsl.spatial.locationtech.jts.JTSGeometryExpressions;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
+import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.common.util.QueryDslUtils;
 import org.recordy.server.location.controller.dto.response.LocationGetResponse;
 import org.recordy.server.place.controller.dto.response.PlaceGetResponse;
+import org.recordy.server.place.exception.PlaceException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -27,6 +29,7 @@ import static com.querydsl.core.group.GroupBy.groupBy;
 import static org.recordy.server.exhibition.domain.QExhibitionEntity.exhibitionEntity;
 import static org.recordy.server.location.domain.QLocationEntity.locationEntity;
 import static org.recordy.server.place.domain.QPlaceEntity.placeEntity;
+import static org.recordy.server.record.domain.QRecordEntity.recordEntity;
 
 @RequiredArgsConstructor
 @Repository
@@ -47,6 +50,11 @@ public class PlaceQueryDslRepository {
             locationGetResponse
     );
 
+    private static final Predicate[] hasOngoingExhibitions = {
+            exhibitionEntity.endDate.goe(LocalDate.now(Clock.systemDefaultZone())),
+            exhibitionEntity.startDate.loe(LocalDate.now(Clock.systemDefaultZone()))
+    };
+
     public Long findById(long id) {
         return findIdWith(placeEntity.id.eq(id));
     }
@@ -65,9 +73,40 @@ public class PlaceQueryDslRepository {
                 .fetchOne();
     }
 
+    public PlaceGetResponse findById(Long id) {
+        PlaceGetResponse place = Optional.ofNullable(jpaQueryFactory
+                .select(placeGetResponse)
+                .from(placeEntity)
+                .join(placeEntity.location, locationEntity)
+                .where(placeEntity.id.eq(id))
+                .fetchOne())
+                .orElseThrow(() -> new PlaceException(ErrorMessage.PLACE_NOT_FOUND));
+
+        Long exhibitionSize = Optional.ofNullable(jpaQueryFactory
+                .select(exhibitionEntity.count())
+                .from(placeEntity)
+                .leftJoin(placeEntity.exhibitions, exhibitionEntity)
+                .where(placeEntity.id.eq(id))
+                .fetchOne())
+                .orElse(0L);
+        place.setExhibitionSize(exhibitionSize);
+
+        Long recordSize = Optional.ofNullable(jpaQueryFactory
+                .select(recordEntity.count())
+                .from(placeEntity)
+                .leftJoin(recordEntity).on(recordEntity.place.id.eq(id))
+                .where(placeEntity.id.eq(id))
+                .fetchOne())
+                .orElse(0L);
+        place.setRecordSize(recordSize);
+
+        return place;
+    }
+
     public Slice<PlaceGetResponse> findAllOrderByExhibitionStartDateDesc(Pageable pageable) {
         List<PlaceGetResponse> content = findPlacesWith(pageable);
 
+        collectExhibitionCounts(content);
         return new SliceImpl<>(content, pageable, QueryDslUtils.hasNext(pageable, content));
     }
 
@@ -77,6 +116,7 @@ public class PlaceQueryDslRepository {
                 exhibitionEntity.isFree.isTrue()
         );
 
+        collectExhibitionCounts(content);
         return new SliceImpl<>(content, pageable, QueryDslUtils.hasNext(pageable, content));
     }
 
@@ -86,6 +126,7 @@ public class PlaceQueryDslRepository {
                 placeEntity.name.containsIgnoreCase(query)
         );
 
+        collectExhibitionCounts(content);
         return new SliceImpl<>(content, pageable, QueryDslUtils.hasNext(pageable, content));
     }
 
@@ -98,16 +139,12 @@ public class PlaceQueryDslRepository {
                         .contains(locationEntity.geometry)
         );
 
+        collectExhibitionCounts(content);
         return new SliceImpl<>(content, pageable, QueryDslUtils.hasNext(pageable, content));
     }
 
     private List<PlaceGetResponse> findPlacesWith(Pageable pageable, BooleanExpression... expressions) {
-        Predicate[] hasOngoingExhibitions = {
-                exhibitionEntity.endDate.goe(LocalDate.now(Clock.systemDefaultZone())),
-                exhibitionEntity.startDate.loe(LocalDate.now(Clock.systemDefaultZone()))
-        };
-
-        List<PlaceGetResponse> places = jpaQueryFactory
+        return jpaQueryFactory
                 .from(placeEntity)
                 .join(placeEntity.location, locationEntity)
                 .leftJoin(placeEntity.exhibitions, exhibitionEntity)
@@ -115,14 +152,11 @@ public class PlaceQueryDslRepository {
                 .where(hasOngoingExhibitions)
                 .orderBy(exhibitionEntity.startDate.desc())
                 .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
+                .limit(pageable.getPageSize() + 1)
                 .transform(groupBy(placeEntity.id).list(placeGetResponse));
-
-        collectExhibitionCounts(places, hasOngoingExhibitions);
-        return places;
     }
 
-    private void collectExhibitionCounts(List<PlaceGetResponse> places, Predicate[] hasOngoingExhibitions) {
+    private void collectExhibitionCounts(List<PlaceGetResponse> places) {
         Map<Long, Long> exhibitionSizes = jpaQueryFactory
                 .select(placeEntity.id, exhibitionEntity.count())
                 .from(placeEntity)

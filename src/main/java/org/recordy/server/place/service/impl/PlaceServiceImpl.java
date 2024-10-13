@@ -33,13 +33,18 @@ public class PlaceServiceImpl implements PlaceService {
     private final GeometryConverter geometryConverter;
 
     @Override
-    public Slice<PlaceGetResponse> getPlacesByExhibitionStartDate(Pageable pageable) {
+    public Slice<PlaceGetResponse> getAllByExhibitionStartDate(Pageable pageable) {
         return placeRepository.findAllOrderByExhibitionStartDateDesc(pageable);
     }
 
     @Override
-    public Slice<PlaceGetResponse> getPlacesByGeography(Pageable pageable, double latitude, double longitude, double distance) {
+    public Slice<PlaceGetResponse> getAllByGeography(Pageable pageable, double latitude, double longitude, double distance) {
         return placeRepository.findAllByLocationOrderByExhibitionStartDateDesc(pageable, geometryConverter.of(latitude, longitude), distance);
+    }
+
+    @Override
+    public PlaceGetResponse getDetailById(Long id) {
+        return placeRepository.findDetailById(id);
     }
 
     @Transactional
@@ -58,11 +63,6 @@ public class PlaceServiceImpl implements PlaceService {
         }
 
         return place;
-    }
-
-    @Override
-    public Place getPlaceById(long id) {
-        return placeRepository.findById(id);
     }
 
     @Override

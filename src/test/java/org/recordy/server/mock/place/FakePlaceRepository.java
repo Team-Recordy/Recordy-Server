@@ -41,6 +41,11 @@ public class FakePlaceRepository implements PlaceRepository {
     }
 
     @Override
+    public PlaceGetResponse findDetailById(Long id) {
+        return null;
+    }
+
+    @Override
     public Slice<PlaceGetResponse> findAllOrderByExhibitionStartDateDesc(Pageable pageable) {
         return null;
     }

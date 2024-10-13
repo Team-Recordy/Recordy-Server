@@ -81,7 +81,7 @@ public interface PlaceApi {
                     )
             }
     )
-    ResponseEntity<OffsetBasePaginatedResponse<PlaceGetResponse>> getPlacesByExhibitionStartDate(
+    ResponseEntity<OffsetBasePaginatedResponse<PlaceGetResponse>> getAllByExhibitionStartDate(
             int number,
             int size
     );
@@ -117,11 +117,56 @@ public interface PlaceApi {
                     )
             }
     )
-    ResponseEntity<OffsetBasePaginatedResponse<PlaceGetResponse>> getPlacesByGeography(
+    ResponseEntity<OffsetBasePaginatedResponse<PlaceGetResponse>> getAllByGeography(
             int number,
             int size,
             double latitude,
             double longitude,
             double distance
+    );
+
+    @Operation(
+            summary = "id 기반 장소 조회 API",
+            description = "동일한 id를 가진 장소를 조회합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "장소를 성공적으로 조회했습니다.",
+                            content = @Content
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "잘못된 요청 - 입력 데이터가 유효하지 않습니다.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = ErrorMessage.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "잘못된 요청 - 동일한 id를 가진 장소가 없습니다.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = ErrorMessage.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "서버 내부 오류",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = ErrorMessage.class
+                                    )
+                            )
+                    )
+            }
+    )
+    ResponseEntity<PlaceGetResponse> getById(
+            Long id
     );
 }

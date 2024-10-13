@@ -12,6 +12,8 @@ public class PlaceGetResponse {
     LocationGetResponse location;
     @Setter
     long exhibitionSize;
+    @Setter
+    long recordSize;
 
     public PlaceGetResponse(
             Long id,

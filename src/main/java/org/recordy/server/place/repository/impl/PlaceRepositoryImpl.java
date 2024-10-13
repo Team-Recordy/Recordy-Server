@@ -52,6 +52,11 @@ public class PlaceRepositoryImpl implements PlaceRepository {
     }
 
     @Override
+    public PlaceGetResponse findDetailById(Long id) {
+        return placeQueryDslRepository.findById(id);
+    }
+
+    @Override
     public Slice<PlaceGetResponse> findAllOrderByExhibitionStartDateDesc(Pageable pageable) {
         return placeQueryDslRepository.findAllOrderByExhibitionStartDateDesc(pageable);
     }

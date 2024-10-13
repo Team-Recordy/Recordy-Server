@@ -12,9 +12,9 @@ public interface PlaceService {
     Place create(PlaceCreateRequest request);
 
     // query
-    Place getPlaceById(long id);
     Place getPlaceByName(String name);
-    Slice<PlaceGetResponse> getPlacesByExhibitionStartDate(Pageable pageable);
-    Slice<PlaceGetResponse> getPlacesByGeography(Pageable pageable, double latitude, double longitude, double distance);
+    PlaceGetResponse getDetailById(Long id);
+    Slice<PlaceGetResponse> getAllByExhibitionStartDate(Pageable pageable);
+    Slice<PlaceGetResponse> getAllByGeography(Pageable pageable, double latitude, double longitude, double distance);
     Slice<PlaceGetResponse> getFreePlaces(Pageable pageable);
 }

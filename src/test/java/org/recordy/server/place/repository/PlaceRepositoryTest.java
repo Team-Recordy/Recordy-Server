@@ -2,11 +2,16 @@ package org.recordy.server.place.repository;
 
 import org.junit.jupiter.api.Test;
 import org.recordy.server.common.message.ErrorMessage;
-import org.recordy.server.exhibition.domain.Exhibition;
 import org.recordy.server.exhibition.repository.ExhibitionRepository;
 import org.recordy.server.place.controller.dto.response.PlaceGetResponse;
 import org.recordy.server.place.domain.Place;
 import org.recordy.server.place.exception.PlaceException;
+import org.recordy.server.record.domain.Record;
+import org.recordy.server.record.domain.usecase.RecordCreate;
+import org.recordy.server.record.repository.RecordRepository;
+import org.recordy.server.user.domain.User;
+import org.recordy.server.user.repository.UserRepository;
+import org.recordy.server.util.DomainFixture;
 import org.recordy.server.util.ExhibitionFixture;
 import org.recordy.server.util.LocationFixture;
 import org.recordy.server.util.PlaceFixture;
@@ -19,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -33,6 +37,12 @@ class PlaceRepositoryTest extends IntegrationTest {
 
     @Autowired
     private ExhibitionRepository exhibitionRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private RecordRepository recordRepository;
 
     @Test
     void 장소_객체를_저장할_수_있다() {
@@ -72,10 +82,28 @@ class PlaceRepositoryTest extends IntegrationTest {
         exhibitionRepository.save(ExhibitionFixture.create(place));
 
         // when
-        Place result = placeRepository.findById(place.getId());
+        PlaceGetResponse result = placeRepository.findDetailById(place.getId());
 
         // then
         assertThat(result.getId()).isEqualTo(place.getId());
+    }
+
+    @Test
+    void 장소_객체를_id로_조회할_경우_관련된_레코드_개수까지_조회할_수_있다() {
+        // given
+        Place place = placeRepository.save(PlaceFixture.create());
+        User user = userRepository.save(DomainFixture.createUser());
+
+        int recordSize = 10;
+        for (int i = 0; i < recordSize; i++) {
+            recordRepository.save(Record.create(RecordCreate.of(null, "", user, place)));
+        }
+
+        // when
+        PlaceGetResponse result = placeRepository.findDetailById(place.getId());
+
+        // then
+        assertThat(result.getRecordSize()).isEqualTo(recordSize);
     }
 
     @Test
