@@ -71,7 +71,7 @@ public class GooglePlaceServiceImpl implements GooglePlaceService {
     private GooglePlaceDetails getGooglePlaceDetails(String placeId) {
         String url = UriComponentsBuilder.fromHttpUrl("https://maps.googleapis.com/maps/api/place/details/json")
                 .queryParam("place_id", placeId)
-                .queryParam("fields", "geometry,formatted_address,name,place_id,rating,reviews,website")
+                .queryParam("fields", "geometry,formatted_address,name,place_id,rating,reviews")
                 .queryParam("language", "ko")
                 .queryParam("key", key)
                 .build()

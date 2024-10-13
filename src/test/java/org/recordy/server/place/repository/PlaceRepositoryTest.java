@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.exhibition.domain.Exhibition;
 import org.recordy.server.exhibition.repository.ExhibitionRepository;
-import org.recordy.server.location.domain.Location;
 import org.recordy.server.place.controller.dto.response.PlaceGetResponse;
 import org.recordy.server.place.domain.Place;
 import org.recordy.server.place.exception.PlaceException;
@@ -47,7 +46,6 @@ class PlaceRepositoryTest extends IntegrationTest {
         assertAll(
                 () -> assertThat(result.getId()).isNotNull(),
                 () -> assertThat(result.getName()).isEqualTo(place.getName()),
-                () -> assertThat(result.getWebsiteUrl()).isEqualTo(place.getWebsiteUrl()),
                 () -> assertThat(result.getLocation().getAddress()).isEqualTo(place.getLocation().getAddress())
         );
     }

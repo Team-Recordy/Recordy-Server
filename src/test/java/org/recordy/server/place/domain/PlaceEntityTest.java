@@ -20,7 +20,6 @@ class PlaceEntityTest {
         // then
         assertAll(
                 () -> assertThat(entity.getName()).isEqualTo(PlaceFixture.NAME),
-                () -> assertThat(entity.getWebsiteUrl()).isEqualTo(PlaceFixture.WEBSITE_URL),
                 () -> assertThat(entity.getLocation().getAddress()).isEqualTo(place.getLocation().getAddress()),
                 () -> assertThat(entity.getLocation().getGooglePlaceId()).isEqualTo(place.getLocation().getGooglePlaceId()),
                 () -> assertThat(entity.getLocation().getGeometry()).isEqualTo(place.getLocation().getGeometry()),

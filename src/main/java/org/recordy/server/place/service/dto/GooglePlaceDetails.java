@@ -6,7 +6,6 @@ public record GooglePlaceDetails(
         String formatted_address,
         Geometry geometry,
         String place_id,
-        List<Review> reviews,
-        String website
+        List<Review> reviews
 ) {
 }

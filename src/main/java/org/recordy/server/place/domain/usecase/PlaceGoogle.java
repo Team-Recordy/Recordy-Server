@@ -10,8 +10,7 @@ public record PlaceGoogle(
         Point geometry,
         String address,
         String placeId,
-        List<Review> reviews,
-        String website
+        List<Review> reviews
 ) {
 
     public static PlaceGoogle of(Point geometry, GooglePlaceDetails placeDetails) {
@@ -19,8 +18,7 @@ public record PlaceGoogle(
                 geometry,
                 placeDetails.formatted_address(),
                 placeDetails.place_id(),
-                placeDetails.reviews(),
-                placeDetails.website()
+                placeDetails.reviews()
         );
     }
 }

@@ -39,7 +39,6 @@ public class PlaceServiceImpl implements PlaceService {
 
         Place place = placeRepository.save(Place.create(new PlaceCreate(
                 request.name(),
-                placeGoogle.website(),
                 location
         )));
 

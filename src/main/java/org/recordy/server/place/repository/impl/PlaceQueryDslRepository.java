@@ -50,7 +50,6 @@ public class PlaceQueryDslRepository {
             PlaceGetResponse.class,
             placeEntity.id,
             placeEntity.name,
-            placeEntity.websiteUrl,
             list(exhibitionGetResponse),
             locationGetResponse
     );
