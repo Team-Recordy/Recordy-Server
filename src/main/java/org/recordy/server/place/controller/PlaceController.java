@@ -1,10 +1,12 @@
 package org.recordy.server.place.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.recordy.server.common.dto.response.OffsetBasePaginatedResponse;
 import org.recordy.server.place.controller.dto.request.PlaceCreateRequest;
 import org.recordy.server.place.controller.dto.response.PlaceGetResponse;
 import org.recordy.server.place.domain.Place;
 import org.recordy.server.place.service.PlaceService;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
@@ -19,6 +21,19 @@ public class PlaceController implements PlaceApi {
     private final PlaceService placeService;
 
     @Override
+    @GetMapping
+    public ResponseEntity<OffsetBasePaginatedResponse<PlaceGetResponse>> getPlacesByExhibitionStartDate(
+            @RequestParam int number,
+            @RequestParam int size
+    ) {
+        Slice<PlaceGetResponse> result = placeService.getPlacesByExhibitionStartDate(PageRequest.of(number, size));
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(OffsetBasePaginatedResponse.of(result));
+    }
+
+    @Override
     @PostMapping
     public ResponseEntity<Place> createPlace(@RequestBody PlaceCreateRequest request) {
         Place createdPlace = placeService.create(request);
@@ -26,6 +41,7 @@ public class PlaceController implements PlaceApi {
                 .status(HttpStatus.CREATED)
                 .body(createdPlace);
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<Place> getPlaceById(@PathVariable long id) {
         Place place = placeService.getPlaceById(id);
@@ -40,14 +56,6 @@ public class PlaceController implements PlaceApi {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(place);
-    }
-
-    @GetMapping
-    public ResponseEntity<Slice<PlaceGetResponse>> getAllPlaces(Pageable pageable) {
-        Slice<PlaceGetResponse> places = placeService.getAllPlaces(pageable);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(places);
     }
 
     @GetMapping("/free")

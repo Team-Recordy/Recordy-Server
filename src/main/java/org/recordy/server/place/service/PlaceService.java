@@ -14,7 +14,6 @@ public interface PlaceService {
     // query
     Place getPlaceById(long id);
     Place getPlaceByName(String name);
-    Slice<PlaceGetResponse> getAllPlaces(Pageable pageable);
-
+    Slice<PlaceGetResponse> getPlacesByExhibitionStartDate(Pageable pageable);
     Slice<PlaceGetResponse> getFreePlaces(Pageable pageable);
 }

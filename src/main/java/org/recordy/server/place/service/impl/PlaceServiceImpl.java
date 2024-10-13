@@ -31,6 +31,11 @@ public class PlaceServiceImpl implements PlaceService {
     private final PlaceReviewRepository placeReviewRepository;
     private final GooglePlaceService googlePlaceService;
 
+    @Override
+    public Slice<PlaceGetResponse> getPlacesByExhibitionStartDate(Pageable pageable) {
+        return placeRepository.findAllOrderByExhibitionStartDateDesc(pageable);
+    }
+
     @Transactional
     @Override
     public Place create(PlaceCreateRequest request) {
@@ -48,6 +53,7 @@ public class PlaceServiceImpl implements PlaceService {
 
         return place;
     }
+
     @Override
     public Place getPlaceById(long id) {
         return placeRepository.findById(id);
@@ -56,11 +62,6 @@ public class PlaceServiceImpl implements PlaceService {
     @Override
     public Place getPlaceByName(String name) {
         return placeRepository.findByName(name);
-    }
-
-    @Override
-    public Slice<PlaceGetResponse> getAllPlaces(Pageable pageable) {
-        return placeRepository.findAllOrderByExhibitionStartDateDesc(pageable);
     }
 
     @Override
