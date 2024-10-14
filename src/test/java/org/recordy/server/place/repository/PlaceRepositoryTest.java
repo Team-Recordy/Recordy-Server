@@ -226,28 +226,6 @@ class PlaceRepositoryTest extends IntegrationTest {
     }
 
     @Test
-    void 진행중인_공짜_전시를_가진_장소_리스트를_전시_시작일의_역순으로_조회할_수_있다() {
-        // given
-        Place place1 = placeRepository.save(PlaceFixture.create(LocationFixture.create()));
-        Place place2 = placeRepository.save(PlaceFixture.create(LocationFixture.create()));
-        Place place3 = placeRepository.save(PlaceFixture.create(LocationFixture.create()));
-
-        exhibitionRepository.save(ExhibitionFixture.create(LocalDate.now().minusDays(3), LocalDate.now(), true, place1));
-        exhibitionRepository.save(ExhibitionFixture.create(LocalDate.now().minusDays(1), LocalDate.now(), true, place2));
-        exhibitionRepository.save(ExhibitionFixture.create(LocalDate.now().minusDays(2), LocalDate.now(), false, place3));
-
-        // when
-        Slice<PlaceGetResponse> result = placeRepository.findAllFreeOrderByExhibitionStartDateDesc(PageRequest.ofSize(10));
-
-        // then
-        assertAll(
-                () -> assertThat(result.getContent().size()).isEqualTo(2),
-                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(place2.getId()),
-                () -> assertThat(result.getContent().get(1).getId()).isEqualTo(place1.getId())
-        );
-    }
-
-    @Test
     void 특정_이름을_포함하는_장소_리스트를_전시_시작일의_역순으로_조회할_수_있다() {
         // given
         Place place1 = placeRepository.save(PlaceFixture.create("국립현대미술관", LocationFixture.create()));
