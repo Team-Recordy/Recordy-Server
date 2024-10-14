@@ -20,5 +20,4 @@ public interface PlaceService {
     Slice<PlaceGetResponse> getAllByExhibitionStartDate(Pageable pageable);
     Slice<PlaceGetResponse> getAllByGeography(Pageable pageable, double latitude, double longitude, double distance);
     List<PlaceReviewGetResponse> getReviewsByPlaceId(long id);
-    Slice<PlaceGetResponse> getFreePlaces(Pageable pageable);
 }

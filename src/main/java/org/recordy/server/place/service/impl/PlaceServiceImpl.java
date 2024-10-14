@@ -75,11 +75,6 @@ public class PlaceServiceImpl implements PlaceService {
         return placeRepository.findByName(name);
     }
 
-    @Override
-    public Slice<PlaceGetResponse> getFreePlaces(Pageable pageable) {
-        return placeRepository.findAllFreeOrderByExhibitionStartDateDesc(pageable);
-    }
-
     private void saveReviews(List<Review> reviews, Place place) {
         List<PlaceReview> placeReviews = reviews.stream()
                 .map(review -> PlaceReview.of(review, PlaceEntity.from(place)))

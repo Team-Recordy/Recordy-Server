@@ -103,16 +103,6 @@ public class PlaceQueryDslRepository {
         return new SliceImpl<>(content, pageable, QueryDslUtils.hasNext(pageable, content));
     }
 
-    public Slice<PlaceGetResponse> findAllFreeOrderByExhibitionStartDateDesc(Pageable pageable) {
-        List<PlaceGetResponse> content = findPlacesWith(
-                pageable,
-                exhibitionEntity.isFree.isTrue()
-        );
-
-        collectExhibitionCounts(content);
-        return new SliceImpl<>(content, pageable, QueryDslUtils.hasNext(pageable, content));
-    }
-
     public Slice<PlaceGetResponse> findAllByNameOrderByExhibitionStartDateDesc(Pageable pageable, String query) {
         List<PlaceGetResponse> content = findPlacesWith(
                 pageable,

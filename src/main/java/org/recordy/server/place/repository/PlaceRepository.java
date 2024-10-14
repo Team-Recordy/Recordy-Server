@@ -16,7 +16,6 @@ public interface PlaceRepository {
     Place findByName(String name);
     PlaceGetResponse findDetailById(Long id);
     Slice<PlaceGetResponse> findAllOrderByExhibitionStartDateDesc(Pageable pageable);
-    Slice<PlaceGetResponse> findAllFreeOrderByExhibitionStartDateDesc(Pageable pageable);
     Slice<PlaceGetResponse> findAllByNameOrderByExhibitionStartDateDesc(Pageable pageable, String query);
     Slice<PlaceGetResponse> findAllByLocationOrderByExhibitionStartDateDesc(Pageable pageable, Point currentLocation, double distance);
 }

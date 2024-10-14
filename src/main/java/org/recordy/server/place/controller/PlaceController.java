@@ -80,12 +80,4 @@ public class PlaceController implements PlaceApi {
                 .status(HttpStatus.CREATED)
                 .body(createdPlace);
     }
-
-    @GetMapping("/free")
-    public ResponseEntity<Slice<PlaceGetResponse>> getFreePlaces(Pageable pageable) {
-        Slice<PlaceGetResponse> places = placeService.getFreePlaces(pageable);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(places);
-    }
 }
