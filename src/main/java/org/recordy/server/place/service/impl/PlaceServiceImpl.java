@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.recordy.server.location.domain.Location;
 import org.recordy.server.place.controller.dto.request.PlaceCreateRequest;
 import org.recordy.server.place.controller.dto.response.PlaceGetResponse;
+import org.recordy.server.place.controller.dto.response.PlaceReviewGetResponse;
 import org.recordy.server.place.domain.Place;
 import org.recordy.server.place.domain.PlaceEntity;
 import org.recordy.server.place.domain.PlaceReview;
@@ -45,6 +46,10 @@ public class PlaceServiceImpl implements PlaceService {
     @Override
     public PlaceGetResponse getDetailById(Long id) {
         return placeRepository.findDetailById(id);
+    }
+
+    public List<PlaceReviewGetResponse> getReviewsByPlaceId(long id) {
+        return placeReviewRepository.findAllByPlaceId(id);
     }
 
     @Transactional
