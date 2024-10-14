@@ -82,4 +82,14 @@ public class FakeExhibitionRepository implements ExhibitionRepository {
     public List<ExhibitionGetResponse> findAllByPlaceId(long placeId) {
         return List.of();
     }
+
+    @Override
+    public List<ExhibitionGetResponse> findAllFreeByPlaceId(long placeId) {
+        return List.of();
+    }
+
+    @Override
+    public List<ExhibitionGetResponse> findAllByPlaceIdOrderByEndDateDesc(long placeId) {
+        return List.of();
+    }
 }

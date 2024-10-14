@@ -260,4 +260,64 @@ class ExhibitionRepositoryTest extends IntegrationTest {
                 () -> assertThat(result.get(4).id()).isEqualTo(5)
         );
     }
+
+    @Test
+    void 장소와_연관된_전시중_무료인_전시만_리스트로_조회할_수_있다() {
+        // given
+        for (int i = 0; i < 5; i++) {
+            exhibitionRepository.save(ExhibitionFixture.create(
+                    LocalDate.now().minusDays(i),
+                    LocalDate.now().plusDays(1),
+                    true,
+                    place
+            ));
+        }
+
+        for (int i = 0; i < 5; i++) {
+            exhibitionRepository.save(ExhibitionFixture.create(
+                    LocalDate.now().minusDays(i),
+                    LocalDate.now().plusDays(1),
+                    false,
+                    place
+            ));
+        }
+
+        // when
+        List<ExhibitionGetResponse> result = exhibitionRepository.findAllFreeByPlaceId(place.getId());
+
+        // then
+        assertAll(
+                () -> assertThat(result).hasSize(5),
+                () -> assertThat(result.get(0).id()).isEqualTo(1),
+                () -> assertThat(result.get(1).id()).isEqualTo(2),
+                () -> assertThat(result.get(2).id()).isEqualTo(3),
+                () -> assertThat(result.get(3).id()).isEqualTo(4),
+                () -> assertThat(result.get(4).id()).isEqualTo(5)
+        );
+    }
+
+    @Test
+    void 장소와_연관된_전시_리스트를_종료_날짜_순서대로_조회할_수_있다() {
+        // given
+        for (int i = 0; i < 5; i++) {
+            exhibitionRepository.save(ExhibitionFixture.create(
+                    LocalDate.now(),
+                    LocalDate.now().plusDays(i),
+                    place
+            ));
+        }
+
+        // when
+        List<ExhibitionGetResponse> result = exhibitionRepository.findAllByPlaceIdOrderByEndDateDesc(place.getId());
+
+        // then
+        assertAll(
+                () -> assertThat(result).hasSize(5),
+                () -> assertThat(result.get(0).id()).isEqualTo(1),
+                () -> assertThat(result.get(1).id()).isEqualTo(2),
+                () -> assertThat(result.get(2).id()).isEqualTo(3),
+                () -> assertThat(result.get(3).id()).isEqualTo(4),
+                () -> assertThat(result.get(4).id()).isEqualTo(5)
+        );
+    }
 }

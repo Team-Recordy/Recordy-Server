@@ -18,4 +18,6 @@ public interface ExhibitionService {
     // query
     Slice<Exhibition> search(String name, Long cursor, int size);
     List<ExhibitionGetResponse> getAllByPlaceId(long placeId);
+    List<ExhibitionGetResponse> getAllFreeByPlaceId(long placeId);
+    List<ExhibitionGetResponse> getAllByPlaceIdOrderByEndDateDesc(long placeId);
 }

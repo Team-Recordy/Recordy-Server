@@ -63,4 +63,14 @@ public class ExhibitionServiceImpl implements ExhibitionService {
     public List<ExhibitionGetResponse> getAllByPlaceId(long placeId) {
         return exhibitionRepository.findAllByPlaceId(placeId);
     }
+
+    @Override
+    public List<ExhibitionGetResponse> getAllFreeByPlaceId(long placeId) {
+        return exhibitionRepository.findAllFreeByPlaceId(placeId);
+    }
+
+    @Override
+    public List<ExhibitionGetResponse> getAllByPlaceIdOrderByEndDateDesc(long placeId) {
+        return exhibitionRepository.findAllByPlaceIdOrderByEndDateDesc(placeId);
+    }
 }

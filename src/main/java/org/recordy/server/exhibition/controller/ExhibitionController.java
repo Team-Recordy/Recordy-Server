@@ -65,4 +65,24 @@ public class ExhibitionController implements ExhibitionApi {
                 .status(HttpStatus.OK)
                 .body(exhibitionService.getAllByPlaceId(placeId));
     }
+
+    @Override
+    @GetMapping("/free")
+    public ResponseEntity<List<ExhibitionGetResponse>> getAllFreeByPlace(
+            @RequestParam Long placeId
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(exhibitionService.getAllFreeByPlaceId(placeId));
+    }
+
+    @Override
+    @GetMapping("/closing")
+    public ResponseEntity<List<ExhibitionGetResponse>> getAllClosingByPlace(
+            @RequestParam Long placeId
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(exhibitionService.getAllByPlaceIdOrderByEndDateDesc(placeId));
+    }
 }

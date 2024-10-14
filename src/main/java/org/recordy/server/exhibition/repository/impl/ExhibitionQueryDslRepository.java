@@ -1,7 +1,9 @@
 package org.recordy.server.exhibition.repository.impl;
 
 import com.querydsl.core.types.ConstructorExpression;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.util.QueryDslUtils;
@@ -57,13 +59,35 @@ public class ExhibitionQueryDslRepository {
     }
 
     public List<ExhibitionGetResponse> findAllByPlaceId(long placeId) {
+        return findAllOngoingWith(
+                exhibitionEntity.startDate.desc(),
+                placeEntity.id.eq(placeId)
+        );
+    }
+
+    public List<ExhibitionGetResponse> findAllFreeByPlaceId(long placeId) {
+        return findAllOngoingWith(
+                exhibitionEntity.startDate.desc(),
+                placeEntity.id.eq(placeId),
+                exhibitionEntity.isFree.isTrue()
+        );
+    }
+
+    public List<ExhibitionGetResponse> findAllByPlaceIdOrderByEndDateDesc(long placeId) {
+        return findAllOngoingWith(
+                exhibitionEntity.endDate.asc(),
+                placeEntity.id.eq(placeId)
+        );
+    }
+
+    private List<ExhibitionGetResponse> findAllOngoingWith(OrderSpecifier order, BooleanExpression... expressions) {
         return jpaQueryFactory
                 .select(exhibitionGetResponse)
                 .from(exhibitionEntity)
                 .join(exhibitionEntity.place, placeEntity)
-                .where(placeEntity.id.eq(placeId))
+                .where(expressions)
                 .where(hasOngoingExhibitions)
-                .orderBy(exhibitionEntity.startDate.desc())
+                .orderBy(order)
                 .fetch();
     }
 }

@@ -62,4 +62,12 @@ public class ExhibitionRepositoryImpl implements ExhibitionRepository {
     public List<ExhibitionGetResponse> findAllByPlaceId(long placeId) {
         return exhibitionQueryDslRepository.findAllByPlaceId(placeId);
     }
+
+    public List<ExhibitionGetResponse> findAllFreeByPlaceId(long placeId) {
+        return exhibitionQueryDslRepository.findAllFreeByPlaceId(placeId);
+    }
+
+    public List<ExhibitionGetResponse> findAllByPlaceIdOrderByEndDateDesc(long placeId) {
+        return exhibitionQueryDslRepository.findAllByPlaceIdOrderByEndDateDesc(placeId);
+    }
 }

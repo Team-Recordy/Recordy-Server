@@ -17,4 +17,6 @@ public interface ExhibitionRepository {
     Exhibition findById(long id);
     Slice<Exhibition> findAllContainingName(String name, Long cursor, int size);
     List<ExhibitionGetResponse> findAllByPlaceId(long placeId);
+    List<ExhibitionGetResponse> findAllFreeByPlaceId(long placeId);
+    List<ExhibitionGetResponse> findAllByPlaceIdOrderByEndDateDesc(long placeId);
 }
