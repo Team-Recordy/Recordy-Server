@@ -89,6 +89,23 @@ class PlaceRepositoryTest extends IntegrationTest {
     }
 
     @Test
+    void 장소_객체를_id로_조회할_경우_관련된_전시_개수까지_조회할_수_있다() {
+        // given
+        Place place = placeRepository.save(PlaceFixture.create());
+
+        int exhibitionSize = 10;
+        for (int i = 0; i < exhibitionSize; i++) {
+            exhibitionRepository.save(ExhibitionFixture.create(place));
+        }
+
+        // when
+        PlaceGetResponse result = placeRepository.findDetailById(place.getId());
+
+        // then
+        assertThat(result.getExhibitionSize()).isEqualTo(10);
+    }
+
+    @Test
     void 장소_객체를_id로_조회할_경우_관련된_레코드_개수까지_조회할_수_있다() {
         // given
         Place place = placeRepository.save(PlaceFixture.create());

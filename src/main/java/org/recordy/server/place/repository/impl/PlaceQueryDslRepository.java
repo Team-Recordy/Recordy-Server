@@ -1,7 +1,6 @@
 package org.recordy.server.place.repository.impl;
 
 import com.querydsl.core.types.ConstructorExpression;
-import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -18,14 +17,13 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
-import java.time.Clock;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.querydsl.core.group.GroupBy.groupBy;
+import static org.recordy.server.common.util.QueryDslUtils.hasOngoingExhibitions;
 import static org.recordy.server.exhibition.domain.QExhibitionEntity.exhibitionEntity;
 import static org.recordy.server.location.domain.QLocationEntity.locationEntity;
 import static org.recordy.server.place.domain.QPlaceEntity.placeEntity;
@@ -49,11 +47,6 @@ public class PlaceQueryDslRepository {
             placeEntity.name,
             locationGetResponse
     );
-
-    private static final Predicate[] hasOngoingExhibitions = {
-            exhibitionEntity.endDate.goe(LocalDate.now(Clock.systemDefaultZone())),
-            exhibitionEntity.startDate.loe(LocalDate.now(Clock.systemDefaultZone()))
-    };
 
     public Long findById(long id) {
         return findIdWith(placeEntity.id.eq(id));

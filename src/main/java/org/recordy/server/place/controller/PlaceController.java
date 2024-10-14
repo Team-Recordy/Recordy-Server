@@ -67,14 +67,6 @@ public class PlaceController implements PlaceApi {
                 .body(createdPlace);
     }
 
-    @GetMapping("/name")
-    public ResponseEntity<Place> getPlaceByName(@RequestParam String name) {
-        Place place = placeService.getPlaceByName(name);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(place);
-    }
-
     @GetMapping("/free")
     public ResponseEntity<Slice<PlaceGetResponse>> getFreePlaces(Pageable pageable) {
         Slice<PlaceGetResponse> places = placeService.getFreePlaces(pageable);

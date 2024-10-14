@@ -9,9 +9,12 @@ import jakarta.validation.Valid;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.exhibition.controller.dto.request.ExhibitionCreateRequest;
 import org.recordy.server.exhibition.controller.dto.request.ExhibitionUpdateRequest;
+import org.recordy.server.exhibition.controller.dto.response.ExhibitionGetResponse;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.List;
 
 @Tag(name = "전시 관련 API")
 public interface ExhibitionApi {
@@ -135,5 +138,40 @@ public interface ExhibitionApi {
     )
     ResponseEntity<Void> delete(
             Long exhibitionId
+    );
+
+    @Operation(
+            summary = "특정 장소와 관련된 진행중인 전시 리스트 조회 API",
+            description = "특정 장소의 id를 foreign key로 가지는 전시 중 진행중인 것을 리스트로 조회합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "전시 리스트를 성공적으로 조회했습니다.",
+                            content = @Content
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "잘못된 요청 - 입력 데이터가 유효하지 않습니다.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = ErrorMessage.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "서버 내부 오류",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = ErrorMessage.class
+                                    )
+                            )
+                    )
+            }
+    )
+    ResponseEntity<List<ExhibitionGetResponse>> getAllByPlace(
+            Long placeId
     );
 }

@@ -2,6 +2,7 @@ package org.recordy.server.exhibition.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.exhibition.controller.dto.request.ExhibitionCreateRequest;
+import org.recordy.server.exhibition.controller.dto.response.ExhibitionGetResponse;
 import org.recordy.server.exhibition.domain.Exhibition;
 import org.recordy.server.exhibition.domain.usecase.ExhibitionCreate;
 import org.recordy.server.exhibition.domain.usecase.ExhibitionUpdate;
@@ -13,6 +14,8 @@ import org.recordy.server.place.repository.PlaceRepository;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -54,5 +57,10 @@ public class ExhibitionServiceImpl implements ExhibitionService {
     @Override
     public Slice<Exhibition> search(String name, Long cursor, int size) {
         return exhibitionRepository.findAllContainingName(name, cursor, size);
+    }
+
+    @Override
+    public List<ExhibitionGetResponse> getAllByPlaceId(long placeId) {
+        return exhibitionRepository.findAllByPlaceId(placeId);
     }
 }

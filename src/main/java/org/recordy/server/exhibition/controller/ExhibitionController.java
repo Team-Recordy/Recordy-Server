@@ -4,11 +4,14 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.exhibition.controller.dto.request.ExhibitionCreateRequest;
 import org.recordy.server.exhibition.controller.dto.request.ExhibitionUpdateRequest;
+import org.recordy.server.exhibition.controller.dto.response.ExhibitionGetResponse;
 import org.recordy.server.exhibition.domain.usecase.ExhibitionUpdate;
 import org.recordy.server.exhibition.service.ExhibitionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/exhibitions")
@@ -51,5 +54,15 @@ public class ExhibitionController implements ExhibitionApi {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .build();
+    }
+
+    @Override
+    @GetMapping
+    public ResponseEntity<List<ExhibitionGetResponse>> getAllByPlace(
+            @RequestParam Long placeId
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(exhibitionService.getAllByPlaceId(placeId));
     }
 }

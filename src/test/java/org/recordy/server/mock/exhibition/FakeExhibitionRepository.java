@@ -2,6 +2,7 @@ package org.recordy.server.mock.exhibition;
 
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.common.util.QueryDslUtils;
+import org.recordy.server.exhibition.controller.dto.response.ExhibitionGetResponse;
 import org.recordy.server.exhibition.domain.Exhibition;
 import org.recordy.server.exhibition.domain.usecase.ExhibitionCreate;
 import org.recordy.server.exhibition.exception.ExhibitionException;
@@ -75,5 +76,10 @@ public class FakeExhibitionRepository implements ExhibitionRepository {
             return new SliceImpl<>(content, PageRequest.ofSize(size), false);
 
         return new SliceImpl<>(content.subList(0, size), PageRequest.ofSize(size), QueryDslUtils.hasNext(size, content));
+    }
+
+    @Override
+    public List<ExhibitionGetResponse> findAllByPlaceId(long placeId) {
+        return List.of();
     }
 }
