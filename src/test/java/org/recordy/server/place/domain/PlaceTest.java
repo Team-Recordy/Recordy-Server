@@ -23,7 +23,7 @@ class PlaceTest {
         assertAll(
                 () -> assertThat(place.getName()).isEqualTo(PlaceFixture.NAME),
                 () -> assertThat(place.getLocation().getAddress()).isEqualTo(LocationFixture.ADDRESS),
-                () -> assertThat(place.getLocation().getGooglePlaceId()).isEqualTo(LocationFixture.GOOGLE_PLACE_ID),
+                () -> assertThat(place.getLocation().getPlatformPlaceId()).isEqualTo(LocationFixture.GOOGLE_PLACE_ID),
                 () -> assertThat(place.getLocation().getGeometry()).isEqualTo(LocationFixture.POINT)
         );
     }
@@ -43,7 +43,7 @@ class PlaceTest {
                 () -> assertThat(place.getName()).isEqualTo(PlaceFixture.NAME),
                 () -> assertThat(place.getExhibitions()).isEmpty(),
                 () -> assertThat(place.getLocation().getAddress()).isEqualTo(location.getAddress()),
-                () -> assertThat(place.getLocation().getGooglePlaceId()).isEqualTo(location.getGooglePlaceId()),
+                () -> assertThat(place.getLocation().getPlatformPlaceId()).isEqualTo(location.getPlatformPlaceId()),
                 () -> assertThat(place.getLocation().getGeometry()).isEqualTo(location.getGeometry())
         );
     }

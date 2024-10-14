@@ -9,10 +9,10 @@ import org.recordy.server.place.domain.Place;
 import org.recordy.server.place.domain.PlaceEntity;
 import org.recordy.server.place.domain.PlaceReview;
 import org.recordy.server.place.domain.usecase.PlaceCreate;
-import org.recordy.server.place.domain.usecase.PlaceGoogle;
+import org.recordy.server.place.domain.usecase.PlatformPlace;
 import org.recordy.server.place.repository.PlaceRepository;
 import org.recordy.server.place.repository.PlaceReviewRepository;
-import org.recordy.server.place.service.GooglePlaceService;
+import org.recordy.server.place.service.PlatformPlaceService;
 import org.recordy.server.place.service.PlaceService;
 import org.recordy.server.place.service.dto.Review;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +30,7 @@ public class PlaceServiceImpl implements PlaceService {
 
     private final PlaceRepository placeRepository;
     private final PlaceReviewRepository placeReviewRepository;
-    private final GooglePlaceService googlePlaceService;
+    private final PlatformPlaceService platformPlaceService;
     private final GeometryConverter geometryConverter;
 
     @Override
@@ -55,16 +55,16 @@ public class PlaceServiceImpl implements PlaceService {
     @Transactional
     @Override
     public Place create(PlaceCreateRequest request) {
-        PlaceGoogle placeGoogle = googlePlaceService.search(request.toQuery());
-        Location location = Location.of(placeGoogle);
+        PlatformPlace platformPlace = platformPlaceService.getByQuery(request.toQuery());
+        Location location = Location.of(platformPlace);
 
         Place place = placeRepository.save(Place.create(new PlaceCreate(
                 request.name(),
                 location
         )));
 
-        if (Objects.nonNull(placeGoogle.reviews())) {
-            saveReviews(placeGoogle.reviews(), place);
+        if (Objects.nonNull(platformPlace.reviews())) {
+            saveReviews(platformPlace.reviews(), place);
         }
 
         return place;

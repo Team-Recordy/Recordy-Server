@@ -21,7 +21,7 @@ public class LocationEntity extends JpaMetaInfoEntity {
     private Long id;
     private Point geometry;
     private String address;
-    private String googlePlaceId;
+    private String platformPlaceId;
 
     @OneToOne(mappedBy = "location")
     private PlaceEntity place;
@@ -30,14 +30,14 @@ public class LocationEntity extends JpaMetaInfoEntity {
             Long id,
             Point geometry,
             String address,
-            String googlePlaceId,
+            String platformPlaceId,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {
         this.id = id;
         this.geometry = geometry;
         this.address = address;
-        this.googlePlaceId = googlePlaceId;
+        this.platformPlaceId = platformPlaceId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -47,7 +47,7 @@ public class LocationEntity extends JpaMetaInfoEntity {
                 location.getId(),
                 location.getGeometry(),
                 location.getAddress(),
-                location.getGooglePlaceId(),
+                location.getPlatformPlaceId(),
                 location.getCreatedAt(),
                 location.getUpdatedAt()
         );

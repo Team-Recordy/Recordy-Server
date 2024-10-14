@@ -6,7 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.recordy.server.place.controller.dto.request.PlaceCreateRequest;
-import org.recordy.server.place.domain.usecase.PlaceGoogle;
+import org.recordy.server.place.domain.usecase.PlatformPlace;
 import org.recordy.server.place.repository.PlaceRepository;
 import org.recordy.server.place.service.impl.PlaceServiceImpl;
 import org.recordy.server.util.LocationFixture;
@@ -21,7 +21,7 @@ class PlaceServiceTest {
     private PlaceRepository placeRepository;
 
     @Mock
-    private GooglePlaceService googlePlaceService;
+    private PlatformPlaceService platformPlaceService;
 
     @InjectMocks
     private PlaceServiceImpl sut;
@@ -29,7 +29,7 @@ class PlaceServiceTest {
     @Test
     void 구글에_API_요청을_보내_만든_Place_객체를_리포지토리에_저장한다() {
         // given
-        PlaceGoogle placeGoogle = new PlaceGoogle(
+        PlatformPlace platformPlace = new PlatformPlace(
                 LocationFixture.POINT,
                 LocationFixture.ADDRESS,
                 LocationFixture.GOOGLE_PLACE_ID,
@@ -41,14 +41,14 @@ class PlaceServiceTest {
         );
         String query = request.toQuery();
 
-        when(googlePlaceService.search(any())).thenReturn(placeGoogle);
+        when(platformPlaceService.getByQuery(any())).thenReturn(platformPlace);
         when(placeRepository.save(any())).thenReturn(null);
 
         // when
         sut.create(request);
 
         // then
-        verify(googlePlaceService, times(1)).search(query);
+        verify(platformPlaceService, times(1)).getByQuery(query);
         verify(placeRepository, times(1)).save(any());
     }
 }
