@@ -18,9 +18,7 @@ public enum ErrorMessage {
     INVALID_REQUEST_BODY_TYPE(HttpStatus.BAD_REQUEST, "요청 값 파라미터의 타입이 올바르지 않습니다."),
     METHOD_NOT_SUPPORTED(HttpStatus.METHOD_NOT_ALLOWED, "지원하지 않는 HTTP 메소드입니다."),
     RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 API 경로입니다."),
-    INVALID_NICKNAME_FORMAT(HttpStatus.BAD_REQUEST, "유효하지 않은 닉네임 형식입니다."),
     VALIDATION_REQUEST_MISSING_EXCEPTION(HttpStatus.BAD_REQUEST, "요청 값이 유효하지 않습니다."),
-    INVALID_REQUEST_TERM(HttpStatus.BAD_REQUEST, "필수 동의항목에 모두 동의해주세요"),
 
     /**
      * EXTERNAL
@@ -56,6 +54,9 @@ public enum ErrorMessage {
     DUPLICATE_USER(HttpStatus.CONFLICT, "이미 존재하는 회원입니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 회원입니다."),
     FAILED_TO_UPLOAD_TO_S3(HttpStatus.INTERNAL_SERVER_ERROR, "S3에 업로드를 실패했습니다."),
+    INVALID_NICKNAME_FORMAT(HttpStatus.BAD_REQUEST, "유효하지 않은 닉네임 형식입니다."),
+    INVALID_REQUEST_TERM(HttpStatus.BAD_REQUEST, "필수 동의항목에 모두 동의해주세요"),
+    INVALID_IMAGE_URL_FORMAT(HttpStatus.BAD_REQUEST, "유효하지 않은 url 형식입니다."),
 
     /**
      * RECORD

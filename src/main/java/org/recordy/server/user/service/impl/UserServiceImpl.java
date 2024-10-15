@@ -16,6 +16,7 @@ import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.UserStatus;
 import org.recordy.server.user.domain.usecase.UserSignIn;
 import org.recordy.server.user.domain.usecase.UserSignUp;
+import org.recordy.server.user.domain.usecase.UserUpdate;
 import org.recordy.server.user.exception.UserException;
 import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.user.service.UserService;
@@ -113,6 +114,16 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userId);
 
         authService.signOut(user.getAuthPlatform().getId());
+    }
+
+    @Override
+    public void update(UserUpdate update, long id) {
+        validateDuplicateNickname(update.nickname());
+
+        User user = userRepository.findById(id);
+        user.update(update);
+
+        userRepository.save(user);
     }
 
     @Transactional

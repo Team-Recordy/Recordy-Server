@@ -6,9 +6,13 @@ import lombok.Getter;
 import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.user.domain.usecase.UserSignUp;
+import org.recordy.server.user.domain.usecase.UserUpdate;
 import org.recordy.server.user.exception.UserException;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import static org.recordy.server.user.domain.UserStatus.ACTIVE;
@@ -58,6 +62,18 @@ public class User {
                 .build();
     }
 
+    public void update(UserUpdate update) {
+        if (Objects.nonNull(update.nickname())) {
+            validateNicknameFormat(update.nickname());
+            nickname = update.nickname();
+        }
+
+        if (Objects.nonNull(update.profileImageUrl())) {
+            validateProfileImageUrl(update.profileImageUrl());
+            profileImageUrl = update.profileImageUrl();
+        }
+    }
+
     private void validateNicknameFormat(String nickname) {
         if (!NICKNAME_PATTERN.matcher(nickname).matches()) {
             throw new UserException(ErrorMessage.INVALID_NICKNAME_FORMAT);
@@ -67,6 +83,14 @@ public class User {
     private void validateTermsAgreed(TermsAgreement termsAgreement) {
         if (!termsAgreement.ageTerm() || !termsAgreement.useTerm() || !termsAgreement.personalInfoTerm()) {
             throw new UserException(ErrorMessage.INVALID_REQUEST_TERM);
+        }
+    }
+
+    private void validateProfileImageUrl(String profileImageUrl) {
+        try {
+            new URL(profileImageUrl);
+        } catch (MalformedURLException e) {
+            throw new UserException(ErrorMessage.INVALID_IMAGE_URL_FORMAT);
         }
     }
 
