@@ -116,6 +116,7 @@ public class UserServiceImpl implements UserService {
         authService.signOut(user.getAuthPlatform().getId());
     }
 
+    @Transactional
     @Override
     public void update(UserUpdate update, long id) {
         validateDuplicateNickname(update.nickname());
