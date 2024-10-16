@@ -3,6 +3,7 @@ package org.recordy.server.search.domain;
 public record Search(
         Long id,
         SearchType type,
+        String address,
         String name
 ) {
 
