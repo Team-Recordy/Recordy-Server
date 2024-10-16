@@ -1,14 +1,14 @@
 package org.recordy.server.search.domain;
 
 public record Search(
-        Long id,
+        String id,
         SearchType type,
         String address,
         String name
 ) {
 
-    public String getId() {
-        return id + type.name();
+    public Long getId() {
+        return Long.parseLong(id.split(":")[0]);
     }
 
     public static String getSearchField() {

@@ -1,16 +1,16 @@
 package org.recordy.server.common.config;
 
-import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.json.jackson.JacksonJsonpMapper;
-import co.elastic.clients.transport.ElasticsearchTransport;
-import co.elastic.clients.transport.rest_client.RestClientTransport;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.Header;
-import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
-import org.apache.http.message.BasicHeader;
-import org.elasticsearch.client.RestClient;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.opensearch.client.RestClient;
+import org.opensearch.client.json.jackson.JacksonJsonpMapper;
+import org.opensearch.client.opensearch.OpenSearchClient;
+import org.opensearch.client.transport.rest_client.RestClientTransport;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,26 +26,29 @@ public class SearchConfig {
     @Value("${search.api.port}")
     private int port;
 
-    @Value("${search.api.key}")
-    private String key;
+    @Value("${search.api.username}")
+    private String username;
+
+    @Value("${search.api.password}")
+    private String password;
+
+    @Bean
+    public OpenSearchClient openSearchClient() {
+        return new OpenSearchClient(new RestClientTransport(restClient(), new JacksonJsonpMapper(new ObjectMapper())));
+    }
 
     @Bean
     public RestClient restClient() {
-        return RestClient
-                .builder(new HttpHost(host, port, "https"))
-                .setDefaultHeaders(new Header[]{
-                        new BasicHeader(HttpHeaders.AUTHORIZATION, "Apikey " + key)
-                })
+        BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+        credentialsProvider.setCredentials(
+                AuthScope.ANY,
+                new UsernamePasswordCredentials(username, password)
+        );
+
+        return RestClient.builder(new HttpHost(host, port, "https"))
+                .setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder
+                        .setDefaultCredentialsProvider(credentialsProvider)
+                )
                 .build();
-    }
-
-    @Bean
-    public ElasticsearchTransport elasticsearchTransport() {
-        return new RestClientTransport(restClient(), new JacksonJsonpMapper());
-    }
-
-    @Bean
-    public ElasticsearchClient elasticsearchClient() {
-        return new ElasticsearchClient(elasticsearchTransport());
     }
 }
