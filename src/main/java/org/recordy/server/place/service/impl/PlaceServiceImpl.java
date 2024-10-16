@@ -70,11 +70,6 @@ public class PlaceServiceImpl implements PlaceService {
         return place;
     }
 
-    @Override
-    public Place getPlaceByName(String name) {
-        return placeRepository.findByName(name);
-    }
-
     private void saveReviews(List<Review> reviews, Place place) {
         List<PlaceReview> placeReviews = reviews.stream()
                 .map(review -> PlaceReview.of(review, PlaceEntity.from(place)))

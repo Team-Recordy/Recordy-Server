@@ -15,7 +15,6 @@ public interface PlaceService {
     Place create(PlaceCreateRequest request);
 
     // query
-    Place getPlaceByName(String name);
     PlaceGetResponse getDetailById(Long id);
     Slice<PlaceGetResponse> getAllByExhibitionStartDate(Pageable pageable);
     Slice<PlaceGetResponse> getAllByGeography(Pageable pageable, double latitude, double longitude, double distance);
