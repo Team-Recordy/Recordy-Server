@@ -33,11 +33,13 @@ public class PlaceRepositoryImpl implements PlaceRepository {
 
     @Override
     public Place findById(long id) {
-        if (Objects.isNull(placeQueryDslRepository.findById(id))) {
+        PlaceEntity entity = placeQueryDslRepository.findById(id);
+
+        if (Objects.isNull(entity)) {
             throw new PlaceException(ErrorMessage.PLACE_NOT_FOUND);
         }
 
-        return Place.from(id);
+        return Place.from(entity);
     }
 
     @Override

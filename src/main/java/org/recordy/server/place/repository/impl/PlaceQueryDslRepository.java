@@ -11,6 +11,7 @@ import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.common.util.QueryDslUtils;
 import org.recordy.server.location.controller.dto.response.LocationGetResponse;
 import org.recordy.server.place.controller.dto.response.PlaceGetResponse;
+import org.recordy.server.place.domain.PlaceEntity;
 import org.recordy.server.place.exception.PlaceException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -48,8 +49,14 @@ public class PlaceQueryDslRepository {
             locationGetResponse
     );
 
-    public Long findById(long id) {
-        return findIdWith(placeEntity.id.eq(id));
+    public PlaceEntity findById(long id) {
+        return jpaQueryFactory
+                .select(placeEntity)
+                .from(placeEntity)
+                .join(placeEntity.location).fetchJoin()
+                .leftJoin(placeEntity.exhibitions, exhibitionEntity).fetchJoin()
+                .where(placeEntity.id.eq(id))
+                .fetchOne();
     }
 
     public Long findByName(String name) {
@@ -61,7 +68,7 @@ public class PlaceQueryDslRepository {
                 .select(placeEntity.id)
                 .from(placeEntity)
                 .join(placeEntity.location)
-                .join(placeEntity.exhibitions, exhibitionEntity)
+                .leftJoin(placeEntity.exhibitions, exhibitionEntity)
                 .where(expressions)
                 .fetchOne();
     }

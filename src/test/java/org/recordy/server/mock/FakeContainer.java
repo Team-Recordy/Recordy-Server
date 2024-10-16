@@ -20,6 +20,7 @@ import org.recordy.server.exhibition.service.impl.ExhibitionServiceImpl;
 import org.recordy.server.mock.exhibition.FakeExhibitionRepository;
 import org.recordy.server.mock.place.FakePlaceRepository;
 import org.recordy.server.mock.record.FakeS3Service;
+import org.recordy.server.mock.search.FakeSearchRepository;
 import org.recordy.server.mock.subscribe.FakeSubscribeRepository;
 import org.recordy.server.place.repository.PlaceRepository;
 import org.recordy.server.record.service.S3Service;
@@ -34,6 +35,7 @@ import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.record.service.RecordService;
 import org.recordy.server.record.service.impl.RecordServiceImpl;
 import org.recordy.server.bookmark.repository.BookmarkRepository;
+import org.recordy.server.search.repository.SearchRepository;
 import org.recordy.server.subscribe.repository.SubscribeRepository;
 import org.recordy.server.subscribe.service.SubscribeService;
 import org.recordy.server.subscribe.service.impl.SubscribeServiceImpl;
@@ -56,6 +58,7 @@ public class FakeContainer {
     public final SubscribeRepository subscribeRepository;
     public final ExhibitionRepository exhibitionRepository;
     public final PlaceRepository placeRepository;
+    public final SearchRepository searchRepository;
 
     // infrastructure
     public final AuthTokenSigningKeyProvider signingKeyProvider;
@@ -92,6 +95,7 @@ public class FakeContainer {
         this.subscribeRepository = new FakeSubscribeRepository();
         this.exhibitionRepository = new FakeExhibitionRepository();
         this.placeRepository = new FakePlaceRepository();
+        this.searchRepository = new FakeSearchRepository();
 
         this.signingKeyProvider = new AuthTokenSigningKeyProvider(DomainFixture.TOKEN_SECRET);
         this.tokenGenerator = new AuthTokenGenerator(signingKeyProvider);
@@ -119,7 +123,7 @@ public class FakeContainer {
         this.recordService = new RecordServiceImpl(s3Service, recordRepository, userRepository, placeRepository);
         this.bookmarkService = new BookmarkServiceImpl(userRepository, recordRepository, bookmarkRepository);
         this.subscribeService = new SubscribeServiceImpl(subscribeRepository, userRepository);
-        this.exhibitionService = new ExhibitionServiceImpl(exhibitionRepository, placeRepository);
+        this.exhibitionService = new ExhibitionServiceImpl(exhibitionRepository, placeRepository, searchRepository);
 
         this.authFilterExceptionHandler = new AuthFilterExceptionHandler(new ObjectMapper());
         this.tokenAuthenticationFilter = new TokenAuthenticationFilter(

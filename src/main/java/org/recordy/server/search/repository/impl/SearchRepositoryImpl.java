@@ -13,6 +13,7 @@ import org.recordy.server.search.domain.Search;
 import org.recordy.server.search.domain.SearchType;
 import org.recordy.server.search.exception.SearchException;
 import org.recordy.server.search.repository.SearchRepository;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -25,6 +26,7 @@ public class SearchRepositoryImpl implements SearchRepository {
 
     private final OpenSearchClient searchClient;
 
+    @Async
     @Override
     public void save(Search search) {
         try {

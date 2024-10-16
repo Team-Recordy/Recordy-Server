@@ -11,7 +11,7 @@ import java.util.List;
 public interface ExhibitionService {
 
     // command
-    Exhibition create(ExhibitionCreateRequest request);
+    void create(ExhibitionCreateRequest request);
     void update(ExhibitionUpdate update);
     void delete(long exhibitionId);
 
