@@ -72,6 +72,10 @@ dependencies {
 
     // EXHIBITION API DATA MAPPING
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.17.2'
+
+    // Search
+    implementation 'co.elastic.clients:elasticsearch-java:8.15.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.0'
 }
 
 tasks.named('test') {
