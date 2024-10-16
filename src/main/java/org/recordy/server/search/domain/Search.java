@@ -1,6 +1,7 @@
 package org.recordy.server.search.domain;
 
 import org.recordy.server.exhibition.domain.Exhibition;
+import org.recordy.server.place.domain.Place;
 
 public record Search(
         String id,
@@ -23,6 +24,15 @@ public record Search(
                 SearchType.EXHIBITION,
                 address,
                 exhibition.getName()
+        );
+    }
+
+    public static Search from(Place place) {
+        return new Search(
+                setId(place.getId(), SearchType.PLACE),
+                SearchType.PLACE,
+                place.getLocation().getAddress(),
+                place.getName()
         );
     }
 

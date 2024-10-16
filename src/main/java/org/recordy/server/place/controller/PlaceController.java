@@ -5,10 +5,8 @@ import org.recordy.server.common.dto.response.OffsetBasePaginatedResponse;
 import org.recordy.server.place.controller.dto.request.PlaceCreateRequest;
 import org.recordy.server.place.controller.dto.response.PlaceGetResponse;
 import org.recordy.server.place.controller.dto.response.PlaceReviewGetResponse;
-import org.recordy.server.place.domain.Place;
 import org.recordy.server.place.service.PlaceService;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +20,28 @@ import java.util.List;
 public class PlaceController implements PlaceApi {
 
     private final PlaceService placeService;
+
+    @Override
+    @PostMapping
+    public ResponseEntity<Void> createPlace(
+            @RequestBody PlaceCreateRequest request
+    ) {
+        placeService.create(request);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .build();
+    }
+
+    @Override
+    @GetMapping("/{id}")
+    public ResponseEntity<PlaceGetResponse> getById(
+            @PathVariable Long id
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(placeService.getDetailById(id));
+    }
 
     @Override
     @GetMapping("/exhibitions/date")
@@ -53,16 +73,6 @@ public class PlaceController implements PlaceApi {
     }
 
     @Override
-    @GetMapping("/{id}")
-    public ResponseEntity<PlaceGetResponse> getById(
-            @PathVariable Long id
-    ) {
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(placeService.getDetailById(id));
-    }
-
-    @Override
     @GetMapping("/{id}/reviews")
     public ResponseEntity<List<PlaceReviewGetResponse>> getReviewsById(
             @PathVariable Long id
@@ -70,14 +80,5 @@ public class PlaceController implements PlaceApi {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(placeService.getReviewsByPlaceId(id));
-    }
-
-    @Override
-    @PostMapping
-    public ResponseEntity<Place> createPlace(@RequestBody PlaceCreateRequest request) {
-        Place createdPlace = placeService.create(request);
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(createdPlace);
     }
 }

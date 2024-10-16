@@ -15,6 +15,8 @@ import org.recordy.server.place.repository.PlaceReviewRepository;
 import org.recordy.server.place.service.PlatformPlaceService;
 import org.recordy.server.place.service.PlaceService;
 import org.recordy.server.place.service.dto.Review;
+import org.recordy.server.search.domain.Search;
+import org.recordy.server.search.repository.SearchRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,26 @@ public class PlaceServiceImpl implements PlaceService {
     private final PlaceReviewRepository placeReviewRepository;
     private final PlatformPlaceService platformPlaceService;
     private final GeometryConverter geometryConverter;
+    private final SearchRepository searchRepository;
+
+    @Transactional
+    @Override
+    public Place create(PlaceCreateRequest request) {
+        PlatformPlace platformPlace = platformPlaceService.getByQuery(request.toQuery());
+        Location location = Location.of(platformPlace);
+
+        Place place = placeRepository.save(Place.create(new PlaceCreate(
+                request.name(),
+                location
+        )));
+
+        if (Objects.nonNull(platformPlace.reviews())) {
+            saveReviews(platformPlace.reviews(), place);
+        }
+
+        searchRepository.save(Search.from(place));
+        return place;
+    }
 
     @Override
     public Slice<PlaceGetResponse> getAllByExhibitionStartDate(Pageable pageable) {
@@ -50,24 +72,6 @@ public class PlaceServiceImpl implements PlaceService {
 
     public List<PlaceReviewGetResponse> getReviewsByPlaceId(long id) {
         return placeReviewRepository.findAllByPlaceId(id);
-    }
-
-    @Transactional
-    @Override
-    public Place create(PlaceCreateRequest request) {
-        PlatformPlace platformPlace = platformPlaceService.getByQuery(request.toQuery());
-        Location location = Location.of(platformPlace);
-
-        Place place = placeRepository.save(Place.create(new PlaceCreate(
-                request.name(),
-                location
-        )));
-
-        if (Objects.nonNull(platformPlace.reviews())) {
-            saveReviews(platformPlace.reviews(), place);
-        }
-
-        return place;
     }
 
     private void saveReviews(List<Review> reviews, Place place) {

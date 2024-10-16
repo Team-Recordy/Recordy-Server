@@ -10,7 +10,6 @@ import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.place.controller.dto.request.PlaceCreateRequest;
 import org.recordy.server.place.controller.dto.response.PlaceGetResponse;
 import org.recordy.server.place.controller.dto.response.PlaceReviewGetResponse;
-import org.recordy.server.place.domain.Place;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
@@ -50,7 +49,7 @@ public interface PlaceApi {
                     )
             }
     )
-    ResponseEntity<Place> createPlace(PlaceCreateRequest request);
+    ResponseEntity<Void> createPlace(PlaceCreateRequest request);
 
     @Operation(
             summary = "현재 진행중인 전시를 가지는 장소 리스트 조회 API",

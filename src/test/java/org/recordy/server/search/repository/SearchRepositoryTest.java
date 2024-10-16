@@ -101,4 +101,6 @@ public class SearchRepositoryTest {
         List<Search> result = searchRepository.search(name.split(" ")[0]);
         assertThat(result.size()).isEqualTo(1);
     }
+
+    // TODO: PlatformPlaceService 확정되면 장소 객체 저장시 인덱싱되는지 확인할 것
 }
