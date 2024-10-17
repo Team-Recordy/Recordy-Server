@@ -5,7 +5,7 @@ import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.place.domain.usecase.PlatformPlace;
 import org.recordy.server.place.exception.PlaceException;
 import org.recordy.server.place.service.PlatformPlaceService;
-import org.recordy.server.place.service.dto.PlatformPlaceSearchResponse;
+import org.recordy.server.place.controller.dto.response.PlatformPlaceSearchResponse;
 import org.recordy.server.place.service.dto.google.GooglePlaceDetails;
 import org.recordy.server.place.service.dto.google.GooglePlaceDetailsResponse;
 import org.recordy.server.place.service.dto.google.GooglePlaceSearch;
@@ -54,7 +54,7 @@ public class GooglePlatformPlaceService implements PlatformPlaceService {
     }
 
     @Override
-    public List<PlatformPlaceSearchResponse> searchAll(String query) {
+    public List<PlatformPlaceSearchResponse> search(String query) {
         return searchGooglePlace(query).stream()
                 .map(PlatformPlaceSearchResponse::from)
                 .toList();
