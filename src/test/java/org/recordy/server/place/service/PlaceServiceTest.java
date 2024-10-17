@@ -9,7 +9,9 @@ import org.recordy.server.place.controller.dto.request.PlaceCreateRequest;
 import org.recordy.server.place.domain.usecase.PlatformPlace;
 import org.recordy.server.place.repository.PlaceRepository;
 import org.recordy.server.place.service.impl.PlaceServiceImpl;
+import org.recordy.server.search.repository.SearchRepository;
 import org.recordy.server.util.LocationFixture;
+import org.recordy.server.util.PlaceFixture;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -23,32 +25,54 @@ class PlaceServiceTest {
     @Mock
     private PlatformPlaceService platformPlaceService;
 
+    @Mock
+    private SearchRepository searchRepository;
+
     @InjectMocks
     private PlaceServiceImpl sut;
 
     @Test
-    void 구글에_API_요청을_보내_만든_Place_객체를_리포지토리에_저장한다() {
+    void 플랫폼_id로부터_정보를_가져와_장소_객체를_생성한다() {
         // given
         PlatformPlace platformPlace = new PlatformPlace(
+                "서울시립미술관",
                 LocationFixture.POINT,
                 LocationFixture.ADDRESS,
                 LocationFixture.GOOGLE_PLACE_ID,
                 null
         );
-        PlaceCreateRequest request = new PlaceCreateRequest(
-                "CLUB FF",
-                "서울"
-        );
-        String query = request.toQuery();
+        PlaceCreateRequest request = new PlaceCreateRequest("abcdef");
 
-        when(platformPlaceService.getByQuery(any())).thenReturn(platformPlace);
-        when(placeRepository.save(any())).thenReturn(null);
+        when(platformPlaceService.getById(any())).thenReturn(platformPlace);
+        when(placeRepository.save(any())).thenReturn(PlaceFixture.create(1));
 
         // when
         sut.create(request);
 
         // then
-        verify(platformPlaceService, times(1)).getByQuery(query);
+        verify(platformPlaceService, times(1)).getById(request.platformId());
         verify(placeRepository, times(1)).save(any());
+    }
+
+    @Test
+    void 장소_객체를_저장할_때_검색_객체를_함께_인덱싱한다() {
+        // given
+        PlatformPlace platformPlace = new PlatformPlace(
+                "서울시립미술관",
+                LocationFixture.POINT,
+                LocationFixture.ADDRESS,
+                LocationFixture.GOOGLE_PLACE_ID,
+                null
+        );
+        PlaceCreateRequest request = new PlaceCreateRequest("abcdef");
+
+        when(platformPlaceService.getById(any())).thenReturn(platformPlace);
+        when(placeRepository.save(any())).thenReturn(PlaceFixture.create(1));
+
+        // when
+        sut.create(request);
+
+        // then
+        verify(searchRepository, times(1)).save(any());
     }
 }

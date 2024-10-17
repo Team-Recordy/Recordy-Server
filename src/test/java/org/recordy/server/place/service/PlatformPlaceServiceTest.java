@@ -2,12 +2,10 @@ package org.recordy.server.place.service;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.recordy.server.place.domain.usecase.PlatformPlace;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest
 class PlatformPlaceServiceTest {
@@ -19,13 +17,9 @@ class PlatformPlaceServiceTest {
     @ParameterizedTest
     void 검색_결과중_가장_정확도가_높은_장소에_대한_정보를_수집할_수_있다(String query) {
         // when
-        PlatformPlace result = platformPlaceService.getByQuery(query);
+        String result = platformPlaceService.searchId(query);
 
         // then
-        assertAll(
-                () -> assertThat(result.placeId()).isNotNull(),
-                () -> assertThat(result.geometry()).isNotNull(),
-                () -> assertThat(result.address()).isNotNull()
-        );
+        assertThat(result).isNotEmpty();
     }
 }

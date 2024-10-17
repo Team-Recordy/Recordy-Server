@@ -7,6 +7,7 @@ import org.recordy.server.place.service.dto.Review;
 import java.util.List;
 
 public record PlatformPlace(
+        String name,
         Point geometry,
         String address,
         String placeId,
@@ -15,6 +16,7 @@ public record PlatformPlace(
 
     public static PlatformPlace of(Point geometry, GooglePlaceDetails placeDetails) {
         return new PlatformPlace(
+                placeDetails.name(),
                 geometry,
                 placeDetails.formatted_address(),
                 placeDetails.place_id(),

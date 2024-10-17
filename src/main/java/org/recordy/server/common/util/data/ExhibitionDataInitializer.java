@@ -14,6 +14,7 @@ import org.recordy.server.place.domain.Place;
 import org.recordy.server.place.exception.PlaceException;
 import org.recordy.server.place.repository.PlaceRepository;
 import org.recordy.server.place.service.PlaceService;
+import org.recordy.server.place.service.PlatformPlaceService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -32,12 +33,13 @@ import java.util.Objects;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Slf4j
-@Profile({"dev"})
+@Profile({"dev", "local"})
 @Component
 public class ExhibitionDataInitializer {
 
     private final ExhibitionRepository exhibitionRepository;
     private final PlaceService placeService;
+    private final PlatformPlaceService platformPlaceService;
     private final PlaceRepository placeRepository;
     private final String key;
 
@@ -46,11 +48,13 @@ public class ExhibitionDataInitializer {
     public ExhibitionDataInitializer(
             ExhibitionRepository exhibitionRepository,
             PlaceService placeService,
+            PlatformPlaceService platformPlaceService,
             PlaceRepository placeRepository,
             @Value("${exhibition.api.key}") String key
     ) {
         this.exhibitionRepository = exhibitionRepository;
         this.placeService = placeService;
+        this.platformPlaceService = platformPlaceService;
         this.placeRepository = placeRepository;
         this.key = key;
     }
@@ -84,13 +88,14 @@ public class ExhibitionDataInitializer {
             place = placeRepository.findByName(performance.place());
         } catch (PlaceException e) {
             try {
-                place = placeService.create(new PlaceCreateRequest(performance.place(), performance.area()));
+                String platformId = platformPlaceService.searchId(performance.place());
+                place = placeService.create(new PlaceCreateRequest(platformId));
             } catch (PlaceException ee) {
                 place = null;
             }
         }
 
-        if (Objects.nonNull(place))
+        if (Objects.nonNull(place)) {
             exhibitionRepository.save(Exhibition.create(new ExhibitionCreate(
                     null,
                     performance.title(),
@@ -99,6 +104,7 @@ public class ExhibitionDataInitializer {
                     false,
                     place
             )));
+        }
     }
 
     private String getResponse(int page, int size) {

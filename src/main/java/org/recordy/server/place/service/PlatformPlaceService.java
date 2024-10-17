@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface PlatformPlaceService {
 
-    PlatformPlace getByQuery(String query);
+    PlatformPlace getById(String id);
+    String searchId(String query);
     List<PlatformPlaceSearchResponse> searchAll(String query);
 }

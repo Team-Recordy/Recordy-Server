@@ -39,11 +39,11 @@ public class PlaceServiceImpl implements PlaceService {
     @Transactional
     @Override
     public Place create(PlaceCreateRequest request) {
-        PlatformPlace platformPlace = platformPlaceService.getByQuery(request.toQuery());
+        PlatformPlace platformPlace = platformPlaceService.getById(request.platformId());
         Location location = Location.of(platformPlace);
 
         Place place = placeRepository.save(Place.create(new PlaceCreate(
-                request.name(),
+                platformPlace.name(),
                 location
         )));
 

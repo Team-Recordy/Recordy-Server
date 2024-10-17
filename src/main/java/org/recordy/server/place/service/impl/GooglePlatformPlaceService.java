@@ -36,9 +36,8 @@ public class GooglePlatformPlaceService implements PlatformPlaceService {
     }
 
     @Override
-    public PlatformPlace getByQuery(String query) {
-        String placeId = searchGooglePlace(query).get(0).place_id();
-        GooglePlaceDetails details = getGooglePlaceDetails(placeId);
+    public PlatformPlace getById(String id) {
+        GooglePlaceDetails details = getGooglePlaceDetails(id);
 
         return PlatformPlace.of(
                 geometryConverter.of(
@@ -47,6 +46,11 @@ public class GooglePlatformPlaceService implements PlatformPlaceService {
                 ),
                 details
         );
+    }
+
+    @Override
+    public String searchId(String query) {
+        return searchGooglePlace(query).get(0).place_id();
     }
 
     @Override
