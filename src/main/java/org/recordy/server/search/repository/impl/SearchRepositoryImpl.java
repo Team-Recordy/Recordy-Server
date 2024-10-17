@@ -33,7 +33,7 @@ public class SearchRepositoryImpl implements SearchRepository {
             searchClient.index(IndexRequest.of(builder ->
                     builder
                             .index(search.type().getName())
-                            .id(search.id())
+                            .id(String.valueOf(search.id()))
                             .document(search)
                             .refresh(Refresh.True))
             );

@@ -1,6 +1,7 @@
 package org.recordy.server.search.repository;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -42,15 +43,41 @@ public class SearchRepositoryTest {
     @Autowired
     SearchRepository searchRepository;
 
-    @AfterEach
-    void close() {
+    @BeforeEach
+    void init() {
         try {
-            DeleteByQueryRequest request = new DeleteByQueryRequest.Builder()
+            DeleteByQueryRequest placeRequest = new DeleteByQueryRequest.Builder()
                     .index(SearchType.PLACE.getName())
                     .query(QueryBuilders.matchAll().build()._toQuery())
                     .build();
 
-            searchClient.deleteByQuery(request);
+            DeleteByQueryRequest exhibitionRequest = new DeleteByQueryRequest.Builder()
+                    .index(SearchType.EXHIBITION.getName())
+                    .query(QueryBuilders.matchAll().build()._toQuery())
+                    .build();
+
+            searchClient.deleteByQuery(placeRequest);
+            searchClient.deleteByQuery(exhibitionRequest);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @AfterEach
+    void close() {
+        try {
+            DeleteByQueryRequest placeRequest = new DeleteByQueryRequest.Builder()
+                    .index(SearchType.PLACE.getName())
+                    .query(QueryBuilders.matchAll().build()._toQuery())
+                    .build();
+
+            DeleteByQueryRequest exhibitionRequest = new DeleteByQueryRequest.Builder()
+                    .index(SearchType.EXHIBITION.getName())
+                    .query(QueryBuilders.matchAll().build()._toQuery())
+                    .build();
+
+            searchClient.deleteByQuery(placeRequest);
+            searchClient.deleteByQuery(exhibitionRequest);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -59,7 +86,7 @@ public class SearchRepositoryTest {
     @Test
     void 검색_문서를_인덱싱할_수_있다() throws Exception {
         // given
-        Search search = new Search("1:PLACE", SearchType.PLACE, "서울시 마포구 독막로 209", "우리집");
+        Search search = new Search(1L, SearchType.PLACE, "서울시 마포구 독막로 209", "우리집");
 
         // when
         searchRepository.save(search);
@@ -72,7 +99,7 @@ public class SearchRepositoryTest {
     @ParameterizedTest
     void 검색어를_통해_문서를_검색할_수_있다(String query) {
         // given
-        Search search = new Search("1:PLACE", SearchType.PLACE, "서울시 마포구 독막로 209", "서울시립미술관");
+        Search search = new Search(1L, SearchType.PLACE, "서울시 마포구 독막로 209", "서울시립미술관");
         searchRepository.save(search);
 
         // when

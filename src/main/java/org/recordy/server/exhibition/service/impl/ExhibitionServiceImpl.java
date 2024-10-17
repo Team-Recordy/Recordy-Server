@@ -35,7 +35,7 @@ public class ExhibitionServiceImpl implements ExhibitionService {
         Place place = placeRepository.findById(request.placeId());
         Exhibition exhibition = exhibitionRepository.save(Exhibition.create(ExhibitionCreate.of(request, place)));
 
-        searchRepository.save(Search.from(exhibition, place.getLocation().getAddress()));
+        searchRepository.save(Search.from(exhibition, place));
     }
 
     @Transactional
