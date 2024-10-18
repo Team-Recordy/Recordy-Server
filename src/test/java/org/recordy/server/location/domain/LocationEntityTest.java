@@ -21,7 +21,6 @@ class LocationEntityTest {
         assertAll(
                 () -> assertThat(entity.getId()).isEqualTo(id),
                 () -> assertThat(entity.getGeometry()).isEqualTo(location.getGeometry()),
-                () -> assertThat(entity.getAddress()).isEqualTo(location.getAddress()),
                 () -> assertThat(entity.getCreatedAt()).isEqualTo(location.getCreatedAt()),
                 () -> assertThat(entity.getUpdatedAt()).isEqualTo(location.getUpdatedAt())
         );

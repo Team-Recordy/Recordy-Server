@@ -18,7 +18,7 @@ public record Search(
         return new Search(
                 place.getId(),
                 SearchType.EXHIBITION,
-                place.getLocation().getAddress(),
+                place.getAddress(),
                 exhibition.getName()
         );
     }
@@ -27,7 +27,7 @@ public record Search(
         return new Search(
                 place.getId(),
                 SearchType.PLACE,
-                place.getLocation().getAddress(),
+                place.getAddress(),
                 place.getName()
         );
     }

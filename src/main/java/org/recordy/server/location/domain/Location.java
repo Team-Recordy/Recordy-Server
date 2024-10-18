@@ -3,7 +3,6 @@ package org.recordy.server.location.domain;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.locationtech.jts.geom.Point;
-import org.recordy.server.place.domain.usecase.PlatformPlace;
 
 import java.time.LocalDateTime;
 
@@ -13,18 +12,14 @@ public class Location {
 
     private Long id;
     private Point geometry;
-    private String address;
-    private String platformPlaceId;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public static Location of(PlatformPlace platformPlace) {
+    public static Location of(Point point) {
         return new Location(
                 null,
-                platformPlace.geometry(),
-                platformPlace.address(),
-                platformPlace.placeId(),
+                point,
                 null,
                 null
         );
@@ -34,8 +29,6 @@ public class Location {
         return new Location(
                 entity.getId(),
                 entity.getGeometry(),
-                entity.getAddress(),
-                entity.getPlatformPlaceId(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
         );

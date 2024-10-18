@@ -10,6 +10,7 @@ import org.recordy.server.exhibition.domain.Exhibition;
 import org.recordy.server.exhibition.domain.usecase.ExhibitionCreate;
 import org.recordy.server.exhibition.repository.ExhibitionRepository;
 import org.recordy.server.place.controller.dto.request.PlaceCreateRequest;
+import org.recordy.server.place.controller.dto.response.PlatformPlaceSearchResponse;
 import org.recordy.server.place.domain.Place;
 import org.recordy.server.place.exception.PlaceException;
 import org.recordy.server.place.repository.PlaceRepository;
@@ -33,7 +34,7 @@ import java.util.Objects;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Slf4j
-@Profile({"dev"})
+@Profile({"dev", "local"})
 @Component
 public class ExhibitionDataInitializer {
 
@@ -88,8 +89,15 @@ public class ExhibitionDataInitializer {
             place = placeRepository.findByName(performance.place());
         } catch (PlaceException e) {
             try {
-                String platformId = platformPlaceService.searchId(performance.place());
-                place = placeService.create(new PlaceCreateRequest(platformId));
+                PlatformPlaceSearchResponse response = platformPlaceService.search(performance.place()).get(0);
+
+                place = placeService.create(new PlaceCreateRequest(
+                        response.platformPlaceId(),
+                        response.name(),
+                        response.longitude(),
+                        response.latitude(),
+                        response.address()
+                ));
             } catch (PlaceException ee) {
                 place = null;
             }

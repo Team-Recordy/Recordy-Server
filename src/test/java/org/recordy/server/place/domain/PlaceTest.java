@@ -21,18 +21,17 @@ class PlaceTest {
 
         // then
         assertAll(
-                () -> assertThat(place.getName()).isEqualTo(PlaceFixture.NAME),
-                () -> assertThat(place.getLocation().getAddress()).isEqualTo(LocationFixture.ADDRESS),
-                () -> assertThat(place.getLocation().getPlatformPlaceId()).isEqualTo(LocationFixture.GOOGLE_PLACE_ID),
-                () -> assertThat(place.getLocation().getGeometry()).isEqualTo(LocationFixture.POINT)
+                () -> assertThat(place.getName()).isEqualTo(entity.getName()),
+                () -> assertThat(place.getPlatformId()).isEqualTo(entity.getPlatformId()),
+                () -> assertThat(place.getAddress()).isEqualTo(entity.getAddress()),
+                () -> assertThat(place.getLocation().getGeometry()).isEqualTo(entity.getLocation().getGeometry())
         );
     }
 
     @Test
     void PlaceCreate_객체로부터_Place_객체를_생성한다() {
         // given
-        Location location = LocationFixture.create();
-        PlaceCreate create = new PlaceCreate(PlaceFixture.NAME, location);
+        PlaceCreate create = PlaceCreate.from(PlaceFixture.createRequest, LocationFixture.create());
 
         // when
         Place place = Place.create(create);
@@ -40,11 +39,11 @@ class PlaceTest {
         // then
         assertAll(
                 () -> assertThat(place.getId()).isNull(),
-                () -> assertThat(place.getName()).isEqualTo(PlaceFixture.NAME),
+                () -> assertThat(place.getName()).isEqualTo(create.name()),
+                () -> assertThat(place.getPlatformId()).isEqualTo(create.platformId()),
+                () -> assertThat(place.getAddress()).isEqualTo(create.address()),
                 () -> assertThat(place.getExhibitions()).isEmpty(),
-                () -> assertThat(place.getLocation().getAddress()).isEqualTo(location.getAddress()),
-                () -> assertThat(place.getLocation().getPlatformPlaceId()).isEqualTo(location.getPlatformPlaceId()),
-                () -> assertThat(place.getLocation().getGeometry()).isEqualTo(location.getGeometry())
+                () -> assertThat(place.getLocation().getGeometry()).isEqualTo(create.location().getGeometry())
         );
     }
 }

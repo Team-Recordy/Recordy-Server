@@ -39,13 +39,14 @@ public class PlaceQueryDslRepository {
     private static final ConstructorExpression<LocationGetResponse> locationGetResponse = Projections.constructor(
             LocationGetResponse.class,
             placeEntity.location.id,
-            placeEntity.location.geometry,
-            placeEntity.location.address
+            placeEntity.location.geometry
     );
     private static final ConstructorExpression<PlaceGetResponse> placeGetResponse = Projections.constructor(
             PlaceGetResponse.class,
             placeEntity.id,
             placeEntity.name,
+            placeEntity.address,
+            placeEntity.platformId,
             locationGetResponse
     );
 
@@ -105,16 +106,6 @@ public class PlaceQueryDslRepository {
 
     public Slice<PlaceGetResponse> findAllOrderByExhibitionStartDateDesc(Pageable pageable) {
         List<PlaceGetResponse> content = findPlacesWith(pageable);
-
-        collectExhibitionCounts(content);
-        return new SliceImpl<>(content, pageable, QueryDslUtils.hasNext(pageable, content));
-    }
-
-    public Slice<PlaceGetResponse> findAllByNameOrderByExhibitionStartDateDesc(Pageable pageable, String query) {
-        List<PlaceGetResponse> content = findPlacesWith(
-                pageable,
-                placeEntity.name.containsIgnoreCase(query)
-        );
 
         collectExhibitionCounts(content);
         return new SliceImpl<>(content, pageable, QueryDslUtils.hasNext(pageable, content));
