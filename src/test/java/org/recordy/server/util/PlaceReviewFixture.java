@@ -3,7 +3,7 @@ package org.recordy.server.util;
 import org.recordy.server.place.domain.Place;
 import org.recordy.server.place.domain.PlaceEntity;
 import org.recordy.server.place.domain.PlaceReview;
-import org.recordy.server.place.service.dto.Review;
+import org.recordy.server.place.service.dto.google.Review;
 
 import java.time.Instant;
 

@@ -14,7 +14,7 @@ import org.recordy.server.place.repository.PlaceRepository;
 import org.recordy.server.place.repository.PlaceReviewRepository;
 import org.recordy.server.place.service.PlatformPlaceService;
 import org.recordy.server.place.service.PlaceService;
-import org.recordy.server.place.service.dto.Review;
+import org.recordy.server.place.service.dto.google.Review;
 import org.recordy.server.search.domain.Search;
 import org.recordy.server.search.repository.SearchRepository;
 import org.springframework.data.domain.Pageable;

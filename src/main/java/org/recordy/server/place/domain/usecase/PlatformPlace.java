@@ -2,7 +2,7 @@ package org.recordy.server.place.domain.usecase;
 
 import org.locationtech.jts.geom.Point;
 import org.recordy.server.place.service.dto.google.GooglePlaceDetails;
-import org.recordy.server.place.service.dto.Review;
+import org.recordy.server.place.service.dto.google.Review;
 
 import java.util.List;
 
