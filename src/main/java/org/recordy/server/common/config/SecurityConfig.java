@@ -2,6 +2,7 @@ package org.recordy.server.common.config;
 
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.security.filter.TokenAuthenticationFilter;
+import org.recordy.server.auth.security.handler.CustomAuthenticationEntryPoint;
 import org.recordy.server.auth.security.handler.UndefinedAccessHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -29,6 +30,7 @@ public class SecurityConfig {
 
     private final TokenAuthenticationFilter tokenAuthenticationFilter;
     private final UndefinedAccessHandler undefinedAccessHandler;
+    private final CustomAuthenticationEntryPoint authenticationEntryPoint;
 
     @Bean
     @Profile("local")
@@ -60,7 +62,11 @@ public class SecurityConfig {
                 .formLogin(FormLoginConfigurer::disable)
                 .httpBasic(HttpBasicConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
-                .exceptionHandling(exception -> exception.accessDeniedHandler(undefinedAccessHandler))
+                .exceptionHandling(exception ->
+                        exception
+                                .accessDeniedHandler(undefinedAccessHandler)
+                                .authenticationEntryPoint(authenticationEntryPoint)
+                )
                 .authorizeHttpRequests(requests ->
                         requests
                                 .requestMatchers(authFreeApis).permitAll()
