@@ -79,7 +79,7 @@ public class UserAuthController implements UserAuthApi {
         userService.signOut(userId);
 
         return ResponseEntity
-                .noContent()
+                .status(HttpStatus.OK)
                 .build();
     }
 
@@ -91,7 +91,7 @@ public class UserAuthController implements UserAuthApi {
         userService.delete(userId);
 
         return ResponseEntity
-                .noContent()
+                .status(HttpStatus.OK)
                 .build();
     }
 }
