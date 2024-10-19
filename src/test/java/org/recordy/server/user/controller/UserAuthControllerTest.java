@@ -119,7 +119,7 @@ public class UserAuthControllerTest extends FakeContainer {
         ResponseEntity result = userAuthController.signOut(DomainFixture.USER_ID);
 
         //then
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test
@@ -137,7 +137,7 @@ public class UserAuthControllerTest extends FakeContainer {
         ResponseEntity<Void> result = userAuthController.delete(DomainFixture.USER_ID);
 
         // then
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test

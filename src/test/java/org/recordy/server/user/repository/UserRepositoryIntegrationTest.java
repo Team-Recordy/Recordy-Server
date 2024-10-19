@@ -1,8 +1,10 @@
 package org.recordy.server.user.repository;
 
 import org.junit.jupiter.api.Test;
+import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.user.domain.TermsAgreement;
 import org.recordy.server.user.domain.UserStatus;
+import org.recordy.server.user.domain.usecase.UserProfile;
 import org.recordy.server.user.exception.UserException;
 import org.recordy.server.util.DomainFixture;
 import org.recordy.server.user.domain.User;
@@ -135,5 +137,27 @@ class UserRepositoryIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(result).isFalse();
+    }
+
+    @Test
+    void 사용자의_프로필을_조회할_수_있다() {
+        // given
+        User user = userRepository.save(createUser());
+
+        // when
+        UserProfile result = userRepository.findProfile(user.getId(), user.getId());
+
+        // then
+        assertAll(
+                () -> assertThat(result.id()).isEqualTo(user.getId())
+        );
+    }
+
+    @Test
+    void 존재하지_않는_사용자의_프로필을_조회할_경우_예외가_발생한다() {
+        // when, then
+        assertThatThrownBy(() -> userRepository.findProfile(99L, 1L))
+                .isInstanceOf(UserException.class)
+                .hasMessage(ErrorMessage.USER_NOT_FOUND.getMessage());
     }
 }

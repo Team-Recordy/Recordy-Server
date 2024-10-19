@@ -88,6 +88,12 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public UserProfile findProfile(long targetUserId, long userId) {
-        return userQueryDslRepository.findProfile(targetUserId, userId);
+        UserProfile result = userQueryDslRepository.findProfile(targetUserId, userId);
+
+        if (Objects.isNull(result)) {
+            throw new UserException(ErrorMessage.USER_NOT_FOUND);
+        }
+
+        return result;
     }
 }
