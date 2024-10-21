@@ -17,6 +17,8 @@ public class Place {
 
     private Long id;
     private String name;
+    private String platformId;
+    private String address;
     private List<Exhibition> exhibitions;
     private Location location;
 
@@ -31,6 +33,8 @@ public class Place {
         return new Place(
                 entity.getId(),
                 entity.getName(),
+                entity.getPlatformId(),
+                entity.getAddress(),
                 entity.getExhibitions().stream()
                         .map(Exhibition::from)
                         .toList(),
@@ -48,6 +52,8 @@ public class Place {
         return new Place(
                 null,
                 create.name(),
+                create.platformId(),
+                create.address(),
                 List.of(),
                 create.location(),
                 null,

@@ -24,6 +24,8 @@ public class PlaceEntity extends JpaMetaInfoEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    private String platformId;
+    private String address;
 
     @OneToMany(mappedBy = "place", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ExhibitionEntity> exhibitions = new ArrayList<>();
@@ -33,6 +35,8 @@ public class PlaceEntity extends JpaMetaInfoEntity {
     private PlaceEntity(
             Long id,
             String name,
+            String platformId,
+            String address,
             List<ExhibitionEntity> exhibitions,
             LocationEntity location,
             LocalDateTime createdAt,
@@ -40,6 +44,8 @@ public class PlaceEntity extends JpaMetaInfoEntity {
     ) {
         this.id = id;
         this.name = name;
+        this.platformId = platformId;
+        this.address = address;
         this.exhibitions = exhibitions;
         this.location = location;
         this.createdAt = createdAt;
@@ -54,6 +60,8 @@ public class PlaceEntity extends JpaMetaInfoEntity {
         return new PlaceEntity(
                 place.getId(),
                 place.getName(),
+                place.getPlatformId(),
+                place.getAddress(),
                 place.getExhibitions().stream()
                         .map(ExhibitionEntity::from)
                         .toList(),

@@ -9,6 +9,8 @@ public class PlaceGetResponse {
 
     Long id;
     String name;
+    String address;
+    String platformId;
     LocationGetResponse location;
     @Setter
     long exhibitionSize;
@@ -18,10 +20,14 @@ public class PlaceGetResponse {
     public PlaceGetResponse(
             Long id,
             String name,
+            String address,
+            String platformId,
             LocationGetResponse location
     ) {
         this.id = id;
         this.name = name;
+        this.address = address;
+        this.platformId = platformId;
         this.location = location;
     }
 }

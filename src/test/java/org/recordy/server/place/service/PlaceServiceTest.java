@@ -6,8 +6,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.recordy.server.place.controller.dto.request.PlaceCreateRequest;
-import org.recordy.server.place.domain.usecase.PlatformPlace;
 import org.recordy.server.place.repository.PlaceRepository;
+import org.recordy.server.place.service.impl.GeometryConverter;
 import org.recordy.server.place.service.impl.PlaceServiceImpl;
 import org.recordy.server.search.repository.SearchRepository;
 import org.recordy.server.util.LocationFixture;
@@ -23,7 +23,7 @@ class PlaceServiceTest {
     private PlaceRepository placeRepository;
 
     @Mock
-    private PlatformPlaceService platformPlaceService;
+    private GeometryConverter geometryConverter;
 
     @Mock
     private SearchRepository searchRepository;
@@ -34,39 +34,25 @@ class PlaceServiceTest {
     @Test
     void 플랫폼_id로부터_정보를_가져와_장소_객체를_생성한다() {
         // given
-        PlatformPlace platformPlace = new PlatformPlace(
-                "서울시립미술관",
-                LocationFixture.POINT,
-                LocationFixture.ADDRESS,
-                LocationFixture.GOOGLE_PLACE_ID,
-                null
-        );
-        PlaceCreateRequest request = new PlaceCreateRequest("abcdef");
+        PlaceCreateRequest request = PlaceFixture.createRequest;
 
-        when(platformPlaceService.getById(any())).thenReturn(platformPlace);
+        when(geometryConverter.of(anyDouble(), anyDouble())).thenReturn(LocationFixture.POINT);
         when(placeRepository.save(any())).thenReturn(PlaceFixture.create(1));
 
         // when
         sut.create(request);
 
         // then
-        verify(platformPlaceService, times(1)).getById(request.platformId());
+        verify(geometryConverter, times(1)).of(anyDouble(), anyDouble());
         verify(placeRepository, times(1)).save(any());
     }
 
     @Test
     void 장소_객체를_저장할_때_검색_객체를_함께_인덱싱한다() {
         // given
-        PlatformPlace platformPlace = new PlatformPlace(
-                "서울시립미술관",
-                LocationFixture.POINT,
-                LocationFixture.ADDRESS,
-                LocationFixture.GOOGLE_PLACE_ID,
-                null
-        );
-        PlaceCreateRequest request = new PlaceCreateRequest("abcdef");
+        PlaceCreateRequest request = PlaceFixture.createRequest;
 
-        when(platformPlaceService.getById(any())).thenReturn(platformPlace);
+        when(geometryConverter.of(anyDouble(), anyDouble())).thenReturn(LocationFixture.POINT);
         when(placeRepository.save(any())).thenReturn(PlaceFixture.create(1));
 
         // when

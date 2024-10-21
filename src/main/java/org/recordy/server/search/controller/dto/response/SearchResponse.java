@@ -12,7 +12,7 @@ public record SearchResponse(
 
     public static SearchResponse from(Search search) {
         return new SearchResponse(
-                search.getId(),
+                search.id(),
                 search.type(),
                 search.address(),
                 search.name()

@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.recordy.server.place.service.dto.Review;
+import org.recordy.server.place.service.dto.google.Review;
 
 import java.time.LocalDateTime;
 

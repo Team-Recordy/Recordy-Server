@@ -3,6 +3,8 @@ package org.recordy.server.user.repository.impl;
 import com.querydsl.core.types.ConstructorExpression;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -101,10 +103,13 @@ public class UserQueryDslRepository {
                         .from(subscribeEntity)
                         .where(subscribeEntity.subscribingUser.eq(userEntity)),
                 JPAExpressions
-                        .selectOne()
+                        .select(new CaseBuilder()
+                                .when(subscribeEntity.subscribingUser.id.eq(userId)
+                                        .and(subscribeEntity.subscribedUser.eq(userEntity)))
+                                .then(Expressions.constant(true))
+                                .otherwise(Expressions.constant(false)))
                         .from(subscribeEntity)
-                        .where(subscribeEntity.subscribingUser.id.eq(userId)
-                                .and(subscribeEntity.subscribedUser.eq(userEntity)))
-                );
+                        .limit(1)
+        );
     }
 }

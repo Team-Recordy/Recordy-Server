@@ -33,7 +33,6 @@ public enum ErrorMessage {
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "액세스 토큰이 만료되었습니다. 재발급 받아주세요."),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "액세스 토큰의 형식이 올바르지 않습니다. Bearer 타입을 확인해 주세요."),
     INVALID_TOKEN_VALUE(HttpStatus.UNAUTHORIZED, "액세스 토큰의 값이 올바르지 않습니다."),
-    NOT_MATCH_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "일치하지 않는 리프레시 토큰입니다."),
 
     // APPLE
     APPLE_EXPIRED_IDENTITY_TOKEN(HttpStatus.UNAUTHORIZED, "Apple OAuth Identity Token 토큰의 유효 기간이 만료되었습니다."),
@@ -73,7 +72,7 @@ public enum ErrorMessage {
      * PLACE
      */
     PLACE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 장소입니다."),
-    PLACE_GOOGLE_NO_RESULT(HttpStatus.NOT_FOUND, "구글 지도 검색 결과가 없습니다."),
+    PLATFORM_PLACE_NO_SEARCH_RESULT(HttpStatus.NOT_FOUND, "지도 검색 결과가 없습니다."),
 
     /**
      * SEARCH

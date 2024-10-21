@@ -64,11 +64,6 @@ public class PlaceRepositoryImpl implements PlaceRepository {
     }
 
     @Override
-    public Slice<PlaceGetResponse> findAllByNameOrderByExhibitionStartDateDesc(Pageable pageable, String query) {
-        return placeQueryDslRepository.findAllByNameOrderByExhibitionStartDateDesc(pageable, query);
-    }
-
-    @Override
     public Slice<PlaceGetResponse> findAllByLocationOrderByExhibitionStartDateDesc(Pageable pageable, Point currentLocation, double distance) {
         return placeQueryDslRepository.findAllByLocationOrderByExhibitionStartDateDesc(pageable, currentLocation, distance);
     }

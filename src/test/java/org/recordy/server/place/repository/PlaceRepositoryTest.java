@@ -56,7 +56,8 @@ class PlaceRepositoryTest extends IntegrationTest {
         assertAll(
                 () -> assertThat(result.getId()).isNotNull(),
                 () -> assertThat(result.getName()).isEqualTo(place.getName()),
-                () -> assertThat(result.getLocation().getAddress()).isEqualTo(place.getLocation().getAddress())
+                () -> assertThat(result.getPlatformId()).isEqualTo(place.getPlatformId()),
+                () -> assertThat(result.getAddress()).isEqualTo(place.getAddress())
         );
     }
 
@@ -222,27 +223,6 @@ class PlaceRepositoryTest extends IntegrationTest {
         assertAll(
                 () -> assertThat(result.getContent().size()).isEqualTo(1),
                 () -> assertThat(result.getContent().get(0).getId()).isEqualTo(placeIncluded.getId())
-        );
-    }
-
-    @Test
-    void 특정_이름을_포함하는_장소_리스트를_전시_시작일의_역순으로_조회할_수_있다() {
-        // given
-        Place place1 = placeRepository.save(PlaceFixture.create("국립현대미술관", LocationFixture.create()));
-        Place place2 = placeRepository.save(PlaceFixture.create("이중섭미술관", LocationFixture.create()));
-        Place place3 = placeRepository.save(PlaceFixture.create("박물!", LocationFixture.create()));
-
-        exhibitionRepository.save(ExhibitionFixture.create(LocalDate.now(), LocalDate.now(), place1));
-        exhibitionRepository.save(ExhibitionFixture.create(LocalDate.now(), LocalDate.now(), place2));
-        exhibitionRepository.save(ExhibitionFixture.create(LocalDate.now(), LocalDate.now(), place3));
-
-        // when
-        Slice<PlaceGetResponse> result = placeRepository.findAllByNameOrderByExhibitionStartDateDesc(PageRequest.ofSize(10), "국립현대");
-
-        // then
-        assertAll(
-                () -> assertThat(result.getContent().size()).isEqualTo(1),
-                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(place1.getId())
         );
     }
 }

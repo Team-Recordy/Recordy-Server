@@ -75,7 +75,7 @@ public class UserController implements UserApi {
 
     @Override
     @GetMapping("/profile/{otherUserId}")
-    public ResponseEntity<UserProfile> getUserInfosWithFollowing(
+    public ResponseEntity<UserProfile> getUserInfo(
             @UserId Long userId,
             @PathVariable Long otherUserId
     ) {
