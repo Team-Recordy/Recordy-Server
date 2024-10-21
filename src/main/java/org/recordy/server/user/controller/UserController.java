@@ -3,6 +3,7 @@ package org.recordy.server.user.controller;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.dto.response.CursorBasePaginatedResponse;
 import org.recordy.server.auth.security.resolver.UserId;
+import org.recordy.server.record.service.S3Service;
 import org.recordy.server.subscribe.domain.usecase.SubscribeCreate;
 import org.recordy.server.subscribe.service.SubscribeService;
 import org.recordy.server.user.controller.dto.request.UserUpdateRequest;
@@ -21,6 +22,14 @@ public class UserController implements UserApi {
 
     private final UserService userService;
     private final SubscribeService subscribeService;
+    private final S3Service s3Service;
+
+    @GetMapping("/presigned-url")
+    public ResponseEntity<String> getPresignedFileUrl() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(s3Service.generateProfileImageUrl());
+    }
 
     @PatchMapping
     public ResponseEntity<Void> update(

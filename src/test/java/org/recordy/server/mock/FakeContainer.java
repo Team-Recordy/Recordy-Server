@@ -134,6 +134,6 @@ public class FakeContainer {
         );
 
         this.userAuthController = new UserAuthController(userService);
-        this.userController = new UserController(userService, subscribeService);
+        this.userController = new UserController(userService, subscribeService, s3Service);
     }
 }

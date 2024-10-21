@@ -33,6 +33,11 @@ public class S3ServiceImpl implements S3Service {
     }
 
     @Override
+    public String generateProfileImageUrl() {
+        return generatePresignedUrl("profile-images/", ".jpeg");
+    }
+
+    @Override
     public FileUrl generateFilePresignedUrl() {
         return new FileUrl(
                 generatePresignedUrl("videos/", ".mp4"),

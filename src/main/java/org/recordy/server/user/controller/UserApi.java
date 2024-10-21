@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.recordy.server.common.dto.response.CursorBasePaginatedResponse;
 import org.recordy.server.auth.security.resolver.UserId;
 import org.recordy.server.common.dto.response.ErrorResponse;
+import org.recordy.server.record.controller.dto.response.RecordGetResponse;
 import org.recordy.server.user.controller.dto.request.UserUpdateRequest;
 import org.recordy.server.user.controller.dto.response.UserInfo;
 import org.recordy.server.user.domain.usecase.UserProfile;
@@ -22,6 +23,121 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "사용자 API")
 public interface UserApi {
+
+    @Operation(
+            summary = "presigned URL 발급 API",
+            description = "프로필 사진에 대한 presigned URL을 발급합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    value = """
+                                                            {
+                                                                "videoUrl": "http://www.naver.com",
+                                                                "thumbnailUrl": "http://www.naver.com"
+                                                            }
+                                                            """
+                                            )
+                                    },
+                                    schema = @Schema(
+                                            implementation = RecordGetResponse.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "401 (1)",
+                            description = "액세스 토큰의 형식이 올바르지 않습니다. Bearer 타입을 확인해 주세요.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    value = """
+                                                            {
+                                                                "errorCode": "401 UNAUTHORIZED",
+                                                                "errorMessage": "액세스 토큰의 형식이 올바르지 않습니다. Bearer 타입을 확인해 주세요."
+                                                            }
+                                                            """
+                                            )
+                                    },
+                                    schema = @Schema(
+                                            implementation = ErrorResponse.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "401 (2)",
+                            description = "액세스 토큰이 만료되었습니다. 재발급 받아주세요.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    value = """
+                                                            {
+                                                                "errorCode": "401 UNAUTHORIZED",
+                                                                "errorMessage": "액세스 토큰이 만료되었습니다. 재발급 받아주세요."
+                                                            }
+                                                            """
+                                            )
+                                    },
+                                    schema = @Schema(
+                                            implementation = ErrorResponse.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "401 (3)",
+                            description = "액세스 토큰의 값이 올바르지 않습니다.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    value = """
+                                                            {
+                                                                "errorCode": "401 UNAUTHORIZED",
+                                                                "errorMessage": "액세스 토큰의 값이 올바르지 않습니다."
+                                                            }
+                                                            """
+                                            )
+                                    },
+                                    schema = @Schema(
+                                            implementation = ErrorResponse.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "서버 내부 오류입니다.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    value = """
+                                                            {
+                                                                "errorCode": "500 INTERNAL SERVER ERROR",
+                                                                "errorMessage": "서버 내부 오류입니다."
+                                                            }
+                                                            """
+                                            )
+                                    },
+                                    schema = @Schema(
+                                            implementation = ErrorResponse.class
+                                    )
+                            )
+                    ),
+            }
+    )
+    @Parameter(
+            name = "액세스 토큰",
+            in = ParameterIn.HEADER,
+            required = true,
+            schema = @Schema(
+                    implementation = String.class
+            )
+    )
+    ResponseEntity<String> getPresignedFileUrl();
 
     @Operation(
             summary = "사용자 수정 API",

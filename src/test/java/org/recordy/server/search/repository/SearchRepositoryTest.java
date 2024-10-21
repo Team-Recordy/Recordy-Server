@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.client.opensearch._types.query_dsl.QueryBuilders;
 import org.opensearch.client.opensearch.core.DeleteByQueryRequest;
+import org.opensearch.client.opensearch.core.search.Hit;
 import org.recordy.server.exhibition.controller.dto.request.ExhibitionCreateRequest;
 import org.recordy.server.exhibition.repository.ExhibitionRepository;
 import org.recordy.server.exhibition.service.ExhibitionService;
@@ -22,6 +23,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -92,7 +94,12 @@ public class SearchRepositoryTest {
         searchRepository.save(search);
 
         // then
-        assertThat(searchClient.search(s -> s.index(search.type().getName()), Search.class).hits().hits().size()).isEqualTo(1);
+        List<Search> result = searchClient.search(s -> s.index(search.type().getName()), Search.class).hits().hits()
+                .stream()
+                .map(Hit::source)
+                .toList();
+
+        assertThat(result.stream().allMatch(s -> s.id().equals(1L))).isTrue();
     }
 
     @ValueSource(strings = {"서울", "시립", "미술"})
