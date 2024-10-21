@@ -120,6 +120,7 @@ public class PlaceQueryDslRepository {
                         .contains(locationEntity.geometry)
         );
 
+        System.out.println("content = " + content);
         collectExhibitionCounts(content);
         return new SliceImpl<>(content, pageable, QueryDslUtils.hasNext(pageable, content));
     }
