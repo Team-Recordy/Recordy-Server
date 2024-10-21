@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.recordy.server.common.dto.response.ErrorResponse;
 import org.recordy.server.common.dto.response.OffsetBasePaginatedResponse;
-import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.place.controller.dto.request.PlaceCreateRequest;
 import org.recordy.server.place.controller.dto.response.PlaceCreateResponse;
 import org.recordy.server.place.controller.dto.response.PlaceGetResponse;
