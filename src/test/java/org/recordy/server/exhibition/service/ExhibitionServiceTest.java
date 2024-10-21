@@ -1,5 +1,6 @@
 package org.recordy.server.exhibition.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.exhibition.controller.dto.request.ExhibitionCreateRequest;
@@ -18,28 +19,29 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 class ExhibitionServiceTest extends FakeContainer {
 
-    private static final ExhibitionCreateRequest request = new ExhibitionCreateRequest(
-            "test",
-            LocalDate.now(),
-            LocalDate.now().plusDays(1),
-            false,
-            1L
-    );
+    private ExhibitionCreateRequest request;
 
-    @Test
-    void Exhibition_객체를_생성해서_저장할_수_있다() {
-        // when
+    @BeforeEach
+    void init() {
         Place place = placeRepository.save(PlaceFixture.create());
-        ExhibitionCreateRequest request = new ExhibitionCreateRequest(
+
+        request = new ExhibitionCreateRequest(
                 "test",
                 LocalDate.now(),
                 LocalDate.now().plusDays(1),
                 false,
                 place.getId()
         );
-        Exhibition result = exhibitionService.create(request);
+    }
+
+    @Test
+    void Exhibition_객체를_생성해서_저장할_수_있다() {
+        // when
+        exhibitionService.create(request);
 
         // then
+        Exhibition result = exhibitionRepository.findById(1L);
+
         assertAll(
                 () -> assertThat(result.getName()).isEqualTo(request.name()),
                 () -> assertThat(result.getStartDate()).isEqualTo(request.startDate()),
@@ -52,7 +54,9 @@ class ExhibitionServiceTest extends FakeContainer {
     @Test
     void Exhibition_객체를_수정할_수_있다() {
         // given
-        Exhibition exhibition = exhibitionService.create(request);
+        exhibitionService.create(request);
+
+        Exhibition exhibition = exhibitionRepository.findById(1L);
         ExhibitionUpdate update = new ExhibitionUpdate(
                 exhibition.getId(),
                 "update",
@@ -94,7 +98,8 @@ class ExhibitionServiceTest extends FakeContainer {
     @Test
     void Exhibition_객체를_삭제할_수_있다() {
         // given
-        Exhibition exhibition = exhibitionService.create(request);
+        exhibitionService.create(request);
+        Exhibition exhibition = exhibitionRepository.findById(1L);
 
         // when
         exhibitionService.delete(exhibition.getId());

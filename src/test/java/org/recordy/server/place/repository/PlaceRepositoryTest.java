@@ -2,12 +2,16 @@ package org.recordy.server.place.repository;
 
 import org.junit.jupiter.api.Test;
 import org.recordy.server.common.message.ErrorMessage;
-import org.recordy.server.exhibition.domain.Exhibition;
 import org.recordy.server.exhibition.repository.ExhibitionRepository;
-import org.recordy.server.location.domain.Location;
 import org.recordy.server.place.controller.dto.response.PlaceGetResponse;
 import org.recordy.server.place.domain.Place;
 import org.recordy.server.place.exception.PlaceException;
+import org.recordy.server.record.domain.Record;
+import org.recordy.server.record.domain.usecase.RecordCreate;
+import org.recordy.server.record.repository.RecordRepository;
+import org.recordy.server.user.domain.User;
+import org.recordy.server.user.repository.UserRepository;
+import org.recordy.server.util.DomainFixture;
 import org.recordy.server.util.ExhibitionFixture;
 import org.recordy.server.util.LocationFixture;
 import org.recordy.server.util.PlaceFixture;
@@ -20,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -35,6 +38,12 @@ class PlaceRepositoryTest extends IntegrationTest {
     @Autowired
     private ExhibitionRepository exhibitionRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private RecordRepository recordRepository;
+
     @Test
     void 장소_객체를_저장할_수_있다() {
         // given
@@ -47,7 +56,6 @@ class PlaceRepositoryTest extends IntegrationTest {
         assertAll(
                 () -> assertThat(result.getId()).isNotNull(),
                 () -> assertThat(result.getName()).isEqualTo(place.getName()),
-                () -> assertThat(result.getWebsiteUrl()).isEqualTo(place.getWebsiteUrl()),
                 () -> assertThat(result.getLocation().getAddress()).isEqualTo(place.getLocation().getAddress())
         );
     }
@@ -74,10 +82,45 @@ class PlaceRepositoryTest extends IntegrationTest {
         exhibitionRepository.save(ExhibitionFixture.create(place));
 
         // when
-        Place result = placeRepository.findById(place.getId());
+        PlaceGetResponse result = placeRepository.findDetailById(place.getId());
 
         // then
         assertThat(result.getId()).isEqualTo(place.getId());
+    }
+
+    @Test
+    void 장소_객체를_id로_조회할_경우_관련된_전시_개수까지_조회할_수_있다() {
+        // given
+        Place place = placeRepository.save(PlaceFixture.create());
+
+        int exhibitionSize = 10;
+        for (int i = 0; i < exhibitionSize; i++) {
+            exhibitionRepository.save(ExhibitionFixture.create(place));
+        }
+
+        // when
+        PlaceGetResponse result = placeRepository.findDetailById(place.getId());
+
+        // then
+        assertThat(result.getExhibitionSize()).isEqualTo(10);
+    }
+
+    @Test
+    void 장소_객체를_id로_조회할_경우_관련된_레코드_개수까지_조회할_수_있다() {
+        // given
+        Place place = placeRepository.save(PlaceFixture.create());
+        User user = userRepository.save(DomainFixture.createUser());
+
+        int recordSize = 10;
+        for (int i = 0; i < recordSize; i++) {
+            recordRepository.save(Record.create(RecordCreate.of(null, "", user, place)));
+        }
+
+        // when
+        PlaceGetResponse result = placeRepository.findDetailById(place.getId());
+
+        // then
+        assertThat(result.getRecordSize()).isEqualTo(recordSize);
     }
 
     @Test
@@ -121,11 +164,9 @@ class PlaceRepositoryTest extends IntegrationTest {
         Place placeIncluded = placeRepository.save(PlaceFixture.create(LocationFixture.create()));
         Place placeExcluded = placeRepository.save(PlaceFixture.create(LocationFixture.create()));
 
-        List<Exhibition> exhibitions = List.of(
-                exhibitionRepository.save(ExhibitionFixture.create(LocalDate.now(), LocalDate.now(), placeIncluded)),
-                exhibitionRepository.save(ExhibitionFixture.create(LocalDate.now().minusDays(1), LocalDate.now().minusDays(1), placeIncluded)),
-                exhibitionRepository.save(ExhibitionFixture.create(LocalDate.now().minusDays(1), LocalDate.now().minusDays(1), placeExcluded))
-        );
+        exhibitionRepository.save(ExhibitionFixture.create(LocalDate.now(), LocalDate.now(), placeIncluded));
+        exhibitionRepository.save(ExhibitionFixture.create(LocalDate.now().minusDays(1), LocalDate.now().minusDays(1), placeIncluded));
+        exhibitionRepository.save(ExhibitionFixture.create(LocalDate.now().minusDays(1), LocalDate.now().minusDays(1), placeExcluded));
 
         // when
         Slice<PlaceGetResponse> result = placeRepository.findAllOrderByExhibitionStartDateDesc(PageRequest.ofSize(10));
@@ -133,9 +174,8 @@ class PlaceRepositoryTest extends IntegrationTest {
         // then
         assertAll(
                 () -> assertThat(result.getContent().size()).isEqualTo(1),
-                () -> assertThat(result.getContent().get(0).id()).isEqualTo(placeIncluded.getId()),
-                () -> assertThat(result.getContent().get(0).exhibitions().size()).isEqualTo(1),
-                () -> assertThat(result.getContent().get(0).exhibitions().get(0).id()).isEqualTo(exhibitions.get(0).getId())
+                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(placeIncluded.getId()),
+                () -> assertThat(result.getContent().get(0).getExhibitionSize()).isEqualTo(1)
         );
     }
 
@@ -160,9 +200,9 @@ class PlaceRepositoryTest extends IntegrationTest {
         // then
         assertAll(
                 () -> assertThat(result.getContent().size()).isEqualTo(3),
-                () -> assertThat(result.getContent().get(0).id()).isEqualTo(place2.getId()),
-                () -> assertThat(result.getContent().get(1).id()).isEqualTo(place1.getId()),
-                () -> assertThat(result.getContent().get(2).id()).isEqualTo(place3.getId())
+                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(place2.getId()),
+                () -> assertThat(result.getContent().get(1).getId()).isEqualTo(place1.getId()),
+                () -> assertThat(result.getContent().get(2).getId()).isEqualTo(place3.getId())
         );
     }
 
@@ -181,29 +221,7 @@ class PlaceRepositoryTest extends IntegrationTest {
         // then
         assertAll(
                 () -> assertThat(result.getContent().size()).isEqualTo(1),
-                () -> assertThat(result.getContent().get(0).id()).isEqualTo(placeIncluded.getId())
-        );
-    }
-
-    @Test
-    void 진행중인_공짜_전시를_가진_장소_리스트를_전시_시작일의_역순으로_조회할_수_있다() {
-        // given
-        Place place1 = placeRepository.save(PlaceFixture.create(LocationFixture.create()));
-        Place place2 = placeRepository.save(PlaceFixture.create(LocationFixture.create()));
-        Place place3 = placeRepository.save(PlaceFixture.create(LocationFixture.create()));
-
-        exhibitionRepository.save(ExhibitionFixture.create(LocalDate.now().minusDays(3), LocalDate.now(), true, place1));
-        exhibitionRepository.save(ExhibitionFixture.create(LocalDate.now().minusDays(1), LocalDate.now(), true, place2));
-        exhibitionRepository.save(ExhibitionFixture.create(LocalDate.now().minusDays(2), LocalDate.now(), false, place3));
-
-        // when
-        Slice<PlaceGetResponse> result = placeRepository.findAllFreeOrderByExhibitionStartDateDesc(PageRequest.ofSize(10));
-
-        // then
-        assertAll(
-                () -> assertThat(result.getContent().size()).isEqualTo(2),
-                () -> assertThat(result.getContent().get(0).id()).isEqualTo(place2.getId()),
-                () -> assertThat(result.getContent().get(1).id()).isEqualTo(place1.getId())
+                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(placeIncluded.getId())
         );
     }
 
@@ -224,7 +242,7 @@ class PlaceRepositoryTest extends IntegrationTest {
         // then
         assertAll(
                 () -> assertThat(result.getContent().size()).isEqualTo(1),
-                () -> assertThat(result.getContent().get(0).id()).isEqualTo(place1.getId())
+                () -> assertThat(result.getContent().get(0).getId()).isEqualTo(place1.getId())
         );
     }
 }

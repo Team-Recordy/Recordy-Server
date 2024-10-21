@@ -1,4 +1,4 @@
-package org.recordy.server.place.service.dto;
+package org.recordy.server.place.service.dto.google;
 
 import java.util.List;
 

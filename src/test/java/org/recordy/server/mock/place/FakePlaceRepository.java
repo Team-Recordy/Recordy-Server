@@ -20,7 +20,6 @@ public class FakePlaceRepository implements PlaceRepository {
         Place realPlace = new Place(
                 placeAutoIncrementId,
                 place.getName(),
-                place.getWebsiteUrl(),
                 place.getExhibitions(),
                 place.getLocation(),
                 place.getCreatedAt(),
@@ -42,12 +41,12 @@ public class FakePlaceRepository implements PlaceRepository {
     }
 
     @Override
-    public Slice<PlaceGetResponse> findAllOrderByExhibitionStartDateDesc(Pageable pageable) {
+    public PlaceGetResponse findDetailById(Long id) {
         return null;
     }
 
     @Override
-    public Slice<PlaceGetResponse> findAllFreeOrderByExhibitionStartDateDesc(Pageable pageable) {
+    public Slice<PlaceGetResponse> findAllOrderByExhibitionStartDateDesc(Pageable pageable) {
         return null;
     }
 

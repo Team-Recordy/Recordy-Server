@@ -3,6 +3,7 @@ package org.recordy.server.exhibition.repository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.common.message.ErrorMessage;
+import org.recordy.server.exhibition.controller.dto.response.ExhibitionGetResponse;
 import org.recordy.server.exhibition.domain.Exhibition;
 import org.recordy.server.exhibition.domain.usecase.ExhibitionUpdate;
 import org.recordy.server.exhibition.exception.ExhibitionException;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -189,6 +191,133 @@ class ExhibitionRepositoryTest extends IntegrationTest {
                 () -> assertThat(result.getContent()).hasSize(2),
                 () -> assertThat(result.getContent().get(0).getId()).isEqualTo(2),
                 () -> assertThat(result.getContent().get(1).getId()).isEqualTo(1)
+        );
+    }
+
+    @Test
+    void 장소와_연관된_전시_리스트를_조회할_수_있다() {
+        // given
+        int exhibitionSize = 10;
+        for (int i = 0; i < exhibitionSize; i++) {
+            exhibitionRepository.save(ExhibitionFixture.create(place));
+        }
+
+        // when
+        List<ExhibitionGetResponse> result = exhibitionRepository.findAllByPlaceId(place.getId());
+
+        // then
+        assertAll(
+                () -> assertThat(result).hasSize(exhibitionSize),
+                () -> assertThat(result.stream().map(ExhibitionGetResponse::name)).allMatch(name -> name.equals(ExhibitionFixture.NAME))
+        );
+    }
+
+    @Test
+    void 장소와_연관된_전시중_진행중인_것만_조회할_수_있다() {
+        // given
+        Exhibition excludedExhibition = exhibitionRepository.save(ExhibitionFixture.create(
+                LocalDate.now().plusDays(1),
+                LocalDate.now().plusDays(2),
+                place
+        ));
+        Exhibition includedExhibition = exhibitionRepository.save(ExhibitionFixture.create(
+                LocalDate.now().minusDays(1),
+                LocalDate.now().plusDays(2),
+                place
+        ));
+
+        // when
+        List<ExhibitionGetResponse> result = exhibitionRepository.findAllByPlaceId(place.getId());
+
+        // then
+        assertAll(
+                () -> assertThat(result).hasSize(1),
+                () -> assertThat(result.get(0).id()).isEqualTo(includedExhibition.getId())
+        );
+    }
+
+    @Test
+    void 장소와_연관된_전시_리스트를_전시일_시작의_역순으로_조회할_수_있다() {
+        // given
+        for (int i = 0; i < 5; i++) {
+            exhibitionRepository.save(ExhibitionFixture.create(
+                    LocalDate.now().minusDays(i),
+                    LocalDate.now().plusDays(1),
+                    place
+            ));
+        }
+
+        // when
+        List<ExhibitionGetResponse> result = exhibitionRepository.findAllByPlaceId(place.getId());
+
+        // then
+        assertAll(
+                () -> assertThat(result).hasSize(5),
+                () -> assertThat(result.get(0).id()).isEqualTo(1),
+                () -> assertThat(result.get(1).id()).isEqualTo(2),
+                () -> assertThat(result.get(2).id()).isEqualTo(3),
+                () -> assertThat(result.get(3).id()).isEqualTo(4),
+                () -> assertThat(result.get(4).id()).isEqualTo(5)
+        );
+    }
+
+    @Test
+    void 장소와_연관된_전시중_무료인_전시만_리스트로_조회할_수_있다() {
+        // given
+        for (int i = 0; i < 5; i++) {
+            exhibitionRepository.save(ExhibitionFixture.create(
+                    LocalDate.now().minusDays(i),
+                    LocalDate.now().plusDays(1),
+                    true,
+                    place
+            ));
+        }
+
+        for (int i = 0; i < 5; i++) {
+            exhibitionRepository.save(ExhibitionFixture.create(
+                    LocalDate.now().minusDays(i),
+                    LocalDate.now().plusDays(1),
+                    false,
+                    place
+            ));
+        }
+
+        // when
+        List<ExhibitionGetResponse> result = exhibitionRepository.findAllFreeByPlaceId(place.getId());
+
+        // then
+        assertAll(
+                () -> assertThat(result).hasSize(5),
+                () -> assertThat(result.get(0).id()).isEqualTo(1),
+                () -> assertThat(result.get(1).id()).isEqualTo(2),
+                () -> assertThat(result.get(2).id()).isEqualTo(3),
+                () -> assertThat(result.get(3).id()).isEqualTo(4),
+                () -> assertThat(result.get(4).id()).isEqualTo(5)
+        );
+    }
+
+    @Test
+    void 장소와_연관된_전시_리스트를_종료_날짜_순서대로_조회할_수_있다() {
+        // given
+        for (int i = 0; i < 5; i++) {
+            exhibitionRepository.save(ExhibitionFixture.create(
+                    LocalDate.now(),
+                    LocalDate.now().plusDays(i),
+                    place
+            ));
+        }
+
+        // when
+        List<ExhibitionGetResponse> result = exhibitionRepository.findAllByPlaceIdOrderByEndDateDesc(place.getId());
+
+        // then
+        assertAll(
+                () -> assertThat(result).hasSize(5),
+                () -> assertThat(result.get(0).id()).isEqualTo(1),
+                () -> assertThat(result.get(1).id()).isEqualTo(2),
+                () -> assertThat(result.get(2).id()).isEqualTo(3),
+                () -> assertThat(result.get(3).id()).isEqualTo(4),
+                () -> assertThat(result.get(4).id()).isEqualTo(5)
         );
     }
 }

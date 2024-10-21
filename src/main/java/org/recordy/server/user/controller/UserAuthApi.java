@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@Tag(name = "유저 관련 API")
+@Tag(name = "유저 보안 및 인증 관련 API")
 public interface UserAuthApi {
 
     @Operation(

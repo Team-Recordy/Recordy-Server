@@ -161,7 +161,7 @@ public class AuthTokenServiceTest extends FakeContainer {
     @Test
     void 토큰에_사용자_ID가_없을_경우_null_예외를_던진다() {
         // given
-        String token = tokenGenerator.generate(null, 1000L);
+        String token = tokenGenerator.generate(null, 100_000L);
 
         // when, then
         assertThatThrownBy(() -> tokenService.getUserIdFromToken(token))

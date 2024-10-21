@@ -2,6 +2,7 @@ package org.recordy.server.exhibition.repository.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.message.ErrorMessage;
+import org.recordy.server.exhibition.controller.dto.response.ExhibitionGetResponse;
 import org.recordy.server.exhibition.domain.Exhibition;
 import org.recordy.server.exhibition.domain.ExhibitionEntity;
 import org.recordy.server.exhibition.exception.ExhibitionException;
@@ -55,5 +56,18 @@ public class ExhibitionRepositoryImpl implements ExhibitionRepository {
     public Slice<Exhibition> findAllContainingName(String name, Long cursor, int size) {
         return exhibitionQueryDslRepository.findAllContainingName(name, cursor, size)
                 .map(Exhibition::from);
+    }
+
+    @Override
+    public List<ExhibitionGetResponse> findAllByPlaceId(long placeId) {
+        return exhibitionQueryDslRepository.findAllByPlaceId(placeId);
+    }
+
+    public List<ExhibitionGetResponse> findAllFreeByPlaceId(long placeId) {
+        return exhibitionQueryDslRepository.findAllFreeByPlaceId(placeId);
+    }
+
+    public List<ExhibitionGetResponse> findAllByPlaceIdOrderByEndDateDesc(long placeId) {
+        return exhibitionQueryDslRepository.findAllByPlaceIdOrderByEndDateDesc(placeId);
     }
 }

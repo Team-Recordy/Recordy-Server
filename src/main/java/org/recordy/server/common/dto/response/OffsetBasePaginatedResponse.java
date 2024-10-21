@@ -1,17 +1,17 @@
 package org.recordy.server.common.dto.response;
 
-import java.util.List;
-import java.util.function.Function;
 import org.springframework.data.domain.Slice;
 
-public record PaginatedResponse<T> (
+import java.util.List;
+
+public record OffsetBasePaginatedResponse<T>(
         int pageNumber,
         boolean hasNext,
-        List<T> content
-){
-    public static <T> PaginatedResponse<T> of(Slice<T> slice) {
+        List<T> data
+) {
 
-        return new PaginatedResponse<>(
+    public static <T> OffsetBasePaginatedResponse<T> of(Slice<T> slice) {
+        return new OffsetBasePaginatedResponse<>(
                 slice.getNumber(),
                 slice.hasNext(),
                 slice.getContent()

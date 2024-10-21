@@ -72,6 +72,11 @@ dependencies {
 
     // EXHIBITION API DATA MAPPING
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.17.2'
+
+    // Amazon OpenSearch
+    implementation("org.opensearch.client:opensearch-rest-client:2.11.0")
+    implementation("org.opensearch.client:opensearch-java:2.7.0")
+    implementation("jakarta.json:jakarta.json-api")
 }
 
 tasks.named('test') {

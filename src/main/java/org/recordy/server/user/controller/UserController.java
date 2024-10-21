@@ -5,17 +5,14 @@ import org.recordy.server.common.dto.response.CursorBasePaginatedResponse;
 import org.recordy.server.auth.security.resolver.UserId;
 import org.recordy.server.subscribe.domain.usecase.SubscribeCreate;
 import org.recordy.server.subscribe.service.SubscribeService;
+import org.recordy.server.user.controller.dto.request.UserUpdateRequest;
 import org.recordy.server.user.controller.dto.response.UserInfo;
 import org.recordy.server.user.domain.usecase.UserProfile;
+import org.recordy.server.user.domain.usecase.UserUpdate;
 import org.recordy.server.user.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
@@ -24,6 +21,18 @@ public class UserController implements UserApi {
 
     private final UserService userService;
     private final SubscribeService subscribeService;
+
+    @PatchMapping
+    public ResponseEntity<Void> update(
+            @UserId Long userId,
+            @RequestBody UserUpdateRequest request
+    ) {
+        userService.update(UserUpdate.from(request), userId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .build();
+    }
 
     @Override
     @PostMapping("/follow/{followingId}")

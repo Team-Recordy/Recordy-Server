@@ -33,11 +33,13 @@ public class PlaceRepositoryImpl implements PlaceRepository {
 
     @Override
     public Place findById(long id) {
-        if (Objects.isNull(placeQueryDslRepository.findById(id))) {
+        PlaceEntity entity = placeQueryDslRepository.findById(id);
+
+        if (Objects.isNull(entity)) {
             throw new PlaceException(ErrorMessage.PLACE_NOT_FOUND);
         }
 
-        return Place.from(id);
+        return Place.from(entity);
     }
 
     @Override
@@ -52,13 +54,13 @@ public class PlaceRepositoryImpl implements PlaceRepository {
     }
 
     @Override
-    public Slice<PlaceGetResponse> findAllOrderByExhibitionStartDateDesc(Pageable pageable) {
-        return placeQueryDslRepository.findAllOrderByExhibitionStartDateDesc(pageable);
+    public PlaceGetResponse findDetailById(Long id) {
+        return placeQueryDslRepository.findById(id);
     }
 
     @Override
-    public Slice<PlaceGetResponse> findAllFreeOrderByExhibitionStartDateDesc(Pageable pageable) {
-        return placeQueryDslRepository.findAllFreeOrderByExhibitionStartDateDesc(pageable);
+    public Slice<PlaceGetResponse> findAllOrderByExhibitionStartDateDesc(Pageable pageable) {
+        return placeQueryDslRepository.findAllOrderByExhibitionStartDateDesc(pageable);
     }
 
     @Override
