@@ -33,7 +33,7 @@ public class S3ServiceImpl implements S3Service {
     }
 
     @Override
-    public FileUrl generatePresignedUrl() {
+    public FileUrl generateFilePresignedUrl() {
         return new FileUrl(
                 generatePresignedUrl("videos/", ".mp4"),
                 generatePresignedUrl("thumbnails/", ".jpeg")

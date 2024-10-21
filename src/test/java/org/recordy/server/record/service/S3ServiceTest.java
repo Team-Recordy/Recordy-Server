@@ -24,7 +24,7 @@ class S3ServiceTest {
     @Test
     void 알맞은_디렉토리와_확장자를_가진_presigned_url을_생성할_수_있다() {
         // when
-        FileUrl fileUrl = sut.generatePresignedUrl();
+        FileUrl fileUrl = sut.generateFilePresignedUrl();
         // then
         assertAll(
                 () -> assertThat(fileUrl.videoUrl()).contains("videos/"),
@@ -37,7 +37,7 @@ class S3ServiceTest {
     @Test
     void S3_도메인이_포함되어_있는_presigned_url을_생성할_수_있다() {
         // when
-        FileUrl fileUrl = sut.generatePresignedUrl();
+        FileUrl fileUrl = sut.generateFilePresignedUrl();
         // then
         assertAll(
                 () -> assertThat(fileUrl.videoUrl()).contains(s3Domain),
@@ -48,7 +48,7 @@ class S3ServiceTest {
     @Test
     void presigned_url에서_s3_도메인을_cloudfront_도메인으로_변경할_수_있다() {
         // given
-        FileUrl fileUrl = sut.generatePresignedUrl();
+        FileUrl fileUrl = sut.generateFilePresignedUrl();
 
         // when
         FileUrl convertedFileUrl = sut.convertToCloudFrontUrl(fileUrl);

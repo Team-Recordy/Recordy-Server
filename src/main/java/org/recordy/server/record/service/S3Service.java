@@ -5,6 +5,6 @@ import org.recordy.server.record.domain.FileUrl;
 public interface S3Service {
 
     // query
-    FileUrl generatePresignedUrl();
+    FileUrl generateFilePresignedUrl();
     FileUrl convertToCloudFrontUrl(FileUrl fileUrl);
 }
