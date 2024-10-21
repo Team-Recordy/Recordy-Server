@@ -15,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/search")
 @RestController
-public class SearchController {
+public class SearchController implements SearchApi {
 
     private final SearchRepository searchRepository;
 

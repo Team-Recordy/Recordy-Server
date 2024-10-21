@@ -25,10 +25,10 @@ public class RecordController implements RecordApi {
     private final S3Service s3Service;
 
     @GetMapping("/presigned-url")
-    public ResponseEntity<FileUrl> getPresignedUrls() {
+    public ResponseEntity<FileUrl> getPresignedFileUrl() {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(s3Service.generatePresignedUrl());
+                .body(s3Service.generateFilePresignedUrl());
     }
 
     @Override
@@ -53,7 +53,7 @@ public class RecordController implements RecordApi {
         recordService.delete(uploaderId, recordId);
 
         return ResponseEntity
-                .noContent()
+                .status(HttpStatus.OK)
                 .build();
     }
 
