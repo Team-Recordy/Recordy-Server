@@ -7,7 +7,7 @@ import java.util.List;
 public record OffsetBasePaginatedResponse<T>(
         int pageNumber,
         boolean hasNext,
-        List<T> data
+        List<T> content
 ) {
 
     public static <T> OffsetBasePaginatedResponse<T> of(Slice<T> slice) {

@@ -3,8 +3,10 @@ package org.recordy.server.place.controller;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.dto.response.OffsetBasePaginatedResponse;
 import org.recordy.server.place.controller.dto.request.PlaceCreateRequest;
+import org.recordy.server.place.controller.dto.response.PlaceCreateResponse;
 import org.recordy.server.place.controller.dto.response.PlaceGetResponse;
 import org.recordy.server.place.controller.dto.response.PlaceReviewGetResponse;
+import org.recordy.server.place.domain.Place;
 import org.recordy.server.place.service.PlaceService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
@@ -23,14 +25,14 @@ public class PlaceController implements PlaceApi {
 
     @Override
     @PostMapping
-    public ResponseEntity<Void> createPlace(
+    public ResponseEntity<PlaceCreateResponse> createPlace(
             @RequestBody PlaceCreateRequest request
     ) {
-        placeService.create(request);
+        Place place = placeService.create(request);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .build();
+                .body(new PlaceCreateResponse(place.getId()));
     }
 
     @Override
@@ -63,7 +65,7 @@ public class PlaceController implements PlaceApi {
             @RequestParam(required = false, defaultValue = "10") int size,
             @RequestParam double latitude,
             @RequestParam double longitude,
-            @RequestParam(required = false, defaultValue = "4.0") double distance
+            @RequestParam(required = false, defaultValue = "3000") double distance
     ) {
         Slice<PlaceGetResponse> result = placeService.getAllByGeography(PageRequest.of(number, size), latitude, longitude, distance);
 
