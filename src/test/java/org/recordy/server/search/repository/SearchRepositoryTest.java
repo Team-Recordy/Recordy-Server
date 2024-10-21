@@ -99,7 +99,7 @@ public class SearchRepositoryTest {
                 .map(Hit::source)
                 .toList();
 
-        assertThat(result.stream().allMatch(s -> s.id().equals(1L))).isTrue();
+        assertThat(result.stream().allMatch(s -> s.type().equals(SearchType.PLACE))).isTrue();
     }
 
     @ValueSource(strings = {"서울", "시립", "미술"})
