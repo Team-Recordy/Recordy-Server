@@ -2,6 +2,8 @@ package org.recordy.server.user.repository;
 
 import org.junit.jupiter.api.Test;
 import org.recordy.server.common.message.ErrorMessage;
+import org.recordy.server.subscribe.domain.Subscribe;
+import org.recordy.server.subscribe.repository.SubscribeRepository;
 import org.recordy.server.user.domain.TermsAgreement;
 import org.recordy.server.user.domain.UserStatus;
 import org.recordy.server.user.domain.usecase.UserProfile;
@@ -13,8 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
-
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -28,6 +28,9 @@ import static org.recordy.server.util.DomainFixture.*;
 })
 @SpringBootTest
 class UserRepositoryIntegrationTest extends IntegrationTest {
+
+    @Autowired
+    private SubscribeRepository subscribeRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -150,6 +153,26 @@ class UserRepositoryIntegrationTest extends IntegrationTest {
         // then
         assertAll(
                 () -> assertThat(result.id()).isEqualTo(user.getId())
+        );
+    }
+
+    @Test
+    void 사용자의_프로필을_조회할_때_해당_사용자에_대한_팔로우_유무를_확인할_수_있다() {
+        // given
+        User following = userRepository.save(createUser());
+        User follower = userRepository.save(createUser());
+
+        subscribeRepository.save(Subscribe.builder()
+                .subscribingUser(following)
+                .subscribedUser(follower)
+                .build());
+
+        // when
+        UserProfile result = userRepository.findProfile(follower.getId(), following.getId());
+
+        // then
+        assertAll(
+                () -> assertThat(result.isFollowing()).isTrue()
         );
     }
 

@@ -104,12 +104,16 @@ public class UserQueryDslRepository {
                         .where(subscribeEntity.subscribingUser.eq(userEntity)),
                 JPAExpressions
                         .select(new CaseBuilder()
-                                .when(subscribeEntity.subscribingUser.id.eq(userId)
-                                        .and(subscribeEntity.subscribedUser.eq(userEntity)))
-                                .then(Expressions.constant(true))
-                                .otherwise(Expressions.constant(false)))
-                        .from(subscribeEntity)
-                        .limit(1)
+                                        .when(JPAExpressions.selectOne()
+                                                        .from(subscribeEntity)
+                                                        .where(subscribeEntity.subscribingUser.id.eq(userId)
+                                                                .and(subscribeEntity.subscribedUser.eq(userEntity)))
+                                                        .exists()
+                                        )
+                                        .then(true)
+                                        .otherwise(false)
+                        )
+
         );
     }
 }
