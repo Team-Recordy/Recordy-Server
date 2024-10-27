@@ -21,6 +21,7 @@ public class PlaceEntity extends JpaMetaInfoEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    @Column(unique = true, nullable = false)
     private String platformId;
     private String address;
 

@@ -11,7 +11,6 @@ import org.recordy.server.exhibition.service.ExhibitionService;
 import org.recordy.server.place.controller.dto.request.PlaceCreateRequest;
 import org.recordy.server.place.controller.dto.response.PlatformPlaceSearchResponse;
 import org.recordy.server.place.domain.Place;
-import org.recordy.server.place.exception.PlaceException;
 import org.recordy.server.place.repository.PlaceRepository;
 import org.recordy.server.place.service.PlaceService;
 import org.recordy.server.place.service.PlatformPlaceService;
@@ -86,7 +85,7 @@ public class ExhibitionDataInitializer {
 
         try {
             place = placeRepository.findByName(performance.place());
-        } catch (PlaceException e) {
+        } catch (Exception e) {
             try {
                 PlatformPlaceSearchResponse response = platformPlaceService.search(performance.place()).get(0);
 
@@ -97,8 +96,13 @@ public class ExhibitionDataInitializer {
                         response.latitude(),
                         response.address()
                 ));
-            } catch (PlaceException ee) {
-                place = null;
+            } catch (Exception ee) {
+                try {
+                    Thread.sleep(1000);
+                    place = placeRepository.findByName(performance.place());
+                } catch (Exception eee) {
+                    place = null;
+                }
             }
         }
 
