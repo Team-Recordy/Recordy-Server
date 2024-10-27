@@ -45,12 +45,12 @@ public class UserQueryDslRepository {
 
     public Slice<UserInfo> findFollowings(long userId, Long cursor, int size) {
         List<UserInfo> content = findSubscriptionUsers(subscribeEntity.subscribingUser.id.eq(userId), cursor, size);
-        return new SliceImpl<>(content, PageRequest.ofSize(size), QueryDslUtils.hasNext(size, content));
+        return new SliceImpl<>(content, PageRequest.ofSize(content.size()), QueryDslUtils.hasNext(size, content));
     }
 
     public Slice<UserInfo> findFollowers(long userId, Long cursor, int size) {
         List<UserInfo> content = findSubscriptionUsers(subscribeEntity.subscribedUser.id.eq(userId), cursor, size);
-        return new SliceImpl<>(content, PageRequest.ofSize(size), QueryDslUtils.hasNext(size, content));
+        return new SliceImpl<>(content, PageRequest.ofSize(content.size()), QueryDslUtils.hasNext(size, content));
     }
 
     private List<UserInfo> findSubscriptionUsers(BooleanExpression expression, Long cursor, int size) {

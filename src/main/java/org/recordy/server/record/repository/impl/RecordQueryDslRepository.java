@@ -40,7 +40,7 @@ public class RecordQueryDslRepository {
                 .limit(size + 1)
                 .fetch();
 
-        return new SliceImpl<>(content, PageRequest.ofSize(size), QueryDslUtils.hasNext(size, content));
+        return new SliceImpl<>(content, PageRequest.ofSize(content.size()), QueryDslUtils.hasNext(size, content));
     }
 
     public Slice<RecordGetResponse> findAllByUserIdOrderByIdDesc(long otherUserId, long userId, Long cursor, int size) {
@@ -57,7 +57,7 @@ public class RecordQueryDslRepository {
                 .limit(size + 1)
                 .fetch();
 
-        return new SliceImpl<>(content, PageRequest.ofSize(size), QueryDslUtils.hasNext(size, content));
+        return new SliceImpl<>(content, PageRequest.ofSize(content.size()), QueryDslUtils.hasNext(size, content));
     }
 
     public List<RecordGetResponse> findAllByIds(List<Long> ids, long userId) {
@@ -85,7 +85,7 @@ public class RecordQueryDslRepository {
                 .limit(size + 1)
                 .fetch();
 
-        return new SliceImpl<>(content, PageRequest.ofSize(size), QueryDslUtils.hasNext(size, content));
+        return new SliceImpl<>(content, PageRequest.ofSize(content.size()), QueryDslUtils.hasNext(size, content));
     }
 
     private ConstructorExpression<RecordGetResponse> getRecordResponse(long userId) {

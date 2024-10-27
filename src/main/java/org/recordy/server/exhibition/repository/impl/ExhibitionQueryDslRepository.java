@@ -55,7 +55,7 @@ public class ExhibitionQueryDslRepository {
                 .limit(size + 1)
                 .fetch();
 
-        return new SliceImpl<>(content, PageRequest.ofSize(size),QueryDslUtils.hasNext(size, content));
+        return new SliceImpl<>(content, PageRequest.ofSize(content.size()),QueryDslUtils.hasNext(size, content));
     }
 
     public List<ExhibitionGetResponse> findAllByPlaceId(long placeId) {
