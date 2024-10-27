@@ -34,7 +34,7 @@ import java.util.Objects;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Slf4j
-@Profile({"dev"})
+//@Profile({"dev", "local"})
 @Component
 public class ExhibitionDataInitializer {
 
