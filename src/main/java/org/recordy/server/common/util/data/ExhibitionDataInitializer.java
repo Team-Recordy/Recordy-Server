@@ -6,9 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.recordy.server.common.util.data.dto.PerforList;
 import org.recordy.server.common.util.data.dto.Response;
-import org.recordy.server.exhibition.domain.Exhibition;
-import org.recordy.server.exhibition.domain.usecase.ExhibitionCreate;
-import org.recordy.server.exhibition.repository.ExhibitionRepository;
+import org.recordy.server.exhibition.controller.dto.request.ExhibitionCreateRequest;
+import org.recordy.server.exhibition.service.ExhibitionService;
 import org.recordy.server.place.controller.dto.request.PlaceCreateRequest;
 import org.recordy.server.place.controller.dto.response.PlatformPlaceSearchResponse;
 import org.recordy.server.place.domain.Place;
@@ -38,7 +37,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 @Component
 public class ExhibitionDataInitializer {
 
-    private final ExhibitionRepository exhibitionRepository;
+    private final ExhibitionService exhibitionService;
     private final PlaceService placeService;
     private final PlatformPlaceService platformPlaceService;
     private final PlaceRepository placeRepository;
@@ -47,13 +46,13 @@ public class ExhibitionDataInitializer {
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
 
     public ExhibitionDataInitializer(
-            ExhibitionRepository exhibitionRepository,
+            ExhibitionService exhibitionService,
             PlaceService placeService,
             PlatformPlaceService platformPlaceService,
             PlaceRepository placeRepository,
             @Value("${exhibition.api.key}") String key
     ) {
-        this.exhibitionRepository = exhibitionRepository;
+        this.exhibitionService = exhibitionService;
         this.placeService = placeService;
         this.platformPlaceService = platformPlaceService;
         this.placeRepository = placeRepository;
@@ -104,14 +103,13 @@ public class ExhibitionDataInitializer {
         }
 
         if (Objects.nonNull(place)) {
-            exhibitionRepository.save(Exhibition.create(new ExhibitionCreate(
-                    null,
+            exhibitionService.create(new ExhibitionCreateRequest(
                     performance.title(),
                     LocalDate.parse(performance.startDate(), formatter),
                     LocalDate.parse(performance.endDate(), formatter),
                     false,
-                    place
-            )));
+                    place.getId()
+            ));
         }
     }
 
