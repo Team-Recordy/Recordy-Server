@@ -2,12 +2,10 @@ package org.recordy.server.place.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.recordy.server.exhibition.domain.Exhibition;
 import org.recordy.server.location.domain.Location;
 import org.recordy.server.place.domain.usecase.PlaceCreate;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static org.recordy.server.common.util.DomainUtils.mapIfNotNull;
 
@@ -19,7 +17,6 @@ public class Place {
     private String name;
     private String platformId;
     private String address;
-    private List<Exhibition> exhibitions;
     private Location location;
 
     private LocalDateTime createdAt;
@@ -35,9 +32,6 @@ public class Place {
                 entity.getName(),
                 entity.getPlatformId(),
                 entity.getAddress(),
-                entity.getExhibitions().stream()
-                        .map(Exhibition::from)
-                        .toList(),
                 mapIfNotNull(entity.getLocation(), Location::from),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
@@ -54,7 +48,6 @@ public class Place {
                 create.name(),
                 create.platformId(),
                 create.address(),
-                List.of(),
                 create.location(),
                 null,
                 null

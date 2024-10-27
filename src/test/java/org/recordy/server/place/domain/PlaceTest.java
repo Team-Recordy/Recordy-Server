@@ -1,7 +1,6 @@
 package org.recordy.server.place.domain;
 
 import org.junit.jupiter.api.Test;
-import org.recordy.server.location.domain.Location;
 import org.recordy.server.place.domain.usecase.PlaceCreate;
 import org.recordy.server.util.LocationFixture;
 import org.recordy.server.util.PlaceFixture;
@@ -42,7 +41,6 @@ class PlaceTest {
                 () -> assertThat(place.getName()).isEqualTo(create.name()),
                 () -> assertThat(place.getPlatformId()).isEqualTo(create.platformId()),
                 () -> assertThat(place.getAddress()).isEqualTo(create.address()),
-                () -> assertThat(place.getExhibitions()).isEmpty(),
                 () -> assertThat(place.getLocation().getGeometry()).isEqualTo(create.location().getGeometry())
         );
     }

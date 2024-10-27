@@ -22,7 +22,6 @@ public class FakePlaceRepository implements PlaceRepository {
                 place.getName(),
                 place.getPlatformId(),
                 place.getAddress(),
-                place.getExhibitions(),
                 place.getLocation(),
                 place.getCreatedAt(),
                 place.getUpdatedAt()

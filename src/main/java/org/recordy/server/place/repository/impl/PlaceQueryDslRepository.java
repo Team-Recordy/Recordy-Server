@@ -55,7 +55,7 @@ public class PlaceQueryDslRepository {
                 .select(placeEntity)
                 .from(placeEntity)
                 .join(placeEntity.location).fetchJoin()
-                .leftJoin(placeEntity.exhibitions, exhibitionEntity).fetchJoin()
+                .leftJoin(exhibitionEntity).on(exhibitionEntity.place.eq(placeEntity)).fetchJoin()
                 .where(placeEntity.id.eq(id))
                 .fetchOne();
     }
@@ -69,7 +69,7 @@ public class PlaceQueryDslRepository {
                 .select(placeEntity.id)
                 .from(placeEntity)
                 .join(placeEntity.location)
-                .leftJoin(placeEntity.exhibitions, exhibitionEntity)
+                .leftJoin(exhibitionEntity).on(exhibitionEntity.place.eq(placeEntity))
                 .where(expressions)
                 .fetchOne();
     }
@@ -86,7 +86,7 @@ public class PlaceQueryDslRepository {
         Long exhibitionSize = Optional.ofNullable(jpaQueryFactory
                 .select(exhibitionEntity.count())
                 .from(placeEntity)
-                .leftJoin(placeEntity.exhibitions, exhibitionEntity)
+                .leftJoin(exhibitionEntity).on(exhibitionEntity.place.eq(placeEntity))
                 .where(placeEntity.id.eq(id))
                 .fetchOne())
                 .orElse(0L);
@@ -120,7 +120,6 @@ public class PlaceQueryDslRepository {
                         .contains(locationEntity.geometry)
         );
 
-        System.out.println("content = " + content);
         collectExhibitionCounts(content);
         return new SliceImpl<>(content, pageable, QueryDslUtils.hasNext(pageable, content));
     }
@@ -129,7 +128,7 @@ public class PlaceQueryDslRepository {
         return jpaQueryFactory
                 .from(placeEntity)
                 .join(placeEntity.location, locationEntity)
-                .leftJoin(placeEntity.exhibitions, exhibitionEntity)
+                .leftJoin(exhibitionEntity).on(exhibitionEntity.place.eq(placeEntity))
                 .where(expressions)
                 .where(hasOngoingExhibitions)
                 .orderBy(exhibitionEntity.startDate.desc())
@@ -142,7 +141,7 @@ public class PlaceQueryDslRepository {
         Map<Long, Long> exhibitionSizes = jpaQueryFactory
                 .select(placeEntity.id, exhibitionEntity.count())
                 .from(placeEntity)
-                .leftJoin(placeEntity.exhibitions, exhibitionEntity)
+                .leftJoin(exhibitionEntity).on(exhibitionEntity.place.eq(placeEntity))
                 .where(placeEntity.id.in(places.stream().map(PlaceGetResponse::getId).toList()))
                 .where(hasOngoingExhibitions)
                 .groupBy(placeEntity.id)
