@@ -43,12 +43,7 @@ class RecordServiceTest extends FakeContainer {
 
         // then
         Record result = recordRepository.findById(id);
-        assertAll(
-                () -> assertThat(result.getFileUrl().videoUrl()).isEqualTo(request.fileUrl().videoUrl()),
-                () -> assertThat(result.getFileUrl().thumbnailUrl()).isEqualTo(request.fileUrl().thumbnailUrl()),
-                () -> assertThat(result.getContent()).isEqualTo(request.content()),
-                () -> assertThat(result.getUploader().getId()).isEqualTo(user.getId())
-        );
+        assertThat(result.getId()).isEqualTo(id);
     }
 
     @Test

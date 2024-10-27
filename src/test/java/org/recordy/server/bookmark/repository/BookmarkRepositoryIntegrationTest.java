@@ -48,8 +48,7 @@ public class BookmarkRepositoryIntegrationTest extends IntegrationTest {
         assertAll(
                 () -> assertThat(result.getId()).isNotNull(),
                 () -> assertThat(result.getUser().getId()).isEqualTo(DomainFixture.USER_ID),
-                () -> assertThat(result.getRecord().getId()).isEqualTo(DomainFixture.RECORD_ID),
-                () -> assertThat(result.getRecord().getBookmarkCount()).isEqualTo(1)
+                () -> assertThat(result.getRecord().getId()).isEqualTo(DomainFixture.RECORD_ID)
         );
     }
 

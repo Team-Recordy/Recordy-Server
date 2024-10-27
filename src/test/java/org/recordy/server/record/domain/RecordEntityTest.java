@@ -3,6 +3,8 @@ package org.recordy.server.record.domain;
 import org.junit.jupiter.api.Test;
 import org.recordy.server.bookmark.domain.BookmarkEntity;
 import org.recordy.server.place.domain.PlaceEntity;
+import org.recordy.server.record.domain.usecase.RecordCreate;
+import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.UserEntity;
 import org.recordy.server.util.DomainFixture;
 import org.recordy.server.util.PlaceFixture;
@@ -33,22 +35,23 @@ class RecordEntityTest {
 
     @Test
     void isUploader를_통해_Record_객체의_업로더가_맞는지_확인할_수_있다() {
-        //given
-        RecordEntity recordEntity = new RecordEntity(
-                null,
-                RecordFixture.FILE_URL,
-                DomainFixture.CONTENT,
-                UserEntity.from(DomainFixture.createUser()),
-                PlaceEntity.create(PlaceFixture.create()),
-                null,
+        // given
+        User user = DomainFixture.createUser();
+        Record record = Record.create(new RecordCreate(
+                1L,
+                new FileUrl(
+                        "https://www.naver.com",
+                        "https://www.naver.com"
+                ),
+                "",
+                user,
                 null
-        );
+        ));
 
-        //when
-        //then
+        // then
         assertAll(
-                () -> assertThat(Record.from(recordEntity).isUploader(DomainFixture.createUserEntity().getId())).isTrue(),
-                () -> assertThat(Record.from(recordEntity).isUploader(100)).isFalse()
+                () -> assertThat(record.isUploader(user.getId())).isTrue(),
+                () -> assertThat(record.isUploader(100)).isFalse()
         );
     }
 

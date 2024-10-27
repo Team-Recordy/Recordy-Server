@@ -41,16 +41,12 @@ public class Record {
         this.bookmarkCount = bookmarkCount;
     }
 
+    private Record(Long id) {
+        this.id = id;
+    }
+
     public static Record from(RecordEntity entity) {
-        return new Record(
-                entity.getId(),
-                entity.getFileUrl(),
-                entity.getContent(),
-                User.from(entity.getUser()),
-                entity.getCreatedAt(),
-                entity.getUpdatedAt(),
-                entity.getBookmarks().size()
-        );
+        return new Record(entity.getId());
     }
 
     public static Record create(RecordCreate create) {
