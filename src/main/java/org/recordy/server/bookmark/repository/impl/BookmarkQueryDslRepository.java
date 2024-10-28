@@ -21,6 +21,13 @@ public class BookmarkQueryDslRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
+    public BookmarkEntity findById(Long id) {
+        return jpaQueryFactory
+                .selectFrom(bookmarkEntity)
+                .where(bookmarkEntity.id.eq(id))
+                .fetchOne();
+    }
+
     public Slice<BookmarkEntity> findAllByUserOrderByIdDesc(long userId, Long cursor, Pageable pageable) {
         List<BookmarkEntity> bookmarkEntities = jpaQueryFactory
                 .selectFrom(bookmarkEntity)

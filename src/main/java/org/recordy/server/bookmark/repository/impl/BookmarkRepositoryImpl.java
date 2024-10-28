@@ -3,11 +3,15 @@ package org.recordy.server.bookmark.repository.impl;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.bookmark.domain.Bookmark;
 import org.recordy.server.bookmark.domain.BookmarkEntity;
+import org.recordy.server.bookmark.exception.BookmarkException;
 import org.recordy.server.bookmark.repository.BookmarkRepository;
+import org.recordy.server.common.message.ErrorMessage;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Repository
@@ -17,9 +21,8 @@ public class BookmarkRepositoryImpl implements BookmarkRepository {
     private final BookmarkQueryDslRepository bookmarkQueryDslRepository;
 
     @Override
-    public Bookmark save(Bookmark bookmark) {
-        return bookmarkJpaRepository.save(BookmarkEntity.from(bookmark))
-                .toDomain();
+    public void save(Bookmark bookmark) {
+        bookmarkJpaRepository.save(BookmarkEntity.from(bookmark));
     }
 
     @Transactional
@@ -31,6 +34,19 @@ public class BookmarkRepositoryImpl implements BookmarkRepository {
     @Override
     public void deleteByUserId(long userId) {
         bookmarkJpaRepository.deleteAllByUserId(userId);
+    }
+
+    @Override
+    public Bookmark findById(Long id) {
+        BookmarkEntity entity = bookmarkQueryDslRepository.findById(id);
+
+        if (Objects.isNull(entity)) {
+            throw new BookmarkException(ErrorMessage.BOOKMARK_NOT_FOUND);
+        }
+
+        return Bookmark.builder()
+                .id(entity.getId())
+                .build();
     }
 
     @Override

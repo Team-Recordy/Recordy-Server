@@ -13,7 +13,7 @@ public class FakeBookmarkRepository implements BookmarkRepository {
     public final Map<Long, Bookmark> bookmarks = new HashMap<>();
 
     @Override
-    public Bookmark save(Bookmark bookmark) {
+    public void save(Bookmark bookmark) {
         Bookmark realBookmark = Bookmark.builder()
                 .id(autoIncrementId)
                 .user(bookmark.getUser())
@@ -21,8 +21,6 @@ public class FakeBookmarkRepository implements BookmarkRepository {
                 .build();
 
         bookmarks.put(autoIncrementId++, realBookmark);
-
-        return realBookmark;
     }
 
     @Override
@@ -31,6 +29,11 @@ public class FakeBookmarkRepository implements BookmarkRepository {
                 .removeIf(bookmark ->
                         bookmark.getUser().getId() == userId && bookmark.getRecord().getId() == recordId
                 );
+    }
+
+    @Override
+    public Bookmark findById(Long id) {
+        return null;
     }
 
     @Override

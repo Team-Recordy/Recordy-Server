@@ -75,6 +75,11 @@ public enum ErrorMessage {
     PLATFORM_PLACE_NO_SEARCH_RESULT(HttpStatus.NOT_FOUND, "지도 검색 결과가 없습니다."),
 
     /**
+     * BOOKMARK
+     */
+    BOOKMARK_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 북마크입니다."),
+
+    /**
      * SEARCH
      */
     INDEXING_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "검색 서비스를 통해 문서를 인덱싱하는 데에 실패했습니다."),
