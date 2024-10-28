@@ -11,10 +11,7 @@ import org.recordy.server.record.domain.usecase.RecordCreate;
 import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.repository.UserRepository;
-import org.recordy.server.util.DomainFixture;
-import org.recordy.server.util.ExhibitionFixture;
-import org.recordy.server.util.LocationFixture;
-import org.recordy.server.util.PlaceFixture;
+import org.recordy.server.util.*;
 import org.recordy.server.util.db.IntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -224,5 +221,41 @@ class PlaceRepositoryTest extends IntegrationTest {
                 () -> assertThat(result.getContent().size()).isEqualTo(1),
                 () -> assertThat(result.getContent().get(0).getId()).isEqualTo(placeIncluded.getId())
         );
+    }
+
+    @Test
+    void 장소와_연관된_전시의_개수를_조회할_수_있다() {
+        // given
+        int exhibitionCount = 10;
+        Place place = placeRepository.save(PlaceFixture.create());
+
+        for (int i = 0; i < exhibitionCount; i++) {
+            exhibitionRepository.save(ExhibitionFixture.create(place));
+        }
+
+        // when
+        Slice<PlaceGetResponse> result = placeRepository.findAllOrderByExhibitionStartDateDesc(PageRequest.ofSize(1));
+
+        // then
+        assertThat(result.getContent().get(0).getExhibitionSize()).isEqualTo(exhibitionCount);
+    }
+
+    @Test
+    void 장소와_연관된_영상의_개수를_조회할_수_있다() {
+        // given
+        int recordCount = 10;
+        User user = userRepository.save(DomainFixture.createUser());
+        Place place = placeRepository.save(PlaceFixture.create());
+        exhibitionRepository.save(ExhibitionFixture.create(place));
+
+        for (int i = 0; i < recordCount; i++) {
+            recordRepository.save(RecordFixture.create(place, user));
+        }
+
+        // when
+        Slice<PlaceGetResponse> result = placeRepository.findAllOrderByExhibitionStartDateDesc(PageRequest.ofSize(1));
+
+        // then
+        assertThat(result.getContent().get(0).getRecordSize()).isEqualTo(recordCount);
     }
 }

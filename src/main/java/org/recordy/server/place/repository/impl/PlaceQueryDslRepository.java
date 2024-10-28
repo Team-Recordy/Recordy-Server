@@ -108,6 +108,7 @@ public class PlaceQueryDslRepository {
         List<PlaceGetResponse> content = findPlacesWith(pageable);
 
         collectExhibitionCounts(content);
+        collectRecordCounts(content);
         return new SliceImpl<>(content, pageable, QueryDslUtils.hasNext(pageable, content));
     }
 
@@ -121,6 +122,7 @@ public class PlaceQueryDslRepository {
         );
 
         collectExhibitionCounts(content);
+        collectRecordCounts(content);
         return new SliceImpl<>(content, pageable, QueryDslUtils.hasNext(pageable, content));
     }
 
@@ -155,6 +157,28 @@ public class PlaceQueryDslRepository {
         for (PlaceGetResponse place : places) {
             Long exhibitionSize = exhibitionSizes.getOrDefault(place.getId(), 0L);
             place.setExhibitionSize(exhibitionSize);
+        }
+    }
+
+    private void collectRecordCounts(List<PlaceGetResponse> places) {
+        Map<Long, Long> recordSizes = jpaQueryFactory
+                .select(placeEntity.id, recordEntity.count())
+                .from(placeEntity)
+                .leftJoin(exhibitionEntity).on(exhibitionEntity.place.eq(placeEntity))
+                .leftJoin(recordEntity).on(recordEntity.place.eq(placeEntity))
+                .where(placeEntity.id.in(places.stream().map(PlaceGetResponse::getId).toList()))
+                .where(hasOngoingExhibitions)
+                .groupBy(placeEntity.id)
+                .fetch()
+                .stream()
+                .collect(Collectors.toMap(
+                        tuple -> tuple.get(placeEntity.id),
+                        tuple -> Optional.ofNullable(tuple.get(recordEntity.count())).orElse(0L)
+                ));
+
+        for (PlaceGetResponse place : places) {
+            Long recordSize = recordSizes.getOrDefault(place.getId(), 0L);
+            place.setRecordSize(recordSize);
         }
     }
 }
