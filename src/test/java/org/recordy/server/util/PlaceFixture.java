@@ -5,28 +5,25 @@ import org.recordy.server.place.controller.dto.request.PlaceCreateRequest;
 import org.recordy.server.place.domain.Place;
 import org.recordy.server.place.domain.usecase.PlaceCreate;
 
+import java.util.UUID;
+
 public class PlaceFixture {
 
     public final static String NAME = "Place";
     public final static String ADDRESS = "서울특별시 마포구 독막로 209";
-    public final static String PLATFORM_PLACE_ID = "ChIJcYFQJj2ifDUR4Pn5Z1J6J1A";
     public final static PlaceCreateRequest createRequest = new PlaceCreateRequest(
-            PLATFORM_PLACE_ID,
+            UUID.randomUUID().toString(),
             NAME,
             LocationFixture.POINT.getX(),
             LocationFixture.POINT.getY(),
             ADDRESS
     );
 
-    public static Place create() {
-        return Place.create(PlaceCreate.from(createRequest, LocationFixture.create()));
-    }
-
     public static Place create(long id) {
         return new Place(
                 id,
                 NAME,
-                PLATFORM_PLACE_ID,
+                UUID.randomUUID().toString(),
                 ADDRESS,
                 LocationFixture.create(),
                 null,
@@ -34,7 +31,21 @@ public class PlaceFixture {
         );
     }
 
+    public static Place create() {
+        return Place.create(PlaceCreate.from(placeCreateRequest(), LocationFixture.create()));
+    }
+
     public static Place create(Location location) {
-        return Place.create(PlaceCreate.from(createRequest, location));
+        return Place.create(PlaceCreate.from(placeCreateRequest(), location));
+    }
+
+    private static PlaceCreateRequest placeCreateRequest() {
+        return new PlaceCreateRequest(
+                UUID.randomUUID().toString(),
+                NAME,
+                LocationFixture.POINT.getX(),
+                LocationFixture.POINT.getY(),
+                ADDRESS
+        );
     }
 }

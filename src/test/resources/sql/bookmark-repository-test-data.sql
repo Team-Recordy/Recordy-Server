@@ -10,8 +10,8 @@ values (3, 'abcdefghi', 'KAKAO', 'ACTIVE', true, true, true, 'sebin');
 insert into `locations` (`id`)
 values (1);
 
-insert into `places` (`id`, `name`, `location_id`)
-values (1, 'place1', 1);
+insert into `places` (`id`, `name`, `location_id`, `platform_id`)
+values (1, 'place1', 1, UUID());
 
 insert into `records` (`id`, `user_id`, `content`,`thumbnail_url`, `video_url`, `place_id`)
 values (1, 1, 'content', 'thumbnail_url', 'video_url', 1);
