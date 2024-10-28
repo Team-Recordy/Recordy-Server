@@ -19,6 +19,7 @@ import org.recordy.server.search.domain.SearchType;
 import org.recordy.server.util.PlaceFixture;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Profile;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -27,6 +28,7 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Profile("dev")
 @SpringBootTest
 public class SearchRepositoryTest {
 
