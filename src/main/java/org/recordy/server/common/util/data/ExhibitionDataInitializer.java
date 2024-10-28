@@ -33,7 +33,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Slf4j
 @Profile({"dev", "local"})
-//@Component
+@Component
 public class ExhibitionDataInitializer {
 
     private final ExhibitionService exhibitionService;
