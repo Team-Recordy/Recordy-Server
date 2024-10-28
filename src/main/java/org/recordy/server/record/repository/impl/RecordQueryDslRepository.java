@@ -8,6 +8,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.util.QueryDslUtils;
 import org.recordy.server.record.controller.dto.response.RecordGetResponse;
+import org.recordy.server.record.domain.RecordEntity;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -25,6 +26,14 @@ import static org.recordy.server.user.domain.QUserEntity.userEntity;
 public class RecordQueryDslRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
+
+    public RecordEntity findById(Long id) {
+        return jpaQueryFactory
+                .selectFrom(recordEntity)
+                .join(recordEntity.user, userEntity).fetchJoin()
+                .where(recordEntity.id.eq(id))
+                .fetchOne();
+    }
 
     public Slice<RecordGetResponse> findAllByPlaceIdOrderByIdDesc(long placeId, long userId, Long cursor, int size) {
         List<RecordGetResponse> content = jpaQueryFactory

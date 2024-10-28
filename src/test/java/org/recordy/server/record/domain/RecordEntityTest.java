@@ -24,13 +24,7 @@ class RecordEntityTest {
         RecordEntity recordEntity = RecordEntity.from(record);
 
         // then
-        assertAll(
-                () -> assertThat(recordEntity.getId()).isEqualTo(record.getId()),
-                () -> assertThat(recordEntity.getFileUrl().videoUrl()).isEqualTo(record.getFileUrl().videoUrl()),
-                () -> assertThat(recordEntity.getFileUrl().thumbnailUrl()).isEqualTo(record.getFileUrl().thumbnailUrl()),
-                () -> assertThat(recordEntity.getContent()).isEqualTo(record.getContent()),
-                () -> assertThat(recordEntity.getUser().getId()).isEqualTo(UserEntity.from(record.getUploader()).getId())
-        );
+        assertThat(recordEntity.getId()).isEqualTo(record.getId());
     }
 
     @Test

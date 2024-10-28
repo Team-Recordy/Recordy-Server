@@ -52,7 +52,7 @@ public class BookmarkEntity extends JpaMetaInfoEntity {
     public Bookmark toDomain() {
         return Bookmark.builder()
                 .id(id)
-                .record(Record.from(record))
+                .record(Record.builder().id(record.getId()).build())
                 .user(User.from(user))
                 .createdAt(createdAt)
                 .build();

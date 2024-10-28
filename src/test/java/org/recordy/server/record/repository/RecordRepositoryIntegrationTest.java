@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.recordy.server.common.message.ErrorMessage;
+import org.recordy.server.place.domain.Place;
+import org.recordy.server.place.repository.PlaceRepository;
 import org.recordy.server.record.controller.dto.response.RecordGetResponse;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.exception.RecordException;
@@ -47,10 +49,14 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PlaceRepository placeRepository;
+
     @Test
     void save를_통해_레코드_데이터를_저장할_수_있다() {
         // given
-        Record record = RecordFixture.create();
+        Place place = placeRepository.findById(1L);
+        Record record = RecordFixture.create(place);
 
         // when
         Long id = recordRepository.save(record);
@@ -58,6 +64,23 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
         // then
         Record result = recordRepository.findById(id);
         assertThat(result.getId()).isNotNull();
+    }
+
+    @Test
+    void 레코드_id로_레코드를_조회할_수_있다() {
+        // given
+        Place place = placeRepository.findById(1L);
+        Record record = RecordFixture.create(place);
+        Long id = recordRepository.save(record);
+
+        // when
+        Record result = recordRepository.findById(id);
+
+        // then
+        assertAll(
+                () -> assertThat(result.getId()).isEqualTo(id),
+                () -> assertThat(result.getUploader()).isNotNull()
+        );
     }
 
     @Test

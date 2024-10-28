@@ -41,12 +41,19 @@ public class Record {
         this.bookmarkCount = bookmarkCount;
     }
 
-    private Record(Long id) {
+    private Record(
+            Long id,
+            User uploader
+    ) {
         this.id = id;
+        this.uploader = uploader;
     }
 
     public static Record from(RecordEntity entity) {
-        return new Record(entity.getId());
+        return new Record(
+                entity.getId(),
+                User.from(entity.getUser())
+        );
     }
 
     public static Record create(RecordCreate create) {

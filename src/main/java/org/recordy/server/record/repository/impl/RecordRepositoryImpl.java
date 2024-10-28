@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -24,7 +25,7 @@ public class RecordRepositoryImpl implements RecordRepository {
     @Transactional
     @Override
     public Long save(Record record) {
-        return recordJpaRepository.save(RecordEntity.from(record))
+        return recordJpaRepository.save(RecordEntity.create(record))
                 .getId();
     }
 
@@ -43,9 +44,13 @@ public class RecordRepositoryImpl implements RecordRepository {
 
     @Override
     public Record findById(long recordId) {
-        return recordJpaRepository.findById(recordId)
-                .map(Record::from)
-                .orElseThrow(() -> new RecordException(ErrorMessage.RECORD_NOT_FOUND));
+        RecordEntity entity = recordQueryDslRepository.findById(recordId);
+
+        if (Objects.isNull(entity)) {
+            throw new RecordException(ErrorMessage.RECORD_NOT_FOUND);
+        }
+
+        return Record.from(entity);
     }
 
     @Override
