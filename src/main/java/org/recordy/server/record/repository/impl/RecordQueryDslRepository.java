@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.util.QueryDslUtils;
 import org.recordy.server.record.controller.dto.response.RecordGetResponse;
 import org.recordy.server.record.domain.RecordEntity;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
@@ -49,7 +48,7 @@ public class RecordQueryDslRepository {
                 .limit(size + 1)
                 .fetch();
 
-        return new SliceImpl<>(content, PageRequest.ofSize(content.size()), QueryDslUtils.hasNext(size, content));
+        return new SliceImpl<>(content, QueryDslUtils.getPageable(content.size()), QueryDslUtils.hasNext(size, content));
     }
 
     public Slice<RecordGetResponse> findAllByUserIdOrderByIdDesc(long otherUserId, long userId, Long cursor, int size) {
@@ -66,7 +65,7 @@ public class RecordQueryDslRepository {
                 .limit(size + 1)
                 .fetch();
 
-        return new SliceImpl<>(content, PageRequest.ofSize(content.size()), QueryDslUtils.hasNext(size, content));
+        return new SliceImpl<>(content, QueryDslUtils.getPageable(content.size()), QueryDslUtils.hasNext(size, content));
     }
 
     public List<RecordGetResponse> findAllByIds(List<Long> ids, long userId) {
@@ -94,7 +93,7 @@ public class RecordQueryDslRepository {
                 .limit(size + 1)
                 .fetch();
 
-        return new SliceImpl<>(content, PageRequest.ofSize(content.size()), QueryDslUtils.hasNext(size, content));
+        return new SliceImpl<>(content, QueryDslUtils.getPageable(content.size()), QueryDslUtils.hasNext(size, content));
     }
 
     private ConstructorExpression<RecordGetResponse> getRecordResponse(long userId) {

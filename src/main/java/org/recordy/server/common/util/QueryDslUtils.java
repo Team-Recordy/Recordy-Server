@@ -3,6 +3,7 @@ package org.recordy.server.common.util;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.NumberPath;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.time.Clock;
@@ -38,5 +39,13 @@ public class QueryDslUtils {
         }
 
         return false;
+    }
+
+    public static Pageable getPageable(int size) {
+        if (size < 1) {
+            return Pageable.unpaged();
+        }
+
+        return PageRequest.ofSize(size);
     }
 }
