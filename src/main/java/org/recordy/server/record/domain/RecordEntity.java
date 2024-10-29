@@ -24,6 +24,7 @@ public class RecordEntity extends JpaMetaInfoEntity {
     private Long id;
     private FileUrl fileUrl;
     private String content;
+    private String exhibitionName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -40,6 +41,7 @@ public class RecordEntity extends JpaMetaInfoEntity {
             Long id,
             FileUrl fileUrl,
             String content,
+            String exhibitionName,
             UserEntity user,
             PlaceEntity place,
             LocalDateTime createdAt,
@@ -48,6 +50,7 @@ public class RecordEntity extends JpaMetaInfoEntity {
         this.id = id;
         this.fileUrl = fileUrl;
         this.content = content;
+        this.exhibitionName = exhibitionName;
         this.user = user;
         this.place = place;
         this.createdAt = createdAt;
@@ -67,6 +70,7 @@ public class RecordEntity extends JpaMetaInfoEntity {
                 record.getId(),
                 record.getFileUrl(),
                 record.getContent(),
+                record.getExhibitionName(),
                 UserEntity.from(record.getUploader()),
                 PlaceEntity.create(record.getPlace()),
                 record.getCreatedAt(),

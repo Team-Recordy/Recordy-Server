@@ -8,10 +8,24 @@ public record RecordCreate(
         Long id,
         FileUrl fileUrl,
         String content,
+        String exhibitionName,
         User uploader,
         Place place
 ) {
-    public static RecordCreate of(FileUrl fileUrl, String content, User uploader, Place place) {
-        return new RecordCreate(null, fileUrl, content, uploader, place);
+    public static RecordCreate of(
+            FileUrl fileUrl,
+            String content,
+            String exhibitionName,
+            User uploader,
+            Place place
+    ) {
+        return new RecordCreate(
+                null,
+                fileUrl,
+                content,
+                exhibitionName,
+                uploader,
+                place
+        );
     }
 }

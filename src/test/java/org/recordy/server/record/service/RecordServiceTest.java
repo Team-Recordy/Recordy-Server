@@ -32,6 +32,7 @@ class RecordServiceTest extends FakeContainer {
         request = new RecordCreateRequest(
                 RecordFixture.FILE_URL,
                 RecordFixture.CONTENT,
+                RecordFixture.EXHIBITION_NAME,
                 place.getId()
         );
     }

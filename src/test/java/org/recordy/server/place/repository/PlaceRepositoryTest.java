@@ -111,7 +111,7 @@ class PlaceRepositoryTest extends IntegrationTest {
 
         int recordSize = 10;
         for (int i = 0; i < recordSize; i++) {
-            recordRepository.save(Record.create(RecordCreate.of(null, "", user, place)));
+            recordRepository.save(Record.create(RecordCreate.of(null, "", "", user, place)));
         }
 
         // when

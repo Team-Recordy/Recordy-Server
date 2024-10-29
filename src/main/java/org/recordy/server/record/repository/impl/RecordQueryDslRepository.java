@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static org.recordy.server.place.domain.QPlaceEntity.placeEntity;
 import static org.recordy.server.record.domain.QRecordEntity.recordEntity;
 import static org.recordy.server.bookmark.domain.QBookmarkEntity.bookmarkEntity;
 import static org.recordy.server.subscribe.domain.QSubscribeEntity.subscribeEntity;
@@ -39,6 +40,7 @@ public class RecordQueryDslRepository {
                 .select(getRecordResponse(userId))
                 .from(recordEntity)
                 .join(recordEntity.user, userEntity)
+                .join(recordEntity.place, placeEntity)
                 .where(
                         recordEntity.place.id.eq(placeId),
                         QueryDslUtils.ltCursorId(cursor, recordEntity.id)
@@ -56,6 +58,7 @@ public class RecordQueryDslRepository {
                 .select(getRecordResponse(userId))
                 .from(recordEntity)
                 .join(recordEntity.user, userEntity)
+                .join(recordEntity.place, placeEntity)
                 .where(
                         userEntity.id.eq(otherUserId),
                         QueryDslUtils.ltCursorId(cursor, recordEntity.id)
@@ -73,6 +76,7 @@ public class RecordQueryDslRepository {
                 .select(getRecordResponse(userId))
                 .from(recordEntity)
                 .join(recordEntity.user, userEntity)
+                .join(recordEntity.place, placeEntity)
                 .where(recordEntity.id.in(ids))
                 .groupBy(recordEntity.id)
                 .orderBy(recordEntity.id.desc())
@@ -84,6 +88,7 @@ public class RecordQueryDslRepository {
                 .select(getRecordResponse(userId))
                 .from(recordEntity)
                 .join(recordEntity.user, userEntity)
+                .join(recordEntity.place, placeEntity)
                 .join(recordEntity.bookmarks, bookmarkEntity)
                 .where(
                         bookmarkEntity.user.id.eq(userId),
@@ -102,6 +107,9 @@ public class RecordQueryDslRepository {
                 recordEntity.id,
                 recordEntity.fileUrl,
                 recordEntity.content,
+                recordEntity.exhibitionName,
+                recordEntity.place.id,
+                recordEntity.place.name,
                 recordEntity.user.id,
                 recordEntity.user.nickname,
                 JPAExpressions

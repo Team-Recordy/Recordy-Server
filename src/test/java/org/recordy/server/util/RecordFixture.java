@@ -10,6 +10,7 @@ public class RecordFixture {
 
     public static final FileUrl FILE_URL = new FileUrl("", "");
     public static final String CONTENT = "content";
+    public static final String EXHIBITION_NAME = "전시전시회";
     public static final User UPLOADER = DomainFixture.createUser();
     public static final Place PLACE = PlaceFixture.create();
 
@@ -18,6 +19,7 @@ public class RecordFixture {
                 null,
                 FILE_URL,
                 CONTENT,
+                EXHIBITION_NAME,
                 UPLOADER,
                 PLACE
         ));
@@ -28,6 +30,7 @@ public class RecordFixture {
                 id,
                 FILE_URL,
                 CONTENT,
+                EXHIBITION_NAME,
                 UPLOADER,
                 PLACE
         ));
@@ -38,6 +41,7 @@ public class RecordFixture {
                 null,
                 FILE_URL,
                 CONTENT,
+                EXHIBITION_NAME,
                 UPLOADER,
                 place
         ));
@@ -48,6 +52,7 @@ public class RecordFixture {
                 null,
                 FILE_URL,
                 CONTENT,
+                EXHIBITION_NAME,
                 user,
                 place
         ));

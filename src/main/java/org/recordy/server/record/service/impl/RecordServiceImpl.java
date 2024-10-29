@@ -41,6 +41,7 @@ public class RecordServiceImpl implements RecordService {
         return recordRepository.save(Record.create(RecordCreate.of(
                 fileUrl,
                 request.content(),
+                request.exhibitionName(),
                 user,
                 place
         )));

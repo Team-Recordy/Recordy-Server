@@ -17,6 +17,7 @@ public class Record {
     Long id;
     FileUrl fileUrl;
     String content;
+    String exhibitionName;
     User uploader;
     Place place;
     private LocalDateTime createdAt;
@@ -27,6 +28,7 @@ public class Record {
             Long id,
             FileUrl fileUrl,
             String content,
+            String exhibitionName,
             User uploader,
             LocalDateTime createdAt,
             LocalDateTime updatedAt,
@@ -35,6 +37,7 @@ public class Record {
         this.id = id;
         this.fileUrl = fileUrl;
         this.content = content;
+        this.exhibitionName = exhibitionName;
         this.uploader = uploader;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -61,6 +64,7 @@ public class Record {
                 create.id(),
                 create.fileUrl(),
                 create.content(),
+                create.exhibitionName(),
                 create.uploader(),
                 create.place(),
                 null,

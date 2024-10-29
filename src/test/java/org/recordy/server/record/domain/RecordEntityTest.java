@@ -38,6 +38,7 @@ class RecordEntityTest {
                         "https://www.naver.com"
                 ),
                 "",
+                "",
                 user,
                 null
         ));
@@ -58,6 +59,7 @@ class RecordEntityTest {
                 null,
                 RecordFixture.FILE_URL,
                 DomainFixture.CONTENT,
+                RecordFixture.EXHIBITION_NAME,
                 UserEntity.from(DomainFixture.createUser()),
                 PlaceEntity.create(PlaceFixture.create()),
                 null,
