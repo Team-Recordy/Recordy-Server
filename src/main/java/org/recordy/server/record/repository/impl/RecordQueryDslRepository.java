@@ -84,6 +84,7 @@ public class RecordQueryDslRepository {
                 .select(getRecordResponse(userId))
                 .from(recordEntity)
                 .join(recordEntity.user, userEntity)
+                .join(recordEntity.bookmarks, bookmarkEntity)
                 .where(
                         bookmarkEntity.user.id.eq(userId),
                         QueryDslUtils.ltCursorId(cursor, recordEntity.id)
