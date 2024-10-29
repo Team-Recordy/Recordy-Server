@@ -23,7 +23,7 @@ import static org.recordy.server.user.domain.UserStatus.ACTIVE;
 public class User {
 
     private static final Pattern NICKNAME_PATTERN = Pattern.compile("^[가-힣0-9_.]+$");
-    private static final String DEFAULT_PROFILE_IMAGE_URL = "https://recordy-bucket.s3.ap-northeast-2.amazonaws.com/profile_";
+    private static final String PROFILE_IMAGE_URL = "https://recordy-bucket.s3.ap-northeast-2.amazonaws.com/default-profile-image";
 
     private Long id;
     private AuthPlatform authPlatform;
@@ -55,7 +55,7 @@ public class User {
                 .id(this.id)
                 .authPlatform(this.authPlatform)
                 .status(ACTIVE)
-                .profileImageUrl(getImage(id))
+                .profileImageUrl(PROFILE_IMAGE_URL)
                 .nickname(userSignUp.nickname())
                 .termsAgreement(userSignUp.termsAgreement())
                 .createdAt(createdAt)
@@ -92,9 +92,5 @@ public class User {
         } catch (MalformedURLException e) {
             throw new UserException(ErrorMessage.INVALID_IMAGE_URL_FORMAT);
         }
-    }
-
-    private String getImage(Long id) {
-        return DEFAULT_PROFILE_IMAGE_URL + (id % 3);
     }
 }
