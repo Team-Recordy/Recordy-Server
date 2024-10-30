@@ -18,10 +18,11 @@ public class PlatformPlaceController implements PlatformPlaceApi {
 
     @GetMapping("/search")
     public ResponseEntity<List<PlatformPlaceSearchResponse>> search(
-            @RequestParam String query
+            @RequestParam String query,
+            @RequestParam(required = false, defaultValue = "1") int page
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(platformPlaceService.search(query));
+                .body(platformPlaceService.search(query, page));
     }
 }

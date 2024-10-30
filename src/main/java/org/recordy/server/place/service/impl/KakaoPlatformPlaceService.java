@@ -47,20 +47,21 @@ public class KakaoPlatformPlaceService implements PlatformPlaceService {
     }
 
     @Override
-    public List<PlatformPlaceSearchResponse> search(String query) {
-        return searchKakaoPlaces(query).stream()
+    public List<PlatformPlaceSearchResponse> search(String query, int page) {
+        return searchKakaoPlaces(query, page).stream()
                 .map(PlatformPlaceSearchResponse::from)
                 .toList();
     }
 
     @Override
     public String searchId(String query) {
-        return searchKakaoPlaces(query).get(0).id();
+        return searchKakaoPlaces(query, 0).get(0).id();
     }
 
-    private List<KakaoPlaceSearch> searchKakaoPlaces(String query) {
+    private List<KakaoPlaceSearch> searchKakaoPlaces(String query, int page) {
         String url = UriComponentsBuilder.fromHttpUrl("https://dapi.kakao.com/v2/local/search/keyword")
                 .queryParam("query", query)
+                .queryParam("page", page)
                 .queryParam("y", latitude)
                 .queryParam("x", longitude)
                 .queryParam("radius", radius)

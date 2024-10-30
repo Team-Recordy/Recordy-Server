@@ -156,6 +156,7 @@ public interface PlatformPlaceApi {
             }
     )
     ResponseEntity<List<PlatformPlaceSearchResponse>> search(
-            String query
+            String query,
+            int page
     );
 }

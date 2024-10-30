@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface PlatformPlaceService {
 
-    List<PlatformPlaceSearchResponse> search(String query);
+    List<PlatformPlaceSearchResponse> search(String query, int page);
     String searchId(String query);
 }

@@ -30,7 +30,7 @@ public class GooglePlatformPlaceService implements PlatformPlaceService {
     }
 
     @Override
-    public List<PlatformPlaceSearchResponse> search(String query) {
+    public List<PlatformPlaceSearchResponse> search(String query, int page) {
         return searchGooglePlace(query).stream()
                 .map(PlatformPlaceSearchResponse::from)
                 .toList();

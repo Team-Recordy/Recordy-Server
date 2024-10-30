@@ -16,7 +16,6 @@ import org.recordy.server.place.service.PlaceService;
 import org.recordy.server.place.service.PlatformPlaceService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.BufferedReader;
@@ -87,7 +86,7 @@ public class ExhibitionDataInitializer {
             place = placeRepository.findByName(performance.place());
         } catch (Exception e) {
             try {
-                PlatformPlaceSearchResponse response = platformPlaceService.search(performance.place()).get(0);
+                PlatformPlaceSearchResponse response = platformPlaceService.search(performance.place(), 1).get(0);
 
                 place = placeService.create(new PlaceCreateRequest(
                         response.platformPlaceId(),
