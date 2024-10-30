@@ -5,7 +5,6 @@ import org.recordy.server.common.dto.response.OffsetBasePaginatedResponse;
 import org.recordy.server.place.controller.dto.request.PlaceCreateRequest;
 import org.recordy.server.place.controller.dto.response.PlaceCreateResponse;
 import org.recordy.server.place.controller.dto.response.PlaceGetResponse;
-import org.recordy.server.place.controller.dto.response.PlaceReviewGetResponse;
 import org.recordy.server.place.domain.Place;
 import org.recordy.server.place.service.PlaceService;
 import org.springframework.data.domain.PageRequest;
@@ -13,8 +12,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/places")
@@ -72,15 +69,5 @@ public class PlaceController implements PlaceApi {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(OffsetBasePaginatedResponse.of(result));
-    }
-
-    @Override
-    @GetMapping("/{id}/reviews")
-    public ResponseEntity<List<PlaceReviewGetResponse>> getReviewsById(
-            @PathVariable Long id
-    ) {
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(placeService.getReviewsByPlaceId(id));
     }
 }

@@ -5,12 +5,10 @@ import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.location.domain.Location;
 import org.recordy.server.place.controller.dto.request.PlaceCreateRequest;
 import org.recordy.server.place.controller.dto.response.PlaceGetResponse;
-import org.recordy.server.place.controller.dto.response.PlaceReviewGetResponse;
 import org.recordy.server.place.domain.Place;
 import org.recordy.server.place.domain.usecase.PlaceCreate;
 import org.recordy.server.place.exception.PlaceException;
 import org.recordy.server.place.repository.PlaceRepository;
-import org.recordy.server.place.repository.PlaceReviewRepository;
 import org.recordy.server.place.service.PlaceService;
 import org.recordy.server.search.domain.Search;
 import org.recordy.server.search.repository.SearchRepository;
@@ -19,15 +17,12 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
 public class PlaceServiceImpl implements PlaceService {
 
     private final PlaceRepository placeRepository;
-    private final PlaceReviewRepository placeReviewRepository;
     private final GeometryConverter geometryConverter;
     private final SearchRepository searchRepository;
 
@@ -58,9 +53,5 @@ public class PlaceServiceImpl implements PlaceService {
     @Override
     public PlaceGetResponse getDetailById(Long id) {
         return placeRepository.findDetailById(id);
-    }
-
-    public List<PlaceReviewGetResponse> getReviewsByPlaceId(long id) {
-        return placeReviewRepository.findAllByPlaceId(id);
     }
 }
