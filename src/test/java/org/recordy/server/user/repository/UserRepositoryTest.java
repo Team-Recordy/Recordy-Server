@@ -246,6 +246,21 @@ class UserRepositoryTest extends IntegrationTest {
     }
 
     @Test
+    void 사용자의_프로필을_조회할_때_팔로우하지_않는_사용자에_대해서는_isFollowing_값이_false다() {
+        // given
+        User following = userRepository.save(createUser());
+        User unFollower = userRepository.save(createUser());
+
+        // when
+        UserProfile result = userRepository.findProfile(unFollower.getId(), following.getId());
+
+        // then
+        assertAll(
+                () -> assertThat(result.isFollowing()).isFalse()
+        );
+    }
+
+    @Test
     void 존재하지_않는_사용자의_프로필을_조회할_경우_예외가_발생한다() {
         // when, then
         assertThatThrownBy(() -> userRepository.findProfile(99L, 1L))

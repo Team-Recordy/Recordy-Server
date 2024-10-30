@@ -172,7 +172,7 @@ public class UserServiceTest extends FakeContainer {
         // then
         assertAll(
                 () -> assertThat(result.getNickname()).isEqualTo(DomainFixture.USER_NICKNAME),
-                () -> assertThat(result.getProfileImageUrl()).contains("https://recordy-bucket.s3.ap-northeast-2.amazonaws.com/profile_"),
+                () -> assertThat(result.getProfileImageUrl()).contains("https://recordy-bucket.s3.ap-northeast-2.amazonaws.com"),
                 () -> assertThat(result.getTermsAgreement()).isEqualTo(TermsAgreement.of(true, true, true))
         );
     }

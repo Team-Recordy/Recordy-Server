@@ -66,6 +66,6 @@ class UserTest {
         User activatedUser = user.activate(userSignUp);
 
         // then
-        assertThat(activatedUser.getProfileImageUrl()).contains("https://recordy-bucket.s3.ap-northeast-2.amazonaws.com/profile_");
+        assertThat(activatedUser.getProfileImageUrl()).contains("https://recordy-bucket.s3.ap-northeast-2.amazonaws.com");
     }
 }

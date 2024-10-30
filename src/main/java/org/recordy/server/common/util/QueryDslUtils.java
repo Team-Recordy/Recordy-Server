@@ -44,13 +44,13 @@ public class QueryDslUtils {
     }
 
     public static <T> Slice<T> getSlice(int size, List<T> content) {
+        if (content.isEmpty()) {
+            return new SliceImpl<>(content, Pageable.unpaged(), false);
+        }
+
         if (content.size() > size) {
             content.remove(size);
             return new SliceImpl<>(content, PageRequest.ofSize(content.size()), true);
-        }
-
-        if (size < 1) {
-            return new SliceImpl<>(content, Pageable.unpaged(), false);
         }
 
         return new SliceImpl<>(content, PageRequest.ofSize(content.size()), false);
