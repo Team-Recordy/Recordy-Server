@@ -32,6 +32,11 @@ public class PlaceRepositoryImpl implements PlaceRepository {
     }
 
     @Override
+    public boolean existsByPlatformId(String platformId) {
+        return placeQueryDslRepository.existsByPlatformId(platformId);
+    }
+
+    @Override
     public Place findById(long id) {
         PlaceEntity entity = placeQueryDslRepository.findById(id);
 

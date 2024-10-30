@@ -20,7 +20,7 @@ class PlatformPlaceServiceTest {
     @ParameterizedTest
     void 검색_결과중_가장_정확도가_높은_장소에_대한_정보를_수집할_수_있다(String query) {
         // when
-        List<PlatformPlaceSearchResponse> result = platformPlaceService.search(query, 0);
+        List<PlatformPlaceSearchResponse> result = platformPlaceService.search(query, 1);
 
         // then
         assertThat(result).isNotEmpty();

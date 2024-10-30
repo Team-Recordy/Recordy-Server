@@ -20,6 +20,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -50,6 +51,16 @@ public class PlaceQueryDslRepository {
             locationGetResponse
     );
 
+    public boolean existsByPlatformId(String platformId) {
+        return Objects.nonNull(
+                jpaQueryFactory
+                        .selectOne()
+                        .from(placeEntity)
+                        .where(placeEntity.platformId.eq(platformId))
+                        .fetchFirst()
+        );
+    }
+
     public PlaceEntity findById(long id) {
         return jpaQueryFactory
                 .select(placeEntity)
@@ -76,28 +87,28 @@ public class PlaceQueryDslRepository {
 
     public PlaceGetResponse findById(Long id) {
         PlaceGetResponse place = Optional.ofNullable(jpaQueryFactory
-                .select(placeGetResponse)
-                .from(placeEntity)
-                .join(placeEntity.location, locationEntity)
-                .where(placeEntity.id.eq(id))
-                .fetchOne())
+                        .select(placeGetResponse)
+                        .from(placeEntity)
+                        .join(placeEntity.location, locationEntity)
+                        .where(placeEntity.id.eq(id))
+                        .fetchOne())
                 .orElseThrow(() -> new PlaceException(ErrorMessage.PLACE_NOT_FOUND));
 
         Long exhibitionSize = Optional.ofNullable(jpaQueryFactory
-                .select(exhibitionEntity.count())
-                .from(placeEntity)
-                .leftJoin(exhibitionEntity).on(exhibitionEntity.place.eq(placeEntity))
-                .where(placeEntity.id.eq(id))
-                .fetchOne())
+                        .select(exhibitionEntity.count())
+                        .from(placeEntity)
+                        .leftJoin(exhibitionEntity).on(exhibitionEntity.place.eq(placeEntity))
+                        .where(placeEntity.id.eq(id))
+                        .fetchOne())
                 .orElse(0L);
         place.setExhibitionSize(exhibitionSize);
 
         Long recordSize = Optional.ofNullable(jpaQueryFactory
-                .select(recordEntity.count())
-                .from(placeEntity)
-                .leftJoin(recordEntity).on(recordEntity.place.id.eq(id))
-                .where(placeEntity.id.eq(id))
-                .fetchOne())
+                        .select(recordEntity.count())
+                        .from(placeEntity)
+                        .leftJoin(recordEntity).on(recordEntity.place.id.eq(id))
+                        .where(placeEntity.id.eq(id))
+                        .fetchOne())
                 .orElse(0L);
         place.setRecordSize(recordSize);
 

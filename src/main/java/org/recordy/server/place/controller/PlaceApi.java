@@ -105,6 +105,26 @@ public interface PlaceApi {
                             )
                     ),
                     @ApiResponse(
+                            responseCode = "400",
+                            description = "이미 존재하는 장소입니다.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    value = """
+                                                            {
+                                                                "errorCode": "400 BAD REQUEST",
+                                                                "errorMessage": "이미 존재하는 장소입니다."
+                                                            }
+                                                            """
+                                            )
+                                    },
+                                    schema = @Schema(
+                                            implementation = ErrorResponse.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
                             responseCode = "500",
                             description = "서버 내부 오류입니다.",
                             content = @Content(

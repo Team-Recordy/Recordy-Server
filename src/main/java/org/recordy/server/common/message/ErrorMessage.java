@@ -73,6 +73,7 @@ public enum ErrorMessage {
      */
     PLACE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 장소입니다."),
     PLATFORM_PLACE_NO_SEARCH_RESULT(HttpStatus.NOT_FOUND, "지도 검색 결과가 없습니다."),
+    PLACE_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "이미 등록된 장소입니다."),
 
     /**
      * BOOKMARK

@@ -32,6 +32,11 @@ public class FakePlaceRepository implements PlaceRepository {
     }
 
     @Override
+    public boolean existsByPlatformId(String platformId) {
+        return false;
+    }
+
+    @Override
     public Place findById(long id) {
         return places.get(id);
     }

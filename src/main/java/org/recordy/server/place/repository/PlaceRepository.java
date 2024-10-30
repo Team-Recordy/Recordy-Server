@@ -12,6 +12,7 @@ public interface PlaceRepository {
     Place save(Place place);
 
     // query
+    boolean existsByPlatformId(String platformId);
     Place findById(long id);
     Place findByName(String name);
     PlaceGetResponse findDetailById(Long id);

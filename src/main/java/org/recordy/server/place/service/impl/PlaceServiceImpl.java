@@ -1,12 +1,14 @@
 package org.recordy.server.place.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.location.domain.Location;
 import org.recordy.server.place.controller.dto.request.PlaceCreateRequest;
 import org.recordy.server.place.controller.dto.response.PlaceGetResponse;
 import org.recordy.server.place.controller.dto.response.PlaceReviewGetResponse;
 import org.recordy.server.place.domain.Place;
 import org.recordy.server.place.domain.usecase.PlaceCreate;
+import org.recordy.server.place.exception.PlaceException;
 import org.recordy.server.place.repository.PlaceRepository;
 import org.recordy.server.place.repository.PlaceReviewRepository;
 import org.recordy.server.place.service.PlaceService;
@@ -32,6 +34,10 @@ public class PlaceServiceImpl implements PlaceService {
     @Transactional
     @Override
     public Place create(PlaceCreateRequest request) {
+        if (placeRepository.existsByPlatformId(request.id())) {
+            throw new PlaceException(ErrorMessage.PLACE_ALREADY_EXISTS);
+        }
+
         Location location = Location.of(geometryConverter.of(request.latitude(), request.longitude()));
         Place place = placeRepository.save(Place.create(PlaceCreate.from(request, location)));
 
