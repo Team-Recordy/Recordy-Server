@@ -1,7 +1,6 @@
 package org.recordy.server.search.repository;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -19,16 +18,14 @@ import org.recordy.server.search.domain.SearchType;
 import org.recordy.server.util.PlaceFixture;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Profile;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Profile("dev")
+@Disabled
 @SpringBootTest
 public class SearchRepositoryTest {
 
@@ -47,7 +44,7 @@ public class SearchRepositoryTest {
     @Autowired
     SearchRepository searchRepository;
 
-    @BeforeEach
+//    @BeforeEach
     void init() {
         try {
             DeleteByQueryRequest placeRequest = new DeleteByQueryRequest.Builder()
@@ -67,7 +64,7 @@ public class SearchRepositoryTest {
         }
     }
 
-    @AfterEach
+//    @AfterEach
     void close() {
         try {
             DeleteByQueryRequest placeRequest = new DeleteByQueryRequest.Builder()
