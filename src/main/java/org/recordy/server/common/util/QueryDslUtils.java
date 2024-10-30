@@ -5,6 +5,8 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.NumberPath;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 
 import java.time.Clock;
 import java.time.LocalDate;
@@ -41,11 +43,16 @@ public class QueryDslUtils {
         return false;
     }
 
-    public static Pageable getPageable(int size) {
-        if (size < 1) {
-            return Pageable.unpaged();
+    public static <T> Slice<T> getSlice(int size, List<T> content) {
+        if (content.size() > size) {
+            content.remove(size);
+            return new SliceImpl<>(content, PageRequest.ofSize(content.size()), true);
         }
 
-        return PageRequest.ofSize(size);
+        if (size < 1) {
+            return new SliceImpl<>(content, Pageable.unpaged(), false);
+        }
+
+        return new SliceImpl<>(content, PageRequest.ofSize(content.size()), false);
     }
 }

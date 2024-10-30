@@ -54,8 +54,7 @@ public class UserQueryDslRepository {
                 .limit(size + 1)
                 .fetch();
 
-        boolean hasNext = QueryDslUtils.hasNext(size, content);
-        return new SliceImpl<>(content, QueryDslUtils.getPageable(content.size()), hasNext);
+        return QueryDslUtils.getSlice(size, content);
     }
 
     public Slice<UserInfo> findFollowers(long userId, Long cursor, int size) {
@@ -71,8 +70,7 @@ public class UserQueryDslRepository {
                 .limit(size + 1)
                 .fetch();
 
-        boolean hasNext = QueryDslUtils.hasNext(size, content);
-        return new SliceImpl<>(content, QueryDslUtils.getPageable(content.size()), hasNext);
+        return QueryDslUtils.getSlice(size, content);
     }
 
     private ConstructorExpression<UserInfo> getUserInfo(BooleanExpression expression) {
