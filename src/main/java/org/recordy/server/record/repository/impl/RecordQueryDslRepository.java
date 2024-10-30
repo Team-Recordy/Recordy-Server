@@ -50,7 +50,8 @@ public class RecordQueryDslRepository {
                 .limit(size + 1)
                 .fetch();
 
-        return new SliceImpl<>(content, QueryDslUtils.getPageable(content.size()), QueryDslUtils.hasNext(size, content));
+        boolean hasNext = QueryDslUtils.hasNext(size, content);
+        return new SliceImpl<>(content, QueryDslUtils.getPageable(content.size()), hasNext);
     }
 
     public Slice<RecordGetResponse> findAllByUserIdOrderByIdDesc(long otherUserId, long userId, Long cursor, int size) {
@@ -68,7 +69,8 @@ public class RecordQueryDslRepository {
                 .limit(size + 1)
                 .fetch();
 
-        return new SliceImpl<>(content, QueryDslUtils.getPageable(content.size()), QueryDslUtils.hasNext(size, content));
+        boolean hasNext = QueryDslUtils.hasNext(size, content);
+        return new SliceImpl<>(content, QueryDslUtils.getPageable(content.size()), hasNext);
     }
 
     public List<RecordGetResponse> findAllByIds(List<Long> ids, long userId) {
@@ -99,7 +101,8 @@ public class RecordQueryDslRepository {
                 .limit(size + 1)
                 .fetch();
 
-        return new SliceImpl<>(content, QueryDslUtils.getPageable(content.size()), QueryDslUtils.hasNext(size, content));
+        boolean hasNext = QueryDslUtils.hasNext(size, content);
+        return new SliceImpl<>(content, QueryDslUtils.getPageable(content.size()), hasNext);
     }
 
     private ConstructorExpression<RecordGetResponse> getRecordResponse(long userId) {
