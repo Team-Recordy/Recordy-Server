@@ -4,7 +4,6 @@ import com.querydsl.core.types.ConstructorExpression;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
-import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +11,6 @@ import org.recordy.server.common.util.QueryDslUtils;
 import org.recordy.server.user.controller.dto.response.UserInfo;
 import org.recordy.server.user.domain.UserEntity;
 import org.recordy.server.user.domain.usecase.UserProfile;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
@@ -44,24 +42,37 @@ public class UserQueryDslRepository {
     }
 
     public Slice<UserInfo> findFollowings(long userId, Long cursor, int size) {
-        List<UserInfo> content = findSubscriptionUsers(subscribeEntity.subscribingUser.id.eq(userId), cursor, size);
-        return new SliceImpl<>(content, PageRequest.ofSize(content.size()), QueryDslUtils.hasNext(size, content));
-    }
-
-    public Slice<UserInfo> findFollowers(long userId, Long cursor, int size) {
-        List<UserInfo> content = findSubscriptionUsers(subscribeEntity.subscribedUser.id.eq(userId), cursor, size);
-        return new SliceImpl<>(content, PageRequest.ofSize(content.size()), QueryDslUtils.hasNext(size, content));
-    }
-
-    private List<UserInfo> findSubscriptionUsers(BooleanExpression expression, Long cursor, int size) {
-        return jpaQueryFactory
-                .select(getUserInfo(expression))
+        List<UserInfo> content = jpaQueryFactory
+                .select(getUserInfo(subscribeEntity.subscribingUser.id.eq(userId)))
                 .from(userEntity)
                 .join(userEntity.subscribers, subscribeEntity)
-                .where(QueryDslUtils.ltCursorId(cursor, userEntity.id))
+                .where(
+                        subscribeEntity.subscribingUser.id.eq(userId),
+                        QueryDslUtils.ltCursorId(cursor, subscribeEntity.id)
+                )
                 .orderBy(subscribeEntity.id.desc())
                 .limit(size + 1)
                 .fetch();
+
+        boolean hasNext = QueryDslUtils.hasNext(size, content);
+        return new SliceImpl<>(content, QueryDslUtils.getPageable(content.size()), hasNext);
+    }
+
+    public Slice<UserInfo> findFollowers(long userId, Long cursor, int size) {
+        List<UserInfo> content = jpaQueryFactory
+                .select(getUserInfo(subscribeEntity.subscribedUser.id.eq(userId)))
+                .from(userEntity)
+                .join(userEntity.subscribings, subscribeEntity)
+                .where(
+                        subscribeEntity.subscribedUser.id.eq(userId),
+                        QueryDslUtils.ltCursorId(cursor, subscribeEntity.id)
+                )
+                .orderBy(subscribeEntity.id.desc())
+                .limit(size + 1)
+                .fetch();
+
+        boolean hasNext = QueryDslUtils.hasNext(size, content);
+        return new SliceImpl<>(content, QueryDslUtils.getPageable(content.size()), hasNext);
     }
 
     private ConstructorExpression<UserInfo> getUserInfo(BooleanExpression expression) {

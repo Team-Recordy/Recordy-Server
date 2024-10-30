@@ -4,15 +4,18 @@ import org.junit.jupiter.api.Test;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.subscribe.domain.Subscribe;
 import org.recordy.server.subscribe.repository.SubscribeRepository;
+import org.recordy.server.user.controller.dto.response.UserInfo;
 import org.recordy.server.user.domain.TermsAgreement;
 import org.recordy.server.user.domain.UserStatus;
 import org.recordy.server.user.domain.usecase.UserProfile;
 import org.recordy.server.user.exception.UserException;
 import org.recordy.server.util.DomainFixture;
 import org.recordy.server.user.domain.User;
+import org.recordy.server.util.UserFixture;
 import org.recordy.server.util.db.IntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Slice;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 
@@ -27,7 +30,7 @@ import static org.recordy.server.util.DomainFixture.*;
         @Sql(value = "/sql/clean-database.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 })
 @SpringBootTest
-class UserRepositoryIntegrationTest extends IntegrationTest {
+class UserRepositoryTest extends IntegrationTest {
 
     @Autowired
     private SubscribeRepository subscribeRepository;
@@ -140,6 +143,72 @@ class UserRepositoryIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(result).isFalse();
+    }
+
+    @Test
+    void 팔로우중인_사용자의_목록을_읽을_수_있다() {
+        // given
+        int followerSize = 10;
+        User following = userRepository.save(UserFixture.create());
+
+        for (int i = 0; i < followerSize; i++) {
+            User follower = userRepository.save(UserFixture.create());
+            subscribeRepository.save(Subscribe.builder()
+                    .subscribingUser(following)
+                    .subscribedUser(follower)
+                    .build());
+        }
+
+        // when
+        Slice<UserInfo> result = userRepository.findFollowings(following.getId(), null, followerSize);
+
+        // then
+        assertThat(result.getContent()).hasSize(followerSize);
+    }
+
+    @Test
+    void 아무도_팔로우하지_않으면_1명만_팔로우하고_있게_된다() {
+        // given
+        User following = userRepository.save(UserFixture.create());
+
+        // when
+        Slice<UserInfo> result = userRepository.findFollowings(following.getId(), null, 10);
+
+        // then
+        assertThat(result.getContent()).hasSize(1);
+    }
+
+    @Test
+    void 팔로워_사용자_목록을_읽을_수_있다() {
+        // given
+        int followingSize = 10;
+        User follower = userRepository.save(UserFixture.create());
+
+        for (int i = 0; i < followingSize; i++) {
+            User following = userRepository.save(UserFixture.create());
+            subscribeRepository.save(Subscribe.builder()
+                    .subscribingUser(following)
+                    .subscribedUser(follower)
+                    .build());
+        }
+
+        // when
+        Slice<UserInfo> result = userRepository.findFollowers(follower.getId(), null, followingSize);
+
+        // then
+        assertThat(result.getContent()).hasSize(followingSize);
+    }
+
+    @Test
+    void 사용자의_팔로워가_없으면_팔로워_리스트는_비어있게_된다() {
+        // given
+        User follower = userRepository.save(UserFixture.create());
+
+        // when
+        Slice<UserInfo> result = userRepository.findFollowers(follower.getId(), null, 10);
+
+        // then
+        assertThat(result.getContent()).isEmpty();
     }
 
     @Test
