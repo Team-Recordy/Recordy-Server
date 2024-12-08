@@ -58,6 +58,10 @@ public class UserEntity extends JpaMetaInfoEntity {
         this.createdAt = createdAt;
     }
 
+    private UserEntity(Long id) {
+        this.id = id;
+    }
+
     public static UserEntity from(User user) {
         return new UserEntity(
                 user.getId(),
@@ -69,5 +73,9 @@ public class UserEntity extends JpaMetaInfoEntity {
                 user.getTermsAgreement(),
                 user.getCreatedAt()
         );
+    }
+
+    public static UserEntity of(Long id) {
+        return new UserEntity(id);
     }
 }

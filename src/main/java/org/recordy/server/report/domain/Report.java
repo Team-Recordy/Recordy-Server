@@ -28,4 +28,25 @@ public class Report extends JpaMetaInfoEntity {
 
     private ReportReason reason;
     private String content;
+
+    private Report(
+            UserEntity reporter,
+            RecordEntity record,
+            ReportReason reason,
+            String content
+    ) {
+        this.reporter = reporter;
+        this.record = record;
+        this.reason = reason;
+        this.content = content;
+    }
+
+    public static Report create(ReportCreate create) {
+        return new Report(
+                UserEntity.of(create.reporterId()),
+                RecordEntity.of(create.recordId()),
+                create.reason(),
+                create.content()
+        );
+    }
 }

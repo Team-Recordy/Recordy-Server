@@ -57,12 +57,16 @@ public class RecordEntity extends JpaMetaInfoEntity {
         this.updatedAt = updatedAt;
     }
 
-    public RecordEntity(Long id) {
+    private RecordEntity(Long id) {
         this.id = id;
     }
 
     public static RecordEntity from(Record record) {
         return new RecordEntity(record.getId());
+    }
+
+    public static RecordEntity of(Long id) {
+        return new RecordEntity(id);
     }
 
     public static RecordEntity create(Record record) {
