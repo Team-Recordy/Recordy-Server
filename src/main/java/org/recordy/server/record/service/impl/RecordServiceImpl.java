@@ -1,5 +1,6 @@
 package org.recordy.server.record.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 import lombok.RequiredArgsConstructor;
@@ -38,6 +39,7 @@ public class RecordServiceImpl implements RecordService {
         Place place = placeRepository.findById(request.placeId());
         FileUrl fileUrl = s3Service.convertToCloudFrontUrl(request.fileUrl());
 
+        validateUserUploadHistory(user.getId());
         return recordRepository.save(Record.create(RecordCreate.of(
                 fileUrl,
                 request.content(),
@@ -45,6 +47,15 @@ public class RecordServiceImpl implements RecordService {
                 user,
                 place
         )));
+    }
+
+    private void validateUserUploadHistory(Long userId) {
+        LocalDateTime now = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0);
+        LocalDateTime tomorrow = now.plusDays(1);
+
+        if (recordRepository.countByUserIdAndCreatedAtBetween(userId, now, tomorrow) > 10) {
+            throw new RecordException(ErrorMessage.RECORD_EXCEEDS_THRESHOLD);
+        }
     }
 
     @Transactional

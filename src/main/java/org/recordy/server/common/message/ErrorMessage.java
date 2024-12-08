@@ -62,6 +62,7 @@ public enum ErrorMessage {
      */
     FORBIDDEN_DELETE_RECORD(HttpStatus.FORBIDDEN, "삭제가 불가능한 기록입니다."),
     RECORD_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 레코드입니다."),
+    RECORD_EXCEEDS_THRESHOLD(HttpStatus.BAD_REQUEST, "하루 안에 업로드할 수 있는 레코드의 개수는 10개입니다."),
 
     /**
      * EXHIBITION
