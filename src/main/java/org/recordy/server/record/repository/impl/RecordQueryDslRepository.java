@@ -18,6 +18,7 @@ import java.util.List;
 import static org.recordy.server.place.domain.QPlaceEntity.placeEntity;
 import static org.recordy.server.record.domain.QRecordEntity.recordEntity;
 import static org.recordy.server.bookmark.domain.QBookmarkEntity.bookmarkEntity;
+import static org.recordy.server.report.domain.QReport.report;
 import static org.recordy.server.subscribe.domain.QSubscribeEntity.subscribeEntity;
 import static org.recordy.server.user.domain.QUserEntity.userEntity;
 
@@ -41,9 +42,11 @@ public class RecordQueryDslRepository {
                 .from(recordEntity)
                 .join(recordEntity.user, userEntity)
                 .join(recordEntity.place, placeEntity)
+                .leftJoin(recordEntity, report.record)
                 .where(
                         recordEntity.place.id.eq(placeId),
-                        QueryDslUtils.ltCursorId(cursor, recordEntity.id)
+                        QueryDslUtils.ltCursorId(cursor, recordEntity.id),
+                        report.reporter.id.ne(userId)
                 )
                 .groupBy(recordEntity.id)
                 .orderBy(recordEntity.id.desc())
@@ -59,9 +62,11 @@ public class RecordQueryDslRepository {
                 .from(recordEntity)
                 .join(recordEntity.user, userEntity)
                 .join(recordEntity.place, placeEntity)
+                .leftJoin(recordEntity, report.record)
                 .where(
                         userEntity.id.eq(otherUserId),
-                        QueryDslUtils.ltCursorId(cursor, recordEntity.id)
+                        QueryDslUtils.ltCursorId(cursor, recordEntity.id),
+                        report.reporter.id.ne(userId)
                 )
                 .groupBy(recordEntity.id)
                 .orderBy(recordEntity.id.desc())
@@ -90,9 +95,11 @@ public class RecordQueryDslRepository {
                 .join(recordEntity.user, userEntity)
                 .join(recordEntity.place, placeEntity)
                 .join(recordEntity.bookmarks, bookmarkEntity)
+                .leftJoin(recordEntity, report.record)
                 .where(
                         bookmarkEntity.user.id.eq(userId),
-                        QueryDslUtils.ltCursorId(cursor, recordEntity.id)
+                        QueryDslUtils.ltCursorId(cursor, recordEntity.id),
+                        report.reporter.id.ne(userId)
                 )
                 .groupBy(recordEntity.id)
                 .orderBy(recordEntity.id.desc())
@@ -132,14 +139,20 @@ public class RecordQueryDslRepository {
                 .from(recordEntity)
                 .join(recordEntity.user, userEntity)
                 .join(userEntity.subscribers, subscribeEntity)
-                .where(subscribeEntity.subscribingUser.id.eq(userId))
+                .leftJoin(recordEntity, report.record)
+                .where(
+                        subscribeEntity.subscribingUser.id.eq(userId),
+                        report.reporter.id.ne(userId)
+                )
                 .fetch();
     }
 
-    public List<Long> findAllIds() {
+    public List<Long> findAllIds(long userId) {
         return jpaQueryFactory
                 .select(recordEntity.id)
                 .from(recordEntity)
+                .leftJoin(recordEntity, report.record)
+                .where(report.reporter.id.ne(userId))
                 .fetch();
     }
 

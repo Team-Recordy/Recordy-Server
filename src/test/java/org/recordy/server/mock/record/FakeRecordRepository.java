@@ -66,7 +66,7 @@ public class FakeRecordRepository implements RecordRepository {
     }
 
     @Override
-    public List<Long> findAllIds() {
+    public List<Long> findAllIds(long userId) {
         return List.of();
     }
 

@@ -75,8 +75,8 @@ public class RecordRepositoryImpl implements RecordRepository {
     }
 
     @Override
-    public List<Long> findAllIds() {
-        return recordQueryDslRepository.findAllIds();
+    public List<Long> findAllIds(long userId) {
+        return recordQueryDslRepository.findAllIds(userId);
     }
 
     @Override
