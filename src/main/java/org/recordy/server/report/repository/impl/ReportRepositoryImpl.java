@@ -5,6 +5,8 @@ import org.recordy.server.report.domain.Report;
 import org.recordy.server.report.repository.ReportRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
+
 @RequiredArgsConstructor
 @Repository
 public class ReportRepositoryImpl implements ReportRepository {
@@ -14,5 +16,10 @@ public class ReportRepositoryImpl implements ReportRepository {
     @Override
     public void save(Report report) {
         reportJpaRepository.save(report);
+    }
+
+    @Override
+    public long countAllByRecordIdAndCreatedAfter(long recordId, LocalDateTime from) {
+        return 0;
     }
 }
