@@ -12,6 +12,7 @@ import org.recordy.server.record.domain.RecordEntity;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.recordy.server.place.domain.QPlaceEntity.placeEntity;
@@ -140,5 +141,16 @@ public class RecordQueryDslRepository {
                 .select(recordEntity.id)
                 .from(recordEntity)
                 .fetch();
+    }
+
+    public Long countByUserIdAndCreatedAtBetween(long userId, LocalDateTime from, LocalDateTime to) {
+        return jpaQueryFactory
+                .select(recordEntity.id.count())
+                .from(recordEntity)
+                .where(
+                        recordEntity.user.id.eq(userId),
+                        recordEntity.createdAt.between(from, to)
+                )
+                .fetchFirst();
     }
 }

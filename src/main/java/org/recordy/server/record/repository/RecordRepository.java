@@ -4,6 +4,7 @@ import org.recordy.server.record.controller.dto.response.RecordGetResponse;
 import org.recordy.server.record.domain.Record;
 import org.springframework.data.domain.Slice;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface RecordRepository {
@@ -21,4 +22,5 @@ public interface RecordRepository {
     List<RecordGetResponse> findAllByIds(List<Long> ids, long userId);
     List<Long> findAllIdsBySubscribingUserId(long userId);
     List<Long> findAllIds();
+    Long countByUserIdAndCreatedAtBetween(long userId, LocalDateTime from, LocalDateTime to);
 }

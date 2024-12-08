@@ -1,5 +1,6 @@
 package org.recordy.server.record.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import org.recordy.server.place.repository.PlaceRepository;
 import org.recordy.server.record.controller.dto.response.RecordGetResponse;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.exception.RecordException;
+import org.recordy.server.user.domain.User;
 import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.util.BookmarkFixture;
 import org.recordy.server.util.RecordFixture;
@@ -277,5 +279,26 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(result).hasSameElementsAs(List.of(true, true, false));
+    }
+
+    @Test
+    void 해당_사용자가_오늘_하루동안_올린_레코드의_개수를_계산할_수_있다() {
+        // given
+        User user = userRepository.findById(1);
+        Place place = placeRepository.findById(1);
+
+        int size = 10;
+        for (int i = 0; i < size; i++) {
+            recordRepository.save(RecordFixture.create(place, user));
+        }
+
+        LocalDateTime now = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0);
+        LocalDateTime tomorrow = now.plusDays(1);
+
+        // when
+        Long count = recordRepository.countByUserIdAndCreatedAtBetween(user.getId(), now, tomorrow);
+
+        // then
+        assertThat(count).isEqualTo(size);
     }
 }

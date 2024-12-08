@@ -5,6 +5,7 @@ import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.repository.RecordRepository;
 import org.springframework.data.domain.Slice;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -72,5 +73,10 @@ public class FakeRecordRepository implements RecordRepository {
     @Override
     public List<RecordGetResponse> findAllByIds(List<Long> ids, long userId) {
         return List.of();
+    }
+
+    @Override
+    public Long countByUserIdAndCreatedAtBetween(long userId, LocalDateTime from, LocalDateTime to) {
+        return 0L;
     }
 }
