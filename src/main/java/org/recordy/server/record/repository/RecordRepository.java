@@ -13,6 +13,7 @@ public interface RecordRepository {
     Long save(Record record);
     void deleteById(long recordId);
     void deleteByUserId(long userId);
+    void block(long recordId);
 
     // query
     Record findById(long id);

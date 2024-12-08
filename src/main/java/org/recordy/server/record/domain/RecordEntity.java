@@ -25,6 +25,7 @@ public class RecordEntity extends JpaMetaInfoEntity {
     private FileUrl fileUrl;
     private String content;
     private String exhibitionName;
+    private boolean isBlocked;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -42,6 +43,7 @@ public class RecordEntity extends JpaMetaInfoEntity {
             FileUrl fileUrl,
             String content,
             String exhibitionName,
+            boolean isBlocked,
             UserEntity user,
             PlaceEntity place,
             LocalDateTime createdAt,
@@ -51,6 +53,7 @@ public class RecordEntity extends JpaMetaInfoEntity {
         this.fileUrl = fileUrl;
         this.content = content;
         this.exhibitionName = exhibitionName;
+        this.isBlocked = isBlocked;
         this.user = user;
         this.place = place;
         this.createdAt = createdAt;
@@ -75,6 +78,7 @@ public class RecordEntity extends JpaMetaInfoEntity {
                 record.getFileUrl(),
                 record.getContent(),
                 record.getExhibitionName(),
+                false,
                 UserEntity.from(record.getUploader()),
                 PlaceEntity.create(record.getPlace()),
                 record.getCreatedAt(),
@@ -84,5 +88,9 @@ public class RecordEntity extends JpaMetaInfoEntity {
 
     public void addBookmark(BookmarkEntity bookmark) {
         bookmarks.add(bookmark);
+    }
+
+    public void block() {
+        this.isBlocked = true;
     }
 }

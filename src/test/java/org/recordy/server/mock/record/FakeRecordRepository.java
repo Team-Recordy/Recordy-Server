@@ -41,6 +41,10 @@ public class FakeRecordRepository implements RecordRepository {
     }
 
     @Override
+    public void block(long recordId) {
+    }
+
+    @Override
     public Record findById(long recordId) {
         return records.get(recordId);
     }

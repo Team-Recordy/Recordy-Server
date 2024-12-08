@@ -46,7 +46,8 @@ public class RecordQueryDslRepository {
                 .where(
                         recordEntity.place.id.eq(placeId),
                         QueryDslUtils.ltCursorId(cursor, recordEntity.id),
-                        report.reporter.id.ne(userId)
+                        report.reporter.id.ne(userId),
+                        recordEntity.isBlocked.eq(false)
                 )
                 .groupBy(recordEntity.id)
                 .orderBy(recordEntity.id.desc())
@@ -66,7 +67,8 @@ public class RecordQueryDslRepository {
                 .where(
                         userEntity.id.eq(otherUserId),
                         QueryDslUtils.ltCursorId(cursor, recordEntity.id),
-                        report.reporter.id.ne(userId)
+                        report.reporter.id.ne(userId),
+                        recordEntity.isBlocked.eq(false)
                 )
                 .groupBy(recordEntity.id)
                 .orderBy(recordEntity.id.desc())
@@ -99,7 +101,8 @@ public class RecordQueryDslRepository {
                 .where(
                         bookmarkEntity.user.id.eq(userId),
                         QueryDslUtils.ltCursorId(cursor, recordEntity.id),
-                        report.reporter.id.ne(userId)
+                        report.reporter.id.ne(userId),
+                        recordEntity.isBlocked.eq(false)
                 )
                 .groupBy(recordEntity.id)
                 .orderBy(recordEntity.id.desc())
@@ -142,7 +145,8 @@ public class RecordQueryDslRepository {
                 .leftJoin(recordEntity, report.record)
                 .where(
                         subscribeEntity.subscribingUser.id.eq(userId),
-                        report.reporter.id.ne(userId)
+                        report.reporter.id.ne(userId),
+                        recordEntity.isBlocked.eq(false)
                 )
                 .fetch();
     }
@@ -152,7 +156,10 @@ public class RecordQueryDslRepository {
                 .select(recordEntity.id)
                 .from(recordEntity)
                 .leftJoin(recordEntity, report.record)
-                .where(report.reporter.id.ne(userId))
+                .where(
+                        report.reporter.id.ne(userId),
+                        recordEntity.isBlocked.eq(false)
+                )
                 .fetch();
     }
 
