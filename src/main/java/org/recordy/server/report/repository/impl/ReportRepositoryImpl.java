@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 public class ReportRepositoryImpl implements ReportRepository {
 
     private final ReportJpaRepository reportJpaRepository;
+    private final ReportQueryDslRepository reportQueryDslRepository;
 
     @Override
     public void save(Report report) {
@@ -20,6 +21,6 @@ public class ReportRepositoryImpl implements ReportRepository {
 
     @Override
     public long countAllByRecordIdAndCreatedAfter(long recordId, LocalDateTime from) {
-        return 0;
+        return reportQueryDslRepository.countAllByRecordIdAndCreatedAfter(recordId, from);
     }
 }
