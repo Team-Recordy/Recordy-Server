@@ -28,6 +28,7 @@ public class Report extends JpaMetaInfoEntity {
 
     private ReportReason reason;
     private String content;
+    private ApprovalStatus approvalStatus;
 
     private Report(
             UserEntity reporter,
@@ -39,6 +40,7 @@ public class Report extends JpaMetaInfoEntity {
         this.record = record;
         this.reason = reason;
         this.content = content;
+        this.approvalStatus = ApprovalStatus.PENDING;
     }
 
     public static Report create(ReportCreate create) {
