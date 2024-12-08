@@ -25,4 +25,7 @@ public class Report extends JpaMetaInfoEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "record_id")
     private RecordEntity record;
+
+    private ReportReason reason;
+    private String content;
 }
