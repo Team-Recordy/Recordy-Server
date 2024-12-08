@@ -11,6 +11,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -81,5 +82,10 @@ public class RecordRepositoryImpl implements RecordRepository {
     @Override
     public List<RecordGetResponse> findAllByIds(List<Long> ids, long userId) {
         return recordQueryDslRepository.findAllByIds(ids, userId);
+    }
+
+    @Override
+    public Long countByUserIdAndCreatedAtBetween(long userId, LocalDateTime from, LocalDateTime to) {
+        return recordQueryDslRepository.countByUserIdAndCreatedAtBetween(userId, from, to);
     }
 }
