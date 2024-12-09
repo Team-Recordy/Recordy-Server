@@ -4,5 +4,6 @@ public enum ApprovalStatus {
 
     PENDING,
     APPROVED,
+    DISMISSED
     ;
 }

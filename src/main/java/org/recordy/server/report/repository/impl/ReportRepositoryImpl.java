@@ -1,5 +1,6 @@
 package org.recordy.server.report.repository.impl;
 
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.report.domain.Report;
 import org.recordy.server.report.repository.ReportRepository;
@@ -22,5 +23,10 @@ public class ReportRepositoryImpl implements ReportRepository {
     @Override
     public long countAllByRecordIdAndCreatedAfter(long recordId, LocalDateTime from) {
         return reportQueryDslRepository.countAllByRecordIdAndCreatedAfter(recordId, from);
+    }
+
+    @Override
+    public Optional<Report> findByReporterIdAndRecordId(long reporterId, long recordId) {
+        return reportQueryDslRepository.findByReporterIdAndRecordId(reporterId, recordId);
     }
 }

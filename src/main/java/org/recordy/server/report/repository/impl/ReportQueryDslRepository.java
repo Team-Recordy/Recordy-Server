@@ -1,7 +1,9 @@
 package org.recordy.server.report.repository.impl;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.recordy.server.report.domain.Report;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -23,5 +25,17 @@ public class ReportQueryDslRepository {
                         report.createdAt.after(from)
                 )
                 .fetchFirst();
+    }
+
+    public Optional<Report> findByReporterIdAndRecordId(long reporterId, long recordId) {
+        return Optional.ofNullable(
+                jpaQueryFactory
+                        .selectFrom(report)
+                        .where(
+                                report.reporter.id.eq(reporterId),
+                                report.record.id.eq(recordId)
+                        )
+                        .fetchOne()
+        );
     }
 }

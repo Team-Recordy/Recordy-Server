@@ -6,4 +6,9 @@ public record ReportCreate(
         ReportReason reason,
         String content
 ) {
+    public static ReportCreate of(Long reporterId,  Long recordId,
+                                  ReportReason reason,
+                                  String content) {
+        return new ReportCreate(reporterId, recordId, reason, content);
+    }
 }

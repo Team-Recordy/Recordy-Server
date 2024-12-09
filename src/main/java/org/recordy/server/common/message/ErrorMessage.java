@@ -86,6 +86,11 @@ public enum ErrorMessage {
      */
     INDEXING_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "검색 서비스를 통해 문서를 인덱싱하는 데에 실패했습니다."),
     SEARCH_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "검색 서비스를 통해 검색하는 데에 실패했습니다."),
+
+    /**
+     * REPORT
+     */
+    REPORT_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "이미 신고한 레코드입니다."),
     ;
 
     private final HttpStatus httpStatus;
