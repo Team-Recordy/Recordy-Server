@@ -57,7 +57,7 @@ public class Report extends JpaMetaInfoEntity {
         if (approvalStatus == ApprovalStatus.APPROVED) {
             record.block();
         }
-        else {
+        else if (approvalStatus == ApprovalStatus.DISMISSED){
             record.nonBlock();
         }
     }

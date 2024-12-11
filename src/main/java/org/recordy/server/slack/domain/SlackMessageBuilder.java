@@ -25,21 +25,25 @@ public class SlackMessageBuilder {
                         .put("text", text));
     }
 
-    public static JSONObject createVideo(String title, String description, String videoUrl, String thumbnailUrl) {
+    public static JSONObject createVideoWithThumbnail(String title, String description, String videoUrl, String thumbnailUrl) {
         return new JSONObject()
-                .put("type", "video")
-                .put("title", title)
-                .put("alt_text", description)
-                .put("video_url", videoUrl)
-                .put("thumbnail_url", thumbnailUrl);
+                .put("type", "section")
+                .put("text", new JSONObject()
+                        .put("type", "mrkdwn")
+                        .put("text", "*<" + videoUrl + "|" + title + ">*\n" + description))
+                .put("accessory", new JSONObject()
+                        .put("type", "image")
+                        .put("image_url", thumbnailUrl)
+                        .put("alt_text", description));
     }
 
-    public static JSONObject createButton(String text, String actionId, JSONObject value) {
+    public static JSONObject createButton(String text, String actionId, JSONObject value, String style) {
         return new JSONObject()
                 .put("type", "button")
                 .put("text", createPlainText(text))
                 .put("action_id", actionId)
-                .put("value", value.toString());
+                .put("value", value.toString())
+                .put("style", style);
     }
 }
 

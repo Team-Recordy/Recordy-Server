@@ -62,6 +62,11 @@ public class UserEntity extends JpaMetaInfoEntity {
         this.id = id;
     }
 
+    private UserEntity(Long id, String nickname) {
+        this.id = id;
+        this.nickname = nickname;
+    }
+
     public static UserEntity from(User user) {
         return new UserEntity(
                 user.getId(),
@@ -78,4 +83,5 @@ public class UserEntity extends JpaMetaInfoEntity {
     public static UserEntity of(Long id) {
         return new UserEntity(id);
     }
+
 }

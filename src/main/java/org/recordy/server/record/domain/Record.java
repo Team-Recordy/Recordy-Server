@@ -26,36 +26,28 @@ public class Record {
 
     private Record(
             Long id,
-            FileUrl fileUrl,
-            String content,
-            String exhibitionName,
             User uploader,
-            LocalDateTime createdAt,
-            LocalDateTime updatedAt,
-            long bookmarkCount
+            Place place,
+            FileUrl fileUrl,
+            String exhibitionName,
+            String content
     ) {
         this.id = id;
+        this.uploader = uploader;
+        this.place = place;
         this.fileUrl = fileUrl;
-        this.content = content;
         this.exhibitionName = exhibitionName;
-        this.uploader = uploader;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.bookmarkCount = bookmarkCount;
-    }
-
-    private Record(
-            Long id,
-            User uploader
-    ) {
-        this.id = id;
-        this.uploader = uploader;
+        this.content = content;
     }
 
     public static Record from(RecordEntity entity) {
         return new Record(
                 entity.getId(),
-                User.from(entity.getUser())
+                User.from(entity.getUser()),
+                Place.from(entity.getPlace()),
+                entity.getFileUrl(),
+                entity.getExhibitionName(),
+                entity.getContent()
         );
     }
 
