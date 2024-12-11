@@ -193,6 +193,7 @@ public final class DomainFixture {
                 .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
                 .content(CONTENT)
                 .uploader(createUser(UserStatus.ACTIVE))
+                .isBlocked(false)
                 .build();
     }
 

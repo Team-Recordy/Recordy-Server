@@ -6,7 +6,7 @@ import lombok.Synchronized;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.repository.RecordRepository;
-import org.recordy.server.report.controller.exception.ReportException;
+import org.recordy.server.report.exception.ReportException;
 import org.recordy.server.report.domain.ApprovalStatus;
 import org.recordy.server.report.domain.Report;
 import org.recordy.server.report.domain.ReportCreate;

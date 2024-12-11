@@ -23,6 +23,7 @@ public class Record {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     long bookmarkCount;
+    boolean isBlocked;
 
     private Record(
             Long id,
@@ -61,7 +62,8 @@ public class Record {
                 create.place(),
                 null,
                 null,
-                0
+                0,
+                false
         );
     }
 

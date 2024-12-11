@@ -13,11 +13,11 @@ values (1);
 insert into `places` (`id`, `name`, `location_id`, `platform_id`)
 values (1, 'place1', 1, UUID());
 
-insert into `records` (`id`, `user_id`, `content`,`thumbnail_url`, `video_url`, `place_id`)
-values (1, 1, 'content', 'thumbnail_url', 'video_url', 1);
+insert into `records` (`id`, `user_id`, `content`,`thumbnail_url`, `video_url`, `place_id`, `is_blocked`)
+values (1, 1, 'content', 'thumbnail_url', 'video_url', 1, false);
 
-insert into `records` (`id`, `user_id`, `content`,`thumbnail_url`, `video_url`, `place_id`)
-values (2, 1, 'content', 'thumbnail_url', 'video_url', 1);
+insert into `records` (`id`, `user_id`, `content`,`thumbnail_url`, `video_url`, `place_id`, `is_blocked`)
+values (2, 1, 'content', 'thumbnail_url', 'video_url', 1, false);
 
 insert into `bookmarks` (`id`, `record_id`, `user_id`)
 values(1, 1, 1);

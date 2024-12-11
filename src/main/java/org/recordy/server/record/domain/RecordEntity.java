@@ -25,7 +25,7 @@ public class RecordEntity extends JpaMetaInfoEntity {
     private FileUrl fileUrl;
     private String content;
     private String exhibitionName;
-    private boolean isBlocked;
+    private boolean isBlocked = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

@@ -2,14 +2,12 @@ package org.recordy.server.slack.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.recordy.server.common.message.ErrorMessage;
-import org.recordy.server.report.controller.exception.ReportException;
+import org.recordy.server.report.exception.ReportException;
 import org.recordy.server.report.service.ReportService;
 import org.recordy.server.slack.domain.Slack;
 import org.recordy.server.slack.exception.SlackException;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
