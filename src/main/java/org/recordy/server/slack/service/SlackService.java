@@ -60,7 +60,12 @@ public class SlackService {
             if (!isSuccess) {
                 String errorMessage = responseJson.optString("error", "알 수 없는 오류");
                 System.out.println("Slack API 오류: " + errorMessage); // 오류 메시지 로그
-                throw new SlackException(ErrorMessage.SLACK_SEND_FAILED);
+                if (threadTs == null) {
+                    throw new SlackException(ErrorMessage.SLACK_SEND_FAILED);
+                }
+                else {
+                    throw new SlackException(ErrorMessage.SLACK_FEEDBACK_FAILED);
+                }
             }
         } catch (Exception e) {
             System.out.println("dndfndsoifnsdoifhsd");
