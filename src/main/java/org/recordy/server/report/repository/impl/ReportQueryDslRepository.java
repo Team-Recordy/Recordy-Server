@@ -16,6 +16,17 @@ public class ReportQueryDslRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
+    public Optional<Report> findById(long reportId) {
+        return Optional.ofNullable(
+                jpaQueryFactory
+                        .selectFrom(report)
+                        .where(
+                                report.id.eq(reportId)
+                        )
+                        .fetchOne()
+        );
+    }
+
     public Long countAllByRecordIdAndCreatedAfter(long recordId, LocalDateTime from) {
         return jpaQueryFactory
                 .select(report.id.count())

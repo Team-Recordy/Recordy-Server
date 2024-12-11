@@ -16,8 +16,13 @@ public class ReportRepositoryImpl implements ReportRepository {
     private final ReportQueryDslRepository reportQueryDslRepository;
 
     @Override
-    public void save(Report report) {
-        reportJpaRepository.save(report);
+    public Report save(Report report) {
+        return reportJpaRepository.save(report);
+    }
+
+    @Override
+    public Optional<Report> findById(long reportId) {
+        return reportQueryDslRepository.findById(reportId);
     }
 
     @Override

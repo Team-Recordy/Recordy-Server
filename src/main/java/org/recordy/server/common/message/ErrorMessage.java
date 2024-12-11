@@ -90,7 +90,19 @@ public enum ErrorMessage {
     /**
      * REPORT
      */
+    REPORT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 신고입니다."),
     REPORT_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "이미 신고한 레코드입니다."),
+
+    /**
+     * REPORT
+     */
+    SLACK_SEND_FAILED(HttpStatus.INTERNAL_SERVER_ERROR,  "슬랙 메세지 전송에 실패했습니다."),
+    SLACK_PROCESSING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,  "슬랙 메세지 전송 중 에러가 발생했습니다."),
+    SLACK_INTERACTION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR,  "슬랙 상호작용 인터렉션에 문제가 발생했습니다."),
+    SLACK_FEEDBACK_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "슬랙에 피드백 메세지 제공에 실패했습니다."),
+    SLACK_INVALID_REQUEST(HttpStatus.BAD_REQUEST, "서버에서 받아들일 수 없는 요청이 슬랙을 통해 전달되었습니다."),
+    FAILED_TO_READ_SLACK_REQUEST(HttpStatus.INTERNAL_SERVER_ERROR,  "서버에서 슬랙의 요청을 제대로 읽는 데 실패했습니다."),
+    FALIED_TO_MATCH_SLACK_SIGNATURE_EXCEPTION(HttpStatus.BAD_REQUEST,  "슬랙 요청의 시그니쳐가 잘못된 값입니다."),
     ;
 
     private final HttpStatus httpStatus;

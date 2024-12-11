@@ -4,10 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.record.repository.RecordRepository;
 import org.recordy.server.report.controller.exception.ReportException;
+import org.recordy.server.report.domain.ApprovalStatus;
 import org.recordy.server.report.domain.Report;
 import org.recordy.server.report.domain.ReportCreate;
 import org.recordy.server.report.repository.ReportRepository;
 import org.recordy.server.report.service.ReportService;
+import org.recordy.server.slack.service.SlackService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,12 +23,14 @@ public class ReportServiceImpl implements ReportService {
 
     private final ReportRepository reportRepository;
     private final RecordRepository recordRepository;
+    private final SlackService slackService;
 
     @Transactional
     @Override
     public void create(ReportCreate create) {
         checkIfReportExists(create.reporterId(), create.recordId());
-        reportRepository.save(Report.create(create));
+        Report report = reportRepository.save(Report.create(create));
+        slackService.sendFeedbackToSlack(SlackService.createReport(report), null);
         blockRecordIfExceeds(create.recordId());
     }
 
@@ -41,5 +46,14 @@ public class ReportServiceImpl implements ReportService {
         if (reportSize >= 5) {
             recordRepository.block(recordId);
         }
+    }
+
+    @Override
+    public void resolve(Long reportId, ApprovalStatus approvalStatus, String threadTs) {
+        Report report = reportRepository.findById(reportId).orElseThrow(
+                () -> new ReportException(ErrorMessage.REPORT_NOT_FOUND)
+        );
+        report.resolve(approvalStatus);
+        slackService.sendFeedbackToSlack(SlackService.resolveReport(report), threadTs);
     }
 }

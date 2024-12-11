@@ -8,9 +8,10 @@ import java.time.LocalDateTime;
 public interface ReportRepository {
 
     // command
-    void save(Report report);
+    Report save(Report report);
 
     // query
+    Optional<Report> findById(long reportId);
     long countAllByRecordIdAndCreatedAfter(long recordId, LocalDateTime from);
     Optional<Report> findByReporterIdAndRecordId(long reporterId, long recordId);
 }

@@ -93,4 +93,5 @@ public class RecordEntity extends JpaMetaInfoEntity {
     public void block() {
         this.isBlocked = true;
     }
+    public void nonBlock() {this.isBlocked = false; }
 }
