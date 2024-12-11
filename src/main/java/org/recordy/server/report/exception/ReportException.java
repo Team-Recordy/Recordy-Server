@@ -1,4 +1,4 @@
-package org.recordy.server.report.controller.exception;
+package org.recordy.server.report.exception;
 
 import org.recordy.server.common.exception.RecordyException;
 import org.recordy.server.common.message.ErrorMessage;
