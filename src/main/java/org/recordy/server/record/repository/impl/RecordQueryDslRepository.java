@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.util.QueryDslUtils;
 import org.recordy.server.record.controller.dto.response.RecordGetResponse;
 import org.recordy.server.record.domain.RecordEntity;
+import org.recordy.server.report.domain.ApprovalStatus;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 
@@ -41,11 +42,12 @@ public class RecordQueryDslRepository {
                 .from(recordEntity)
                 .join(recordEntity.user, userEntity)
                 .join(recordEntity.place, placeEntity)
-                .leftJoin(recordEntity, report.record)
+                .leftJoin(report).on(report.record.eq(recordEntity)
+                        .and(report.reporter.id.eq(userId)))
                 .where(
                         recordEntity.place.id.eq(placeId),
                         QueryDslUtils.ltCursorId(cursor, recordEntity.id),
-                        report.reporter.id.ne(userId),
+                        report.id.isNull().or(report.approvalStatus.ne(ApprovalStatus.PENDING)),
                         recordEntity.isBlocked.eq(false)
                 )
                 .groupBy(recordEntity.id)
@@ -62,11 +64,12 @@ public class RecordQueryDslRepository {
                 .from(recordEntity)
                 .join(recordEntity.user, userEntity)
                 .join(recordEntity.place, placeEntity)
-                .leftJoin(recordEntity, report.record)
+                .leftJoin(report).on(report.record.eq(recordEntity)
+                        .and(report.reporter.id.eq(userId)))
                 .where(
                         userEntity.id.eq(otherUserId),
                         QueryDslUtils.ltCursorId(cursor, recordEntity.id),
-                        report.reporter.id.ne(userId),
+                        report.id.isNull().or(report.approvalStatus.ne(ApprovalStatus.PENDING)),
                         recordEntity.isBlocked.eq(false)
                 )
                 .groupBy(recordEntity.id)
@@ -96,11 +99,12 @@ public class RecordQueryDslRepository {
                 .join(recordEntity.user, userEntity)
                 .join(recordEntity.place, placeEntity)
                 .join(recordEntity.bookmarks, bookmarkEntity)
-                .leftJoin(recordEntity, report.record)
+                .leftJoin(report).on(report.record.eq(recordEntity)
+                        .and(report.reporter.id.eq(userId)))
                 .where(
                         bookmarkEntity.user.id.eq(userId),
                         QueryDslUtils.ltCursorId(cursor, recordEntity.id),
-                        report.reporter.id.ne(userId),
+                        report.id.isNull().or(report.approvalStatus.ne(ApprovalStatus.PENDING)),
                         recordEntity.isBlocked.eq(false)
                 )
                 .groupBy(recordEntity.id)
@@ -141,10 +145,11 @@ public class RecordQueryDslRepository {
                 .from(recordEntity)
                 .join(recordEntity.user, userEntity)
                 .join(userEntity.subscribers, subscribeEntity)
-                .leftJoin(recordEntity, report.record)
+                .leftJoin(report).on(report.record.eq(recordEntity)
+                        .and(report.reporter.id.eq(userId)))
                 .where(
                         subscribeEntity.subscribingUser.id.eq(userId),
-                        report.reporter.id.ne(userId),
+                        report.id.isNull().or(report.approvalStatus.ne(ApprovalStatus.PENDING)),
                         recordEntity.isBlocked.eq(false)
                 )
                 .fetch();
@@ -154,9 +159,10 @@ public class RecordQueryDslRepository {
         return jpaQueryFactory
                 .select(recordEntity.id)
                 .from(recordEntity)
-                .leftJoin(recordEntity, report.record)
+                .leftJoin(report).on(report.record.eq(recordEntity)
+                        .and(report.reporter.id.eq(userId)))
                 .where(
-                        report.reporter.id.ne(userId),
+                        report.id.isNull().or(report.approvalStatus.ne(ApprovalStatus.PENDING)),
                         recordEntity.isBlocked.eq(false)
                 )
                 .fetch();
