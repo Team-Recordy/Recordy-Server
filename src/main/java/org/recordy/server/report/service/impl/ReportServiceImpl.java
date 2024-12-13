@@ -33,6 +33,7 @@ public class ReportServiceImpl implements ReportService {
     @Synchronized
     public void create(ReportCreate create) {
         checkIfReportExists(create.reporterId(), create.recordId());
+        recordRepository.findById(create.recordId());
         Report report = reportRepository.save(Report.create(create));
         User reporter = userRepository.findById(create.reporterId());
         Record record = recordRepository.findById(report.getRecord().getId());
