@@ -2,6 +2,8 @@ package org.recordy.server.report.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.recordy.server.common.domain.JpaMetaInfoEntity;
@@ -12,6 +14,8 @@ import org.recordy.server.user.domain.UserEntity;
 @Getter
 @Table(name = "reports")
 @Entity
+@Builder
+@AllArgsConstructor
 public class Report extends JpaMetaInfoEntity {
 
     @Id
