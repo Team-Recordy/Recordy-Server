@@ -31,7 +31,8 @@ public class Record {
             Place place,
             FileUrl fileUrl,
             String exhibitionName,
-            String content
+            String content,
+            boolean isBlocked
     ) {
         this.id = id;
         this.uploader = uploader;
@@ -39,6 +40,7 @@ public class Record {
         this.fileUrl = fileUrl;
         this.exhibitionName = exhibitionName;
         this.content = content;
+        this.isBlocked = isBlocked;
     }
 
     public static Record from(RecordEntity entity) {
@@ -48,7 +50,8 @@ public class Record {
                 Place.from(entity.getPlace()),
                 entity.getFileUrl(),
                 entity.getExhibitionName(),
-                entity.getContent()
+                entity.getContent(),
+                entity.isBlocked()
         );
     }
 

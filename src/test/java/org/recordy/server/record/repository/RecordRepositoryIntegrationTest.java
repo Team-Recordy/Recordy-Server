@@ -1,23 +1,26 @@
 package org.recordy.server.record.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 import java.time.LocalDateTime;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
+import org.recordy.server.bookmark.repository.BookmarkRepository;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.place.domain.Place;
 import org.recordy.server.place.repository.PlaceRepository;
 import org.recordy.server.record.controller.dto.response.RecordGetResponse;
 import org.recordy.server.record.domain.Record;
 import org.recordy.server.record.exception.RecordException;
+import org.recordy.server.subscribe.domain.Subscribe;
+import org.recordy.server.subscribe.repository.SubscribeRepository;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.repository.UserRepository;
 import org.recordy.server.util.BookmarkFixture;
-import org.recordy.server.util.RecordFixture;
-import org.recordy.server.bookmark.repository.BookmarkRepository;
-import org.recordy.server.subscribe.domain.Subscribe;
-import org.recordy.server.subscribe.repository.SubscribeRepository;
 import org.recordy.server.util.DomainFixture;
+import org.recordy.server.util.RecordFixture;
 import org.recordy.server.util.db.IntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,10 +28,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.transaction.annotation.Transactional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SqlGroup({
         @Sql(value = "/sql/clean-database.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS),
@@ -97,6 +96,30 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
     }
 
     @Test
+    void deleteByUserId를_통해_특정_유저의_모든_레코드를_삭제할_수_있다() {
+        // when
+        recordRepository.deleteByUserId(1);
+
+        // then
+        Slice<RecordGetResponse> result = recordRepository.findAllByUserIdOrderByIdDesc(1, 1, null, 6);
+        assertAll(
+                () -> assertThat(result.get()).hasSize(0),
+                () -> assertThat(result.hasNext()).isFalse()
+        );
+    }
+
+    @Test
+    void block를_통해_레코드를_블락할_수_있다() {
+        // when
+        recordRepository.block(1);
+
+        // then
+        assertAll(
+                () -> assertThat(recordRepository.findById(1).isBlocked()).isTrue()
+        );
+    }
+
+    @Test
     void 특정한_장소와_관련한_레코드_리스트를_조회할_수_있다() {
         // given
         // placeId가 1인 레코드 : {1, 2, 3, 4, 5, 6}
@@ -117,6 +140,46 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
         );
     }
 
+    @Test
+    void 특정한_장소와_관련한_레코드_리스트를_조회할_때_사용자가_신고한_레코드는_제외하고_조회할_수_있다() {
+        // given
+        // placeId가 1인 레코드 : {1, 2, 3, 4, 5, 6}
+
+        // when
+        Slice<RecordGetResponse> result = recordRepository.findAllByPlaceIdOrderByIdDesc(1, 2, null, 6);
+
+        // then
+        assertAll(
+                () -> assertThat(result.get()).hasSize(5),
+                () -> assertThat(result.getContent().get(0).id()).isEqualTo(5L),
+                () -> assertThat(result.getContent().get(1).id()).isEqualTo(4L),
+                () -> assertThat(result.getContent().get(2).id()).isEqualTo(3L),
+                () -> assertThat(result.getContent().get(3).id()).isEqualTo(2L),
+                () -> assertThat(result.getContent().get(4).id()).isEqualTo(1L),
+                () -> assertThat(result.hasNext()).isFalse()
+        );
+    }
+
+    @Test
+    void 특정한_장소와_관련한_레코드_리스트를_조회할_때_블락된_레코드는_제외하고_조회할_수_있다() {
+        // given
+        // placeId가 1인 레코드 : {1, 2, 3, 4, 5, 6}
+        recordRepository.block(1L);
+
+        // when
+        Slice<RecordGetResponse> result = recordRepository.findAllByPlaceIdOrderByIdDesc(1, 1, null, 6);
+
+        // then
+        assertAll(
+                () -> assertThat(result.get()).hasSize(5),
+                () -> assertThat(result.getContent().get(0).id()).isEqualTo(6L),
+                () -> assertThat(result.getContent().get(1).id()).isEqualTo(5L),
+                () -> assertThat(result.getContent().get(2).id()).isEqualTo(4L),
+                () -> assertThat(result.getContent().get(3).id()).isEqualTo(3L),
+                () -> assertThat(result.getContent().get(4).id()).isEqualTo(2L),
+                () -> assertThat(result.hasNext()).isFalse()
+        );
+    }
     @Test
     void 특정한_장소와_관련한_커서보다_작은_id를_가진_레코드_리스트를_조회할_수_있다() {
         // given
@@ -210,6 +273,41 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
                 () -> assertThat(result.getContent().get(2).id()).isEqualTo(1L)
         );
     }
+    @Test
+    void findAllByUserIdOrderByIdDesc를_통해_조회할_때_사용자가_신고한_레코드는_제외하고_조회할_수_있다() {
+        // given
+        // userId가 1인 레코드 : {3, 4, 6}
+        long userId = 2;
+
+        // when
+        Slice<RecordGetResponse> result = recordRepository.findAllByUserIdOrderByIdDesc(userId, userId, null, 10);
+
+        // then
+        assertAll(
+                () -> assertThat(result.get()).hasSize(2),
+                () -> assertThat(result.getContent().get(0).id()).isEqualTo(4L),
+                () -> assertThat(result.getContent().get(1).id()).isEqualTo(3L)
+        );
+    }
+
+    @Test
+    void findAllByUserIdOrderByIdDesc를_통해_조회할_때_블락된_레코드는_제외하고_조회할_수_있다() {
+        // given
+        // userId가 1인 레코드 : {1, 2, 5}
+        long userId = 1;
+        recordRepository.block(1L);
+
+        // when
+        Slice<RecordGetResponse> result = recordRepository.findAllByUserIdOrderByIdDesc(userId, userId, null, 10);
+
+        // then
+        assertAll(
+                () -> assertThat(result.get()).hasSize(2),
+                () -> assertThat(result.getContent().get(0).id()).isEqualTo(5L),
+                () -> assertThat(result.getContent().get(1).id()).isEqualTo(2L)
+        );
+    }
+
 
     @Test
     void 사용자가_구독중인_사용자가_업로드한_모든_영상의_id_리스트를_조회할_수_있다() {
@@ -227,6 +325,45 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
         assertAll(
                 () -> assertThat(result.size()).isEqualTo(3),
                 () -> assertThat(result).hasSameElementsAs(List.of(3L, 4L, 6L))
+        );
+    }
+
+    @Test
+    void findAllIdsBySubscribingUserId를_통해_조회할_때_사용자가_신고한_레코드는_제외하고_조회할_수_있다() {
+        // given
+        //  userId가 2인 사용자가 업로드한 레코드 : {3, 4, 6}
+        subscribeRepository.save(Subscribe.builder()
+                .subscribingUser(userRepository.findById(2))
+                .subscribedUser(userRepository.findById(2))
+                .build());
+
+        // when
+        List<Long> result = recordRepository.findAllIdsBySubscribingUserId(2);
+
+        // then
+        assertAll(
+                () -> assertThat(result).hasSize(2),
+                () -> assertThat(result).containsExactlyInAnyOrder(3L, 4L)
+        );
+    }
+
+    @Test
+    void findAllIdsBySubscribingUserId를_통해_조회할_때_블락된_레코드는_제외하고_조회할_수_있다() {
+        // given
+        //  userId가 1인 사용자가 업로드한 레코드 : {1, 2, 5}
+        subscribeRepository.save(Subscribe.builder()
+                .subscribingUser(userRepository.findById(2))
+                .subscribedUser(userRepository.findById(1))
+                .build());
+        recordRepository.block(1L);
+
+        // when
+        List<Long> result = recordRepository.findAllIdsBySubscribingUserId(2);
+
+        // then
+        assertAll(
+                () -> assertThat(result).hasSize(2),
+                () -> assertThat(result).containsExactlyInAnyOrder(2L, 5L)
         );
     }
 
@@ -301,4 +438,101 @@ class RecordRepositoryIntegrationTest extends IntegrationTest {
         // then
         assertThat(count).isEqualTo(size);
     }
+    @Test
+    void findAllIds를_통해_모든_레코드_id를_조회할_수_있다() {
+        // given
+        long userId = 1;
+
+        // when
+        List<Long> result = recordRepository.findAllIds(userId);
+
+        // then
+        assertAll(
+                () -> assertThat(result).hasSize(6),
+                () -> assertThat(result).containsExactlyInAnyOrder(1L, 2L, 3L, 4L, 5L, 6L)
+        );
+    }
+    @Test
+    void findAllIds를_통해_조회할_때_사용자가_신고한_레코드는_제외하고_조회할_수_있다() {
+        // given
+        long userId = 2;
+
+        // when
+        List<Long> result = recordRepository.findAllIds(userId);
+
+        // then
+        assertAll(
+                () -> assertThat(result).hasSize(5),
+                () -> assertThat(result).containsExactlyInAnyOrder(1L, 2L, 3L, 4L, 5L)
+        );
+    }
+    @Test
+    void findAllIds를_통해_조회할_때_블락된_레코드는_제외하고_조회할_수_있다() {
+        // given
+        long userId = 1;
+        recordRepository.block(1L);
+
+        // when
+        List<Long> result = recordRepository.findAllIds(userId);
+
+        // then
+        assertAll(
+                () -> assertThat(result).hasSize(5),
+                () -> assertThat(result).containsExactlyInAnyOrder(2L, 3L, 4L, 5L, 6L)
+        );
+    }
+    @Test
+    void findAllByBookmarkOrderByIdDesc를_통해_북마크한_레코드를_조회할_수_있다() {
+        // given
+        // 사용자 1이 레코드 1, 5를 북마크
+        bookmarkRepository.save(BookmarkFixture.create(DomainFixture.createUser(), RecordFixture.create(1L)));
+        bookmarkRepository.save(BookmarkFixture.create(DomainFixture.createUser(), RecordFixture.create(5L)));
+
+        // when
+        Slice<RecordGetResponse> result = recordRepository.findAllByBookmarkOrderByIdDesc(1, null, 10);
+
+        // then
+        assertAll(
+                () -> assertThat(result.get()).hasSize(2),
+                () -> assertThat(result.getContent().get(0).id()).isEqualTo(5L),
+                () -> assertThat(result.getContent().get(1).id()).isEqualTo(1L)
+        );
+    }
+
+    @Test
+    void findAllByBookmarkOrderByIdDesc를_통해_조회할_때_사용자가_신고한_레코드는_제외하고_조회할_수_있다() {
+        // given
+        // 사용자 1이 레코드 1, 5를 북마크
+        bookmarkRepository.save(BookmarkFixture.create(DomainFixture.createUser(2), RecordFixture.create(1L)));
+        bookmarkRepository.save(BookmarkFixture.create(DomainFixture.createUser(2), RecordFixture.create(6L)));
+
+        // when
+        Slice<RecordGetResponse> result = recordRepository.findAllByBookmarkOrderByIdDesc(2, null, 10);
+
+        // then
+        assertAll(
+                () -> assertThat(result.get()).hasSize(1),
+                () -> assertThat(result.getContent().get(0).id()).isEqualTo(1L)
+        );
+    }
+
+    @Test
+    void findAllByBookmarkOrderByIdDesc를_통해_조회할_때_블락된_레코드는_제외하고_조회할_수_있다() {
+        //given
+        // 사용자 1이 레코드 1, 5를 북마크
+        bookmarkRepository.save(BookmarkFixture.create(DomainFixture.createUser(), RecordFixture.create(1L)));
+        bookmarkRepository.save(BookmarkFixture.create(DomainFixture.createUser(), RecordFixture.create(5L)));
+        recordRepository.block(1L);
+
+        // when
+        Slice<RecordGetResponse> result = recordRepository.findAllByBookmarkOrderByIdDesc(1, null, 10);
+
+        // then
+        assertAll(
+                () -> assertThat(result.get()).hasSize(1),
+                () -> assertThat(result.getContent().get(0).id()).isEqualTo(5L)
+        );
+    }
+
+
 }

@@ -1,14 +1,13 @@
 package org.recordy.server.report.repository.impl;
 
+import static org.recordy.server.report.domain.QReport.report;
+
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.report.domain.Report;
 import org.springframework.stereotype.Repository;
-
-import java.time.LocalDateTime;
-
-import static org.recordy.server.report.domain.QReport.report;
 
 @RequiredArgsConstructor
 @Repository

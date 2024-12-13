@@ -26,8 +26,10 @@ public class Report extends JpaMetaInfoEntity {
     @JoinColumn(name = "record_id")
     private RecordEntity record;
 
+    @Enumerated(value = EnumType.STRING)
     private ReportReason reason;
     private String content;
+    @Enumerated(value = EnumType.STRING)
     private ApprovalStatus approvalStatus;
 
     private Report(
@@ -58,7 +60,7 @@ public class Report extends JpaMetaInfoEntity {
             record.block();
         }
         else if (approvalStatus == ApprovalStatus.DISMISSED){
-            record.nonBlock();
+            record.unBlock();
         }
     }
 }

@@ -1,17 +1,26 @@
 package org.recordy.server.record.domain;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.recordy.server.common.domain.JpaMetaInfoEntity;
 import org.recordy.server.bookmark.domain.BookmarkEntity;
+import org.recordy.server.common.domain.JpaMetaInfoEntity;
 import org.recordy.server.place.domain.PlaceEntity;
+import org.recordy.server.report.domain.Report;
 import org.recordy.server.user.domain.UserEntity;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -37,6 +46,9 @@ public class RecordEntity extends JpaMetaInfoEntity {
 
     @OneToMany(mappedBy = "record", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<BookmarkEntity> bookmarks = new ArrayList<>();
+
+    @OneToMany(mappedBy = "record", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<Report> reports = new ArrayList<>();
 
     public RecordEntity(
             Long id,
@@ -90,8 +102,6 @@ public class RecordEntity extends JpaMetaInfoEntity {
         bookmarks.add(bookmark);
     }
 
-    public void block() {
-        this.isBlocked = true;
-    }
-    public void nonBlock() {this.isBlocked = false; }
+    public void block() {this.isBlocked = true; }
+    public void unBlock() {this.isBlocked = false; }
 }

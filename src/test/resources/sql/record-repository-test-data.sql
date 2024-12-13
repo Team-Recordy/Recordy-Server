@@ -27,3 +27,6 @@ values (5, 1, 'content', 'thumbnail_url', 'video_url', 1, false);
 
 insert into `records` (`id`, `user_id`, `content`,`thumbnail_url`, `video_url`, `place_id`, `is_blocked`)
 values (6, 2, 'content', 'thumbnail_url', 'video_url', 1, false);
+
+insert into `reports` (`id`, `user_id`, `record_id`, `reason`, `content`, `approval_status`)
+values (1, 2, 6, 'OTHER', '신고 내용', 'PENDING');
