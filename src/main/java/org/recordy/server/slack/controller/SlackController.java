@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 
 @RestController
 @RequestMapping("/api/v1/slack/interactive")
@@ -23,7 +24,8 @@ public class SlackController {
     @PostMapping
     public ResponseEntity<Void> handleInteractiveMessage(HttpServletRequest request) {
         try {
-            Slack slack = new Slack(request);
+            HttpServletRequest cachingRequest = new ContentCachingRequestWrapper(request);
+            Slack slack = new Slack(cachingRequest);
             String actionId = slack.getActionId();
 
             if (actionId.contains("report")) {
@@ -40,7 +42,7 @@ public class SlackController {
             System.err.println("JSON parsing error: {} " + e.getMessage());
             throw new SlackException(ErrorMessage.SLACK_INTERACTION_FAILED);
         } catch (Exception e) {
-            System.err.println("Failed to send message to Slack" + e.getMessage());
+            System.err.println("Failed to send message to Slack " + e.getMessage());
             throw new SlackException(ErrorMessage.SLACK_INTERACTION_FAILED);
         }
     }
