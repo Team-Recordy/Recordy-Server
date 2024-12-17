@@ -1,5 +1,7 @@
 package org.recordy.server.common.config;
 
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
+
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.auth.security.filter.TokenAuthenticationFilter;
 import org.recordy.server.auth.security.handler.CustomAuthenticationEntryPoint;
@@ -15,8 +17,6 @@ import org.springframework.security.config.annotation.web.configurers.FormLoginC
 import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
@@ -70,6 +70,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(requests ->
                         requests
                                 .requestMatchers(authFreeApis).permitAll()
+                                .requestMatchers("/api/v1/slack/interactive").permitAll()
                                 .requestMatchers("/api/**").authenticated()
                                 .anyRequest().denyAll()
                 )
