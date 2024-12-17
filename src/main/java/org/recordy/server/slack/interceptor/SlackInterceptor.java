@@ -26,10 +26,8 @@ public class SlackInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        // SecurityContextHolderAwareRequestWrapper가 아닌 경우에만 ContentCachingRequestWrapper로 감쌈
-        ContentCachingRequestWrapper requestWrapper = (request instanceof ContentCachingRequestWrapper)
-                ? (ContentCachingRequestWrapper) request
-                : new ContentCachingRequestWrapper(request);
+        // ContentCachingRequestWrapper로 감싸기
+        ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(request);
 
         String method = request.getMethod();
         String signature = request.getHeader("X-Slack-Signature");

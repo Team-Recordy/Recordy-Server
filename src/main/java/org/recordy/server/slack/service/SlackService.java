@@ -137,7 +137,5 @@ public class SlackService {
 
         return blocks;
     }
-
-
 }
 
