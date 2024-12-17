@@ -18,12 +18,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Tag(name = "신고 API")
 public interface ReportApi {
     @Operation(
-            summary = "게시물(영상) 북마크 및 북마크 해제 API",
-            description = "사용자가 특정 게시물(영상)을 북마크하거나 북마크 해제합니다.",
+            summary = "게시물 신고 API",
+            description = "사용자가 특정 게시물(영상)을 신고합니다.",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "북마크하면 true, 북마크 해제하면 false",
+                            description = "신고 성공",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(
