@@ -23,7 +23,7 @@ public class Slack {
     public Slack(HttpServletRequest request) {
         JSONObject json = getJsonFrom(request);
 
-        System.out.println(json);
+        System.out.println("json = " + json);
 
         JSONObject action = json.getJSONArray("actions").getJSONObject(0);
         JSONObject value = new JSONObject(action.getString("value"));
