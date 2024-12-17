@@ -26,7 +26,7 @@ public class SlackInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        // ContentCachingRequestWrapper로 감싸기
+        // SecurityContextHolderAwareRequestWrapper가 아닌 경우에만 ContentCachingRequestWrapper로 감쌈
         ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(request);
 
         String method = request.getMethod();
@@ -35,6 +35,7 @@ public class SlackInterceptor implements HandlerInterceptor {
         String payload = getRequestBody(requestWrapper);
 
         System.out.println("payload = " + payload);
+        request.setAttribute("slackPayload", payload);
 
         if (!method.equalsIgnoreCase("POST") || !isValidRequest(payload, signature, timestamp)) {
             throw new SlackException(ErrorMessage.SLACK_INVALID_REQUEST);
@@ -81,4 +82,5 @@ public class SlackInterceptor implements HandlerInterceptor {
         }
     }
 }
+
 

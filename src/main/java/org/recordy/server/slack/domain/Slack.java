@@ -22,7 +22,12 @@ public class Slack {
     ApprovalStatus approvalStatus;
 
     public Slack(HttpServletRequest request) {
-        JSONObject json = getJsonFrom(request);
+        String payload = (String) request.getAttribute("slackPayload");
+        if (payload == null) {
+            throw new SlackException(ErrorMessage.SLACK_INTERACTION_FAILED);
+        }
+
+        JSONObject json = new JSONObject(payload);
 
         JSONObject action = json.getJSONArray("actions").getJSONObject(0);
         JSONObject value = new JSONObject(action.getString("value"));
