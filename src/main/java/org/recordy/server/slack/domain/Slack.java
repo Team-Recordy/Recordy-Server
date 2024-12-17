@@ -39,7 +39,7 @@ public class Slack {
 
     private JSONObject getJsonFrom(HttpServletRequest request) {
         try {
-            ContentCachingRequestWrapper requestWrapper = (ContentCachingRequestWrapper) request;
+            ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(request);
             String payload = new String(requestWrapper.getContentAsByteArray(), requestWrapper.getCharacterEncoding());
             String decodedPayload = URLDecoder.decode(payload, StandardCharsets.UTF_8);
 
