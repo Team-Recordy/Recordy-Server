@@ -24,8 +24,9 @@ public class SlackController {
     @PostMapping
     public ResponseEntity<Void> handleInteractiveMessage(HttpServletRequest request) {
         try {
-            System.out.println("request = " + request);;
+            System.out.println("request = " + request);
             HttpServletRequest cachingRequest = new ContentCachingRequestWrapper(request);
+            System.out.println("cachingRequest = " + cachingRequest);
             Slack slack = new Slack(cachingRequest);
             String actionId = slack.getActionId();
 
