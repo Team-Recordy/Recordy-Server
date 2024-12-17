@@ -4,12 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Objects;
 import lombok.Getter;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.report.domain.ApprovalStatus;
@@ -27,6 +22,8 @@ public class Slack {
 
     public Slack(HttpServletRequest request) {
         JSONObject json = getJsonFrom(request);
+
+        System.out.println(json);
 
         JSONObject action = json.getJSONArray("actions").getJSONObject(0);
         JSONObject value = new JSONObject(action.getString("value"));
@@ -48,7 +45,7 @@ public class Slack {
 
             return new JSONObject(decodedPayload.substring("payload=".length()));
         } catch (UnsupportedEncodingException e) {
-            throw new SlackException(ErrorMessage.USER_NOT_FOUND);
+            throw new SlackException(ErrorMessage.SLACK_INTERACTION_FAILED);
         }
     }
 }
