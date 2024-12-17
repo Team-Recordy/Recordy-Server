@@ -1,17 +1,26 @@
 package org.recordy.server.record.domain;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.recordy.server.common.domain.JpaMetaInfoEntity;
 import org.recordy.server.bookmark.domain.BookmarkEntity;
+import org.recordy.server.common.domain.JpaMetaInfoEntity;
 import org.recordy.server.place.domain.PlaceEntity;
+import org.recordy.server.report.domain.Report;
 import org.recordy.server.user.domain.UserEntity;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -25,6 +34,7 @@ public class RecordEntity extends JpaMetaInfoEntity {
     private FileUrl fileUrl;
     private String content;
     private String exhibitionName;
+    private boolean isBlocked = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -37,11 +47,15 @@ public class RecordEntity extends JpaMetaInfoEntity {
     @OneToMany(mappedBy = "record", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<BookmarkEntity> bookmarks = new ArrayList<>();
 
+    @OneToMany(mappedBy = "record", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<Report> reports = new ArrayList<>();
+
     public RecordEntity(
             Long id,
             FileUrl fileUrl,
             String content,
             String exhibitionName,
+            boolean isBlocked,
             UserEntity user,
             PlaceEntity place,
             LocalDateTime createdAt,
@@ -51,18 +65,23 @@ public class RecordEntity extends JpaMetaInfoEntity {
         this.fileUrl = fileUrl;
         this.content = content;
         this.exhibitionName = exhibitionName;
+        this.isBlocked = isBlocked;
         this.user = user;
         this.place = place;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
 
-    public RecordEntity(Long id) {
+    private RecordEntity(Long id) {
         this.id = id;
     }
 
     public static RecordEntity from(Record record) {
         return new RecordEntity(record.getId());
+    }
+
+    public static RecordEntity of(Long id) {
+        return new RecordEntity(id);
     }
 
     public static RecordEntity create(Record record) {
@@ -71,6 +90,7 @@ public class RecordEntity extends JpaMetaInfoEntity {
                 record.getFileUrl(),
                 record.getContent(),
                 record.getExhibitionName(),
+                false,
                 UserEntity.from(record.getUploader()),
                 PlaceEntity.create(record.getPlace()),
                 record.getCreatedAt(),
@@ -81,4 +101,7 @@ public class RecordEntity extends JpaMetaInfoEntity {
     public void addBookmark(BookmarkEntity bookmark) {
         bookmarks.add(bookmark);
     }
+
+    public void block() {this.isBlocked = true; }
+    public void unBlock() {this.isBlocked = false; }
 }

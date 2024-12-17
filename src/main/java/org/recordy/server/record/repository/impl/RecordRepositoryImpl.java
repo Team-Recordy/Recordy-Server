@@ -43,6 +43,13 @@ public class RecordRepositoryImpl implements RecordRepository {
         recordJpaRepository.deleteAllByUserId(userId);
     }
 
+    @Transactional
+    @Override
+    public void block(long recordId) {
+        recordJpaRepository.findById(recordId)
+                .ifPresent(RecordEntity::block);
+    }
+
     @Override
     public Record findById(long recordId) {
         RecordEntity entity = recordQueryDslRepository.findById(recordId);
@@ -75,8 +82,8 @@ public class RecordRepositoryImpl implements RecordRepository {
     }
 
     @Override
-    public List<Long> findAllIds() {
-        return recordQueryDslRepository.findAllIds();
+    public List<Long> findAllIds(long userId) {
+        return recordQueryDslRepository.findAllIds(userId);
     }
 
     @Override

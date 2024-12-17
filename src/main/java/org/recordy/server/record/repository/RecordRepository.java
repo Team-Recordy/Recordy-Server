@@ -13,6 +13,7 @@ public interface RecordRepository {
     Long save(Record record);
     void deleteById(long recordId);
     void deleteByUserId(long userId);
+    void block(long recordId);
 
     // query
     Record findById(long id);
@@ -21,6 +22,6 @@ public interface RecordRepository {
     Slice<RecordGetResponse> findAllByBookmarkOrderByIdDesc(long userId, Long cursor, int size);
     List<RecordGetResponse> findAllByIds(List<Long> ids, long userId);
     List<Long> findAllIdsBySubscribingUserId(long userId);
-    List<Long> findAllIds();
+    List<Long> findAllIds(long userId);
     Long countByUserIdAndCreatedAtBetween(long userId, LocalDateTime from, LocalDateTime to);
 }

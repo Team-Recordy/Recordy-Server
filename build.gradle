@@ -77,6 +77,10 @@ dependencies {
     implementation("org.opensearch.client:opensearch-rest-client:2.11.0")
     implementation("org.opensearch.client:opensearch-java:2.7.0")
     implementation("jakarta.json:jakarta.json-api")
+
+    // slack
+    implementation 'org.json:json:20171018'
+    implementation 'com.slack.api:slack-api-client:1.12.0'
 }
 
 tasks.named('test') {

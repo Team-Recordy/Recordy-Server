@@ -98,12 +98,12 @@ public class RecordServiceImpl implements RecordService {
 
     @Override
     public List<RecordGetResponse> getRecords(long userId, int size) {
-        List<Long> ids = getRandomIds(size);
+        List<Long> ids = getRandomIds(userId, size);
         return recordRepository.findAllByIds(ids, userId);
     }
 
-    private List<Long> getRandomIds(int size) {
-        List<Long> ids = recordRepository.findAllIds();
+    private List<Long> getRandomIds(long userId, int size) {
+        List<Long> ids = recordRepository.findAllIds(userId);
         return getRandomSubList(ids, size);
     }
 

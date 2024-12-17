@@ -1,25 +1,25 @@
 package org.recordy.server.record.repository.impl;
 
+import static org.recordy.server.bookmark.domain.QBookmarkEntity.bookmarkEntity;
+import static org.recordy.server.place.domain.QPlaceEntity.placeEntity;
+import static org.recordy.server.record.domain.QRecordEntity.recordEntity;
+import static org.recordy.server.report.domain.QReport.report;
+import static org.recordy.server.subscribe.domain.QSubscribeEntity.subscribeEntity;
+import static org.recordy.server.user.domain.QUserEntity.userEntity;
+
 import com.querydsl.core.types.ConstructorExpression;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-
+import java.time.LocalDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.util.QueryDslUtils;
 import org.recordy.server.record.controller.dto.response.RecordGetResponse;
 import org.recordy.server.record.domain.RecordEntity;
+import org.recordy.server.report.domain.ApprovalStatus;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
-
-import java.time.LocalDateTime;
-import java.util.List;
-
-import static org.recordy.server.place.domain.QPlaceEntity.placeEntity;
-import static org.recordy.server.record.domain.QRecordEntity.recordEntity;
-import static org.recordy.server.bookmark.domain.QBookmarkEntity.bookmarkEntity;
-import static org.recordy.server.subscribe.domain.QSubscribeEntity.subscribeEntity;
-import static org.recordy.server.user.domain.QUserEntity.userEntity;
 
 @RequiredArgsConstructor
 @Repository
@@ -30,6 +30,7 @@ public class RecordQueryDslRepository {
     public RecordEntity findById(Long id) {
         return jpaQueryFactory
                 .selectFrom(recordEntity)
+                .join(recordEntity.place, placeEntity).fetchJoin()
                 .join(recordEntity.user, userEntity).fetchJoin()
                 .where(recordEntity.id.eq(id))
                 .fetchOne();
@@ -41,9 +42,13 @@ public class RecordQueryDslRepository {
                 .from(recordEntity)
                 .join(recordEntity.user, userEntity)
                 .join(recordEntity.place, placeEntity)
+                .leftJoin(report).on(report.record.eq(recordEntity)
+                        .and(report.reporter.id.eq(userId)))
                 .where(
                         recordEntity.place.id.eq(placeId),
-                        QueryDslUtils.ltCursorId(cursor, recordEntity.id)
+                        QueryDslUtils.ltCursorId(cursor, recordEntity.id),
+                        report.id.isNull().or(report.approvalStatus.ne(ApprovalStatus.PENDING)),
+                        recordEntity.isBlocked.eq(false)
                 )
                 .groupBy(recordEntity.id)
                 .orderBy(recordEntity.id.desc())
@@ -59,9 +64,13 @@ public class RecordQueryDslRepository {
                 .from(recordEntity)
                 .join(recordEntity.user, userEntity)
                 .join(recordEntity.place, placeEntity)
+                .leftJoin(report).on(report.record.eq(recordEntity)
+                        .and(report.reporter.id.eq(userId)))
                 .where(
                         userEntity.id.eq(otherUserId),
-                        QueryDslUtils.ltCursorId(cursor, recordEntity.id)
+                        QueryDslUtils.ltCursorId(cursor, recordEntity.id),
+                        report.id.isNull().or(report.approvalStatus.ne(ApprovalStatus.PENDING)),
+                        recordEntity.isBlocked.eq(false)
                 )
                 .groupBy(recordEntity.id)
                 .orderBy(recordEntity.id.desc())
@@ -90,9 +99,13 @@ public class RecordQueryDslRepository {
                 .join(recordEntity.user, userEntity)
                 .join(recordEntity.place, placeEntity)
                 .join(recordEntity.bookmarks, bookmarkEntity)
+                .leftJoin(report).on(report.record.eq(recordEntity)
+                        .and(report.reporter.id.eq(userId)))
                 .where(
                         bookmarkEntity.user.id.eq(userId),
-                        QueryDslUtils.ltCursorId(cursor, recordEntity.id)
+                        QueryDslUtils.ltCursorId(cursor, recordEntity.id),
+                        report.id.isNull().or(report.approvalStatus.ne(ApprovalStatus.PENDING)),
+                        recordEntity.isBlocked.eq(false)
                 )
                 .groupBy(recordEntity.id)
                 .orderBy(recordEntity.id.desc())
@@ -132,14 +145,26 @@ public class RecordQueryDslRepository {
                 .from(recordEntity)
                 .join(recordEntity.user, userEntity)
                 .join(userEntity.subscribers, subscribeEntity)
-                .where(subscribeEntity.subscribingUser.id.eq(userId))
+                .leftJoin(report).on(report.record.eq(recordEntity)
+                        .and(report.reporter.id.eq(userId)))
+                .where(
+                        subscribeEntity.subscribingUser.id.eq(userId),
+                        report.id.isNull().or(report.approvalStatus.ne(ApprovalStatus.PENDING)),
+                        recordEntity.isBlocked.eq(false)
+                )
                 .fetch();
     }
 
-    public List<Long> findAllIds() {
+    public List<Long> findAllIds(long userId) {
         return jpaQueryFactory
                 .select(recordEntity.id)
                 .from(recordEntity)
+                .leftJoin(report).on(report.record.eq(recordEntity)
+                        .and(report.reporter.id.eq(userId)))
+                .where(
+                        report.id.isNull().or(report.approvalStatus.ne(ApprovalStatus.PENDING)),
+                        recordEntity.isBlocked.eq(false)
+                )
                 .fetch();
     }
 

@@ -10,20 +10,23 @@ values (1);
 insert into `places` (`id`, `name`, `location_id`, `platform_id`)
 values (1, 'place1', 1, UUID());
 
-insert into `records` (`id`, `user_id`, `content`,`thumbnail_url`, `video_url`, `place_id`)
-values (1, 1, 'content', 'thumbnail_url', 'video_url', 1);
+insert into `records` (`id`, `user_id`, `content`,`thumbnail_url`, `video_url`, `place_id`, `is_blocked`)
+values (1, 1, 'content', 'thumbnail_url', 'video_url', 1, false);
 
-insert into `records` (`id`, `user_id`, `content`,`thumbnail_url`, `video_url`, `place_id`)
-values (2, 1, 'content', 'thumbnail_url', 'video_url', 1);
+insert into `records` (`id`, `user_id`, `content`,`thumbnail_url`, `video_url`, `place_id`, `is_blocked`)
+values (2, 1, 'content', 'thumbnail_url', 'video_url', 1, false);
 
-insert into `records` (`id`, `user_id`, `content`,`thumbnail_url`, `video_url`, `place_id`)
-values (3, 2, 'content', 'thumbnail_url', 'video_url', 1);
+insert into `records` (`id`, `user_id`, `content`,`thumbnail_url`, `video_url`, `place_id`, `is_blocked`)
+values (3, 2, 'content', 'thumbnail_url', 'video_url', 1, false);
 
-insert into `records` (`id`, `user_id`, `content`,`thumbnail_url`, `video_url`, `place_id`)
-values (4, 2, 'content', 'thumbnail_url', 'video_url', 1);
+insert into `records` (`id`, `user_id`, `content`,`thumbnail_url`, `video_url`, `place_id`, `is_blocked`)
+values (4, 2, 'content', 'thumbnail_url', 'video_url', 1, false);
 
-insert into `records` (`id`, `user_id`, `content`,`thumbnail_url`, `video_url`, `place_id`)
-values (5, 1, 'content', 'thumbnail_url', 'video_url', 1);
+insert into `records` (`id`, `user_id`, `content`,`thumbnail_url`, `video_url`, `place_id`, `is_blocked`)
+values (5, 1, 'content', 'thumbnail_url', 'video_url', 1, false);
 
-insert into `records` (`id`, `user_id`, `content`,`thumbnail_url`, `video_url`, `place_id`)
-values (6, 2, 'content', 'thumbnail_url', 'video_url', 1);
+insert into `records` (`id`, `user_id`, `content`,`thumbnail_url`, `video_url`, `place_id`, `is_blocked`)
+values (6, 2, 'content', 'thumbnail_url', 'video_url', 1, false);
+
+insert into `reports` (`id`, `user_id`, `record_id`, `reason`, `content`, `approval_status`)
+values (1, 2, 6, 'OTHER', '신고 내용', 'PENDING');

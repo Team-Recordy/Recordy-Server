@@ -60,6 +60,7 @@ class RecordEntityTest {
                 RecordFixture.FILE_URL,
                 DomainFixture.CONTENT,
                 RecordFixture.EXHIBITION_NAME,
+                false,
                 UserEntity.from(DomainFixture.createUser()),
                 PlaceEntity.create(PlaceFixture.create()),
                 null,

@@ -1,20 +1,22 @@
 package org.recordy.server.util;
 
+import java.time.LocalDateTime;
 import org.recordy.server.auth.domain.Auth;
 import org.recordy.server.auth.domain.AuthEntity;
 import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.auth.domain.AuthToken;
-import org.recordy.server.record.domain.Record;
-import org.recordy.server.record.domain.FileUrl;
-import org.recordy.server.user.domain.TermsAgreement;
 import org.recordy.server.bookmark.domain.Bookmark;
-import org.recordy.server.user.domain.usecase.UserSignIn;
+import org.recordy.server.record.domain.FileUrl;
+import org.recordy.server.record.domain.Record;
+import org.recordy.server.record.domain.RecordEntity;
+import org.recordy.server.report.domain.Report;
+import org.recordy.server.report.domain.ReportReason;
+import org.recordy.server.user.domain.TermsAgreement;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.UserEntity;
 import org.recordy.server.user.domain.UserStatus;
+import org.recordy.server.user.domain.usecase.UserSignIn;
 import org.recordy.server.user.domain.usecase.UserSignUp;
-
-import java.time.LocalDateTime;
 
 public final class DomainFixture {
 
@@ -193,6 +195,7 @@ public final class DomainFixture {
                 .fileUrl(new FileUrl(VIDEO_URL, THUMBNAIL_URL))
                 .content(CONTENT)
                 .uploader(createUser(UserStatus.ACTIVE))
+                .isBlocked(false)
                 .build();
     }
 
@@ -211,4 +214,13 @@ public final class DomainFixture {
                 .user(createUser(UserStatus.ACTIVE))
                 .build();
     }
+
+     public static Report createReport() {
+        return Report.builder()
+                .reporter(UserEntity.from(createUser(UserStatus.ACTIVE)))
+                .record(RecordEntity.from(RecordFixture.create(1L)))
+                .reason(ReportReason.HATE_SPEECH)
+                .content("신고 내용입니다.")
+                .build();
+     }
 }

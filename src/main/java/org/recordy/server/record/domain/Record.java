@@ -23,39 +23,35 @@ public class Record {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     long bookmarkCount;
+    boolean isBlocked;
 
     private Record(
             Long id,
-            FileUrl fileUrl,
-            String content,
-            String exhibitionName,
             User uploader,
-            LocalDateTime createdAt,
-            LocalDateTime updatedAt,
-            long bookmarkCount
+            Place place,
+            FileUrl fileUrl,
+            String exhibitionName,
+            String content,
+            boolean isBlocked
     ) {
         this.id = id;
+        this.uploader = uploader;
+        this.place = place;
         this.fileUrl = fileUrl;
-        this.content = content;
         this.exhibitionName = exhibitionName;
-        this.uploader = uploader;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.bookmarkCount = bookmarkCount;
-    }
-
-    private Record(
-            Long id,
-            User uploader
-    ) {
-        this.id = id;
-        this.uploader = uploader;
+        this.content = content;
+        this.isBlocked = isBlocked;
     }
 
     public static Record from(RecordEntity entity) {
         return new Record(
                 entity.getId(),
-                User.from(entity.getUser())
+                User.from(entity.getUser()),
+                Place.from(entity.getPlace()),
+                entity.getFileUrl(),
+                entity.getExhibitionName(),
+                entity.getContent(),
+                entity.isBlocked()
         );
     }
 
@@ -69,7 +65,8 @@ public class Record {
                 create.place(),
                 null,
                 null,
-                0
+                0,
+                false
         );
     }
 

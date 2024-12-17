@@ -1,3 +1,4 @@
+delete from `reports` where 1;
 delete from `bookmarks` where 1;
 delete from `records` where 1;
 delete from `exhibitions` where 1;
