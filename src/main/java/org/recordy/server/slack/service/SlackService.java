@@ -114,11 +114,11 @@ public class SlackService {
         JSONArray elements = new JSONArray();
 
         elements.put(createButton("Accept", "report_accept", new JSONObject()
-                .put("reportId", report.getRecord().getId())
+                .put("reportId", report.getId())
                 .put("approvalStatus", "APPROVED"), "danger"));
 
         elements.put(createButton("Dismiss", "report_dismiss", new JSONObject()
-                .put("reportId", report.getRecord().getId())
+                .put("reportId", report.getId())
                 .put("approvalStatus", "DISMISSED"), "primary"));
 
         actionsBlock.put("elements", elements);
