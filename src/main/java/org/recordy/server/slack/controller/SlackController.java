@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.ContentCachingRequestWrapper;
 
 @RestController
 @RequestMapping("/api/v1/slack/interactive")
@@ -25,9 +24,9 @@ public class SlackController {
     public ResponseEntity<Void> handleInteractiveMessage(HttpServletRequest request) {
         try {
             System.out.println("request = " + request);
-            HttpServletRequest cachingRequest = new ContentCachingRequestWrapper(request);
-            System.out.println("cachingRequest = " + cachingRequest);
-            Slack slack = new Slack(cachingRequest);
+            //HttpServletRequest cachingRequest = new ContentCachingRequestWrapper(request);
+            //System.out.println("cachingRequest = " + cachingRequest);
+            Slack slack = new Slack(request);
             String actionId = slack.getActionId();
 
             if (actionId.contains("report")) {
