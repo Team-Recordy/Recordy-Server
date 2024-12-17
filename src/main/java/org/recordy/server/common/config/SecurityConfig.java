@@ -70,7 +70,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(requests ->
                         requests
                                 .requestMatchers(authFreeApis).permitAll()
-                                .requestMatchers("/api/v1/slack/interactive").permitAll()
                                 .requestMatchers("/api/**").authenticated()
                                 .anyRequest().denyAll()
                 )
