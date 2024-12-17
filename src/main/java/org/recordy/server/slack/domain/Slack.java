@@ -23,6 +23,8 @@ public class Slack {
 
     public Slack(HttpServletRequest request) {
         String payload = (String) request.getAttribute("slackPayload");
+
+        System.out.println("Slack payload = " + payload);
         if (payload == null) {
             throw new SlackException(ErrorMessage.SLACK_INTERACTION_FAILED);
         }
