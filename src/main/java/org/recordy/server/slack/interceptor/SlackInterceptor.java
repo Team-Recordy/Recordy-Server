@@ -33,6 +33,8 @@ public class SlackInterceptor implements HandlerInterceptor {
         String timestamp = request.getHeader("X-Slack-Request-Timestamp");
         String payload = getRequestBody(requestWrapper);
 
+        System.out.println("payload = " + payload);
+
         if (!method.equalsIgnoreCase("POST") || !isValidRequest(payload, signature, timestamp)) {
             throw new SlackException(ErrorMessage.SLACK_INVALID_REQUEST);
         }
