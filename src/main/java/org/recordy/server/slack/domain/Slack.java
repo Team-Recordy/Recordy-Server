@@ -1,7 +1,9 @@
 package org.recordy.server.slack.domain;
 
 import jakarta.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import lombok.Getter;
@@ -9,7 +11,6 @@ import org.json.JSONObject;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.report.domain.ApprovalStatus;
 import org.recordy.server.slack.exception.SlackException;
-import org.springframework.web.util.ContentCachingRequestWrapper;
 
 @Getter
 public class Slack {
@@ -39,13 +40,29 @@ public class Slack {
 
     private JSONObject getJsonFrom(HttpServletRequest request) {
         try {
-            ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(request);
-            String payload = new String(requestWrapper.getContentAsByteArray(), requestWrapper.getCharacterEncoding());
-            String decodedPayload = URLDecoder.decode(payload, StandardCharsets.UTF_8);
+            // HttpServletRequest에서 입력 스트림을 직접 읽기
+            StringBuilder stringBuilder = new StringBuilder();
+            String line;
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(request.getInputStream(), StandardCharsets.UTF_8))) {
+                while ((line = reader.readLine()) != null) {
+                    stringBuilder.append(line);
+                }
+            }
 
-            return new JSONObject(decodedPayload.substring("payload=".length()));
-        } catch (UnsupportedEncodingException e) {
+            // 요청 본문을 디코딩
+            String decodedPayload = URLDecoder.decode(stringBuilder.toString(), StandardCharsets.UTF_8);
+
+            // "payload="이 포함되어 있는지 확인
+            if (decodedPayload.contains("payload=")) {
+                // "payload=" 뒤의 부분을 추출
+                String payloadContent = decodedPayload.substring("payload=".length());
+                return new JSONObject(payloadContent);
+            } else {
+                throw new SlackException(ErrorMessage.SLACK_INTERACTION_FAILED);  // "payload="이 없을 경우 예외 처리
+            }
+        } catch (IOException e) {
             throw new SlackException(ErrorMessage.SLACK_INTERACTION_FAILED);
         }
     }
+
 }
