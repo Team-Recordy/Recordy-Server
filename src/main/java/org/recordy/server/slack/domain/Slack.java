@@ -1,16 +1,14 @@
 package org.recordy.server.slack.domain;
 
 import jakarta.servlet.http.HttpServletRequest;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import lombok.Getter;
 import org.json.JSONObject;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.report.domain.ApprovalStatus;
 import org.recordy.server.slack.exception.SlackException;
+
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 
 @Getter
 public class Slack {
@@ -22,13 +20,19 @@ public class Slack {
     ApprovalStatus approvalStatus;
 
     public Slack(HttpServletRequest request) {
-        String payload = (String) request.getAttribute("slackPayload");
+        // slackPayload 가져오기
+        String encodedPayload = (String) request.getAttribute("slackPayload");
+        System.out.println("Encoded Slack payload = " + encodedPayload);
 
-        System.out.println("Slack payload = " + payload);
-        if (payload == null) {
+        if (encodedPayload == null) {
             throw new SlackException(ErrorMessage.SLACK_INTERACTION_FAILED);
         }
 
+        // URL 디코딩
+        String payload = URLDecoder.decode(encodedPayload, StandardCharsets.UTF_8);
+        System.out.println("Decoded Slack payload = " + payload);
+
+        // JSON 파싱
         JSONObject json = new JSONObject(payload);
 
         JSONObject action = json.getJSONArray("actions").getJSONObject(0);
@@ -45,34 +49,4 @@ public class Slack {
             System.out.println("approvalStatus = " + approvalStatus);
         }
     }
-
-    private JSONObject getJsonFrom(HttpServletRequest request) {
-        try {
-            // HttpServletRequest에서 입력 스트림을 직접 읽기
-            StringBuilder stringBuilder = new StringBuilder();
-            String line;
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(request.getInputStream(), StandardCharsets.UTF_8))) {
-                while ((line = reader.readLine()) != null) {
-                    stringBuilder.append(line);
-                }
-            }
-
-            // 요청 본문을 디코딩
-            String decodedPayload = URLDecoder.decode(stringBuilder.toString(), StandardCharsets.UTF_8);
-
-            // "payload="이 포함되어 있는지 확인
-            if (decodedPayload.contains("payload=")) {
-                // "payload=" 뒤의 부분을 추출
-                String payloadContent = decodedPayload.substring("payload=".length());
-                return new JSONObject(payloadContent);
-            } else {
-                System.out.println("no payload");
-                throw new SlackException(ErrorMessage.SLACK_INTERACTION_FAILED);  // "payload="이 없을 경우 예외 처리
-            }
-        } catch (IOException e) {
-            System.out.println("io exception");
-            throw new SlackException(ErrorMessage.SLACK_INTERACTION_FAILED);
-        }
-    }
-
 }
