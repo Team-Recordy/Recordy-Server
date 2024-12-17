@@ -58,9 +58,11 @@ public class Slack {
                 String payloadContent = decodedPayload.substring("payload=".length());
                 return new JSONObject(payloadContent);
             } else {
+                System.out.println("no payload");
                 throw new SlackException(ErrorMessage.SLACK_INTERACTION_FAILED);  // "payload="이 없을 경우 예외 처리
             }
         } catch (IOException e) {
+            System.out.println("io exception");
             throw new SlackException(ErrorMessage.SLACK_INTERACTION_FAILED);
         }
     }
