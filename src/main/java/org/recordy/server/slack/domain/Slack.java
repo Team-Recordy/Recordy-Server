@@ -24,16 +24,19 @@ public class Slack {
         String encodedPayload = (String) request.getAttribute("slackPayload");
         System.out.println("Encoded Slack payload = " + encodedPayload);
 
-        if (encodedPayload == null) {
+        if (encodedPayload == null || encodedPayload.isBlank()) {
             throw new SlackException(ErrorMessage.SLACK_INTERACTION_FAILED);
         }
 
         // URL 디코딩
-        String payload = URLDecoder.decode(encodedPayload, StandardCharsets.UTF_8);
-        System.out.println("Decoded Slack payload = " + payload);
+        String decodedPayload = URLDecoder.decode(encodedPayload, StandardCharsets.UTF_8);
+        System.out.println("Decoded Slack payload = " + decodedPayload);
+
+        // "payload=" 제거
+        String jsonPayload = decodedPayload.substring(8); // "payload=" 이후의 값 추출
 
         // JSON 파싱
-        JSONObject json = new JSONObject(payload);
+        JSONObject json = new JSONObject(jsonPayload);
 
         JSONObject action = json.getJSONArray("actions").getJSONObject(0);
         JSONObject value = new JSONObject(action.getString("value"));

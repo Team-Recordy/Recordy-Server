@@ -30,6 +30,9 @@ public class SlackController {
             String actionId = slack.getActionId();
 
             if (actionId.contains("report")) {
+                if (slack.getApprovalStatus() == null || slack.getReportId() == null || slack.getThreadTimestamp() == null) {
+                    throw new SlackException(ErrorMessage.SLACK_INTERACTION_FAILED);
+                }
                 reportService.resolve(slack.getReportId(), slack.getApprovalStatus(), slack.getThreadTimestamp());
             }
 
