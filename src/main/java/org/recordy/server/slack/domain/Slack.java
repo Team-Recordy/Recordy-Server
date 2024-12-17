@@ -24,8 +24,6 @@ public class Slack {
     public Slack(HttpServletRequest request) {
         JSONObject json = getJsonFrom(request);
 
-        System.out.println(json);
-
         JSONObject action = json.getJSONArray("actions").getJSONObject(0);
         JSONObject value = new JSONObject(action.getString("value"));
 
@@ -35,6 +33,9 @@ public class Slack {
 
         if (actionId.contains("report")) {
             approvalStatus = ApprovalStatus.valueOf(value.getString("approvalStatus"));
+            System.out.println("actionId = " + actionId);
+            System.out.println("reportId = " + reportId);
+            System.out.println("approvalStatus = " + approvalStatus);
         }
     }
 

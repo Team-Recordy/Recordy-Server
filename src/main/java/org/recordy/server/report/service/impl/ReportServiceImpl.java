@@ -61,6 +61,7 @@ public class ReportServiceImpl implements ReportService {
     public void resolve(Long reportId, ApprovalStatus approvalStatus, String threadTs) {
         Report report = reportRepository.findById(reportId).orElseThrow(
                 () -> {
+                    System.err.println("report not found");
                     throw new ReportException(ErrorMessage.REPORT_NOT_FOUND);
                 }
         );
