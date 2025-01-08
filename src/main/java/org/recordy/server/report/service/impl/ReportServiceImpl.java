@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 @Service
 public class ReportServiceImpl implements ReportService {
 
@@ -28,7 +28,7 @@ public class ReportServiceImpl implements ReportService {
     private final RecordRepository recordRepository;
     private final SlackService slackService;
 
-    @Transactional
+
     @Override
     @Synchronized
     public void create(ReportCreate create) {
