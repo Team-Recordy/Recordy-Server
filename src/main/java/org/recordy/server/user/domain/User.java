@@ -1,5 +1,12 @@
 package org.recordy.server.user.domain;
 
+import static org.recordy.server.user.domain.UserStatus.ACTIVE;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.regex.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,20 +16,12 @@ import org.recordy.server.user.domain.usecase.UserSignUp;
 import org.recordy.server.user.domain.usecase.UserUpdate;
 import org.recordy.server.user.exception.UserException;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.time.LocalDateTime;
-import java.util.Objects;
-import java.util.regex.Pattern;
-
-import static org.recordy.server.user.domain.UserStatus.ACTIVE;
-
 @AllArgsConstructor
 @Builder
 @Getter
 public class User {
 
-    private static final Pattern NICKNAME_PATTERN = Pattern.compile("^[가-힣0-9_.]+$");
+    private static final Pattern NICKNAME_PATTERN = Pattern.compile("^[가-힣ㄱ-ㅎㅏ-ㅣ0-9_.]+$");
     private static final String PROFILE_IMAGE_URL = "https://recordy-bucket.s3.ap-northeast-2.amazonaws.com/default-profile-image";
 
     private Long id;
