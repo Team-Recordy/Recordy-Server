@@ -55,7 +55,7 @@ public class UserController implements UserApi {
     }
 
     @Override
-    @GetMapping("/following")
+    @GetMapping("/follower")
     public ResponseEntity<CursorBasePaginatedResponse<UserInfo>> getSubscribedUserInfos(
             @UserId Long userId,
             @RequestParam(required = false) Long cursorId,
@@ -69,7 +69,7 @@ public class UserController implements UserApi {
     }
 
     @Override
-    @GetMapping("/follower")
+    @GetMapping("/following")
     public ResponseEntity<CursorBasePaginatedResponse<UserInfo>> getSubscribingUserInfos(
             @UserId Long userId,
             @RequestParam(required = false) Long cursorId,
