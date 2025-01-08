@@ -22,7 +22,6 @@ public class Slack {
     public Slack(HttpServletRequest request) {
         // slackPayload 가져오기
         String encodedPayload = (String) request.getAttribute("slackPayload");
-        System.out.println("Encoded Slack payload = " + encodedPayload);
 
         if (encodedPayload == null || encodedPayload.isBlank()) {
             throw new SlackException(ErrorMessage.SLACK_INTERACTION_FAILED);
