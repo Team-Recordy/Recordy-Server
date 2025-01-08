@@ -59,6 +59,7 @@ public class Report extends JpaMetaInfoEntity {
     }
 
     public void resolve(ApprovalStatus approvalStatus) {
+        System.out.println("real approvalStatus = " + approvalStatus);
         this.approvalStatus = approvalStatus;
         if (approvalStatus == ApprovalStatus.APPROVED) {
             record.block();
