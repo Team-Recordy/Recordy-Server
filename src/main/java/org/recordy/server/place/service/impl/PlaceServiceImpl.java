@@ -14,6 +14,7 @@ import org.recordy.server.search.domain.Search;
 import org.recordy.server.search.repository.SearchRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,5 +54,12 @@ public class PlaceServiceImpl implements PlaceService {
     @Override
     public PlaceGetResponse getDetailById(Long id) {
         return placeRepository.findDetailById(id);
+    }
+
+    @Scheduled(cron = "0 0 * * * *")
+    @Transactional
+    public void cacheAll() {
+        placeRepository.findAll()
+                .forEach(placeRepository::cache);
     }
 }

@@ -13,6 +13,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
 
 @RequiredArgsConstructor
@@ -22,6 +23,7 @@ public class PlaceRepositoryImpl implements PlaceRepository {
 
     private final PlaceJpaRepository placeJpaRepository;
     private final PlaceQueryDslRepository placeQueryDslRepository;
+    private final PlaceRedisRepository placeRedisRepository;
 
     @Transactional
     @Override
@@ -32,7 +34,16 @@ public class PlaceRepositoryImpl implements PlaceRepository {
     }
 
     @Override
+    public void cache(Place place) {
+        placeRedisRepository.save(PlaceEntity.create(place));
+    }
+
+    @Override
     public boolean existsByPlatformId(String platformId) {
+        if (placeRedisRepository.existsByPlatformId(platformId)) {
+            return true;
+        }
+
         return placeQueryDslRepository.existsByPlatformId(platformId);
     }
 
@@ -56,6 +67,13 @@ public class PlaceRepositoryImpl implements PlaceRepository {
         }
 
         return Place.from(id);
+    }
+
+    @Override
+    public List<Place> findAll() {
+        return placeQueryDslRepository.findAll().stream()
+                .map(Place::from)
+                .toList();
     }
 
     @Override

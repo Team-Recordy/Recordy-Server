@@ -75,6 +75,15 @@ public class PlaceQueryDslRepository {
         return findIdWith(placeEntity.name.eq(name));
     }
 
+    public List<PlaceEntity> findAll() {
+        return jpaQueryFactory
+                .select(placeEntity)
+                .from(placeEntity)
+                .join(placeEntity.location).fetchJoin()
+                .leftJoin(exhibitionEntity).on(exhibitionEntity.place.eq(placeEntity)).fetchJoin()
+                .fetch();
+    }
+
     private Long findIdWith(BooleanExpression... expressions) {
         return jpaQueryFactory
                 .select(placeEntity.id)

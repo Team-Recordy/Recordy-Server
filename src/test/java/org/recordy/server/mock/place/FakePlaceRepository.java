@@ -7,6 +7,7 @@ import org.recordy.server.place.repository.PlaceRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -32,6 +33,9 @@ public class FakePlaceRepository implements PlaceRepository {
     }
 
     @Override
+    public void cache(Place place) {}
+
+    @Override
     public boolean existsByPlatformId(String platformId) {
         return false;
     }
@@ -43,6 +47,11 @@ public class FakePlaceRepository implements PlaceRepository {
 
     @Override
     public Place findByName(String name) {
+        return null;
+    }
+
+    @Override
+    public List<Place> findAll() {
         return null;
     }
 

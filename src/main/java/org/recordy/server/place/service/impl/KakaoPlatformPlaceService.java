@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.place.controller.dto.response.PlatformPlaceSearchResponse;
 import org.recordy.server.place.exception.PlaceException;
+import org.recordy.server.place.repository.PlaceRepository;
 import org.recordy.server.place.service.PlatformPlaceService;
 import org.recordy.server.place.service.dto.kakao.KakaoPlaceSearch;
 import org.recordy.server.place.service.dto.kakao.KakaoPlaceSearchResponse;
@@ -32,23 +33,27 @@ public class KakaoPlatformPlaceService implements PlatformPlaceService {
     private final double latitude;
     private final int radius;
     private final RestTemplate restTemplate;
+    private final PlaceRepository placeRepository;
 
     public KakaoPlatformPlaceService(
             @Value("${place.kakao.key}") String key,
             @Value("${place.kakao.longitude}") double longitude,
             @Value("${place.kakao.latitude}") double latitude,
-            @Value("${place.kakao.radius}") int radius
+            @Value("${place.kakao.radius}") int radius,
+            PlaceRepository placeRepository
     ) {
         this.key = key;
         this.longitude = longitude;
         this.latitude = latitude;
         this.radius = radius;
         this.restTemplate = new RestTemplate();
+        this.placeRepository = placeRepository;
     }
 
     @Override
     public List<PlatformPlaceSearchResponse> search(String query, int page) {
         return searchKakaoPlaces(query, page).stream()
+                .filter(place -> !placeRepository.existsByPlatformId(place.id()))
                 .map(PlatformPlaceSearchResponse::from)
                 .toList();
     }
