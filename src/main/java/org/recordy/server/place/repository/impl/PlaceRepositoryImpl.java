@@ -5,6 +5,7 @@ import org.locationtech.jts.geom.Point;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.place.controller.dto.response.PlaceGetResponse;
 import org.recordy.server.place.domain.Place;
+import org.recordy.server.place.domain.PlaceCacheEntity;
 import org.recordy.server.place.domain.PlaceEntity;
 import org.recordy.server.place.exception.PlaceException;
 import org.recordy.server.place.repository.PlaceRepository;
@@ -35,7 +36,7 @@ public class PlaceRepositoryImpl implements PlaceRepository {
 
     @Override
     public void cache(Place place) {
-        placeRedisRepository.save(PlaceEntity.create(place));
+        placeRedisRepository.save(PlaceCacheEntity.from(place));
     }
 
     @Override

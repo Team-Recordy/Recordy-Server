@@ -7,14 +7,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.recordy.server.common.domain.JpaMetaInfoEntity;
 import org.recordy.server.location.domain.LocationEntity;
-import org.springframework.data.redis.core.RedisHash;
 
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@RedisHash("place")
 @Table(name = "places")
 @Entity
 public class PlaceEntity extends JpaMetaInfoEntity {
