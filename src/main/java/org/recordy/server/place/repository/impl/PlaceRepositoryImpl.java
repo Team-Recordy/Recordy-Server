@@ -1,6 +1,7 @@
 package org.recordy.server.place.repository.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Point;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.place.controller.dto.response.PlaceGetResponse;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Repository
@@ -36,7 +38,8 @@ public class PlaceRepositoryImpl implements PlaceRepository {
 
     @Override
     public void cache(Place place) {
-        placeRedisRepository.save(PlaceCacheEntity.from(place));
+        PlaceCacheEntity entity = placeRedisRepository.save(PlaceCacheEntity.from(place));
+        log.info("entity with id {} and platformId {} is cached", entity.getId(), entity.getPlatformId());
     }
 
     @Override
