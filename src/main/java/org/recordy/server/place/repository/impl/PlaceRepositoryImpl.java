@@ -45,6 +45,7 @@ public class PlaceRepositoryImpl implements PlaceRepository {
     @Override
     public boolean existsByPlatformId(String platformId) {
         if (placeRedisRepository.existsByPlatformId(platformId)) {
+            log.info("cache hit for platformId {}", platformId);
             return true;
         }
 
