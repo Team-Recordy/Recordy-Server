@@ -61,8 +61,7 @@ public class PlaceServiceImpl implements PlaceService {
     @Scheduled(cron = "0 0 * * * *")
     @Transactional
     public void cacheAll() {
-        List<Place> places = placeRepository.findAll();
-        System.out.println("places.size() = " + places.size());
-        places.forEach(placeRepository::cache);
+        placeRepository.findAll()
+                .forEach(placeRepository::cache);
     }
 }
