@@ -18,6 +18,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
@@ -59,7 +61,8 @@ public class PlaceServiceImpl implements PlaceService {
     @Scheduled(cron = "0 0 * * * *")
     @Transactional
     public void cacheAll() {
-        placeRepository.findAll()
-                .forEach(placeRepository::cache);
+        List<Place> places = placeRepository.findAll();
+        System.out.println("places.size() = " + places.size());
+        places.forEach(placeRepository::cache);
     }
 }
