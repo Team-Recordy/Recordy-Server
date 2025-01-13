@@ -119,9 +119,9 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void update(UserUpdate update, long id) {
-        validateDuplicateNickname(update.nickname());
 
         User user = userRepository.findById(id);
+        validateDuplicateNickname(user, update.nickname());
         user.update(update);
 
         userRepository.save(user);
@@ -147,6 +147,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public void validateDuplicateNickname(String nickname) {
         if (userRepository.existsByNickname(nickname)) {
+            throw new UserException(ErrorMessage.DUPLICATE_NICKNAME);
+        }
+    }
+
+    @Override
+    public void validateDuplicateNickname(User user, String nickname) {
+        if (!user.getNickname().equals(nickname) && userRepository.existsByNickname(nickname)) {
             throw new UserException(ErrorMessage.DUPLICATE_NICKNAME);
         }
     }
