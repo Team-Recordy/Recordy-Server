@@ -72,7 +72,7 @@ public class User {
             profileImageUrl = update.profileImageUrl();
         }
         else {
-            profileImageUrl = null;
+            profileImageUrl = PROFILE_IMAGE_URL;
         }
     }
 
