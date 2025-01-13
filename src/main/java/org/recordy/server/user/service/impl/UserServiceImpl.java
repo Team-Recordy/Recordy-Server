@@ -121,7 +121,9 @@ public class UserServiceImpl implements UserService {
     public void update(UserUpdate update, long id) {
 
         User user = userRepository.findById(id);
-        validateDuplicateNickname(user, update.nickname());
+        if (!user.getNickname().equals(update.nickname())) {
+            validateDuplicateNickname(update.nickname());
+        }
         user.update(update);
 
         userRepository.save(user);
@@ -147,13 +149,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public void validateDuplicateNickname(String nickname) {
         if (userRepository.existsByNickname(nickname)) {
-            throw new UserException(ErrorMessage.DUPLICATE_NICKNAME);
-        }
-    }
-
-    @Override
-    public void validateDuplicateNickname(User user, String nickname) {
-        if (!user.getNickname().equals(nickname) && userRepository.existsByNickname(nickname)) {
             throw new UserException(ErrorMessage.DUPLICATE_NICKNAME);
         }
     }

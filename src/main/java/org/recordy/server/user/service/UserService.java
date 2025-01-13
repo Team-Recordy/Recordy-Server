@@ -22,7 +22,6 @@ public interface UserService {
     // query
     UserProfile getProfile(long targetUserId, long userId);
     void validateDuplicateNickname(String nickname);
-    void validateDuplicateNickname(User user, String nickname);
     Slice<UserInfo> getSubscribingUserInfos(long userId, Long cursor, int size);
     Slice<UserInfo> getSubscribedUserInfos(long userId, Long cursor, int size);
 }
