@@ -71,6 +71,9 @@ public class User {
             validateProfileImageUrl(update.profileImageUrl());
             profileImageUrl = update.profileImageUrl();
         }
+        else {
+            profileImageUrl = null;
+        }
     }
 
     private void validateNicknameFormat(String nickname) {
