@@ -172,7 +172,7 @@ public interface PlaceApi {
                                                                 "content": [
                                                                     {
                                                                         "id": 1,
-                                                                        "name": "클럽 빵"
+                                                                        "name": "클럽 빵",
                                                                         "address": "서울시 마포구 독막로 209",
                                                                         "platformId": "alsdkfje2",
                                                                         "location": {
@@ -188,7 +188,7 @@ public interface PlaceApi {
                                                                     },
                                                                     {
                                                                         "id": 1,
-                                                                        "name": "클럽 빵"
+                                                                        "name": "클럽 빵",
                                                                         "address": "서울시 마포구 독막로 209",
                                                                         "platformId": "alsdkfje2",
                                                                         "location": {
@@ -204,7 +204,7 @@ public interface PlaceApi {
                                                                     },
                                                                     {
                                                                         "id": 1,
-                                                                        "name": "클럽 빵"
+                                                                        "name": "클럽 빵",
                                                                         "address": "서울시 마포구 독막로 209",
                                                                         "platformId": "alsdkfje2",
                                                                         "location": {
@@ -220,7 +220,7 @@ public interface PlaceApi {
                                                                     },
                                                                     {
                                                                         "id": 1,
-                                                                        "name": "클럽 빵"
+                                                                        "name": "클럽 빵",
                                                                         "address": "서울시 마포구 독막로 209",
                                                                         "platformId": "alsdkfje2",
                                                                         "location": {
@@ -236,7 +236,7 @@ public interface PlaceApi {
                                                                     },
                                                                     {
                                                                         "id": 1,
-                                                                        "name": "클럽 빵"
+                                                                        "name": "클럽 빵",
                                                                         "address": "서울시 마포구 독막로 209",
                                                                         "platformId": "alsdkfje2",
                                                                         "location": {
@@ -372,7 +372,7 @@ public interface PlaceApi {
                                                                 "content": [
                                                                     {
                                                                         "id": 1,
-                                                                        "name": "클럽 빵"
+                                                                        "name": "클럽 빵",
                                                                         "address": "서울시 마포구 독막로 209",
                                                                         "platformId": "alsdkfje2",
                                                                         "location": {
@@ -388,7 +388,7 @@ public interface PlaceApi {
                                                                     },
                                                                     {
                                                                         "id": 1,
-                                                                        "name": "클럽 빵"
+                                                                        "name": "클럽 빵",
                                                                         "address": "서울시 마포구 독막로 209",
                                                                         "platformId": "alsdkfje2",
                                                                         "location": {
@@ -404,7 +404,7 @@ public interface PlaceApi {
                                                                     },
                                                                     {
                                                                         "id": 1,
-                                                                        "name": "클럽 빵"
+                                                                        "name": "클럽 빵",
                                                                         "address": "서울시 마포구 독막로 209",
                                                                         "platformId": "alsdkfje2",
                                                                         "location": {
@@ -420,7 +420,7 @@ public interface PlaceApi {
                                                                     },
                                                                     {
                                                                         "id": 1,
-                                                                        "name": "클럽 빵"
+                                                                        "name": "클럽 빵",
                                                                         "address": "서울시 마포구 독막로 209",
                                                                         "platformId": "alsdkfje2",
                                                                         "location": {
@@ -436,7 +436,7 @@ public interface PlaceApi {
                                                                     },
                                                                     {
                                                                         "id": 1,
-                                                                        "name": "클럽 빵"
+                                                                        "name": "클럽 빵",
                                                                         "address": "서울시 마포구 독막로 209",
                                                                         "platformId": "alsdkfje2",
                                                                         "location": {

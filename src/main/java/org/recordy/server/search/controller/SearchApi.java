@@ -30,33 +30,33 @@ public interface SearchApi {
                                                     value = """
                                                             [
                                                                 {
-                                                                    "id": 1 (장소 id),
-                                                                    "type": "PLACE" or "EXHIBITION",
-                                                                    "address": 서울시 마포구 독막로 209,
+                                                                    "id": 1,
+                                                                    "type": "PLACE",
+                                                                    "address": "서울시 마포구 독막로 209",
                                                                     "name": "클럽 빵"
                                                                 },
                                                                 {
-                                                                    "id": 1 (장소 id),
-                                                                    "type": "PLACE" or "EXHIBITION",
-                                                                    "address": 서울시 마포구 독막로 209,
+                                                                    "id": 1,
+                                                                    "type": "EXHIBITION",
+                                                                    "address": "서울시 마포구 독막로 209",
                                                                     "name": "클럽 빵"
                                                                 },
                                                                 {
-                                                                    "id": 1 (장소 id),
-                                                                    "type": "PLACE" or "EXHIBITION",
-                                                                    "address": 서울시 마포구 독막로 209,
+                                                                    "id": 1,
+                                                                    "type": "PLACE",
+                                                                    "address": "서울시 마포구 독막로 209",
                                                                     "name": "클럽 빵"
                                                                 },
                                                                 {
-                                                                    "id": 1 (장소 id),
-                                                                    "type": "PLACE" or "EXHIBITION",
-                                                                    "address": 서울시 마포구 독막로 209,
+                                                                    "id": 1,
+                                                                    "type": "EXHIBITION",
+                                                                    "address": "서울시 마포구 독막로 209",
                                                                     "name": "클럽 빵"
                                                                 },
                                                                 {
-                                                                    "id": 1 (장소 id),
-                                                                    "type": "PLACE" or "EXHIBITION",
-                                                                    "address": 서울시 마포구 독막로 209,
+                                                                    "id": 1,
+                                                                    "type": "PLACE",
+                                                                    "address": "서울시 마포구 독막로 209",
                                                                     "name": "클럽 빵"
                                                                 }
                                                             ]

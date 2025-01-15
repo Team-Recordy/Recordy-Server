@@ -322,96 +322,91 @@ public interface RecordApi {
                                             @ExampleObject(
                                                     value = """
                                                             {
-                                                                "nextCursor": 11,
-                                                                "hasNext": true,
-                                                                "content": [
-                                                                    {
-                                                                        "id": 1,
-                                                                        "fileUrl":
-                                                                            {
-                                                                                "videoUrl": ""http://www.naver.com",
-                                                                                "thumbnailUrl": ""http://www.naver.com"
-                                                                            },
-                                                                        "content": "정작 필요했던 말들은 다 덮어두고서",
-                                                                        "exhibitionName: "전시전시회",
-                                                                        "placeId": 111,
-                                                                        "placeName": 클럽 빵,
-                                                                        "uploaderId": 1,
-                                                                        "uploaderNickname": "konu",
-                                                                        "bookmarkCount": 100,
-                                                                        "isMine": true,
-                                                                        "isBookmarked": false
-                                                                    },
-                                                                    {
-                                                                        "id": 1,
-                                                                        "fileUrl":
-                                                                            {
-                                                                                "videoUrl": ""http://www.naver.com",
-                                                                                "thumbnailUrl": ""http://www.naver.com"
-                                                                            },
-                                                                        "content": "정작 필요했던 말들은 다 덮어두고서",
-                                                                        "exhibitionName: "전시전시회",
-                                                                        "placeId": 111,
-                                                                        "placeName": 클럽 빵,
-                                                                        "uploaderId": 1,
-                                                                        "uploaderNickname": "konu",
-                                                                        "bookmarkCount": 100,
-                                                                        "isMine": true,
-                                                                        "isBookmarked": false
-                                                                    },
-                                                                    {
-                                                                        "id": 1,
-                                                                        "fileUrl":
-                                                                            {
-                                                                                "videoUrl": ""http://www.naver.com",
-                                                                                "thumbnailUrl": ""http://www.naver.com"
-                                                                            },
-                                                                        "content": "정작 필요했던 말들은 다 덮어두고서",
-                                                                        "exhibitionName: "전시전시회",
-                                                                        "placeId": 111,
-                                                                        "placeName": 클럽 빵,
-                                                                        "uploaderId": 1,
-                                                                        "uploaderNickname": "konu",
-                                                                        "bookmarkCount": 100,
-                                                                        "isMine": true,
-                                                                        "isBookmarked": false
-                                                                    },
-                                                                    {
-                                                                        "id": 1,
-                                                                        "fileUrl":
-                                                                            {
-                                                                                "videoUrl": ""http://www.naver.com",
-                                                                                "thumbnailUrl": ""http://www.naver.com"
-                                                                            },
-                                                                        "content": "정작 필요했던 말들은 다 덮어두고서",
-                                                                        "exhibitionName: "전시전시회",
-                                                                        "placeId": 111,
-                                                                        "placeName": 클럽 빵,
-                                                                        "uploaderId": 1,
-                                                                        "uploaderNickname": "konu",
-                                                                        "bookmarkCount": 100,
-                                                                        "isMine": true,
-                                                                        "isBookmarked": false
-                                                                    },
-                                                                    {
-                                                                        "id": 1,
-                                                                        "fileUrl":
-                                                                            {
-                                                                                "videoUrl": ""http://www.naver.com",
-                                                                                "thumbnailUrl": ""http://www.naver.com"
-                                                                            },
-                                                                        "content": "정작 필요했던 말들은 다 덮어두고서",
-                                                                        "exhibitionName: "전시전시회",
-                                                                        "placeId": 111,
-                                                                        "placeName": 클럽 빵,
-                                                                        "uploaderId": 1,
-                                                                        "uploaderNickname": "konu",
-                                                                        "bookmarkCount": 100,
-                                                                        "isMine": true,
-                                                                        "isBookmarked": false
-                                                                    }
-                                                                ]
-                                                            }
+                                                               "nextCursor": 11,
+                                                               "hasNext": true,
+                                                               "content": [
+                                                                 {
+                                                                   "id": 1,
+                                                                   "fileUrl": {
+                                                                     "videoUrl": "http://www.naver.com",
+                                                                     "thumbnailUrl": "http://www.naver.com"
+                                                                   },
+                                                                   "content": "정작 필요했던 말들은 다 덮어두고서",
+                                                                   "exhibitionName": "전시전시회",
+                                                                   "placeId": 111,
+                                                                   "placeName": "클럽 빵",
+                                                                   "uploaderId": 1,
+                                                                   "uploaderNickname": "konu",
+                                                                   "bookmarkCount": 100,
+                                                                   "isMine": true,
+                                                                   "isBookmarked": false
+                                                                 },
+                                                                 {
+                                                                   "id": 1,
+                                                                   "fileUrl": {
+                                                                     "videoUrl": "http://www.naver.com",
+                                                                     "thumbnailUrl": "http://www.naver.com"
+                                                                   },
+                                                                   "content": "정작 필요했던 말들은 다 덮어두고서",
+                                                                   "exhibitionName": "전시전시회",
+                                                                   "placeId": 111,
+                                                                   "placeName": "클럽 빵",
+                                                                   "uploaderId": 1,
+                                                                   "uploaderNickname": "konu",
+                                                                   "bookmarkCount": 100,
+                                                                   "isMine": true,
+                                                                   "isBookmarked": false
+                                                                 },
+                                                                 {
+                                                                   "id": 1,
+                                                                   "fileUrl": {
+                                                                     "videoUrl": "http://www.naver.com",
+                                                                     "thumbnailUrl": "http://www.naver.com"
+                                                                   },
+                                                                   "content": "정작 필요했던 말들은 다 덮어두고서",
+                                                                   "exhibitionName": "전시전시회",
+                                                                   "placeId": 111,
+                                                                   "placeName": "클럽 빵",
+                                                                   "uploaderId": 1,
+                                                                   "uploaderNickname": "konu",
+                                                                   "bookmarkCount": 100,
+                                                                   "isMine": true,
+                                                                   "isBookmarked": false
+                                                                 },
+                                                                 {
+                                                                   "id": 1,
+                                                                   "fileUrl": {
+                                                                     "videoUrl": "http://www.naver.com",
+                                                                     "thumbnailUrl": "http://www.naver.com"
+                                                                   },
+                                                                   "content": "정작 필요했던 말들은 다 덮어두고서",
+                                                                   "exhibitionName": "전시전시회",
+                                                                   "placeId": 111,
+                                                                   "placeName": "클럽 빵",
+                                                                   "uploaderId": 1,
+                                                                   "uploaderNickname": "konu",
+                                                                   "bookmarkCount": 100,
+                                                                   "isMine": true,
+                                                                   "isBookmarked": false
+                                                                 },
+                                                                 {
+                                                                   "id": 1,
+                                                                   "fileUrl": {
+                                                                     "videoUrl": "http://www.naver.com",
+                                                                     "thumbnailUrl": "http://www.naver.com"
+                                                                   },
+                                                                   "content": "정작 필요했던 말들은 다 덮어두고서",
+                                                                   "exhibitionName": "전시전시회",
+                                                                   "placeId": 111,
+                                                                   "placeName": "클럽 빵",
+                                                                   "uploaderId": 1,
+                                                                   "uploaderNickname": "konu",
+                                                                   "bookmarkCount": 100,
+                                                                   "isMine": true,
+                                                                   "isBookmarked": false
+                                                                 }
+                                                               ]
+                                                             }
                                                             """
                                             )
                                     },
@@ -528,96 +523,91 @@ public interface RecordApi {
                                             @ExampleObject(
                                                     value = """
                                                             {
-                                                                "nextCursor": 11,
-                                                                "hasNext": true,
-                                                                "content": [
-                                                                    {
-                                                                        "id": 1,
-                                                                        "fileUrl":
-                                                                            {
-                                                                                "videoUrl": ""http://www.naver.com",
-                                                                                "thumbnailUrl": ""http://www.naver.com"
-                                                                            },
-                                                                        "content": "정작 필요했던 말들은 다 덮어두고서",
-                                                                        "exhibitionName: "전시전시회",
-                                                                        "placeId": 111,
-                                                                        "placeName": 클럽 빵,
-                                                                        "uploaderId": 1,
-                                                                        "uploaderNickname": "konu",
-                                                                        "bookmarkCount": 100,
-                                                                        "isMine": true,
-                                                                        "isBookmarked": false
-                                                                    },
-                                                                    {
-                                                                        "id": 1,
-                                                                        "fileUrl":
-                                                                            {
-                                                                                "videoUrl": ""http://www.naver.com",
-                                                                                "thumbnailUrl": ""http://www.naver.com"
-                                                                            },
-                                                                        "content": "정작 필요했던 말들은 다 덮어두고서",
-                                                                        "exhibitionName: "전시전시회",
-                                                                        "placeId": 111,
-                                                                        "placeName": 클럽 빵,
-                                                                        "uploaderId": 1,
-                                                                        "uploaderNickname": "konu",
-                                                                        "bookmarkCount": 100,
-                                                                        "isMine": true,
-                                                                        "isBookmarked": false
-                                                                    },
-                                                                    {
-                                                                        "id": 1,
-                                                                        "fileUrl":
-                                                                            {
-                                                                                "videoUrl": ""http://www.naver.com",
-                                                                                "thumbnailUrl": ""http://www.naver.com"
-                                                                            },
-                                                                        "content": "정작 필요했던 말들은 다 덮어두고서",
-                                                                        "exhibitionName: "전시전시회",
-                                                                        "placeId": 111,
-                                                                        "placeName": 클럽 빵,
-                                                                        "uploaderId": 1,
-                                                                        "uploaderNickname": "konu",
-                                                                        "bookmarkCount": 100,
-                                                                        "isMine": true,
-                                                                        "isBookmarked": false
-                                                                    },
-                                                                    {
-                                                                        "id": 1,
-                                                                        "fileUrl":
-                                                                            {
-                                                                                "videoUrl": ""http://www.naver.com",
-                                                                                "thumbnailUrl": ""http://www.naver.com"
-                                                                            },
-                                                                        "content": "정작 필요했던 말들은 다 덮어두고서",
-                                                                        "exhibitionName: "전시전시회",
-                                                                        "placeId": 111,
-                                                                        "placeName": 클럽 빵,
-                                                                        "uploaderId": 1,
-                                                                        "uploaderNickname": "konu",
-                                                                        "bookmarkCount": 100,
-                                                                        "isMine": true,
-                                                                        "isBookmarked": false
-                                                                    },
-                                                                    {
-                                                                        "id": 1,
-                                                                        "fileUrl":
-                                                                            {
-                                                                                "videoUrl": ""http://www.naver.com",
-                                                                                "thumbnailUrl": ""http://www.naver.com"
-                                                                            },
-                                                                        "content": "정작 필요했던 말들은 다 덮어두고서",
-                                                                        "exhibitionName: "전시전시회",
-                                                                        "placeId": 111,
-                                                                        "placeName": 클럽 빵,
-                                                                        "uploaderId": 1,
-                                                                        "uploaderNickname": "konu",
-                                                                        "bookmarkCount": 100,
-                                                                        "isMine": true,
-                                                                        "isBookmarked": false
-                                                                    }
-                                                                ]
-                                                            }
+                                                               "nextCursor": 11,
+                                                               "hasNext": true,
+                                                               "content": [
+                                                                 {
+                                                                   "id": 1,
+                                                                   "fileUrl": {
+                                                                     "videoUrl": "http://www.naver.com",
+                                                                     "thumbnailUrl": "http://www.naver.com"
+                                                                   },
+                                                                   "content": "정작 필요했던 말들은 다 덮어두고서",
+                                                                   "exhibitionName": "전시전시회",
+                                                                   "placeId": 111,
+                                                                   "placeName": "클럽 빵",
+                                                                   "uploaderId": 1,
+                                                                   "uploaderNickname": "konu",
+                                                                   "bookmarkCount": 100,
+                                                                   "isMine": true,
+                                                                   "isBookmarked": false
+                                                                 },
+                                                                 {
+                                                                   "id": 1,
+                                                                   "fileUrl": {
+                                                                     "videoUrl": "http://www.naver.com",
+                                                                     "thumbnailUrl": "http://www.naver.com"
+                                                                   },
+                                                                   "content": "정작 필요했던 말들은 다 덮어두고서",
+                                                                   "exhibitionName": "전시전시회",
+                                                                   "placeId": 111,
+                                                                   "placeName": "클럽 빵",
+                                                                   "uploaderId": 1,
+                                                                   "uploaderNickname": "konu",
+                                                                   "bookmarkCount": 100,
+                                                                   "isMine": true,
+                                                                   "isBookmarked": false
+                                                                 },
+                                                                 {
+                                                                   "id": 1,
+                                                                   "fileUrl": {
+                                                                     "videoUrl": "http://www.naver.com",
+                                                                     "thumbnailUrl": "http://www.naver.com"
+                                                                   },
+                                                                   "content": "정작 필요했던 말들은 다 덮어두고서",
+                                                                   "exhibitionName": "전시전시회",
+                                                                   "placeId": 111,
+                                                                   "placeName": "클럽 빵",
+                                                                   "uploaderId": 1,
+                                                                   "uploaderNickname": "konu",
+                                                                   "bookmarkCount": 100,
+                                                                   "isMine": true,
+                                                                   "isBookmarked": false
+                                                                 },
+                                                                 {
+                                                                   "id": 1,
+                                                                   "fileUrl": {
+                                                                     "videoUrl": "http://www.naver.com",
+                                                                     "thumbnailUrl": "http://www.naver.com"
+                                                                   },
+                                                                   "content": "정작 필요했던 말들은 다 덮어두고서",
+                                                                   "exhibitionName": "전시전시회",
+                                                                   "placeId": 111,
+                                                                   "placeName": "클럽 빵",
+                                                                   "uploaderId": 1,
+                                                                   "uploaderNickname": "konu",
+                                                                   "bookmarkCount": 100,
+                                                                   "isMine": true,
+                                                                   "isBookmarked": false
+                                                                 },
+                                                                 {
+                                                                   "id": 1,
+                                                                   "fileUrl": {
+                                                                     "videoUrl": "http://www.naver.com",
+                                                                     "thumbnailUrl": "http://www.naver.com"
+                                                                   },
+                                                                   "content": "정작 필요했던 말들은 다 덮어두고서",
+                                                                   "exhibitionName": "전시전시회",
+                                                                   "placeId": 111,
+                                                                   "placeName": "클럽 빵",
+                                                                   "uploaderId": 1,
+                                                                   "uploaderNickname": "konu",
+                                                                   "bookmarkCount": 100,
+                                                                   "isMine": true,
+                                                                   "isBookmarked": false
+                                                                 }
+                                                               ]
+                                                             }
                                                             """
                                             )
                                     },
@@ -734,96 +724,91 @@ public interface RecordApi {
                                             @ExampleObject(
                                                     value = """
                                                             {
-                                                                "nextCursor": 11,
-                                                                "hasNext": true,
-                                                                "content": [
-                                                                    {
-                                                                        "id": 1,
-                                                                        "fileUrl":
-                                                                            {
-                                                                                "videoUrl": ""http://www.naver.com",
-                                                                                "thumbnailUrl": ""http://www.naver.com"
-                                                                            },
-                                                                        "content": "정작 필요했던 말들은 다 덮어두고서",
-                                                                        "exhibitionName: "전시전시회",
-                                                                        "placeId": 111,
-                                                                        "placeName": 클럽 빵,
-                                                                        "uploaderId": 1,
-                                                                        "uploaderNickname": "konu",
-                                                                        "bookmarkCount": 100,
-                                                                        "isMine": true,
-                                                                        "isBookmarked": false
-                                                                    },
-                                                                    {
-                                                                        "id": 1,
-                                                                        "fileUrl":
-                                                                            {
-                                                                                "videoUrl": ""http://www.naver.com",
-                                                                                "thumbnailUrl": ""http://www.naver.com"
-                                                                            },
-                                                                        "content": "정작 필요했던 말들은 다 덮어두고서",
-                                                                        "exhibitionName: "전시전시회",
-                                                                        "placeId": 111,
-                                                                        "placeName": 클럽 빵,
-                                                                        "uploaderId": 1,
-                                                                        "uploaderNickname": "konu",
-                                                                        "bookmarkCount": 100,
-                                                                        "isMine": true,
-                                                                        "isBookmarked": false
-                                                                    },
-                                                                    {
-                                                                        "id": 1,
-                                                                        "fileUrl":
-                                                                            {
-                                                                                "videoUrl": ""http://www.naver.com",
-                                                                                "thumbnailUrl": ""http://www.naver.com"
-                                                                            },
-                                                                        "content": "정작 필요했던 말들은 다 덮어두고서",
-                                                                        "exhibitionName: "전시전시회",
-                                                                        "placeId": 111,
-                                                                        "placeName": 클럽 빵,
-                                                                        "uploaderId": 1,
-                                                                        "uploaderNickname": "konu",
-                                                                        "bookmarkCount": 100,
-                                                                        "isMine": true,
-                                                                        "isBookmarked": false
-                                                                    },
-                                                                    {
-                                                                        "id": 1,
-                                                                        "fileUrl":
-                                                                            {
-                                                                                "videoUrl": ""http://www.naver.com",
-                                                                                "thumbnailUrl": ""http://www.naver.com"
-                                                                            },
-                                                                        "content": "정작 필요했던 말들은 다 덮어두고서",
-                                                                        "exhibitionName: "전시전시회",
-                                                                        "placeId": 111,
-                                                                        "placeName": 클럽 빵,
-                                                                        "uploaderId": 1,
-                                                                        "uploaderNickname": "konu",
-                                                                        "bookmarkCount": 100,
-                                                                        "isMine": true,
-                                                                        "isBookmarked": false
-                                                                    },
-                                                                    {
-                                                                        "id": 1,
-                                                                        "fileUrl":
-                                                                            {
-                                                                                "videoUrl": ""http://www.naver.com",
-                                                                                "thumbnailUrl": ""http://www.naver.com"
-                                                                            },
-                                                                        "content": "정작 필요했던 말들은 다 덮어두고서",
-                                                                        "exhibitionName: "전시전시회",
-                                                                        "placeId": 111,
-                                                                        "placeName": 클럽 빵,
-                                                                        "uploaderId": 1,
-                                                                        "uploaderNickname": "konu",
-                                                                        "bookmarkCount": 100,
-                                                                        "isMine": true,
-                                                                        "isBookmarked": false
-                                                                    }
-                                                                ]
-                                                            }
+                                                               "nextCursor": 11,
+                                                               "hasNext": true,
+                                                               "content": [
+                                                                 {
+                                                                   "id": 1,
+                                                                   "fileUrl": {
+                                                                     "videoUrl": "http://www.naver.com",
+                                                                     "thumbnailUrl": "http://www.naver.com"
+                                                                   },
+                                                                   "content": "정작 필요했던 말들은 다 덮어두고서",
+                                                                   "exhibitionName": "전시전시회",
+                                                                   "placeId": 111,
+                                                                   "placeName": "클럽 빵",
+                                                                   "uploaderId": 1,
+                                                                   "uploaderNickname": "konu",
+                                                                   "bookmarkCount": 100,
+                                                                   "isMine": true,
+                                                                   "isBookmarked": false
+                                                                 },
+                                                                 {
+                                                                   "id": 1,
+                                                                   "fileUrl": {
+                                                                     "videoUrl": "http://www.naver.com",
+                                                                     "thumbnailUrl": "http://www.naver.com"
+                                                                   },
+                                                                   "content": "정작 필요했던 말들은 다 덮어두고서",
+                                                                   "exhibitionName": "전시전시회",
+                                                                   "placeId": 111,
+                                                                   "placeName": "클럽 빵",
+                                                                   "uploaderId": 1,
+                                                                   "uploaderNickname": "konu",
+                                                                   "bookmarkCount": 100,
+                                                                   "isMine": true,
+                                                                   "isBookmarked": false
+                                                                 },
+                                                                 {
+                                                                   "id": 1,
+                                                                   "fileUrl": {
+                                                                     "videoUrl": "http://www.naver.com",
+                                                                     "thumbnailUrl": "http://www.naver.com"
+                                                                   },
+                                                                   "content": "정작 필요했던 말들은 다 덮어두고서",
+                                                                   "exhibitionName": "전시전시회",
+                                                                   "placeId": 111,
+                                                                   "placeName": "클럽 빵",
+                                                                   "uploaderId": 1,
+                                                                   "uploaderNickname": "konu",
+                                                                   "bookmarkCount": 100,
+                                                                   "isMine": true,
+                                                                   "isBookmarked": false
+                                                                 },
+                                                                 {
+                                                                   "id": 1,
+                                                                   "fileUrl": {
+                                                                     "videoUrl": "http://www.naver.com",
+                                                                     "thumbnailUrl": "http://www.naver.com"
+                                                                   },
+                                                                   "content": "정작 필요했던 말들은 다 덮어두고서",
+                                                                   "exhibitionName": "전시전시회",
+                                                                   "placeId": 111,
+                                                                   "placeName": "클럽 빵",
+                                                                   "uploaderId": 1,
+                                                                   "uploaderNickname": "konu",
+                                                                   "bookmarkCount": 100,
+                                                                   "isMine": true,
+                                                                   "isBookmarked": false
+                                                                 },
+                                                                 {
+                                                                   "id": 1,
+                                                                   "fileUrl": {
+                                                                     "videoUrl": "http://www.naver.com",
+                                                                     "thumbnailUrl": "http://www.naver.com"
+                                                                   },
+                                                                   "content": "정작 필요했던 말들은 다 덮어두고서",
+                                                                   "exhibitionName": "전시전시회",
+                                                                   "placeId": 111,
+                                                                   "placeName": "클럽 빵",
+                                                                   "uploaderId": 1,
+                                                                   "uploaderNickname": "konu",
+                                                                   "bookmarkCount": 100,
+                                                                   "isMine": true,
+                                                                   "isBookmarked": false
+                                                                 }
+                                                               ]
+                                                             }
                                                             """
                                             )
                                     },
@@ -938,96 +923,91 @@ public interface RecordApi {
                                             @ExampleObject(
                                                     value = """
                                                             {
-                                                                "nextCursor": 11,
-                                                                "hasNext": true,
-                                                                "content": [
-                                                                    {
-                                                                        "id": 1,
-                                                                        "fileUrl":
-                                                                            {
-                                                                                "videoUrl": ""http://www.naver.com",
-                                                                                "thumbnailUrl": ""http://www.naver.com"
-                                                                            },
-                                                                        "content": "정작 필요했던 말들은 다 덮어두고서",
-                                                                        "exhibitionName: "전시전시회",
-                                                                        "placeId": 111,
-                                                                        "placeName": 클럽 빵,
-                                                                        "uploaderId": 1,
-                                                                        "uploaderNickname": "konu",
-                                                                        "bookmarkCount": 100,
-                                                                        "isMine": true,
-                                                                        "isBookmarked": false
-                                                                    },
-                                                                    {
-                                                                        "id": 1,
-                                                                        "fileUrl":
-                                                                            {
-                                                                                "videoUrl": ""http://www.naver.com",
-                                                                                "thumbnailUrl": ""http://www.naver.com"
-                                                                            },
-                                                                        "content": "정작 필요했던 말들은 다 덮어두고서",
-                                                                        "exhibitionName: "전시전시회",
-                                                                        "placeId": 111,
-                                                                        "placeName": 클럽 빵,
-                                                                        "uploaderId": 1,
-                                                                        "uploaderNickname": "konu",
-                                                                        "bookmarkCount": 100,
-                                                                        "isMine": true,
-                                                                        "isBookmarked": false
-                                                                    },
-                                                                    {
-                                                                        "id": 1,
-                                                                        "fileUrl":
-                                                                            {
-                                                                                "videoUrl": ""http://www.naver.com",
-                                                                                "thumbnailUrl": ""http://www.naver.com"
-                                                                            },
-                                                                        "content": "정작 필요했던 말들은 다 덮어두고서",
-                                                                        "exhibitionName: "전시전시회",
-                                                                        "placeId": 111,
-                                                                        "placeName": 클럽 빵,
-                                                                        "uploaderId": 1,
-                                                                        "uploaderNickname": "konu",
-                                                                        "bookmarkCount": 100,
-                                                                        "isMine": true,
-                                                                        "isBookmarked": false
-                                                                    },
-                                                                    {
-                                                                        "id": 1,
-                                                                        "fileUrl":
-                                                                            {
-                                                                                "videoUrl": ""http://www.naver.com",
-                                                                                "thumbnailUrl": ""http://www.naver.com"
-                                                                            },
-                                                                        "content": "정작 필요했던 말들은 다 덮어두고서",
-                                                                        "exhibitionName: "전시전시회",
-                                                                        "placeId": 111,
-                                                                        "placeName": 클럽 빵,
-                                                                        "uploaderId": 1,
-                                                                        "uploaderNickname": "konu",
-                                                                        "bookmarkCount": 100,
-                                                                        "isMine": true,
-                                                                        "isBookmarked": false
-                                                                    },
-                                                                    {
-                                                                        "id": 1,
-                                                                        "fileUrl":
-                                                                            {
-                                                                                "videoUrl": ""http://www.naver.com",
-                                                                                "thumbnailUrl": ""http://www.naver.com"
-                                                                            },
-                                                                        "content": "정작 필요했던 말들은 다 덮어두고서",
-                                                                        "exhibitionName: "전시전시회",
-                                                                        "placeId": 111,
-                                                                        "placeName": 클럽 빵,
-                                                                        "uploaderId": 1,
-                                                                        "uploaderNickname": "konu",
-                                                                        "bookmarkCount": 100,
-                                                                        "isMine": true,
-                                                                        "isBookmarked": false
-                                                                    }
-                                                                ]
-                                                            }
+                                                               "nextCursor": 11,
+                                                               "hasNext": true,
+                                                               "content": [
+                                                                 {
+                                                                   "id": 1,
+                                                                   "fileUrl": {
+                                                                     "videoUrl": "http://www.naver.com",
+                                                                     "thumbnailUrl": "http://www.naver.com"
+                                                                   },
+                                                                   "content": "정작 필요했던 말들은 다 덮어두고서",
+                                                                   "exhibitionName": "전시전시회",
+                                                                   "placeId": 111,
+                                                                   "placeName": "클럽 빵",
+                                                                   "uploaderId": 1,
+                                                                   "uploaderNickname": "konu",
+                                                                   "bookmarkCount": 100,
+                                                                   "isMine": true,
+                                                                   "isBookmarked": false
+                                                                 },
+                                                                 {
+                                                                   "id": 1,
+                                                                   "fileUrl": {
+                                                                     "videoUrl": "http://www.naver.com",
+                                                                     "thumbnailUrl": "http://www.naver.com"
+                                                                   },
+                                                                   "content": "정작 필요했던 말들은 다 덮어두고서",
+                                                                   "exhibitionName": "전시전시회",
+                                                                   "placeId": 111,
+                                                                   "placeName": "클럽 빵",
+                                                                   "uploaderId": 1,
+                                                                   "uploaderNickname": "konu",
+                                                                   "bookmarkCount": 100,
+                                                                   "isMine": true,
+                                                                   "isBookmarked": false
+                                                                 },
+                                                                 {
+                                                                   "id": 1,
+                                                                   "fileUrl": {
+                                                                     "videoUrl": "http://www.naver.com",
+                                                                     "thumbnailUrl": "http://www.naver.com"
+                                                                   },
+                                                                   "content": "정작 필요했던 말들은 다 덮어두고서",
+                                                                   "exhibitionName": "전시전시회",
+                                                                   "placeId": 111,
+                                                                   "placeName": "클럽 빵",
+                                                                   "uploaderId": 1,
+                                                                   "uploaderNickname": "konu",
+                                                                   "bookmarkCount": 100,
+                                                                   "isMine": true,
+                                                                   "isBookmarked": false
+                                                                 },
+                                                                 {
+                                                                   "id": 1,
+                                                                   "fileUrl": {
+                                                                     "videoUrl": "http://www.naver.com",
+                                                                     "thumbnailUrl": "http://www.naver.com"
+                                                                   },
+                                                                   "content": "정작 필요했던 말들은 다 덮어두고서",
+                                                                   "exhibitionName": "전시전시회",
+                                                                   "placeId": 111,
+                                                                   "placeName": "클럽 빵",
+                                                                   "uploaderId": 1,
+                                                                   "uploaderNickname": "konu",
+                                                                   "bookmarkCount": 100,
+                                                                   "isMine": true,
+                                                                   "isBookmarked": false
+                                                                 },
+                                                                 {
+                                                                   "id": 1,
+                                                                   "fileUrl": {
+                                                                     "videoUrl": "http://www.naver.com",
+                                                                     "thumbnailUrl": "http://www.naver.com"
+                                                                   },
+                                                                   "content": "정작 필요했던 말들은 다 덮어두고서",
+                                                                   "exhibitionName": "전시전시회",
+                                                                   "placeId": 111,
+                                                                   "placeName": "클럽 빵",
+                                                                   "uploaderId": 1,
+                                                                   "uploaderNickname": "konu",
+                                                                   "bookmarkCount": 100,
+                                                                   "isMine": true,
+                                                                   "isBookmarked": false
+                                                                 }
+                                                               ]
+                                                             }
                                                             """
                                             )
                                     },
@@ -1142,96 +1122,91 @@ public interface RecordApi {
                                             @ExampleObject(
                                                     value = """
                                                             {
-                                                                "nextCursor": 11,
-                                                                "hasNext": true,
-                                                                "content": [
-                                                                    {
-                                                                        "id": 1,
-                                                                        "fileUrl":
-                                                                            {
-                                                                                "videoUrl": ""http://www.naver.com",
-                                                                                "thumbnailUrl": ""http://www.naver.com"
-                                                                            },
-                                                                        "content": "정작 필요했던 말들은 다 덮어두고서",
-                                                                        "exhibitionName: "전시전시회",
-                                                                        "placeId": 111,
-                                                                        "placeName": 클럽 빵,
-                                                                        "uploaderId": 1,
-                                                                        "uploaderNickname": "konu",
-                                                                        "bookmarkCount": 100,
-                                                                        "isMine": true,
-                                                                        "isBookmarked": false
-                                                                    },
-                                                                    {
-                                                                        "id": 1,
-                                                                        "fileUrl":
-                                                                            {
-                                                                                "videoUrl": ""http://www.naver.com",
-                                                                                "thumbnailUrl": ""http://www.naver.com"
-                                                                            },
-                                                                        "content": "정작 필요했던 말들은 다 덮어두고서",
-                                                                        "exhibitionName: "전시전시회",
-                                                                        "placeId": 111,
-                                                                        "placeName": 클럽 빵,
-                                                                        "uploaderId": 1,
-                                                                        "uploaderNickname": "konu",
-                                                                        "bookmarkCount": 100,
-                                                                        "isMine": true,
-                                                                        "isBookmarked": false
-                                                                    },
-                                                                    {
-                                                                        "id": 1,
-                                                                        "fileUrl":
-                                                                            {
-                                                                                "videoUrl": ""http://www.naver.com",
-                                                                                "thumbnailUrl": ""http://www.naver.com"
-                                                                            },
-                                                                        "content": "정작 필요했던 말들은 다 덮어두고서",
-                                                                        "exhibitionName: "전시전시회",
-                                                                        "placeId": 111,
-                                                                        "placeName": 클럽 빵,
-                                                                        "uploaderId": 1,
-                                                                        "uploaderNickname": "konu",
-                                                                        "bookmarkCount": 100,
-                                                                        "isMine": true,
-                                                                        "isBookmarked": false
-                                                                    },
-                                                                    {
-                                                                        "id": 1,
-                                                                        "fileUrl":
-                                                                            {
-                                                                                "videoUrl": ""http://www.naver.com",
-                                                                                "thumbnailUrl": ""http://www.naver.com"
-                                                                            },
-                                                                        "content": "정작 필요했던 말들은 다 덮어두고서",
-                                                                        "exhibitionName: "전시전시회",
-                                                                        "placeId": 111,
-                                                                        "placeName": 클럽 빵,
-                                                                        "uploaderId": 1,
-                                                                        "uploaderNickname": "konu",
-                                                                        "bookmarkCount": 100,
-                                                                        "isMine": true,
-                                                                        "isBookmarked": false
-                                                                    },
-                                                                    {
-                                                                        "id": 1,
-                                                                        "fileUrl":
-                                                                            {
-                                                                                "videoUrl": ""http://www.naver.com",
-                                                                                "thumbnailUrl": ""http://www.naver.com"
-                                                                            },
-                                                                        "content": "정작 필요했던 말들은 다 덮어두고서",
-                                                                        "exhibitionName: "전시전시회",
-                                                                        "placeId": 111,
-                                                                        "placeName": 클럽 빵,
-                                                                        "uploaderId": 1,
-                                                                        "uploaderNickname": "konu",
-                                                                        "bookmarkCount": 100,
-                                                                        "isMine": true,
-                                                                        "isBookmarked": false
-                                                                    }
-                                                                ]
-                                                            }
+                                                               "nextCursor": 11,
+                                                               "hasNext": true,
+                                                               "content": [
+                                                                 {
+                                                                   "id": 1,
+                                                                   "fileUrl": {
+                                                                     "videoUrl": "http://www.naver.com",
+                                                                     "thumbnailUrl": "http://www.naver.com"
+                                                                   },
+                                                                   "content": "정작 필요했던 말들은 다 덮어두고서",
+                                                                   "exhibitionName": "전시전시회",
+                                                                   "placeId": 111,
+                                                                   "placeName": "클럽 빵",
+                                                                   "uploaderId": 1,
+                                                                   "uploaderNickname": "konu",
+                                                                   "bookmarkCount": 100,
+                                                                   "isMine": true,
+                                                                   "isBookmarked": false
+                                                                 },
+                                                                 {
+                                                                   "id": 1,
+                                                                   "fileUrl": {
+                                                                     "videoUrl": "http://www.naver.com",
+                                                                     "thumbnailUrl": "http://www.naver.com"
+                                                                   },
+                                                                   "content": "정작 필요했던 말들은 다 덮어두고서",
+                                                                   "exhibitionName": "전시전시회",
+                                                                   "placeId": 111,
+                                                                   "placeName": "클럽 빵",
+                                                                   "uploaderId": 1,
+                                                                   "uploaderNickname": "konu",
+                                                                   "bookmarkCount": 100,
+                                                                   "isMine": true,
+                                                                   "isBookmarked": false
+                                                                 },
+                                                                 {
+                                                                   "id": 1,
+                                                                   "fileUrl": {
+                                                                     "videoUrl": "http://www.naver.com",
+                                                                     "thumbnailUrl": "http://www.naver.com"
+                                                                   },
+                                                                   "content": "정작 필요했던 말들은 다 덮어두고서",
+                                                                   "exhibitionName": "전시전시회",
+                                                                   "placeId": 111,
+                                                                   "placeName": "클럽 빵",
+                                                                   "uploaderId": 1,
+                                                                   "uploaderNickname": "konu",
+                                                                   "bookmarkCount": 100,
+                                                                   "isMine": true,
+                                                                   "isBookmarked": false
+                                                                 },
+                                                                 {
+                                                                   "id": 1,
+                                                                   "fileUrl": {
+                                                                     "videoUrl": "http://www.naver.com",
+                                                                     "thumbnailUrl": "http://www.naver.com"
+                                                                   },
+                                                                   "content": "정작 필요했던 말들은 다 덮어두고서",
+                                                                   "exhibitionName": "전시전시회",
+                                                                   "placeId": 111,
+                                                                   "placeName": "클럽 빵",
+                                                                   "uploaderId": 1,
+                                                                   "uploaderNickname": "konu",
+                                                                   "bookmarkCount": 100,
+                                                                   "isMine": true,
+                                                                   "isBookmarked": false
+                                                                 },
+                                                                 {
+                                                                   "id": 1,
+                                                                   "fileUrl": {
+                                                                     "videoUrl": "http://www.naver.com",
+                                                                     "thumbnailUrl": "http://www.naver.com"
+                                                                   },
+                                                                   "content": "정작 필요했던 말들은 다 덮어두고서",
+                                                                   "exhibitionName": "전시전시회",
+                                                                   "placeId": 111,
+                                                                   "placeName": "클럽 빵",
+                                                                   "uploaderId": 1,
+                                                                   "uploaderNickname": "konu",
+                                                                   "bookmarkCount": 100,
+                                                                   "isMine": true,
+                                                                   "isBookmarked": false
+                                                                 }
+                                                               ]
+                                                             }
                                                             """
                                             )
                                     },
