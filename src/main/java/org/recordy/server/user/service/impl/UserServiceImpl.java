@@ -119,9 +119,11 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void update(UserUpdate update, long id) {
-        validateDuplicateNickname(update.nickname());
 
         User user = userRepository.findById(id);
+        if (!user.getNickname().equals(update.nickname())) {
+            validateDuplicateNickname(update.nickname());
+        }
         user.update(update);
 
         userRepository.save(user);
