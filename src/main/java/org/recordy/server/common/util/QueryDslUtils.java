@@ -11,6 +11,7 @@ import org.springframework.data.domain.SliceImpl;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 import static org.recordy.server.exhibition.domain.QExhibitionEntity.exhibitionEntity;
 
@@ -22,7 +23,7 @@ public class QueryDslUtils {
     };
 
     public static BooleanExpression ltCursorId(Long cursor, NumberPath<Long> id) {
-        return cursor == null ? null : id.lt(cursor);
+        return (Objects.isNull(cursor) || cursor == 0) ? null : id.lt(cursor);
     }
 
     public static <T> boolean hasNext(Pageable pageable, List<T> content) {
