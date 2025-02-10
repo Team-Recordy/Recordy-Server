@@ -75,6 +75,16 @@ public class PlaceQueryDslRepository {
         return findIdWith(placeEntity.name.eq(name));
     }
 
+    private Long findIdWith(BooleanExpression... expressions) {
+        return jpaQueryFactory
+                .select(placeEntity.id)
+                .from(placeEntity)
+                .join(placeEntity.location)
+                .leftJoin(exhibitionEntity).on(exhibitionEntity.place.eq(placeEntity))
+                .where(expressions)
+                .fetchOne();
+    }
+
     public List<Long> findAllIdsHavingRecords() {
         return jpaQueryFactory
                 .select(placeEntity.id)
@@ -92,14 +102,12 @@ public class PlaceQueryDslRepository {
                 .fetch();
     }
 
-    private Long findIdWith(BooleanExpression... expressions) {
-        return jpaQueryFactory
-                .select(placeEntity.id)
-                .from(placeEntity)
-                .join(placeEntity.location)
-                .leftJoin(exhibitionEntity).on(exhibitionEntity.place.eq(placeEntity))
-                .where(expressions)
-                .fetchOne();
+    public List<PlaceGetResponse> findAllByIds(Pageable pageable, List<Long> ids) {
+        List<PlaceGetResponse> content = findPlacesWith(pageable, placeEntity.id.in(ids));
+
+        collectExhibitionCounts(content);
+        collectRecordCounts(content);
+        return content;
     }
 
     public PlaceGetResponse findById(Long id) {

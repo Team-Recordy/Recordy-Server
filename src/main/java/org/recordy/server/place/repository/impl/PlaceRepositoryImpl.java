@@ -87,6 +87,11 @@ public class PlaceRepositoryImpl implements PlaceRepository {
     }
 
     @Override
+    public List<PlaceGetResponse> findAllByIds(Pageable pageable, List<Long> ids) {
+        return placeQueryDslRepository.findAllByIds(pageable, ids);
+    }
+
+    @Override
     public PlaceGetResponse findDetailById(Long id) {
         return placeQueryDslRepository.findById(id);
     }
