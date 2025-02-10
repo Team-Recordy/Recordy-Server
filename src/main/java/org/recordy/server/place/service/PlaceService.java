@@ -6,6 +6,8 @@ import org.recordy.server.place.domain.Place;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
+import java.util.List;
+
 public interface PlaceService {
 
     // command
@@ -13,6 +15,7 @@ public interface PlaceService {
 
     // query
     PlaceGetResponse getDetailById(Long id);
+    List<PlaceGetResponse> getAllRandom(Pageable pageable);
     Slice<PlaceGetResponse> getAllByExhibitionStartDate(Pageable pageable);
     Slice<PlaceGetResponse> getAllByGeography(Pageable pageable, double latitude, double longitude, double distance);
 }
