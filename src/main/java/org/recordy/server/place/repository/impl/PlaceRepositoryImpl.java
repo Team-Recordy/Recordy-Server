@@ -75,6 +75,11 @@ public class PlaceRepositoryImpl implements PlaceRepository {
     }
 
     @Override
+    public List<Long> findAllIdsHavingRecords() {
+        return placeQueryDslRepository.findAllIdsHavingRecords();
+    }
+
+    @Override
     public List<Place> findAll() {
         return placeQueryDslRepository.findAll().stream()
                 .map(Place::from)

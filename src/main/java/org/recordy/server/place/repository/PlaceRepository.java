@@ -18,6 +18,7 @@ public interface PlaceRepository {
     boolean existsByPlatformId(String platformId);
     Place findById(long id);
     Place findByName(String name);
+    List<Long> findAllIdsHavingRecords();
     List<Place> findAll();
     PlaceGetResponse findDetailById(Long id);
     Slice<PlaceGetResponse> findAllOrderByExhibitionStartDateDesc(Pageable pageable);
