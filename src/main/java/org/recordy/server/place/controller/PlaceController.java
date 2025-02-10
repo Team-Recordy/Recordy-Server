@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/places")
 @RestController
@@ -69,5 +71,17 @@ public class PlaceController implements PlaceApi {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(OffsetBasePaginatedResponse.of(result));
+    }
+
+    @Override
+    public ResponseEntity<List<PlaceGetResponse>> getAllRandom(
+            @RequestParam(required = false, defaultValue = "0") int number,
+            @RequestParam(required = false, defaultValue = "20") int size
+    ) {
+        List<PlaceGetResponse> result = placeService.getAllRandom(PageRequest.of(number, size));
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(result);
     }
 }
