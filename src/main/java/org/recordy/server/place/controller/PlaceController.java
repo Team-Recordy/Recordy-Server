@@ -74,6 +74,7 @@ public class PlaceController implements PlaceApi {
     }
 
     @Override
+    @GetMapping("/random")
     public ResponseEntity<List<PlaceGetResponse>> getAllRandom(
             @RequestParam(required = false, defaultValue = "0") int number,
             @RequestParam(required = false, defaultValue = "20") int size
