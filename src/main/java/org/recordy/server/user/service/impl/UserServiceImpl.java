@@ -125,8 +125,6 @@ public class UserServiceImpl implements UserService {
             validateDuplicateNickname(update.nickname());
         }
         user.update(update);
-
-        userRepository.save(user);
     }
 
     @Transactional
