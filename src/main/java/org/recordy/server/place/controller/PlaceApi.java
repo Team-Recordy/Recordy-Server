@@ -16,6 +16,8 @@ import org.recordy.server.place.controller.dto.response.PlaceGetResponse;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
 @Tag(name = "공간 API")
 public interface PlaceApi {
 
@@ -153,6 +155,126 @@ public interface PlaceApi {
     )
     ResponseEntity<PlaceCreateResponse> createPlace(
             PlaceCreateRequest request
+    );
+
+    @Operation(
+            summary = "장소 단건 조회 API",
+            description = "동일한 id를 가진 장소를 조회합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200"
+                    ),
+                    @ApiResponse(
+                            responseCode = "401 (1)",
+                            description = "액세스 토큰의 형식이 올바르지 않습니다. Bearer 타입을 확인해 주세요.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    value = """
+                                                            {
+                                                                "errorCode": "401 UNAUTHORIZED",
+                                                                "errorMessage": "액세스 토큰의 형식이 올바르지 않습니다. Bearer 타입을 확인해 주세요."
+                                                            }
+                                                            """
+                                            )
+                                    },
+                                    schema = @Schema(
+                                            implementation = ErrorResponse.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "401 (2)",
+                            description = "액세스 토큰이 만료되었습니다. 재발급 받아주세요.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    value = """
+                                                            {
+                                                                "errorCode": "401 UNAUTHORIZED",
+                                                                "errorMessage": "액세스 토큰이 만료되었습니다. 재발급 받아주세요."
+                                                            }
+                                                            """
+                                            )
+                                    },
+                                    schema = @Schema(
+                                            implementation = ErrorResponse.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "401 (3)",
+                            description = "액세스 토큰의 값이 올바르지 않습니다.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    value = """
+                                                            {
+                                                                "errorCode": "401 UNAUTHORIZED",
+                                                                "errorMessage": "액세스 토큰의 값이 올바르지 않습니다."
+                                                            }
+                                                            """
+                                            )
+                                    },
+                                    schema = @Schema(
+                                            implementation = ErrorResponse.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "서버 내부 오류입니다.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    value = """
+                                                            {
+                                                                "errorCode": "500 INTERNAL SERVER ERROR",
+                                                                "errorMessage": "서버 내부 오류입니다."
+                                                            }
+                                                            """
+                                            )
+                                    },
+                                    schema = @Schema(
+                                            implementation = ErrorResponse.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "존재하지 않는 장소입니다.",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    value = """
+                                                            {
+                                                                "errorCode": "404 NOT FOUND",
+                                                                "errorMessage": "존재하지 않는 장소입니다."
+                                                            }
+                                                            """
+                                            )
+                                    },
+                                    schema = @Schema(
+                                            implementation = ErrorResponse.class
+                                    )
+                            )
+                    ),
+            }
+    )
+    ResponseEntity<PlaceGetResponse> getById(
+            @Parameter(
+                    name = "액세스 토큰",
+                    in = ParameterIn.HEADER,
+                    required = true,
+                    schema = @Schema(
+                            implementation = String.class
+                    )
+            ) Long id
     );
 
     @Operation(
@@ -559,11 +681,109 @@ public interface PlaceApi {
     );
 
     @Operation(
-            summary = "장소 단건 조회 API",
-            description = "동일한 id를 가진 장소를 조회합니다.",
+            summary = "랜덤 장소 리스트 조회 API",
+            description = "1개 이상의 영상을 가지는 모든 장소 중 일부를 랜덤으로 조회합니다.",
             responses = {
                     @ApiResponse(
-                            responseCode = "200"
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    value = """
+                                                            {
+                                                                "pageNumber": 3,
+                                                                "hasNext": true,
+                                                                "content": [
+                                                                    {
+                                                                        "id": 1,
+                                                                        "name": "클럽 빵",
+                                                                        "address": "서울시 마포구 독막로 209",
+                                                                        "platformId": "alsdkfje2",
+                                                                        "location": {
+                                                                            "id": 3,
+                                                                            "point": {
+                                                                                "id": 74,
+                                                                                "longitude": 123.12314124,
+                                                                                "latitude": 123.12314124
+                                                                            }
+                                                                        },
+                                                                        "exhibitionSize": 5,
+                                                                        "recordSize": 109
+                                                                    },
+                                                                    {
+                                                                        "id": 1,
+                                                                        "name": "클럽 빵",
+                                                                        "address": "서울시 마포구 독막로 209",
+                                                                        "platformId": "alsdkfje2",
+                                                                        "location": {
+                                                                            "id": 3,
+                                                                            "point": {
+                                                                                "id": 74,
+                                                                                "longitude": 123.12314124,
+                                                                                "latitude": 123.12314124
+                                                                            }
+                                                                        },
+                                                                        "exhibitionSize": 5,
+                                                                        "recordSize": 109
+                                                                    },
+                                                                    {
+                                                                        "id": 1,
+                                                                        "name": "클럽 빵",
+                                                                        "address": "서울시 마포구 독막로 209",
+                                                                        "platformId": "alsdkfje2",
+                                                                        "location": {
+                                                                            "id": 3,
+                                                                            "point": {
+                                                                                "id": 74,
+                                                                                "longitude": 123.12314124,
+                                                                                "latitude": 123.12314124
+                                                                            }
+                                                                        },
+                                                                        "exhibitionSize": 5,
+                                                                        "recordSize": 109
+                                                                    },
+                                                                    {
+                                                                        "id": 1,
+                                                                        "name": "클럽 빵",
+                                                                        "address": "서울시 마포구 독막로 209",
+                                                                        "platformId": "alsdkfje2",
+                                                                        "location": {
+                                                                            "id": 3,
+                                                                            "point": {
+                                                                                "id": 74,
+                                                                                "longitude": 123.12314124,
+                                                                                "latitude": 123.12314124
+                                                                            }
+                                                                        },
+                                                                        "exhibitionSize": 5,
+                                                                        "recordSize": 109
+                                                                    },
+                                                                    {
+                                                                        "id": 1,
+                                                                        "name": "클럽 빵",
+                                                                        "address": "서울시 마포구 독막로 209",
+                                                                        "platformId": "alsdkfje2",
+                                                                        "location": {
+                                                                            "id": 3,
+                                                                            "point": {
+                                                                                "id": 74,
+                                                                                "longitude": 123.12314124,
+                                                                                "latitude": 123.12314124
+                                                                            }
+                                                                        },
+                                                                        "exhibitionSize": 5,
+                                                                        "recordSize": 109
+                                                                    }
+                                                                ]
+                                                            }
+                                                            """
+                                            )
+                                    },
+                                    schema = @Schema(
+                                            implementation = PlaceGetResponse.class
+                                    )
+                            )
                     ),
                     @ApiResponse(
                             responseCode = "401 (1)",
@@ -645,36 +865,18 @@ public interface PlaceApi {
                                     )
                             )
                     ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "존재하지 않는 장소입니다.",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    examples = {
-                                            @ExampleObject(
-                                                    value = """
-                                                            {
-                                                                "errorCode": "404 NOT FOUND",
-                                                                "errorMessage": "존재하지 않는 장소입니다."
-                                                            }
-                                                            """
-                                            )
-                                    },
-                                    schema = @Schema(
-                                            implementation = ErrorResponse.class
-                                    )
-                            )
-                    ),
             }
     )
-    ResponseEntity<PlaceGetResponse> getById(
-            @Parameter(
-                    name = "액세스 토큰",
-                    in = ParameterIn.HEADER,
-                    required = true,
-                    schema = @Schema(
-                            implementation = String.class
-                    )
-            ) Long id
+    @Parameter(
+            name = "액세스 토큰",
+            in = ParameterIn.HEADER,
+            required = true,
+            schema = @Schema(
+                    implementation = String.class
+            )
+    )
+    ResponseEntity<List<PlaceGetResponse>> getAllRandom(
+            int number,
+            int size
     );
 }

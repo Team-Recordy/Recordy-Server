@@ -51,7 +51,17 @@ public class FakePlaceRepository implements PlaceRepository {
     }
 
     @Override
+    public List<Long> findAllIdsHavingRecords() {
+        return List.of();
+    }
+
+    @Override
     public List<Place> findAll() {
+        return null;
+    }
+
+    @Override
+    public List<PlaceGetResponse> findAllByIds(Pageable pageable, List<Long> ids) {
         return null;
     }
 

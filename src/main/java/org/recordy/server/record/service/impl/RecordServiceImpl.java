@@ -5,6 +5,7 @@ import java.util.*;
 
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.message.ErrorMessage;
+import org.recordy.server.common.util.RandomListUtils;
 import org.recordy.server.place.domain.Place;
 import org.recordy.server.place.repository.PlaceRepository;
 import org.recordy.server.record.controller.dto.request.RecordCreateRequest;
@@ -93,22 +94,14 @@ public class RecordServiceImpl implements RecordService {
 
     private List<Long> getRandomSubscribingIds(long userId, int size) {
         List<Long> ids = recordRepository.findAllIdsBySubscribingUserId(userId);
-        return getRandomSubList(ids, size);
+        return RandomListUtils.getRandomSubList(ids, size);
     }
 
     @Override
     public List<RecordGetResponse> getRecords(long userId, int size) {
-        List<Long> ids = getRandomIds(userId, size);
-        return recordRepository.findAllByIds(ids, userId);
-    }
-
-    private List<Long> getRandomIds(long userId, int size) {
         List<Long> ids = recordRepository.findAllIds(userId);
-        return getRandomSubList(ids, size);
-    }
+        ids = RandomListUtils.getRandomSubList(ids, size);
 
-    private List<Long> getRandomSubList(List<Long> ids, int size) {
-        Collections.shuffle(ids);
-        return ids.subList(0, Math.min(size, ids.size()));
+        return recordRepository.findAllByIds(ids, userId);
     }
 }

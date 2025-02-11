@@ -2,6 +2,7 @@ package org.recordy.server.place.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.message.ErrorMessage;
+import org.recordy.server.common.util.RandomListUtils;
 import org.recordy.server.location.domain.Location;
 import org.recordy.server.place.controller.dto.request.PlaceCreateRequest;
 import org.recordy.server.place.controller.dto.response.PlaceGetResponse;
@@ -56,6 +57,14 @@ public class PlaceServiceImpl implements PlaceService {
     @Override
     public PlaceGetResponse getDetailById(Long id) {
         return placeRepository.findDetailById(id);
+    }
+
+    @Override
+    public List<PlaceGetResponse> getAllRandom(Pageable pageable) {
+        List<Long> ids = placeRepository.findAllIdsHavingRecords();
+        ids = RandomListUtils.getRandomSubList(ids, pageable.getPageSize());
+
+        return placeRepository.findAllByIds(pageable, ids);
     }
 
     @Scheduled(cron = "0 0 * * * *")
