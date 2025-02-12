@@ -5,7 +5,6 @@ import static org.recordy.server.user.domain.UserStatus.ACTIVE;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -51,15 +50,13 @@ public class User {
                 .updatedAt(entity.getUpdatedAt())
                 .build();
 
-        user.subscribers = entity.getSubscribers() == null ? new ArrayList<>() :
-                entity.getSubscribers().stream()
-                        .map(SubscribeEntity::toDomain)
-                        .collect(Collectors.toList());
+        user.subscribers = entity.getSubscribers().stream()
+                .map(SubscribeEntity::toDomain)
+                .collect(Collectors.toList());
 
-        user.subscribings = entity.getSubscribings() == null ? new ArrayList<>() :
-                entity.getSubscribings().stream()
-                        .map(SubscribeEntity::toDomain)
-                        .collect(Collectors.toList());
+        user.subscribings = entity.getSubscribings().stream()
+                .map(SubscribeEntity::toDomain)
+                .collect(Collectors.toList());
 
         return user;
     }
