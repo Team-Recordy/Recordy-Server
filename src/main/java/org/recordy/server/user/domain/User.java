@@ -5,6 +5,7 @@ import static org.recordy.server.user.domain.UserStatus.ACTIVE;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -36,8 +37,8 @@ public class User {
     private TermsAgreement termsAgreement;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private List<Subscribe> subscribings;
     private List<Subscribe> subscribers;
+    private List<Subscribe> subscribings;
     public static User from(UserEntity entity) {
         User user = User.builder()
                 .id(entity.getId())
@@ -48,6 +49,8 @@ public class User {
                 .termsAgreement(TermsAgreement.of(entity.isUseTerm(), entity.isPersonalInfoTerm(), entity.isAgeTerm()))
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
+                .subscribers(new ArrayList<>())
+                .subscribings(new ArrayList<>())
                 .build();
 
         user.getSubscribers().clear();
