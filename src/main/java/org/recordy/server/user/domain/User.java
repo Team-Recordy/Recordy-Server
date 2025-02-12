@@ -5,7 +5,6 @@ import static org.recordy.server.user.domain.UserStatus.ACTIVE;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 import lombok.AllArgsConstructor;
@@ -13,7 +12,6 @@ import lombok.Builder;
 import lombok.Getter;
 import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.common.message.ErrorMessage;
-import org.recordy.server.subscribe.domain.Subscribe;
 import org.recordy.server.user.domain.usecase.UserSignUp;
 import org.recordy.server.user.domain.usecase.UserUpdate;
 import org.recordy.server.user.exception.UserException;
@@ -34,8 +32,6 @@ public class User {
     private TermsAgreement termsAgreement;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private List<Subscribe> subscribers;
-    private List<Subscribe> subscribings;
     public static User from(UserEntity entity) {
         User user = User.builder()
                 .id(entity.getId())
