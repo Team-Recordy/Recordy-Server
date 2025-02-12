@@ -8,11 +8,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.common.message.ErrorMessage;
+import org.recordy.server.subscribe.domain.Subscribe;
 import org.recordy.server.subscribe.domain.SubscribeEntity;
 import org.recordy.server.user.domain.usecase.UserSignUp;
 import org.recordy.server.user.domain.usecase.UserUpdate;
@@ -34,8 +36,8 @@ public class User {
     private TermsAgreement termsAgreement;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private List<SubscribeEntity> subscribings;
-    private List<SubscribeEntity> subscribers;
+    private List<Subscribe> subscribings;
+    private List<Subscribe> subscribers;
     public static User from(UserEntity entity) {
         User user = User.builder()
                 .id(entity.getId())
@@ -48,8 +50,16 @@ public class User {
                 .updatedAt(entity.getUpdatedAt())
                 .build();
 
-        user.subscribers = entity.getSubscribers();
-        user.subscribings = entity.getSubscribings();
+        user.getSubscribers().clear();
+        user.getSubscribers().addAll(entity.getSubscribers().stream()
+                .map(SubscribeEntity::toDomain)
+                .collect(Collectors.toList()));
+
+        user.getSubscribings().clear();
+        user.getSubscribings().addAll(entity.getSubscribings().stream()
+                .map(SubscribeEntity::toDomain)
+                .collect(Collectors.toList()));
+
         return user;
     }
 
