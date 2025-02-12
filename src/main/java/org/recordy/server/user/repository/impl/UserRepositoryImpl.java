@@ -61,7 +61,6 @@ public class UserRepositoryImpl implements UserRepository {
         userEntity.setProfileImageUrl(update.profileImageUrl());
     }
 
-
     @Override
     public User findById(long id) {
         UserEntity entity = userQueryDslRepository.findById(id);
