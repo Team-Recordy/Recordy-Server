@@ -11,9 +11,9 @@ import org.recordy.server.subscribe.domain.Subscribe;
 import org.recordy.server.subscribe.repository.SubscribeRepository;
 import org.recordy.server.user.controller.dto.response.UserInfo;
 import org.recordy.server.user.domain.TermsAgreement;
-import org.recordy.server.user.domain.usecase.UserProfile;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.UserStatus;
+import org.recordy.server.user.domain.usecase.UserProfile;
 import org.recordy.server.user.domain.usecase.UserSignIn;
 import org.recordy.server.user.domain.usecase.UserSignUp;
 import org.recordy.server.user.domain.usecase.UserUpdate;
@@ -125,6 +125,7 @@ public class UserServiceImpl implements UserService {
             validateDuplicateNickname(update.nickname());
         }
         user.update(update);
+        userRepository.save(user);
     }
 
     @Transactional
