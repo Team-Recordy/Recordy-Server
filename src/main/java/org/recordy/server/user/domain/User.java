@@ -49,19 +49,17 @@ public class User {
                 .termsAgreement(TermsAgreement.of(entity.isUseTerm(), entity.isPersonalInfoTerm(), entity.isAgeTerm()))
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
-                .subscribers(new ArrayList<>())
-                .subscribings(new ArrayList<>())
                 .build();
 
-        user.getSubscribers().clear();
-        user.getSubscribers().addAll(entity.getSubscribers().stream()
-                .map(SubscribeEntity::toDomain)
-                .collect(Collectors.toList()));
+        user.subscribers = entity.getSubscribers() == null ? new ArrayList<>() :
+                entity.getSubscribers().stream()
+                        .map(SubscribeEntity::toDomain)
+                        .collect(Collectors.toList());
 
-        user.getSubscribings().clear();
-        user.getSubscribings().addAll(entity.getSubscribings().stream()
-                .map(SubscribeEntity::toDomain)
-                .collect(Collectors.toList()));
+        user.subscribings = entity.getSubscribings() == null ? new ArrayList<>() :
+                entity.getSubscribings().stream()
+                        .map(SubscribeEntity::toDomain)
+                        .collect(Collectors.toList());
 
         return user;
     }
