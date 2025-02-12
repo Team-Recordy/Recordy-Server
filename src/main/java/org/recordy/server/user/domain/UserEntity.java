@@ -24,7 +24,9 @@ public class UserEntity extends JpaMetaInfoEntity {
     private AuthPlatform.Type platformType;
     @Enumerated(EnumType.STRING)
     private UserStatus status;
+    @Setter
     private String profileImageUrl;
+    @Setter
     private String nickname;
     private boolean useTerm;
     private boolean personalInfoTerm;

@@ -66,7 +66,7 @@ public class User {
                 .build();
     }
 
-    public void update(UserUpdate update) {
+    public UserUpdate confirmUpdate(UserUpdate update) {
         if (Objects.nonNull(update.nickname())) {
             validateNicknameFormat(update.nickname());
             nickname = update.nickname();
@@ -79,6 +79,7 @@ public class User {
         else {
             profileImageUrl = PROFILE_IMAGE_URL;
         }
+        return  new UserUpdate(nickname, profileImageUrl);
     }
 
     private void validateNicknameFormat(String nickname) {
