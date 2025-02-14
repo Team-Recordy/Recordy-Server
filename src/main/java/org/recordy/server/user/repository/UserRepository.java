@@ -3,7 +3,6 @@ package org.recordy.server.user.repository;
 import org.recordy.server.user.controller.dto.response.UserInfo;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.usecase.UserProfile;
-import org.recordy.server.user.domain.usecase.UserUpdate;
 import org.springframework.data.domain.Slice;
 
 public interface UserRepository {
@@ -11,7 +10,6 @@ public interface UserRepository {
     // command
     User save(User user);
     void deleteById(long id);
-    void update(long userId, UserUpdate update);
 
     // query
     User findById(long id);
