@@ -39,10 +39,10 @@ public class UserEntity extends JpaMetaInfoEntity {
     private boolean personalInfoTerm;
     private boolean ageTerm;
 
-    @OneToMany(mappedBy = "subscribingUser", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "subscribingUser", cascade = CascadeType.ALL)
     private Set<SubscribeEntity> subscribings = new HashSet<>();
 
-    @OneToMany(mappedBy = "subscribedUser", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "subscribedUser", cascade = CascadeType.ALL)
     private Set<SubscribeEntity> subscribers = new HashSet<>();
 
     public UserEntity(
