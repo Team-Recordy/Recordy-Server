@@ -46,7 +46,8 @@ public class ExhibitionQueryDslRepository {
     public List<ExhibitionEntity> findAll() {
         return jpaQueryFactory
                 .selectFrom(exhibitionEntity)
-                .join(exhibitionEntity.place).fetchJoin()
+                .join(exhibitionEntity.place, placeEntity).fetchJoin()
+                .join(placeEntity.location).fetchJoin()
                 .fetch();
     }
 
