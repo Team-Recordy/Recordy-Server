@@ -124,7 +124,8 @@ public class UserServiceImpl implements UserService {
         if (!user.getNickname().equals(update.nickname())) {
             validateDuplicateNickname(update.nickname());
         }
-        userRepository.update(id, user.confirmUpdate(update));
+        user.update(update);
+        userRepository.save(user);
     }
 
     @Transactional

@@ -1,14 +1,23 @@
 package org.recordy.server.user.domain;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.recordy.server.auth.domain.AuthPlatform;
 import org.recordy.server.common.domain.JpaMetaInfoEntity;
 import org.recordy.server.subscribe.domain.SubscribeEntity;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -24,19 +33,17 @@ public class UserEntity extends JpaMetaInfoEntity {
     private AuthPlatform.Type platformType;
     @Enumerated(EnumType.STRING)
     private UserStatus status;
-    @Setter
     private String profileImageUrl;
-    @Setter
     private String nickname;
     private boolean useTerm;
     private boolean personalInfoTerm;
     private boolean ageTerm;
 
-    @OneToMany(mappedBy = "subscribingUser", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<SubscribeEntity> subscribings = new ArrayList<>();
+    @OneToMany(mappedBy = "subscribingUser", cascade = CascadeType.ALL)
+    private Set<SubscribeEntity> subscribings = new HashSet<>();
 
-    @OneToMany(mappedBy = "subscribedUser", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<SubscribeEntity> subscribers = new ArrayList<>();
+    @OneToMany(mappedBy = "subscribedUser", cascade = CascadeType.ALL)
+    private Set<SubscribeEntity> subscribers = new HashSet<>();
 
     public UserEntity(
             Long id,
