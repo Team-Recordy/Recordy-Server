@@ -43,6 +43,13 @@ public class ExhibitionQueryDslRepository {
                 .fetchOne();
     }
 
+    public List<ExhibitionEntity> findAll() {
+        return jpaQueryFactory
+                .selectFrom(exhibitionEntity)
+                .join(exhibitionEntity.place).fetchJoin()
+                .fetch();
+    }
+
     public Slice<ExhibitionEntity> findAllContainingName(String name, Long cursor, int size) {
         List<ExhibitionEntity> content = jpaQueryFactory
                 .selectFrom(exhibitionEntity)

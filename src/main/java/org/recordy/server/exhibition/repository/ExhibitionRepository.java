@@ -15,6 +15,7 @@ public interface ExhibitionRepository {
 
     // query
     Exhibition findById(long id);
+    List<Exhibition> findAll();
     Slice<Exhibition> findAllContainingName(String name, Long cursor, int size);
     List<ExhibitionGetResponse> findAllByPlaceId(long placeId);
     List<ExhibitionGetResponse> findAllFreeByPlaceId(long placeId);

@@ -66,6 +66,11 @@ public class FakeExhibitionRepository implements ExhibitionRepository {
     }
 
     @Override
+    public List<Exhibition> findAll() {
+        return List.of();
+    }
+
+    @Override
     public Slice<Exhibition> findAllContainingName(String name, Long cursor, int size) {
         List<Exhibition> content = exhibitions.values().stream()
                 .filter(exhibition -> exhibition.getName().contains(name) && (Objects.isNull(cursor) || exhibition.getId() < cursor))

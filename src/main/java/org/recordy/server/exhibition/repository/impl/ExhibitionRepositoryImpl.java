@@ -53,6 +53,13 @@ public class ExhibitionRepositoryImpl implements ExhibitionRepository {
     }
 
     @Override
+    public List<Exhibition> findAll() {
+        return exhibitionQueryDslRepository.findAll().stream()
+                .map(Exhibition::from)
+                .toList();
+    }
+
+    @Override
     public Slice<Exhibition> findAllContainingName(String name, Long cursor, int size) {
         return exhibitionQueryDslRepository.findAllContainingName(name, cursor, size)
                 .map(Exhibition::from);
