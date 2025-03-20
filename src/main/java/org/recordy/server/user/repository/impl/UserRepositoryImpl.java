@@ -3,7 +3,6 @@ package org.recordy.server.user.repository.impl;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.message.ErrorMessage;
-import org.recordy.server.subscribe.domain.SubscribeEntity;
 import org.recordy.server.subscribe.repository.impl.SubscribeJpaRepository;
 import org.recordy.server.user.controller.dto.response.UserInfo;
 import org.recordy.server.user.domain.User;
@@ -29,20 +28,8 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User save(User user) {
         UserEntity entity = userJpaRepository.save(UserEntity.from(user));
-        followRootUser(entity);
 
         return User.from(entity);
-    }
-
-    private void followRootUser(UserEntity userEntity) {
-        if (!userEntity.getId().equals(rootUserId)) {
-            userJpaRepository.findById(rootUserId)
-                    .ifPresent(rootUser -> subscribeJpaRepository.save(SubscribeEntity.builder()
-                            .subscribingUser(userEntity)
-                            .subscribedUser(rootUser)
-                            .build())
-                    );
-        }
     }
 
     @Override
