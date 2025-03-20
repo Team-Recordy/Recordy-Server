@@ -9,6 +9,7 @@ import org.recordy.server.user.controller.dto.response.UserInfo;
 import org.recordy.server.user.domain.User;
 import org.recordy.server.user.domain.UserEntity;
 import org.recordy.server.user.domain.usecase.UserProfile;
+import org.recordy.server.user.domain.usecase.UserUpdate;
 import org.recordy.server.user.exception.UserException;
 import org.recordy.server.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,6 +49,15 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public void deleteById(long id) {
         userJpaRepository.deleteById(id);
+    }
+
+    @Override
+    public void update(long id, UserUpdate update) {
+        UserEntity userEntity = userJpaRepository.findById(id)
+                .orElseThrow(() -> new UserException(ErrorMessage.USER_NOT_FOUND));
+
+        userEntity.setNickname(update.nickname());
+        userEntity.setProfileImageUrl(update.profileImageUrl());
     }
 
     @Override
