@@ -13,7 +13,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.recordy.server.common.util.QueryDslUtils;
-import org.recordy.server.subscribe.domain.QSubscribeEntity;
 import org.recordy.server.user.controller.dto.response.UserInfo;
 import org.recordy.server.user.domain.UserEntity;
 import org.recordy.server.user.domain.usecase.UserProfile;
@@ -25,14 +24,10 @@ import org.springframework.stereotype.Repository;
 public class UserQueryDslRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
-    QSubscribeEntity subscribeEntity1 = new QSubscribeEntity("subscribe1");
-    QSubscribeEntity subscribeEntity2 = new QSubscribeEntity("subscribe2");
 
     public UserEntity findById(long userId) {
         return jpaQueryFactory
                 .selectFrom(userEntity)
-                .leftJoin(userEntity.subscribers, subscribeEntity1).fetchJoin()
-                .leftJoin(userEntity.subscribings, subscribeEntity2).fetchJoin()
                 .where(userEntity.id.eq(userId))
                 .fetchOne();
     }
