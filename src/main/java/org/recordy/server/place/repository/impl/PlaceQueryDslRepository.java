@@ -204,6 +204,7 @@ public class PlaceQueryDslRepository {
                 .leftJoin(recordEntity).on(recordEntity.place.eq(placeEntity))
                 .where(placeEntity.id.in(places.stream().map(PlaceGetResponse::getId).toList()))
                 .where(hasOngoingExhibitions)
+                .where(recordEntity.isBlocked.eq(false))
                 .groupBy(placeEntity.id)
                 .fetch()
                 .stream()
