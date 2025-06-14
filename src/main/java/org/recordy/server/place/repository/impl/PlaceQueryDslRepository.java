@@ -198,7 +198,7 @@ public class PlaceQueryDslRepository {
 
     private void collectRecordCounts(List<PlaceGetResponse> places) {
         Map<Long, Long> recordSizes = jpaQueryFactory
-                .select(placeEntity.id, recordEntity.count())
+                .select(placeEntity.id, recordEntity.id.countDistinct())
                 .from(placeEntity)
                 .leftJoin(exhibitionEntity).on(exhibitionEntity.place.eq(placeEntity))
                 .leftJoin(recordEntity).on(recordEntity.place.eq(placeEntity))
@@ -209,7 +209,7 @@ public class PlaceQueryDslRepository {
                 .stream()
                 .collect(Collectors.toMap(
                         tuple -> tuple.get(placeEntity.id),
-                        tuple -> Optional.ofNullable(tuple.get(recordEntity.count())).orElse(0L)
+                        tuple -> Optional.ofNullable(tuple.get(recordEntity.id.countDistinct())).orElse(0L)
                 ));
 
         for (PlaceGetResponse place : places) {
