@@ -20,6 +20,7 @@ public interface PlaceRepository {
     Place findByName(String name);
     List<Long> findAllIdsHavingRecords();
     List<Place> findAll();
+    List<Place> findAllByName(String name);
     PlaceGetResponse findDetailById(Long id);
     List<PlaceGetResponse> findAllByIds(Pageable pageable, List<Long> ids);
     Slice<PlaceGetResponse> findAllOrderByExhibitionStartDateDesc(Pageable pageable);

@@ -102,6 +102,16 @@ public class PlaceQueryDslRepository {
                 .fetch();
     }
 
+    public List<PlaceEntity> findAllByName(String name) {
+        return jpaQueryFactory
+                .select(placeEntity)
+                .from(placeEntity)
+                .join(placeEntity.location).fetchJoin()
+                .leftJoin(exhibitionEntity).on(exhibitionEntity.place.eq(placeEntity)).fetchJoin()
+                .where(placeEntity.name.like(name))
+                .fetch();
+    }
+
     public List<PlaceGetResponse> findAllByIds(Pageable pageable, List<Long> ids) {
         List<PlaceGetResponse> content = findPlacesWith(pageable, placeEntity.id.in(ids));
 

@@ -1,8 +1,9 @@
 package org.recordy.server.search.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.recordy.server.place.repository.PlaceRepository;
 import org.recordy.server.search.controller.dto.response.SearchResponse;
-import org.recordy.server.search.repository.SearchRepository;
+import org.recordy.server.search.domain.Search;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,13 +18,14 @@ import java.util.List;
 @RestController
 public class SearchController implements SearchApi {
 
-    private final SearchRepository searchRepository;
+    private final PlaceRepository placeRepository;
 
     @GetMapping
     public ResponseEntity<List<SearchResponse>> search(
             @RequestParam String query
     ) {
-        List<SearchResponse> result = searchRepository.search(query).stream()
+        List<SearchResponse> result = placeRepository.findAllByName(query).stream()
+                .map(Search::from)
                 .map(SearchResponse::from)
                 .toList();
 

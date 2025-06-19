@@ -87,6 +87,13 @@ public class PlaceRepositoryImpl implements PlaceRepository {
     }
 
     @Override
+    public List<Place> findAllByName(String name) {
+        return placeQueryDslRepository.findAllByName(name).stream()
+                .map(Place::from)
+                .toList();
+    }
+
+    @Override
     public List<PlaceGetResponse> findAllByIds(Pageable pageable, List<Long> ids) {
         return placeQueryDslRepository.findAllByIds(pageable, ids);
     }
