@@ -40,7 +40,8 @@ public class PlaceServiceImpl implements PlaceService {
         Location location = Location.of(geometryConverter.of(request.latitude(), request.longitude()));
         Place place = placeRepository.save(Place.create(PlaceCreate.from(request, location)));
 
-        searchRepository.save(Search.from(place));
+        // Opensearch 정상화 되면 그 때 복구
+        // searchRepository.save(Search.from(place));
         return place;
     }
 
