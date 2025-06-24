@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.recordy.server.common.message.ErrorMessage;
 import org.recordy.server.common.util.RandomListUtils;
 import org.recordy.server.place.domain.Place;
@@ -26,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
+@Slf4j
 public class RecordServiceImpl implements RecordService {
 
     private final S3Service s3Service;
@@ -36,18 +38,24 @@ public class RecordServiceImpl implements RecordService {
     @Transactional
     @Override
     public Long create(RecordCreateRequest request, long uploaderId) {
-        User user = userRepository.findById(uploaderId);
-        Place place = placeRepository.findById(request.placeId());
-        FileUrl fileUrl = s3Service.convertToCloudFrontUrl(request.fileUrl());
+        try {
+            User user = userRepository.findById(uploaderId);
+            Place place = placeRepository.findById(request.placeId());
+            FileUrl fileUrl = s3Service.convertToCloudFrontUrl(request.fileUrl());
 
-        validateUserUploadHistory(user.getId());
-        return recordRepository.save(Record.create(RecordCreate.of(
-                fileUrl,
-                request.content(),
-                request.exhibitionName(),
-                user,
-                place
-        )));
+            validateUserUploadHistory(user.getId());
+            return recordRepository.save(Record.create(RecordCreate.of(
+                    fileUrl,
+                    request.content(),
+                    request.exhibitionName(),
+                    user,
+                    place
+            )));
+        } catch (Exception e) {
+            log.error("레코드 생성 중 오류 발생 - uploaderId: {}, placeId: {}, error: {}", 
+                    uploaderId, request.placeId(), e.getMessage(), e);
+            throw e;
+        }
     }
 
     private void validateUserUploadHistory(Long userId) {
