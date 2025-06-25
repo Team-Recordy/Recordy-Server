@@ -108,7 +108,7 @@ public class PlaceQueryDslRepository {
                 .from(placeEntity)
                 .join(placeEntity.location).fetchJoin()
                 .leftJoin(exhibitionEntity).on(exhibitionEntity.place.eq(placeEntity)).fetchJoin()
-                .where(placeEntity.name.like(name))
+                .where(placeEntity.name.like("%" + name + "%"))
                 .fetch();
     }
 
