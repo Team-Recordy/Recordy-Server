@@ -1,6 +1,7 @@
 package org.recordy.server.record.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.recordy.server.common.dto.response.CursorBasePaginatedResponse;
 import org.recordy.server.auth.security.resolver.UserId;
 import org.recordy.server.record.controller.dto.request.RecordCreateRequest;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/records")
 @RestController
@@ -37,6 +39,7 @@ public class RecordController implements RecordApi {
             @UserId Long uploaderId,
             @RequestBody RecordCreateRequest request
     ) {
+        log.info("Creating record for uploaderId: {}, with request: {}", uploaderId, request);
         recordService.create(request, uploaderId);
 
         return ResponseEntity
