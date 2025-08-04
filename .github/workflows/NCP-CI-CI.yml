@@ -23,7 +23,7 @@ jobs:
         run: |
           mkdir -p ./src/main/resources && cd $_
           touch ./application.yml
-          echo "${{ secrets.YML }}" > ./application.yml
+          echo "${{ secrets.NCP_YML }}" > ./application.yml
           cat ./application.yml
         working-directory: ${{ env.working-directory }}
 
