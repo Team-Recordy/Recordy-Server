@@ -48,10 +48,17 @@ public class S3ServiceImpl implements S3Service {
     private String generatePresignedUrl(String directory, String extension) {
         String fileName = directory + UUID.randomUUID() + extension;
 
-        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+        String cacheControlHeader = "public, max-age=31536000, immutable";
+
+        PutObjectRequest.Builder putObjectRequestBuilder  = PutObjectRequest.builder()
                 .bucket(bucket)
-                .key(fileName)
-                .build();
+                .key(fileName);
+
+        if (directory.equals("videos/") || directory.equals("thumbnails/")) {
+            putObjectRequestBuilder.cacheControl(cacheControlHeader);
+        }
+
+        PutObjectRequest putObjectRequest = putObjectRequestBuilder.build();
 
         PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
                 .signatureDuration(Duration.ofMinutes(10))
